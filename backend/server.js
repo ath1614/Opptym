@@ -46,8 +46,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Database connection
 const connectDB = async () => {
   try {
-    // Use hardcoded MongoDB URI for now to fix the connection issue
-    const mongoURI = 'mongodb+srv://ishitasingh01:Dps@220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
+    // Use hardcoded MongoDB URI with URL encoded password to fix the connection issue
+    const mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
     
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
