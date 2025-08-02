@@ -11,6 +11,15 @@ const app = express();
 // Trust proxy for rate limiting behind load balancers
 app.set('trust proxy', 1);
 
+// CORS configuration - allow all origins for now
+app.use(cors({
+  origin: true, // Allow all origins
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
+}));
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
@@ -24,15 +33,6 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use('/api/', limiter);
-
-// CORS configuration - allow all origins for now
-app.use(cors({
-  origin: true, // Allow all origins
-  credentials: true,
-  optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
-}));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
