@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runSitemapRobotsChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { BookOpenText, CheckCircle, XCircle } from 'lucide-react';
+import { BookOpen, CheckCircle, XCircle } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -51,13 +51,13 @@ const SitemapRobotsTool = () => {
         label: 'Sitemap Status',
         value: report.sitemapStatus || 'Not Found',
         status: report.sitemapStatus === 'Found' ? 'good' as const : 'error' as const,
-        icon: <BookOpenText className="w-4 h-4" />
+        icon: <BookOpen className="w-4 h-4" />
       },
       {
         label: 'Robots.txt Status',
         value: report.robotsStatus || 'Not Found',
         status: report.robotsStatus === 'Found' ? 'good' as const : 'error' as const,
-        icon: <BookOpenText className="w-4 h-4" />
+        icon: <BookOpen className="w-4 h-4" />
       },
       {
         label: 'Crawl Rules',
@@ -141,7 +141,7 @@ const SitemapRobotsTool = () => {
               </div>
             ) : (
               <div className="flex items-center justify-center space-x-2">
-                <BookOpenText className="w-5 h-5" />
+                <BookOpen className="w-5 h-5" />
                 <span>Check Sitemap & Robots</span>
               </div>
             )}
@@ -155,7 +155,7 @@ const SitemapRobotsTool = () => {
           success={report.success}
           data={report}
           suggestions={report.suggestions || []}
-          icon={<BookOpenText className="w-6 h-6 text-indigo-600" />}
+          icon={<BookOpen className="w-6 h-6 text-indigo-600" />}
           metrics={getMetrics()}
           details={getDetails()}
         />
