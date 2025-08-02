@@ -10,7 +10,7 @@ import SchemaValidatorTool from './SchemaValidatorTool';
 import AltTextTool from './AltTextTool';
 import CanonicalTool from './CanonicalTool';
 import {
-  FileText, Search, Link, BarChart, BookOpenText,
+  FileText, Search, Link, BarChart, BookOpen,
   Zap,
   Smartphone,
   Globe,
@@ -46,7 +46,7 @@ const tools = [
     key: 'sitemap-robots',
     name: 'Sitemap & Robots Checker',
     description: 'Parse crawl rules and sitemap status',
-    icon: <BookOpenText className="w-5 h-5 text-indigo-600" />
+    icon: <BookOpen className="w-5 h-5 text-indigo-600" />
   },
   {
     key: 'backlinks',
