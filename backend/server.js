@@ -22,26 +22,14 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration - more permissive for development
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://opptym.vercel.app',
-        'https://opptym-frontend.vercel.app',
-        'https://opptym-git-main.vercel.app',
-        'https://opptym-git-develop.vercel.app',
-        'https://ooptym2-1-ctyjh4itc-ishita-singhs-projects-ffc21a05.vercel.app',
-        'https://ooptym2-1-jdra70vor-ishita-singhs-projects-ffc21a05.vercel.app',
-        /^https:\/\/.*\.vercel\.app$/, // Allow all Vercel domains
-        /^https:\/\/.*\.onrender\.com$/ // Allow all Render domains
-      ]
-    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
+// CORS configuration - allow all origins for now
+app.use(cors({
+  origin: true, // Allow all origins
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-};
-app.use(cors(corsOptions));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
+}));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
