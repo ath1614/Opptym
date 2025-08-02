@@ -2,11 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+
+// Trust proxy for rate limiting behind load balancers
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
