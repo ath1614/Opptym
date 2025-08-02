@@ -18,6 +18,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import axios from 'axios';
+import { BASE_URL } from '../../lib/api';
 import { getUserDisplayName } from '../../utils/userUtils';
 import { useAuth } from '../../hooks/useAuth';
 import SubscriptionStatus from '../Subscription/SubscriptionStatus';
@@ -139,8 +140,8 @@ export default function Dashboard() {
       console.log('🔍 Fetching dashboard data...');
 
       const [projectsResponse, submissionsResponse] = await Promise.all([
-        axios.get('http://localhost:5050/api/projects', { headers }),
-        axios.get('http://localhost:5050/api/submissions', { headers })
+        axios.get(`${BASE_URL}/projects`, { headers }),
+        axios.get(`${BASE_URL}/submissions`, { headers })
       ]);
 
       const projectsData = projectsResponse.data;

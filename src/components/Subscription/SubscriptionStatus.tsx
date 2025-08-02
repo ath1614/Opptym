@@ -13,6 +13,7 @@ import {
   TrendingUp,
   BarChart3
 } from 'lucide-react';
+import { BASE_URL } from '../../lib/api';
 import axios from 'axios';
 
 interface SubscriptionDetails {
@@ -44,7 +45,7 @@ const SubscriptionStatus = () => {
 
   const fetchSubscriptionDetails = async () => {
     try {
-      const response = await axios.get('http://localhost:5050/api/subscription/details', {
+      const response = await axios.get(`${BASE_URL}/subscription/details`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setSubscription(response.data);

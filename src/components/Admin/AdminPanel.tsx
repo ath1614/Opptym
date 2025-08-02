@@ -30,6 +30,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Modal, Button, Input, Select } from 'antd';
 import EmployeeManagement from './EmployeeManagement';
 import DirectoryManagement from './DirectoryManagement';
+import { BASE_URL } from '../../lib/api';
 
 interface AdminUser {
   id: string;
@@ -104,18 +105,18 @@ export default function AdminPanel() {
       const token = localStorage.getItem('token');
       if (editingUser) {
         // Update user
-        await axios.put(`http://localhost:5050/api/admin/users/${editingUser._id}`, userForm, { 
+        await axios.put(`${BASE_URL}/admin/users/${editingUser._id}`, userForm, { 
           headers: { Authorization: `Bearer ${token}` } 
         });
       } else {
         // Create user
-        await axios.post('http://localhost:5050/api/admin/users', userForm, { 
+        await axios.post(`${BASE_URL}/admin/users`, userForm, { 
           headers: { Authorization: `Bearer ${token}` } 
         });
       }
       setShowUserModal(false);
       // Refresh users
-      const res = await axios.get('http://localhost:5050/api/admin/users', { 
+      const res = await axios.get(`${BASE_URL}/admin/users`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       setUsers(res.data);
@@ -132,13 +133,13 @@ export default function AdminPanel() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5050/api/admin/directories', newDirectory, { 
+      await axios.post(`${BASE_URL}/admin/directories`, newDirectory, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       setShowDirectoryModal(false);
       setNewDirectory({ name: '', domain: '', category: '', pageRank: 0, status: 'active' });
       // Refresh directories
-      const res = await axios.get('http://localhost:5050/api/admin/directories', { 
+      const res = await axios.get(`${BASE_URL}/admin/directories`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       setDirectories(res.data);
@@ -159,19 +160,19 @@ export default function AdminPanel() {
       try {
         const token = localStorage.getItem('token');
         const [usersRes, dirsRes, statsRes, projectsRes, submissionsRes] = await Promise.all([
-          axios.get('http://localhost:5050/api/admin/users', {
+          axios.get(`${BASE_URL}/admin/users`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5050/api/admin/directories', {
+          axios.get(`${BASE_URL}/admin/directories`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5050/api/admin/stats', {
+          axios.get(`${BASE_URL}/admin/stats`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5050/api/admin/projects', {
+          axios.get(`${BASE_URL}/admin/projects`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5050/api/admin/submissions', {
+          axios.get(`${BASE_URL}/admin/submissions`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -201,7 +202,7 @@ export default function AdminPanel() {
   const handleUpdateUser = async (id: string, updates: any) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.put(`http://localhost:5050/api/admin/users/${id}`, updates, {
+      const res = await axios.put(`${BASE_URL}/admin/users/${id}`, updates, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(users => users.map(u => u._id === id ? res.data : u));
@@ -215,7 +216,7 @@ export default function AdminPanel() {
   const handleDeleteUser = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5050/api/admin/users/${id}`, {
+      await axios.delete(`${BASE_URL}/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(users => users.filter(u => u._id !== id));
@@ -265,31 +266,31 @@ export default function AdminPanel() {
       const token = localStorage.getItem('token');
       if (action === 'suspend') {
         await Promise.all(selectedUsers.map(id =>
-          axios.put(`http://localhost:5050/api/admin/users/${id}`, { status: 'suspended' }, { 
+          axios.put(`${BASE_URL}/admin/users/${id}`, { status: 'suspended' }, { 
             headers: { Authorization: `Bearer ${token}` } 
           })
         ));
       } else if (action === 'delete') {
         await Promise.all(selectedUsers.map(id =>
-          axios.delete(`http://localhost:5050/api/admin/users/${id}`, { 
+          axios.delete(`${BASE_URL}/admin/users/${id}`, { 
             headers: { Authorization: `Bearer ${token}` } 
           })
         ));
       } else if (action === 'activate') {
         await Promise.all(selectedUsers.map(id =>
-          axios.put(`http://localhost:5050/api/admin/users/${id}`, { status: 'active' }, { 
+          axios.put(`${BASE_URL}/admin/users/${id}`, { status: 'active' }, { 
             headers: { Authorization: `Bearer ${token}` } 
           })
         ));
       } else if (action === 'ban') {
         await Promise.all(selectedUsers.map(id =>
-          axios.put(`http://localhost:5050/api/admin/users/${id}`, { status: 'banned' }, { 
+          axios.put(`${BASE_URL}/admin/users/${id}`, { status: 'banned' }, { 
             headers: { Authorization: `Bearer ${token}` } 
           })
         ));
       }
       // Refresh users
-      const res = await axios.get('http://localhost:5050/api/admin/users', { 
+      const res = await axios.get(`${BASE_URL}/admin/users`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       setUsers(res.data);

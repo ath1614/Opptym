@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Check, 
   Star, 
@@ -12,6 +12,7 @@ import {
   Headphones
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { BASE_URL } from '../../lib/api';
 import axios from 'axios';
 
 interface PricingPlan {
@@ -196,7 +197,7 @@ export default function PricingPlans() {
     }
     
     try {
-      const res = await axios.post('http://localhost:5050/api/payment/create-checkout-session', {
+      const res = await axios.post(`${BASE_URL}/payment/create-checkout-session`, {
         plan: planId,
         userId: user.id,
         email: user.email,

@@ -4,7 +4,7 @@ const isProduction = import.meta.env.PROD;
 
 // Base URL configuration
 export const BASE_URL = isProduction 
-  ? import.meta.env.VITE_API_URL || 'https://opptym-backend.railway.app/api'
+  ? import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com/api'
   : 'http://localhost:5050/api';
 
 // API timeout

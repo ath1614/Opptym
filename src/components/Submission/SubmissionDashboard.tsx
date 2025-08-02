@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BASE_URL } from '../../lib/api';
 import { getProjects } from '../../lib/api';
 import { 
   Download, 
@@ -159,27 +160,24 @@ const SubmissionsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5050/api/ultra-smart/open-and-ultra-fill', {
+      const response = await fetch(`${BASE_URL}/ultra-smart/open-and-ultra-fill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          url: url,
+          url: selectedProject.url,
           projectId: selectedProject._id
         })
       });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        alert(`🤖 ULTRA-SMART FILLING COMPLETE! ${result.filledCount} fields filled successfully!`);
-      } else {
-        const errorMsg = result.details || result.error || 'Unknown error';
-        const filledInfo = result.filledCount > 0 ? ` (${result.filledCount} fields were filled before error)` : '';
-        alert(`❌ Ultra-smart automation failed: ${errorMsg}${filledInfo}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const result = await response.json();
+      alert(`🤖 ULTRA-SMART FILLING COMPLETE! ${result.filledCount} fields filled successfully!`);
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
       alert('❌ Ultra-smart automation failed. Please try again.');
@@ -197,7 +195,7 @@ const SubmissionsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5050/api/universal-form/open-and-universal-fill', {
+      const response = await fetch(`${BASE_URL}/universal-form/open-and-universal-fill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

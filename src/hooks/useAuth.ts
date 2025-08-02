@@ -1,8 +1,13 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
-// ✅ Change port here only
-const BASE_URL = 'http://localhost:5050/api';
+// API Configuration
+const isDevelopment = import.meta.env.DEV;
+const isProduction = import.meta.env.PROD;
+
+const BASE_URL = isProduction 
+  ? import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com/api'
+  : 'http://localhost:5050/api';
 
 interface User {
   id: string;

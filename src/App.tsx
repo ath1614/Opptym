@@ -16,6 +16,7 @@ import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
+import { BASE_URL } from './lib/api';
 
 function App() {
   const authProvider = useAuthProvider();
@@ -119,7 +120,7 @@ function App() {
           return;
         }
         
-        const res = await axios.get('http://localhost:5050/api/projects', {
+        const res = await axios.get(`${BASE_URL}/projects`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

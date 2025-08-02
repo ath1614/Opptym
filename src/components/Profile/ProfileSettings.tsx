@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { BASE_URL } from '../../lib/api';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import { 
   Camera, 
@@ -80,7 +81,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put('http://localhost:5050/api/auth/profile', profileForm, {
+      const response = await axios.put(`${BASE_URL}/auth/profile`, profileForm, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -119,7 +120,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put('http://localhost:5050/api/auth/password', {
+      const response = await axios.put(`${BASE_URL}/auth/password`, {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       }, {
@@ -163,7 +164,7 @@ export default function ProfileSettings() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5050/api/auth/export', {
+      const response = await axios.get(`${BASE_URL}/auth/export`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -192,7 +193,7 @@ export default function ProfileSettings() {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        await axios.delete('http://localhost:5050/api/auth/account', {
+        await axios.delete(`${BASE_URL}/auth/account`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
