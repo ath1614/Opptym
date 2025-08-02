@@ -4,7 +4,14 @@
   "version": "1.0.0",
   "type": "module",
   "description": "OPPTYM AI Powered Automation Frontend",
-  "keywords": ["opptym", "ai", "automation", "seo", "react", "typescript"],
+  "keywords": [
+    "opptym",
+    "ai",
+    "automation",
+    "seo",
+    "react",
+    "typescript"
+  ],
   "author": "OPPTYM Team",
   "license": "MIT",
   "scripts": {
@@ -15,12 +22,13 @@
     "start": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.5.0",
+    "html2pdf.js": "^0.10.1",
+    "lucide-react": "^0.263.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
-    "lucide-react": "^0.263.1",
-    "axios": "^1.5.0",
-    "html2pdf.js": "^0.10.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
