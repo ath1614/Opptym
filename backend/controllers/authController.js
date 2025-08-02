@@ -1,0 +1,231 @@
+const User = require('../models/userModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const signup = async (req, res) => {
+  const { username, email, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+
+  try {
+    const user = await User.create({ 
+      username, 
+      email, 
+      password: hashed
+    });
+    res.status(201).json({ message: 'User created', isAdmin: user.isAdmin });
+  } catch (err) {
+    res.status(400).json({ error: err.message || 'Signup failed' });
+  }
+};
+
+const login = async (req, res) => {
+    console.log("🛠️ Incoming login payload:", req.body);
+  
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+  
+    console.log("🔍 Found user:", user);
+  
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+  
+    const match = await bcrypt.compare(password, user.password);
+    console.log("✅ Password match:", match);
+  
+    if (!match) return res.status(401).json({ error: 'Wrong password' });
+  
+    const token = jwt.sign({ 
+      userId: user._id, 
+      username: user.username,
+      isAdmin: user.isAdmin, 
+      subscription: user.subscription, 
+      email: user.email 
+    }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, isAdmin: user.isAdmin, subscription: user.subscription, email: user.email });
+  };
+
+// Update user profile
+const updateProfile = async (req, res) => {
+  try {
+    const { username, email, firstName, lastName, phone, company, website, timezone, bio } = req.body;
+    const userId = req.userId;
+
+    const updateFields = {};
+    if (username) updateFields.username = username;
+    if (email) updateFields.email = email;
+    if (firstName) updateFields.firstName = firstName;
+    if (lastName) updateFields.lastName = lastName;
+    if (phone) updateFields.phone = phone;
+    if (company) updateFields.company = company;
+    if (website) updateFields.website = website;
+    if (timezone) updateFields.timezone = timezone;
+    if (bio) updateFields.bio = bio;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateFields },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        company: user.company,
+        website: user.website,
+        timezone: user.timezone,
+        bio: user.bio
+      }
+    });
+  } catch (err) {
+    console.error('Profile update error:', err);
+    res.status(400).json({ error: err.message || 'Failed to update profile' });
+  }
+};
+
+// Change password
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('Password change error:', err);
+    res.status(400).json({ error: err.message || 'Failed to change password' });
+  }
+};
+
+// Get current user profile
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        company: user.company,
+        website: user.website,
+        timezone: user.timezone,
+        bio: user.bio,
+        subscription: user.subscription,
+        isAdmin: user.isAdmin,
+        status: user.status
+      }
+    });
+  } catch (err) {
+    console.error('Get profile error:', err);
+    res.status(400).json({ error: err.message || 'Failed to get profile' });
+  }
+};
+
+// Export user data
+const exportUserData = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId).select('-password');
+    const Project = require('../models/projectModel');
+    const Submission = require('../models/submissionModel');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Get user's projects and submissions
+    const projects = await Project.find({ userId }).select('-__v');
+    const submissions = await Submission.find({ userId }).select('-__v');
+
+    const exportData = {
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        company: user.company,
+        website: user.website,
+        timezone: user.timezone,
+        bio: user.bio,
+        subscription: user.subscription,
+        isAdmin: user.isAdmin,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      },
+      projects: projects,
+      submissions: submissions,
+      exportDate: new Date().toISOString()
+    };
+
+    res.json(exportData);
+  } catch (err) {
+    console.error('Export user data error:', err);
+    res.status(400).json({ error: err.message || 'Failed to export user data' });
+  }
+};
+
+// Delete user account
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete user's projects and submissions first
+    const Project = require('../models/projectModel');
+    const Submission = require('../models/submissionModel');
+    
+    await Project.deleteMany({ userId });
+    await Submission.deleteMany({ userId });
+    
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('Delete account error:', err);
+    res.status(400).json({ error: err.message || 'Failed to delete account' });
+  }
+};
+
+module.exports = { signup, login, updateProfile, changePassword, getProfile, exportUserData, deleteAccount };
