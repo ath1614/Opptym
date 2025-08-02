@@ -46,42 +46,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Database connection
 const connectDB = async () => {
   try {
-    let mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/opptym';
-    
-    // Handle base64 encoded URI
-    if (mongoURI.startsWith('bW9uZ29kYy')) {
-      try {
-        mongoURI = Buffer.from(mongoURI, 'base64').toString('utf-8');
-        console.log('🔓 Decoded base64 MongoDB URI');
-        console.log('📍 Decoded URI preview:', mongoURI.substring(0, 50) + '...');
-      } catch (err) {
-        console.log('❌ Failed to decode base64 URI, using as-is');
-      }
-    }
-    
-    // Handle case where Railway might split the URI across multiple lines
-    if (mongoURI.includes('\n') || (mongoURI.includes('mongodb+srv://') && !mongoURI.includes('mongodb.net'))) {
-      console.log('⚠️  Detected split URI, attempting to reconstruct...');
-      
-      // Try to get the full URI from environment variables
-      const envVars = process.env;
-      const mongoKeys = Object.keys(envVars).filter(key => 
-        key.startsWith('MONGODB_URI') && key !== 'MONGODB_URI'
-      );
-      
-      if (mongoKeys.length > 0) {
-        console.log('🔍 Found additional MongoDB URI parts:', mongoKeys);
-        const parts = [mongoURI];
-        mongoKeys.forEach(key => {
-          parts.push(envVars[key]);
-        });
-        mongoURI = parts.join('');
-        console.log('🔗 Reconstructed URI length:', mongoURI.length);
-      }
-    }
+    // Use hardcoded MongoDB URI for now to fix the connection issue
+    const mongoURI = 'mongodb+srv://ishitasingh01:Dps@220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
     
     console.log('🔗 Attempting to connect to MongoDB...');
-    console.log('📍 Final URI preview:', mongoURI.substring(0, 50) + '...');
+    console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
