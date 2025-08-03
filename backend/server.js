@@ -48,6 +48,7 @@ const connectDB = async () => {
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
+    console.log('🔍 Full URI:', mongoURI);
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
