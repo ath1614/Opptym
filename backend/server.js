@@ -108,6 +108,7 @@ app.use('/api/tools', require('./routes/toolRoutes'));
 app.use('/api/ultra-smart', require('./routes/ultraSmartRoutes'));
 app.use('/api/universal-form', require('./routes/universalFormRoutes'));
 app.use('/api/subscription', require('./routes/subscriptionRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
 // Root endpoint
 app.get('/', (req, res) => {

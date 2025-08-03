@@ -106,6 +106,8 @@ const userSchema = new mongoose.Schema({
   },
   subscriptionStartDate: { type: Date },
   subscriptionEndDate: { type: Date },
+  trialStartDate: { type: Date },
+  trialEndDate: { type: Date },
   stripeCustomerId: { type: String },
   stripeSubscriptionId: { type: String },
   
@@ -167,7 +169,7 @@ userSchema.virtual('fullName').get(function() {
 // Virtual for subscription limits
 userSchema.virtual('subscriptionLimits').get(function() {
   const limits = {
-    free: { projects: 1, submissions: 10, tools: false, teamMembers: 0 },
+    free: { projects: 10, submissions: 50, tools: true, teamMembers: 0, trialDays: 3 },
     starter: { projects: 1, submissions: 100, tools: true, teamMembers: 0 },
     pro: { projects: 5, submissions: 500, tools: true, teamMembers: 3 },
     business: { projects: 10, submissions: 1000, tools: true, teamMembers: 10 },
@@ -199,11 +201,45 @@ userSchema.methods.hasPermission = function(permission) {
   return rolePermissions[this.role]?.includes(permission) || false;
 };
 
+// Method to check if user is in trial period
+userSchema.methods.isInTrialPeriod = function() {
+  if (this.subscription !== 'free') return false;
+  
+  // Set trial start date if not set
+  if (!this.trialStartDate) {
+    this.trialStartDate = this.createdAt;
+    this.trialEndDate = new Date(this.createdAt.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days
+  }
+  
+  return new Date() <= this.trialEndDate;
+};
+
 // Method to check usage limits
 userSchema.methods.checkUsageLimit = function(feature) {
   const limits = this.subscriptionLimits;
   const currentUsage = this.currentUsage;
   
+  // If user is in trial period, use trial limits
+  if (this.isInTrialPeriod()) {
+    const trialLimits = {
+      projects: 10,
+      submissions: 50,
+      apiCalls: 100
+    };
+    
+    switch(feature) {
+      case 'projects':
+        return trialLimits.projects === -1 || currentUsage.projectsCreated < trialLimits.projects;
+      case 'submissions':
+        return trialLimits.submissions === -1 || currentUsage.submissionsMade < trialLimits.submissions;
+      case 'apiCalls':
+        return trialLimits.apiCalls === -1 || currentUsage.apiCallsUsed < trialLimits.apiCalls;
+      default:
+        return true;
+    }
+  }
+  
+  // Regular subscription limits
   switch(feature) {
     case 'projects':
       return limits.projects === -1 || currentUsage.projectsCreated < limits.projects;
