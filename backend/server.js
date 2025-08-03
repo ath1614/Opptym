@@ -42,22 +42,40 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Database connection
 const connectDB = async () => {
   try {
-    // Use environment variable for MongoDB URI, with complete fallback
-    const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
+    // Use environment variable for MongoDB URI, with properly encoded fallback
+    let mongoURI = process.env.MONGODB_URI;
+    
+    if (!mongoURI) {
+      // Fallback URI with proper encoding
+      mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
+      console.log('⚠️ Using fallback MongoDB URI (no environment variable set)');
+    }
     
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
-    console.log('🔍 Full URI:', mongoURI);
+    console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
     
-    await mongoose.connect(mongoURI, {
+    // Validate URI format
+    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@cluster0.bsdlfyb.mongodb.net/')) {
+      throw new Error('Invalid MongoDB URI format');
+    }
+    
+    // Test connection with timeout
+    const connectionPromise = mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000, // 10 second timeout
+      socketTimeoutMS: 45000, // 45 second timeout
     });
+    
+    await connectionPromise;
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
     console.error('🔍 Full error:', err);
+    console.error('🔍 Error name:', err.name);
+    console.error('🔍 Error code:', err.code);
     process.exit(1);
   }
 };
