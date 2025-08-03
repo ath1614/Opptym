@@ -45,23 +45,22 @@ const connectDB = async () => {
     // Use environment variable for MongoDB URI, with properly encoded fallback
     let mongoURI = process.env.MONGODB_URI;
     
-    if (!mongoURI) {
-      // Fallback URI with proper encoding
+    console.log('🔗 Attempting to connect to MongoDB...');
+    console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
+    
+    // Check if environment variable is truncated or invalid
+    if (!mongoURI || 
+        !mongoURI.includes('cluster0.bsdlfyb.mongodb.net') || 
+        mongoURI.length < 100 ||
+        mongoURI.includes('cluster0.bs...')) {
+      
+      console.log('⚠️ Environment MONGODB_URI is truncated or invalid, using fallback');
       mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
-      console.log('⚠️ Using fallback MongoDB URI (no environment variable set)');
-    } else {
-      // Check if the environment variable URI is complete
-      if (!mongoURI.includes('cluster0.bsdlfyb.mongodb.net')) {
-        console.log('⚠️ Environment MONGODB_URI appears to be truncated, using fallback');
-        mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
-      }
     }
     
-    console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
-    console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
-    console.log('🔍 Using fallback URI:', !process.env.MONGODB_URI || !process.env.MONGODB_URI.includes('cluster0.bsdlfyb.mongodb.net'));
+    console.log('🔍 Using fallback URI:', mongoURI === 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority');
     
     // Validate URI format
     if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@cluster0.bsdlfyb.mongodb.net/')) {
