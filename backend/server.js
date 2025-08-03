@@ -50,20 +50,19 @@ const connectDB = async () => {
     
     // Check if environment variable is truncated or invalid
     if (!mongoURI || 
-        !mongoURI.includes('cluster0.bsdlfyb.mongodb.net') || 
-        mongoURI.length < 100 ||
-        mongoURI.includes('cluster0.bs...')) {
+        !mongoURI.includes('opptym.tkcz5nx.mongodb.net') || 
+        mongoURI.length < 100) {
       
       console.log('⚠️ Environment MONGODB_URI is truncated or invalid, using fallback');
-      mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
+      mongoURI = 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym';
     }
     
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
-    console.log('🔍 Using fallback URI:', mongoURI === 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority');
+    console.log('🔍 Using fallback URI:', mongoURI === 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym');
     
     // Validate URI format
-    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@cluster0.bsdlfyb.mongodb.net/')) {
+    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@opptym.tkcz5nx.mongodb.net/')) {
       throw new Error('Invalid MongoDB URI format');
     }
     
