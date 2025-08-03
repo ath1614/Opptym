@@ -110,6 +110,8 @@ app.use('/api/universal-form', require('./routes/universalFormRoutes'));
 app.use('/api/subscription', require('./routes/subscriptionRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
 
+console.log('✅ Payment routes mounted at /api/payment');
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
