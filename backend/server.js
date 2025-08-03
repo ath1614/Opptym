@@ -49,12 +49,19 @@ const connectDB = async () => {
       // Fallback URI with proper encoding
       mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
       console.log('⚠️ Using fallback MongoDB URI (no environment variable set)');
+    } else {
+      // Check if the environment variable URI is complete
+      if (!mongoURI.includes('cluster0.bsdlfyb.mongodb.net')) {
+        console.log('⚠️ Environment MONGODB_URI appears to be truncated, using fallback');
+        mongoURI = 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
+      }
     }
     
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
     console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
+    console.log('🔍 Using fallback URI:', !process.env.MONGODB_URI || !process.env.MONGODB_URI.includes('cluster0.bsdlfyb.mongodb.net'));
     
     // Validate URI format
     if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@cluster0.bsdlfyb.mongodb.net/')) {
