@@ -224,7 +224,8 @@ userSchema.methods.checkUsageLimit = function(feature) {
     const trialLimits = {
       projects: 10,
       submissions: 50,
-      apiCalls: 100
+      apiCalls: 100,
+      seoTools: 50
     };
     
     switch(feature) {
@@ -234,6 +235,8 @@ userSchema.methods.checkUsageLimit = function(feature) {
         return trialLimits.submissions === -1 || currentUsage.submissionsMade < trialLimits.submissions;
       case 'apiCalls':
         return trialLimits.apiCalls === -1 || currentUsage.apiCallsUsed < trialLimits.apiCalls;
+      case 'seoTools':
+        return trialLimits.seoTools === -1 || currentUsage.seoToolsUsed < trialLimits.seoTools;
       default:
         return true;
     }
@@ -247,6 +250,8 @@ userSchema.methods.checkUsageLimit = function(feature) {
       return limits.submissions === -1 || currentUsage.submissionsMade < limits.submissions;
     case 'apiCalls':
       return this.customPermissions.apiCallLimit === -1 || currentUsage.apiCallsUsed < this.customPermissions.apiCallLimit;
+    case 'seoTools':
+      return true; // Allow unlimited SEO tools usage for now
     default:
       return true;
   }
