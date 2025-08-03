@@ -42,11 +42,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Database connection
 const connectDB = async () => {
   try {
-    // Use environment variable for MongoDB URI
+    // Use environment variable for MongoDB URI, with complete fallback
     const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://ishitasingh01:Dps%40220068@cluster0.bsdlfyb.mongodb.net/opptym?retryWrites=true&w=majority';
     
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
+    console.log('🔍 Full URI length:', mongoURI.length);
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
