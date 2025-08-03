@@ -11,7 +11,8 @@ const app = express();
 // Trust proxy for rate limiting behind load balancers
 app.set('trust proxy', 1);
 
-// CORS configuration - allow all origins for now
+// CORS configuration - allow all origins for now (MOVE TO TOP)
+// RESTART: Force backend restart to apply CORS fixes
 app.use(cors({
   origin: true, // Allow all origins
   credentials: true,
