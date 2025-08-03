@@ -182,7 +182,11 @@ userSchema.methods.hasPermission = function(permission) {
   if (this.isAdmin || this.isOwner) return true;
   
   // Check custom permissions first
-  if (this.customPermissions[permission]) return true;
+  if (this.customPermissions && this.customPermissions[permission]) return true;
+  
+  // Basic permissions for all authenticated users
+  const basicPermissions = ['canCreateProjects', 'canUseSeoTools', 'canSubmitToDirectories'];
+  if (basicPermissions.includes(permission)) return true;
   
   // Check role-based permissions
   const rolePermissions = {
