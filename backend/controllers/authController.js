@@ -31,27 +31,53 @@ const login = async (req, res) => {
     
     console.log("🛠️ Incoming login payload:", req.body);
   
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-  
-    console.log("🔍 Found user:", user);
-  
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
-  
-    const match = await bcrypt.compare(password, user.password);
-    console.log("✅ Password match:", match);
-  
-    if (!match) return res.status(401).json({ error: 'Wrong password' });
-  
-    const token = jwt.sign({ 
-      userId: user._id, 
-      username: user.username,
-      isAdmin: user.isAdmin, 
-      subscription: user.subscription, 
-      email: user.email 
-    }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, isAdmin: user.isAdmin, subscription: user.subscription, email: user.email });
-  };
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        const user = await User.findOne({ email });
+        console.log("🔍 Found user:", user ? 'Yes' : 'No');
+      
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+      
+        const match = await bcrypt.compare(password, user.password);
+        console.log("✅ Password match:", match);
+      
+        if (!match) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+      
+        // Use fallback JWT secret if environment variable is not set
+        const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+        console.log("🔑 JWT Secret configured:", !!process.env.JWT_SECRET);
+      
+        const token = jwt.sign({ 
+            userId: user._id, 
+            username: user.username,
+            isAdmin: user.isAdmin, 
+            subscription: user.subscription, 
+            email: user.email 
+        }, jwtSecret, { expiresIn: '7d' });
+        
+        console.log("✅ Login successful for user:", user.email);
+        
+        res.json({ 
+            token, 
+            isAdmin: user.isAdmin, 
+            subscription: user.subscription, 
+            email: user.email,
+            username: user.username
+        });
+    } catch (error) {
+        console.error("❌ Login error:", error);
+        res.status(500).json({ error: 'Login failed. Please try again.' });
+    }
+};
 
 // Update user profile
 const updateProfile = async (req, res) => {
