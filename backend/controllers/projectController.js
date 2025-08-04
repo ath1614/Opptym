@@ -14,19 +14,27 @@ const createProject = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('🔍 User subscription:', user.subscription);
+    console.log('🔍 Current usage:', user.currentUsage);
+    console.log('🔍 Subscription limits:', user.subscriptionLimits);
+
     // Check if user can create projects
     if (!user.hasPermission('canCreateProjects')) {
       return res.status(403).json({ error: 'You do not have permission to create projects' });
     }
 
     // Check project creation limit
-    if (!user.checkUsageLimit('projects')) {
+    const canCreate = user.checkUsageLimit('projects');
+    console.log('🔍 Can create project:', canCreate);
+    
+    if (!canCreate) {
       const limits = user.subscriptionLimits;
       return res.status(403).json({ 
         error: 'Project creation limit exceeded',
         limit: limits.projects,
         current: user.currentUsage.projectsCreated,
-        subscription: user.subscription
+        subscription: user.subscription,
+        details: 'Please upgrade your subscription to create more projects'
       });
     }
 
@@ -65,10 +73,15 @@ const createProject = async (req, res) => {
     // Increment usage
     await user.incrementUsage('projects');
 
+    console.log('✅ Project created successfully:', project._id);
+
     res.status(201).json(project);
   } catch (err) {
     console.error('❌ createProject error:', err);
-    res.status(400).json({ error: 'Project creation failed' });
+    res.status(400).json({ 
+      error: 'Project creation failed',
+      details: err.message 
+    });
   }
 };
 

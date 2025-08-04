@@ -193,4 +193,92 @@ router.get('/submissions', protect, adminOnly, async (req, res) => {
   }
 });
 
+// Invite team member (admin only)
+router.post('/invite-team-member', protect, adminOnly, async (req, res) => {
+  try {
+    const { email, role, teamId } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    // Create invitation (mock implementation)
+    const invitation = {
+      email,
+      role: role || 'employee',
+      teamId: teamId || null,
+      status: 'pending',
+      invitedBy: req.userId,
+      invitedAt: new Date(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    };
+
+    console.log('✅ Team member invitation created:', invitation);
+
+    res.json({
+      success: true,
+      message: 'Team member invitation sent successfully',
+      invitation
+    });
+  } catch (error) {
+    console.error('❌ Invite team member error:', error);
+    res.status(500).json({ error: 'Failed to invite team member' });
+  }
+});
+
+// Save admin settings (admin only)
+router.post('/save-settings', protect, adminOnly, async (req, res) => {
+  try {
+    const { settings } = req.body;
+    
+    // Mock implementation for saving admin settings
+    const adminSettings = {
+      ...settings,
+      updatedAt: new Date(),
+      updatedBy: req.userId
+    };
+
+    console.log('✅ Admin settings saved:', adminSettings);
+
+    res.json({
+      success: true,
+      message: 'Admin settings saved successfully',
+      settings: adminSettings
+    });
+  } catch (error) {
+    console.error('❌ Save admin settings error:', error);
+    res.status(500).json({ error: 'Failed to save admin settings' });
+  }
+});
+
+// Get admin settings (admin only)
+router.get('/settings', protect, adminOnly, async (req, res) => {
+  try {
+    // Mock admin settings
+    const adminSettings = {
+      systemName: 'OPPTYM',
+      contactEmail: 'admin@opptym.com',
+      maxUsers: 1000,
+      maxProjects: 100,
+      maintenanceMode: false,
+      autoBackup: true,
+      notifications: {
+        email: true,
+        sms: false,
+        push: true
+      }
+    };
+
+    res.json(adminSettings);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch admin settings' });
+  }
+});
+
 module.exports = router; 

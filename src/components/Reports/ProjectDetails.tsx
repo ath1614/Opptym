@@ -77,15 +77,57 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
 
   const downloadPDF = () => {
     if (reportRef.current) {
+      // Clone the element to avoid modifying the original
+      const element = reportRef.current.cloneNode(true) as HTMLElement;
+      
+      // Add PDF-specific styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .card-modern {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 20px;
+          }
+          .grid {
+            display: block !important;
+          }
+          .grid > * {
+            margin-bottom: 20px;
+          }
+        }
+      `;
+      element.appendChild(style);
+
       html2pdf()
         .set({
-          margin: 0.5,
+          margin: [0.5, 0.5, 0.5, 0.5],
           filename: `${project.title}_SEO_Report.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+          html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+          },
+          jsPDF: { 
+            unit: 'in', 
+            format: 'a4', 
+            orientation: 'portrait',
+            compress: true
+          },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         })
-        .from(reportRef.current)
-        .save();
+        .from(element)
+        .save()
+        .catch(err => {
+          console.error('PDF generation error:', err);
+          alert('Failed to generate PDF. Please try again.');
+        });
     }
   };
 

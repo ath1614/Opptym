@@ -1,13 +1,20 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
-// API Configuration
+// API Configuration - ensure /api prefix is always included
 const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
-const BASE_URL = isProduction 
-  ? import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com/api'
-  : 'http://localhost:5050/api';
+const getBaseURL = () => {
+  if (isProduction) {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
+    // Ensure the URL ends with /api
+    return apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
+  }
+  return 'http://localhost:5050/api';
+};
+
+const BASE_URL = getBaseURL();
 
 interface User {
   id: string;
@@ -90,6 +97,13 @@ export const useAuthProvider = (): AuthContextType => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log('🔐 Login attempt:', {
+        email,
+        baseURL: BASE_URL,
+        fullUrl: `${BASE_URL}/auth/login`,
+        axiosBaseURL: axios.defaults.baseURL
+      });
+      
       const res = await axios.post(`${BASE_URL}/auth/login`, { email, password });
       localStorage.setItem('token', res.data.token);
       

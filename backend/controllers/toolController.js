@@ -90,154 +90,294 @@ const runMetaTagAnalyzer = async (req, res) => {
 };
 
 const runKeywordDensityAnalyzer = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await analyzeDensity(project.url, project.targetKeywords || []);
-  project.keywordDensityReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await analyzeDensity(project.url, project.targetKeywords || []);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Keyword density analysis error:', err.message);
+    res.status(500).json({ error: 'Failed to analyze keyword density' });
+  }
 };
 
 const runBrokenLinkChecker = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await checkBrokenLinks(project.url);
-  project.brokenLinksReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await checkBrokenLinks(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Broken link checker error:', err.message);
+    res.status(500).json({ error: 'Failed to check broken links' });
+  }
 };
 
 const runSitemapRobotsChecker = async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
-  if (!project) return res.status(404).json({ error: 'Project not found' });
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const sitemapReport = await checkSitemap(project.sitemapUrl);
-  const robotsReport = await checkRobots(project.robotsTxtUrl);
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  project.sitemapReport = sitemapReport;
-  project.robotsReport = robotsReport;
-  await project.save();
+    const sitemapReport = await checkSitemap(project.sitemapUrl || `${project.url}/sitemap.xml`);
+    const robotsReport = await checkRobots(project.robotsTxtUrl || `${project.url}/robots.txt`);
 
-  res.json({ sitemapReport, robotsReport });
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json({ sitemapReport, robotsReport });
+  } catch (err) {
+    console.error('Sitemap/Robots checker error:', err.message);
+    res.status(500).json({ error: 'Failed to check sitemap and robots' });
+  }
 };
 
 const runBacklinkScanner = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await extractBacklinks(project.url);
-  project.backlinkReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await extractBacklinks(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Backlink scanner error:', err.message);
+    res.status(500).json({ error: 'Failed to scan backlinks' });
+  }
 };
 
 const runKeywordTracker = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const domain = new URL(project.url).hostname;
-  const report = await checkKeywordRank(domain, project.targetKeywords || []);
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  project.keywordTrackerReport = report;
-  await project.save();
+    const domain = new URL(project.url).hostname;
+    const report = await checkKeywordRank(domain, project.targetKeywords || []);
 
-  res.json(report);
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Keyword tracker error:', err.message);
+    res.status(500).json({ error: 'Failed to track keywords' });
+  }
 };
 
 const runPageSpeedAnalyzer = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await analyzePageSpeed(project.url);
-  project.pageSpeedReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await analyzePageSpeed(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Page speed analyzer error:', err.message);
+    res.status(500).json({ error: 'Failed to analyze page speed' });
+  }
 };
 
 const runMobileAuditChecker = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await runMobileAudit(project.url);
-  project.mobileAuditReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await runMobileAudit(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Mobile audit error:', err.message);
+    res.status(500).json({ error: 'Failed to run mobile audit' });
+  }
 };
 
 const runCompetitorAnalyzer = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const domain = new URL(project.url).hostname;
-  const keywords = project.targetKeywords || [];
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  const report = await analyzeCompetitors(domain, keywords);
-  project.competitorReport = report;
-  await project.save();
+    const domain = new URL(project.url).hostname;
+    const keywords = project.targetKeywords || [];
 
-  res.json(report);
+    const report = await analyzeCompetitors(domain, keywords);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Competitor analyzer error:', err.message);
+    res.status(500).json({ error: 'Failed to analyze competitors' });
+  }
 };
 
 const runTechnicalSeoAuditor = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await runTechnicalAudit(project.url);
-  project.technicalAuditReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await runTechnicalAudit(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Technical SEO audit error:', err.message);
+    res.status(500).json({ error: 'Failed to run technical audit' });
+  }
 };
 
 const runSchemaValidatorTool = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await runSchemaValidator(project.url);
-  project.schemaReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await runSchemaValidator(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Schema validator error:', err.message);
+    res.status(500).json({ error: 'Failed to validate schema' });
+  }
 };
 
 const runAltTextChecker = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await runAltTextAudit(project.url);
-  project.altTextReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await runAltTextAudit(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Alt text checker error:', err.message);
+    res.status(500).json({ error: 'Failed to check alt text' });
+  }
 };
 
 const runCanonicalChecker = async (req, res) => {
-  const project = await getProjectOrFail(req.params.projectId, res);
-  if (!project) return;
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const report = await runCanonicalAudit(project.url);
-  project.canonicalReport = report;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(report);
+    const report = await runCanonicalAudit(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('Canonical checker error:', err.message);
+    res.status(500).json({ error: 'Failed to check canonical URLs' });
+  }
 };
 
 const runSeoScoreCalculator = async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
-  if (!project) return res.status(404).json({ error: 'Project not found' });
+  const { projectId } = req.params;
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
 
-  const scoreReport = computeSeoScore(project);
-  project.seoScore = scoreReport;
-  await project.save();
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
 
-  res.json(scoreReport);
+    const report = await computeSeoScore(project.url);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    res.json(report);
+  } catch (err) {
+    console.error('SEO score calculator error:', err.message);
+    res.status(500).json({ error: 'Failed to calculate SEO score' });
+  }
 };
 
 // === Export All Handlers ===

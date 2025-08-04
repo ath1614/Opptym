@@ -37,15 +37,96 @@ exports.updateUser = async (req, res) => {
     if (username) updateFields.username = username;
     if (email) updateFields.email = email;
     if (password) updateFields.password = await bcrypt.hash(password, 10);
+    
     const user = await User.findByIdAndUpdate(
       id,
       { $set: updateFields },
       { new: true, runValidators: true }
     );
+    
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
+    
+    console.log('✅ User updated successfully:', user._id, 'Subscription:', user.subscription);
+    
+    res.json({
+      success: true,
+      message: 'User updated successfully',
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        subscription: user.subscription,
+        isAdmin: user.isAdmin,
+        status: user.status
+      }
+    });
   } catch (err) {
+    console.error('❌ Update user error:', err);
     res.status(400).json({ error: err.message });
+  }
+};
+
+// Invite team member
+exports.inviteTeamMember = async (req, res) => {
+  try {
+    const { email, role, teamId } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    // Create invitation (mock implementation)
+    const invitation = {
+      email,
+      role: role || 'employee',
+      teamId: teamId || null,
+      status: 'pending',
+      invitedBy: req.userId,
+      invitedAt: new Date(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    };
+
+    console.log('✅ Team member invitation created:', invitation);
+
+    res.json({
+      success: true,
+      message: 'Team member invitation sent successfully',
+      invitation
+    });
+  } catch (err) {
+    console.error('❌ Invite team member error:', err);
+    res.status(500).json({ error: 'Failed to invite team member' });
+  }
+};
+
+// Save admin settings
+exports.saveAdminSettings = async (req, res) => {
+  try {
+    const { settings } = req.body;
+    
+    // Mock implementation for saving admin settings
+    const adminSettings = {
+      ...settings,
+      updatedAt: new Date(),
+      updatedBy: req.userId
+    };
+
+    console.log('✅ Admin settings saved:', adminSettings);
+
+    res.json({
+      success: true,
+      message: 'Admin settings saved successfully',
+      settings: adminSettings
+    });
+  } catch (err) {
+    console.error('❌ Save admin settings error:', err);
+    res.status(500).json({ error: 'Failed to save admin settings' });
   }
 };
 

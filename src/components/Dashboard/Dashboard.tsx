@@ -9,6 +9,7 @@ import {
   BarChart3, 
   Calendar, 
   Eye,
+  Edit,
   PieChart,
   LineChart,
   Loader2,
@@ -115,11 +116,15 @@ export default function Dashboard() {
 
   // View project details
   const handleViewProject = (projectId: string) => {
-    localStorage.setItem('selectedProjectId', projectId);
-    navigateToTab('reports');
+    navigateToTab(`projects/${projectId}`);
   };
 
-  // Create project from empty state
+  // Edit project
+  const handleEditProject = (projectId: string) => {
+    navigateToTab(`projects/${projectId}/edit`);
+  };
+
+  // Create first project
   const handleCreateFirstProject = () => {
     navigateToTab('projects');
   };
@@ -524,6 +529,13 @@ export default function Dashboard() {
                       title="View Project Details"
                     >
                       <Eye className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleEditProject(project._id)}
+                      className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                      title="Edit Project"
+                    >
+                      <Edit className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

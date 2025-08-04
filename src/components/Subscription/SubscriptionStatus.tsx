@@ -304,7 +304,7 @@ const SubscriptionStatus = () => {
               <p className="text-blue-700">Get more features, higher limits, and better support with our premium plans.</p>
             </div>
             <button
-              onClick={() => window.location.href = '/pricing'}
+              onClick={() => window.location.hash = 'pricing'}
               className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200"
             >
               View Plans

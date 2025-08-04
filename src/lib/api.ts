@@ -2,10 +2,17 @@
 const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
-// Base URL configuration
-export const BASE_URL = isProduction 
-  ? import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com/api'
-  : 'http://localhost:5050/api';
+// Base URL configuration - ensure /api prefix is always included
+const getBaseURL = () => {
+  if (isProduction) {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
+    // Ensure the URL ends with /api
+    return apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
+  }
+  return 'http://localhost:5050/api';
+};
+
+export const BASE_URL = getBaseURL();
 
 // API timeout
 export const API_TIMEOUT = 30000; // 30 seconds
@@ -35,13 +42,40 @@ export const apiRequest = async (endpoint: string, options: RequestInit = {}) =>
     ...options.headers,
   };
 
+  console.log('🌐 API Request:', {
+    url,
+    method: options.method || 'GET',
+    endpoint,
+    baseURL: BASE_URL,
+    isProduction,
+    viteApiUrl: import.meta.env.VITE_API_URL,
+    body: options.body
+  });
+
   const response = await fetch(url, {
     ...options,
     headers,
   });
 
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    // Try to get the error response body
+    let errorBody = '';
+    try {
+      errorBody = await response.text();
+    } catch (e) {
+      errorBody = 'Could not read error response';
+    }
+    
+    console.error('❌ API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url,
+      method: options.method || 'GET',
+      errorBody,
+      headers: Object.fromEntries(response.headers.entries())
+    });
+    
+    throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
   }
 
   return response.json();

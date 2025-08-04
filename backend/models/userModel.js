@@ -170,9 +170,9 @@ userSchema.virtual('fullName').get(function() {
 userSchema.virtual('subscriptionLimits').get(function() {
   const limits = {
     free: { projects: 10, submissions: 50, tools: true, teamMembers: 0, trialDays: 3 },
-    starter: { projects: 1, submissions: 100, tools: true, teamMembers: 0 },
-    pro: { projects: 5, submissions: 500, tools: true, teamMembers: 3 },
-    business: { projects: 10, submissions: 1000, tools: true, teamMembers: 10 },
+    starter: { projects: 1, submissions: 150, tools: true, teamMembers: 0 }, // 999 package
+    pro: { projects: 5, submissions: 750, tools: true, teamMembers: 3 }, // 3999 package
+    business: { projects: 10, submissions: 1500, tools: true, teamMembers: 10 }, // 8999 package
     enterprise: { projects: -1, submissions: -1, tools: true, teamMembers: -1 }
   };
   return limits[this.subscription] || limits.free;
