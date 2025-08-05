@@ -8,10 +8,10 @@ const { analyzeDensity } = require('../services/tools/keywordDensityAnalyzer');
 const { checkBrokenLinks } = require('../services/tools/brokenLinkChecker');
 const { checkSitemap, checkRobots } = require('../services/tools/sitemapRobotsChecker');
 const { extractBacklinks } = require('../services/tools/backlinkScanner');
-const { checkKeywordRank } = require('../services/tools/keywordRankChecker');
-const { analyzePageSpeed } = require('../services/tools/pageSpeedAnalyzer');
-const { runMobileAudit } = require('../services/tools/mobileAuditChecker');
-const { analyzeCompetitors } = require('../services/tools/competitorAnalyzer');
+const checkKeywordRank = require('../services/tools/keywordRankChecker');
+const analyzePageSpeed = require('../services/tools/pageSpeedAnalyzer');
+const runMobileAudit = require('../services/tools/mobileAuditChecker');
+const analyzeCompetitors = require('../services/tools/competitorAnalyzer');
 const { runTechnicalAudit } = require('../services/tools/technicalSeoAuditor');
 const { runSchemaValidator } = require('../services/tools/schemaValidator');
 const { runAltTextAudit } = require('../services/tools/altTextChecker');
@@ -95,7 +95,7 @@ const runKeywordDensityAnalyzer = async (req, res) => {
 
     console.log('🔍 Running keyword density analysis for project:', project.title);
 
-    const report = analyzeDensity(project.url, project.targetKeywords || []);
+    const report = await analyzeDensity(project.url, project.targetKeywords || []);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -121,7 +121,7 @@ const runBrokenLinkChecker = async (req, res) => {
 
     console.log('🔍 Running broken link check for project:', project.title);
 
-    const report = checkBrokenLinks(project.url);
+    const report = await checkBrokenLinks(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -134,7 +134,7 @@ const runBrokenLinkChecker = async (req, res) => {
   }
 };
 
-// Sitemap and Robots Checker
+// Sitemap & Robots Checker
 const runSitemapRobotsChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -145,19 +145,24 @@ const runSitemapRobotsChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    console.log('🔍 Running sitemap/robots check for project:', project.title);
+    console.log('🔍 Running sitemap & robots check for project:', project.title);
 
-    const sitemapReport = checkSitemap(project.sitemapUrl || `${project.url}/sitemap.xml`);
-    const robotsReport = checkRobots(project.robotsTxtUrl || `${project.url}/robots.txt`);
+    const sitemapUrl = project.sitemapUrl || `${project.url}/sitemap.xml`;
+    const robotsUrl = project.robotsTxtUrl || `${project.url}/robots.txt`;
+
+    const report = {
+      sitemap: await checkSitemap(sitemapUrl),
+      robots: await checkRobots(robotsUrl)
+    };
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
-    console.log('✅ Sitemap/robots check completed');
-    res.json({ sitemapReport, robotsReport });
+    console.log('✅ Sitemap & robots check completed');
+    res.json(report);
   } catch (err) {
-    console.error('Sitemap/Robots checker error:', err.message);
-    res.status(500).json({ error: 'Failed to check sitemap and robots' });
+    console.error('Sitemap & robots checker error:', err.message);
+    res.status(500).json({ error: 'Failed to check sitemap & robots' });
   }
 };
 
@@ -174,7 +179,7 @@ const runBacklinkScanner = async (req, res) => {
 
     console.log('🔍 Running backlink scan for project:', project.title);
 
-    const report = extractBacklinks(project.url);
+    const report = await extractBacklinks(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -200,8 +205,9 @@ const runKeywordTracker = async (req, res) => {
 
     console.log('🔍 Running keyword tracking for project:', project.title);
 
-    const domain = new URL(project.url).hostname;
-    const report = checkKeywordRank(domain, project.targetKeywords || []);
+    // For mock implementation, pass projectId and first keyword
+    const firstKeyword = project.targetKeywords?.[0] || 'example';
+    const report = await checkKeywordRank(projectId, firstKeyword);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -227,7 +233,7 @@ const runPageSpeedAnalyzer = async (req, res) => {
 
     console.log('🔍 Running page speed analysis for project:', project.title);
 
-    const report = analyzePageSpeed(project.url);
+    const report = await analyzePageSpeed(projectId);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -253,7 +259,7 @@ const runMobileAuditChecker = async (req, res) => {
 
     console.log('🔍 Running mobile audit for project:', project.title);
 
-    const report = runMobileAudit(project.url);
+    const report = await runMobileAudit(projectId);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -279,10 +285,9 @@ const runCompetitorAnalyzer = async (req, res) => {
 
     console.log('🔍 Running competitor analysis for project:', project.title);
 
-    const domain = new URL(project.url).hostname;
-    const keywords = project.targetKeywords || [];
-
-    const report = analyzeCompetitors(domain, keywords);
+    // For mock implementation, pass projectId and a sample competitor URL
+    const competitorUrl = 'https://example-competitor.com';
+    const report = await analyzeCompetitors(projectId, competitorUrl);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -308,7 +313,7 @@ const runTechnicalSeoAuditor = async (req, res) => {
 
     console.log('🔍 Running technical SEO audit for project:', project.title);
 
-    const report = runTechnicalAudit(project.url);
+    const report = await runTechnicalAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -316,12 +321,12 @@ const runTechnicalSeoAuditor = async (req, res) => {
     console.log('✅ Technical SEO audit completed');
     res.json(report);
   } catch (err) {
-    console.error('Technical SEO audit error:', err.message);
-    res.status(500).json({ error: 'Failed to run technical audit' });
+    console.error('Technical SEO auditor error:', err.message);
+    res.status(500).json({ error: 'Failed to run technical SEO audit' });
   }
 };
 
-// Schema Validator Tool
+// Schema Validator
 const runSchemaValidatorTool = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -334,7 +339,7 @@ const runSchemaValidatorTool = async (req, res) => {
 
     console.log('🔍 Running schema validation for project:', project.title);
 
-    const report = runSchemaValidator(project.url);
+    const report = await runSchemaValidator(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -360,7 +365,7 @@ const runAltTextChecker = async (req, res) => {
 
     console.log('🔍 Running alt text audit for project:', project.title);
 
-    const report = runAltTextAudit(project.url);
+    const report = await runAltTextAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -369,7 +374,7 @@ const runAltTextChecker = async (req, res) => {
     res.json(report);
   } catch (err) {
     console.error('Alt text checker error:', err.message);
-    res.status(500).json({ error: 'Failed to check alt text' });
+    res.status(500).json({ error: 'Failed to audit alt text' });
   }
 };
 
@@ -386,7 +391,7 @@ const runCanonicalChecker = async (req, res) => {
 
     console.log('🔍 Running canonical audit for project:', project.title);
 
-    const report = runCanonicalAudit(project.url);
+    const report = await runCanonicalAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
@@ -395,7 +400,7 @@ const runCanonicalChecker = async (req, res) => {
     res.json(report);
   } catch (err) {
     console.error('Canonical checker error:', err.message);
-    res.status(500).json({ error: 'Failed to check canonical URLs' });
+    res.status(500).json({ error: 'Failed to audit canonical tags' });
   }
 };
 
@@ -412,7 +417,7 @@ const runSeoScoreCalculator = async (req, res) => {
 
     console.log('🔍 Running SEO score calculation for project:', project.title);
 
-    const report = computeSeoScore(project.url);
+    const report = await computeSeoScore(project);
 
     // Increment usage
     await user.incrementUsage('seoTools');
