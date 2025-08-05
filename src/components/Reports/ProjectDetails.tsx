@@ -80,7 +80,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
       // Clone the element to avoid modifying the original
       const element = reportRef.current.cloneNode(true) as HTMLElement;
       
-      // Add PDF-specific styles for better layout
+      // Add PDF-specific styles for better layout - ensure all content is visible
       const style = document.createElement('style');
       style.textContent = `
         @media print {
@@ -94,18 +94,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           body {
             margin: 0 !important;
             padding: 0 !important;
-            font-size: 12px !important;
-            line-height: 1.4 !important;
+            font-size: 11px !important;
+            line-height: 1.3 !important;
+            overflow: visible !important;
           }
           
           .card-modern {
             break-inside: avoid !important;
             page-break-inside: avoid !important;
-            margin-bottom: 15px !important;
-            padding: 15px !important;
+            margin-bottom: 12px !important;
+            padding: 10px !important;
             border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
+            border-radius: 6px !important;
             background: white !important;
+            overflow: visible !important;
+            max-height: none !important;
+            height: auto !important;
           }
           
           .grid {
@@ -113,8 +117,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           }
           
           .grid > * {
-            margin-bottom: 15px !important;
+            margin-bottom: 12px !important;
             page-break-inside: avoid !important;
+            overflow: visible !important;
           }
           
           .flex {
@@ -122,37 +127,39 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           }
           
           .space-y-4 > * {
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
           }
           
           .space-y-6 > * {
-            margin-bottom: 15px !important;
+            margin-bottom: 12px !important;
           }
           
           .space-y-8 > * {
-            margin-bottom: 20px !important;
+            margin-bottom: 16px !important;
           }
           
           h1, h2, h3, h4, h5, h6 {
             margin-top: 0 !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
             page-break-after: avoid !important;
+            overflow: visible !important;
           }
           
-          h1 { font-size: 24px !important; }
-          h2 { font-size: 20px !important; }
-          h3 { font-size: 18px !important; }
-          h4 { font-size: 16px !important; }
-          h5 { font-size: 14px !important; }
-          h6 { font-size: 12px !important; }
+          h1 { font-size: 20px !important; }
+          h2 { font-size: 18px !important; }
+          h3 { font-size: 16px !important; }
+          h4 { font-size: 14px !important; }
+          h5 { font-size: 12px !important; }
+          h6 { font-size: 11px !important; }
           
           p {
-            margin: 0 0 8px 0 !important;
-            line-height: 1.4 !important;
+            margin: 0 0 6px 0 !important;
+            line-height: 1.3 !important;
+            overflow: visible !important;
           }
           
-          .text-sm { font-size: 11px !important; }
-          .text-xs { font-size: 10px !important; }
+          .text-sm { font-size: 10px !important; }
+          .text-xs { font-size: 9px !important; }
           
           .bg-gradient-to-r {
             background: #f3f4f6 !important;
@@ -163,19 +170,19 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             border-radius: 4px !important;
           }
           
-          .p-6 { padding: 12px !important; }
-          .p-4 { padding: 8px !important; }
-          .p-3 { padding: 6px !important; }
-          .p-2 { padding: 4px !important; }
+          .p-6 { padding: 8px !important; }
+          .p-4 { padding: 6px !important; }
+          .p-3 { padding: 4px !important; }
+          .p-2 { padding: 3px !important; }
           
-          .mb-6 { margin-bottom: 12px !important; }
-          .mb-4 { margin-bottom: 8px !important; }
-          .mb-3 { margin-bottom: 6px !important; }
-          .mb-2 { margin-bottom: 4px !important; }
+          .mb-6 { margin-bottom: 8px !important; }
+          .mb-4 { margin-bottom: 6px !important; }
+          .mb-3 { margin-bottom: 4px !important; }
+          .mb-2 { margin-bottom: 3px !important; }
           
-          .mt-4 { margin-top: 8px !important; }
-          .mt-3 { margin-top: 6px !important; }
-          .mt-2 { margin-top: 4px !important; }
+          .mt-4 { margin-top: 6px !important; }
+          .mt-3 { margin-top: 4px !important; }
+          .mt-2 { margin-top: 3px !important; }
           
           .w-12, .w-10, .w-8, .w-6, .w-5, .w-4 {
             width: auto !important;
@@ -192,7 +199,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           
           .flex.items-center > * {
             display: inline-block !important;
-            margin-right: 8px !important;
+            margin-right: 6px !important;
           }
           
           .justify-between {
@@ -201,19 +208,19 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           
           .justify-between > * {
             display: block !important;
-            margin-bottom: 5px !important;
+            margin-bottom: 4px !important;
           }
           
           .space-x-2 > * {
-            margin-right: 4px !important;
+            margin-right: 3px !important;
           }
           
           .space-x-3 > * {
-            margin-right: 6px !important;
+            margin-right: 4px !important;
           }
           
           .space-x-4 > * {
-            margin-right: 8px !important;
+            margin-right: 6px !important;
           }
           
           .grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
@@ -222,7 +229,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           
           .grid-cols-1 > *, .grid-cols-2 > *, .grid-cols-3 > *, .grid-cols-4 > * {
             display: block !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
           }
           
           .text-center {
@@ -273,6 +280,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             border-color: #e5e7eb !important;
           }
           
+          /* CRITICAL: Remove all scrolling and height restrictions */
           .overflow-hidden {
             overflow: visible !important;
           }
@@ -281,11 +289,15 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             overflow: visible !important;
           }
           
-          .max-h-96, .max-h-80, .max-h-64 {
+          .overflow-x-auto {
+            overflow: visible !important;
+          }
+          
+          .max-h-96, .max-h-80, .max-h-64, .max-h-48, .max-h-32 {
             max-height: none !important;
           }
           
-          .h-96, .h-80, .h-64 {
+          .h-96, .h-80, .h-64, .h-48, .h-32 {
             height: auto !important;
           }
           
@@ -296,21 +308,67 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           .scrollbar-hide::-webkit-scrollbar {
             display: none !important;
           }
+          
+          /* Ensure all content is visible */
+          .min-h-screen {
+            min-height: auto !important;
+          }
+          
+          .h-screen {
+            height: auto !important;
+          }
+          
+          /* Force all content to be visible */
+          div, section, article {
+            overflow: visible !important;
+            max-height: none !important;
+            height: auto !important;
+          }
+          
+          /* Ensure tables and lists are fully visible */
+          table {
+            width: 100% !important;
+            font-size: 9px !important;
+          }
+          
+          th, td {
+            padding: 2px 4px !important;
+            border: 1px solid #e5e7eb !important;
+          }
+          
+          ul, ol {
+            margin: 0 0 6px 0 !important;
+            padding-left: 16px !important;
+          }
+          
+          li {
+            margin-bottom: 2px !important;
+          }
+          
+          /* Ensure all SEO tool sections are visible */
+          [class*="tool-"], [class*="analysis-"], [class*="report-"] {
+            overflow: visible !important;
+            max-height: none !important;
+            height: auto !important;
+            display: block !important;
+          }
         }
       `;
       element.appendChild(style);
 
       html2pdf()
         .set({
-          margin: [0.3, 0.3, 0.3, 0.3],
+          margin: [0.2, 0.2, 0.2, 0.2],
           filename: `${project.title}_SEO_Report.pdf`,
           html2canvas: { 
-            scale: 1.5,
+            scale: 1.2,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
-            letterRendering: true
+            letterRendering: true,
+            scrollX: 0,
+            scrollY: 0
           },
           jsPDF: { 
             unit: 'in', 
@@ -620,10 +678,31 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                       </div>
                       
                       <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <div className="max-h-48 overflow-auto">
-                          <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                            {JSON.stringify(reportData, null, 2)}
-                          </pre>
+                        <div className="overflow-visible">
+                          {reportData && typeof reportData === 'object' ? (
+                            <div className="space-y-2">
+                              {Object.entries(reportData).map(([key, value]) => (
+                                <div key={key} className="border-b border-gray-100 pb-2 last:border-b-0">
+                                  <div className="font-medium text-gray-800 text-xs capitalize">
+                                    {key.replace(/([A-Z])/g, ' $1').trim()}:
+                                  </div>
+                                  <div className="text-xs text-gray-600 mt-1">
+                                    {typeof value === 'object' ? (
+                                      <pre className="whitespace-pre-wrap text-xs">
+                                        {JSON.stringify(value, null, 2)}
+                                      </pre>
+                                    ) : (
+                                      <span>{String(value)}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <pre className="text-xs text-gray-700 whitespace-pre-wrap">
+                              {JSON.stringify(reportData, null, 2)}
+                            </pre>
+                          )}
                         </div>
                       </div>
                     </div>
