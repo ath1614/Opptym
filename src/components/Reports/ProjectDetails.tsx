@@ -80,7 +80,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
       // Clone the element to avoid modifying the original
       const element = reportRef.current.cloneNode(true) as HTMLElement;
       
-      // Add PDF-specific styles
+      // Add PDF-specific styles for better layout
       const style = document.createElement('style');
       style.textContent = `
         @media print {
@@ -88,17 +88,213 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
+            box-sizing: border-box !important;
           }
+          
+          body {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+          }
+          
           .card-modern {
-            break-inside: avoid;
-            page-break-inside: avoid;
-            margin-bottom: 20px;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+            margin-bottom: 15px !important;
+            padding: 15px !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            background: white !important;
           }
+          
           .grid {
             display: block !important;
           }
+          
           .grid > * {
-            margin-bottom: 20px;
+            margin-bottom: 15px !important;
+            page-break-inside: avoid !important;
+          }
+          
+          .flex {
+            display: block !important;
+          }
+          
+          .space-y-4 > * {
+            margin-bottom: 10px !important;
+          }
+          
+          .space-y-6 > * {
+            margin-bottom: 15px !important;
+          }
+          
+          .space-y-8 > * {
+            margin-bottom: 20px !important;
+          }
+          
+          h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 10px !important;
+            page-break-after: avoid !important;
+          }
+          
+          h1 { font-size: 24px !important; }
+          h2 { font-size: 20px !important; }
+          h3 { font-size: 18px !important; }
+          h4 { font-size: 16px !important; }
+          h5 { font-size: 14px !important; }
+          h6 { font-size: 12px !important; }
+          
+          p {
+            margin: 0 0 8px 0 !important;
+            line-height: 1.4 !important;
+          }
+          
+          .text-sm { font-size: 11px !important; }
+          .text-xs { font-size: 10px !important; }
+          
+          .bg-gradient-to-r {
+            background: #f3f4f6 !important;
+            border: 1px solid #d1d5db !important;
+          }
+          
+          .rounded-xl, .rounded-lg, .rounded-md {
+            border-radius: 4px !important;
+          }
+          
+          .p-6 { padding: 12px !important; }
+          .p-4 { padding: 8px !important; }
+          .p-3 { padding: 6px !important; }
+          .p-2 { padding: 4px !important; }
+          
+          .mb-6 { margin-bottom: 12px !important; }
+          .mb-4 { margin-bottom: 8px !important; }
+          .mb-3 { margin-bottom: 6px !important; }
+          .mb-2 { margin-bottom: 4px !important; }
+          
+          .mt-4 { margin-top: 8px !important; }
+          .mt-3 { margin-top: 6px !important; }
+          .mt-2 { margin-top: 4px !important; }
+          
+          .w-12, .w-10, .w-8, .w-6, .w-5, .w-4 {
+            width: auto !important;
+            height: auto !important;
+          }
+          
+          .h-12, .h-10, .h-8, .h-6, .h-5, .h-4 {
+            height: auto !important;
+          }
+          
+          .flex.items-center {
+            display: block !important;
+          }
+          
+          .flex.items-center > * {
+            display: inline-block !important;
+            margin-right: 8px !important;
+          }
+          
+          .justify-between {
+            display: block !important;
+          }
+          
+          .justify-between > * {
+            display: block !important;
+            margin-bottom: 5px !important;
+          }
+          
+          .space-x-2 > * {
+            margin-right: 4px !important;
+          }
+          
+          .space-x-3 > * {
+            margin-right: 6px !important;
+          }
+          
+          .space-x-4 > * {
+            margin-right: 8px !important;
+          }
+          
+          .grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+            display: block !important;
+          }
+          
+          .grid-cols-1 > *, .grid-cols-2 > *, .grid-cols-3 > *, .grid-cols-4 > * {
+            display: block !important;
+            margin-bottom: 10px !important;
+          }
+          
+          .text-center {
+            text-align: center !important;
+          }
+          
+          .text-right {
+            text-align: right !important;
+          }
+          
+          .font-bold { font-weight: bold !important; }
+          .font-semibold { font-weight: 600 !important; }
+          .font-medium { font-weight: 500 !important; }
+          
+          .text-gray-900 { color: #000 !important; }
+          .text-gray-800 { color: #1f2937 !important; }
+          .text-gray-700 { color: #374151 !important; }
+          .text-gray-600 { color: #4b5563 !important; }
+          .text-gray-500 { color: #6b7280 !important; }
+          .text-gray-400 { color: #9ca3af !important; }
+          
+          .bg-blue-500, .bg-green-500, .bg-red-500, .bg-yellow-500, .bg-purple-500 {
+            background: #f3f4f6 !important;
+            border: 1px solid #d1d5db !important;
+          }
+          
+          .text-white {
+            color: #000 !important;
+          }
+          
+          .border {
+            border: 1px solid #e5e7eb !important;
+          }
+          
+          .shadow-lg, .shadow-xl {
+            box-shadow: none !important;
+          }
+          
+          .backdrop-blur-sm {
+            backdrop-filter: none !important;
+          }
+          
+          .bg-white\/80 {
+            background: white !important;
+          }
+          
+          .border-white\/20 {
+            border-color: #e5e7eb !important;
+          }
+          
+          .overflow-hidden {
+            overflow: visible !important;
+          }
+          
+          .overflow-y-auto {
+            overflow: visible !important;
+          }
+          
+          .max-h-96, .max-h-80, .max-h-64 {
+            max-height: none !important;
+          }
+          
+          .h-96, .h-80, .h-64 {
+            height: auto !important;
+          }
+          
+          .scrollbar-hide {
+            scrollbar-width: none !important;
+          }
+          
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none !important;
           }
         }
       `;
@@ -106,25 +302,32 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
 
       html2pdf()
         .set({
-          margin: [0.5, 0.5, 0.5, 0.5],
+          margin: [0.3, 0.3, 0.3, 0.3],
           filename: `${project.title}_SEO_Report.pdf`,
           html2canvas: { 
-            scale: 2,
+            scale: 1.5,
             useCORS: true,
             allowTaint: true,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            logging: false,
+            letterRendering: true
           },
           jsPDF: { 
             unit: 'in', 
             format: 'a4', 
             orientation: 'portrait',
-            compress: true
+            compress: true,
+            precision: 16
           },
-          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+          pagebreak: { 
+            mode: ['avoid-all', 'css', 'legacy'],
+            before: '.page-break-before',
+            after: '.page-break-after'
+          }
         })
         .from(element)
         .save()
-        .catch(err => {
+        .catch((err: Error) => {
           console.error('PDF generation error:', err);
           alert('Failed to generate PDF. Please try again.');
         });

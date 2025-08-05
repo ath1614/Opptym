@@ -18,47 +18,45 @@ const { runAltTextAudit } = require('../services/tools/altTextChecker');
 const { runCanonicalAudit } = require('../services/tools/canonicalChecker');
 const { computeSeoScore } = require('../services/tools/seoScorer');
 
-// Utility: check user permissions for SEO tools
+// Check SEO tool permission
 const checkSeoToolPermission = async (req, res) => {
-  const user = await User.findById(req.userId);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return null;
+    }
 
-  if (!user.hasPermission('canUseSeoTools')) {
-    return res.status(403).json({ 
-      error: 'SEO tools access not included in your subscription',
-      subscription: user.subscription,
-      upgradeRequired: true
-    });
-  }
+    if (!user.hasPermission('canUseSeoTools')) {
+      res.status(403).json({ error: 'SEO tools not available in your plan' });
+      return null;
+    }
 
-  // Check usage limit for SEO tools
-  if (!user.checkUsageLimit('seoTools')) {
-    const limits = user.subscriptionLimits;
-    return res.status(403).json({ 
-      error: 'SEO tools usage limit exceeded',
-      limit: limits.seoTools || 0,
-      current: user.currentUsage.seoToolsUsed,
-      subscription: user.subscription
-    });
-  }
-
-  return user;
-};
-
-// Utility: fetch project and validate
-const getProjectOrFail = async (projectId, res) => {
-  const project = await Project.findById(projectId);
-  if (!project || !project.url) {
-    res.status(404).json({ error: 'Invalid project or URL' });
+    return user;
+  } catch (error) {
+    console.error('Permission check error:', error);
+    res.status(500).json({ error: 'Failed to check permissions' });
     return null;
   }
-  return project;
 };
 
-// === Individual Tool Handlers ===
+// Get project or fail
+const getProjectOrFail = async (projectId, res) => {
+  try {
+    const project = await Project.findById(projectId);
+    if (!project) {
+      res.status(404).json({ error: 'Project not found' });
+      return null;
+    }
+    return project;
+  } catch (error) {
+    console.error('Project fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch project' });
+    return null;
+  }
+};
 
+// Meta Tag Analyzer
 const runMetaTagAnalyzer = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -69,26 +67,22 @@ const runMetaTagAnalyzer = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const { data } = await axios.get(project.url);
-    const $ = cheerio.load(data);
+    console.log('🔍 Running meta tag analysis for project:', project.title);
 
-    const metaTitle = $('title').text() || '';
-    const metaDescription = $('meta[name="description"]').attr('content') || '';
-    const metaKeywordsRaw = $('meta[name="keywords"]').attr('content') || '';
-    const metaKeywords = metaKeywordsRaw.split(',').map(k => k.trim()).filter(k => k);
-
-    const analysisReport = analyzeMetaTags({ metaTitle, metaDescription, keywords: metaKeywords });
+    const report = analyzeMetaTags(project);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
-    res.json(analysisReport);
+    console.log('✅ Meta tag analysis completed');
+    res.json(report);
   } catch (err) {
     console.error('Meta tag analysis error:', err.message);
     res.status(500).json({ error: 'Failed to analyze meta tags' });
   }
 };
 
+// Keyword Density Analyzer
 const runKeywordDensityAnalyzer = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -99,11 +93,14 @@ const runKeywordDensityAnalyzer = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await analyzeDensity(project.url, project.targetKeywords || []);
+    console.log('🔍 Running keyword density analysis for project:', project.title);
+
+    const report = analyzeDensity(project.url, project.targetKeywords || []);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Keyword density analysis completed');
     res.json(report);
   } catch (err) {
     console.error('Keyword density analysis error:', err.message);
@@ -111,6 +108,7 @@ const runKeywordDensityAnalyzer = async (req, res) => {
   }
 };
 
+// Broken Link Checker
 const runBrokenLinkChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -121,11 +119,14 @@ const runBrokenLinkChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await checkBrokenLinks(project.url);
+    console.log('🔍 Running broken link check for project:', project.title);
+
+    const report = checkBrokenLinks(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Broken link check completed');
     res.json(report);
   } catch (err) {
     console.error('Broken link checker error:', err.message);
@@ -133,6 +134,7 @@ const runBrokenLinkChecker = async (req, res) => {
   }
 };
 
+// Sitemap and Robots Checker
 const runSitemapRobotsChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -143,12 +145,15 @@ const runSitemapRobotsChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const sitemapReport = await checkSitemap(project.sitemapUrl || `${project.url}/sitemap.xml`);
-    const robotsReport = await checkRobots(project.robotsTxtUrl || `${project.url}/robots.txt`);
+    console.log('🔍 Running sitemap/robots check for project:', project.title);
+
+    const sitemapReport = checkSitemap(project.sitemapUrl || `${project.url}/sitemap.xml`);
+    const robotsReport = checkRobots(project.robotsTxtUrl || `${project.url}/robots.txt`);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Sitemap/robots check completed');
     res.json({ sitemapReport, robotsReport });
   } catch (err) {
     console.error('Sitemap/Robots checker error:', err.message);
@@ -156,6 +161,7 @@ const runSitemapRobotsChecker = async (req, res) => {
   }
 };
 
+// Backlink Scanner
 const runBacklinkScanner = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -166,11 +172,14 @@ const runBacklinkScanner = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await extractBacklinks(project.url);
+    console.log('🔍 Running backlink scan for project:', project.title);
+
+    const report = extractBacklinks(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Backlink scan completed');
     res.json(report);
   } catch (err) {
     console.error('Backlink scanner error:', err.message);
@@ -178,6 +187,7 @@ const runBacklinkScanner = async (req, res) => {
   }
 };
 
+// Keyword Tracker
 const runKeywordTracker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -188,12 +198,15 @@ const runKeywordTracker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
+    console.log('🔍 Running keyword tracking for project:', project.title);
+
     const domain = new URL(project.url).hostname;
-    const report = await checkKeywordRank(domain, project.targetKeywords || []);
+    const report = checkKeywordRank(domain, project.targetKeywords || []);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Keyword tracking completed');
     res.json(report);
   } catch (err) {
     console.error('Keyword tracker error:', err.message);
@@ -201,6 +214,7 @@ const runKeywordTracker = async (req, res) => {
   }
 };
 
+// Page Speed Analyzer
 const runPageSpeedAnalyzer = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -211,11 +225,14 @@ const runPageSpeedAnalyzer = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await analyzePageSpeed(project.url);
+    console.log('🔍 Running page speed analysis for project:', project.title);
+
+    const report = analyzePageSpeed(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Page speed analysis completed');
     res.json(report);
   } catch (err) {
     console.error('Page speed analyzer error:', err.message);
@@ -223,6 +240,7 @@ const runPageSpeedAnalyzer = async (req, res) => {
   }
 };
 
+// Mobile Audit Checker
 const runMobileAuditChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -233,11 +251,14 @@ const runMobileAuditChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await runMobileAudit(project.url);
+    console.log('🔍 Running mobile audit for project:', project.title);
+
+    const report = runMobileAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Mobile audit completed');
     res.json(report);
   } catch (err) {
     console.error('Mobile audit error:', err.message);
@@ -245,6 +266,7 @@ const runMobileAuditChecker = async (req, res) => {
   }
 };
 
+// Competitor Analyzer
 const runCompetitorAnalyzer = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -255,14 +277,17 @@ const runCompetitorAnalyzer = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
+    console.log('🔍 Running competitor analysis for project:', project.title);
+
     const domain = new URL(project.url).hostname;
     const keywords = project.targetKeywords || [];
 
-    const report = await analyzeCompetitors(domain, keywords);
+    const report = analyzeCompetitors(domain, keywords);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Competitor analysis completed');
     res.json(report);
   } catch (err) {
     console.error('Competitor analyzer error:', err.message);
@@ -270,6 +295,7 @@ const runCompetitorAnalyzer = async (req, res) => {
   }
 };
 
+// Technical SEO Auditor
 const runTechnicalSeoAuditor = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -280,11 +306,14 @@ const runTechnicalSeoAuditor = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await runTechnicalAudit(project.url);
+    console.log('🔍 Running technical SEO audit for project:', project.title);
+
+    const report = runTechnicalAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Technical SEO audit completed');
     res.json(report);
   } catch (err) {
     console.error('Technical SEO audit error:', err.message);
@@ -292,6 +321,7 @@ const runTechnicalSeoAuditor = async (req, res) => {
   }
 };
 
+// Schema Validator Tool
 const runSchemaValidatorTool = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -302,11 +332,14 @@ const runSchemaValidatorTool = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await runSchemaValidator(project.url);
+    console.log('🔍 Running schema validation for project:', project.title);
+
+    const report = runSchemaValidator(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Schema validation completed');
     res.json(report);
   } catch (err) {
     console.error('Schema validator error:', err.message);
@@ -314,6 +347,7 @@ const runSchemaValidatorTool = async (req, res) => {
   }
 };
 
+// Alt Text Checker
 const runAltTextChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -324,11 +358,14 @@ const runAltTextChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await runAltTextAudit(project.url);
+    console.log('🔍 Running alt text audit for project:', project.title);
+
+    const report = runAltTextAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Alt text audit completed');
     res.json(report);
   } catch (err) {
     console.error('Alt text checker error:', err.message);
@@ -336,6 +373,7 @@ const runAltTextChecker = async (req, res) => {
   }
 };
 
+// Canonical Checker
 const runCanonicalChecker = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -346,11 +384,14 @@ const runCanonicalChecker = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await runCanonicalAudit(project.url);
+    console.log('🔍 Running canonical audit for project:', project.title);
+
+    const report = runCanonicalAudit(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ Canonical audit completed');
     res.json(report);
   } catch (err) {
     console.error('Canonical checker error:', err.message);
@@ -358,6 +399,7 @@ const runCanonicalChecker = async (req, res) => {
   }
 };
 
+// SEO Score Calculator
 const runSeoScoreCalculator = async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -368,11 +410,14 @@ const runSeoScoreCalculator = async (req, res) => {
     const project = await getProjectOrFail(projectId, res);
     if (!project) return;
 
-    const report = await computeSeoScore(project.url);
+    console.log('🔍 Running SEO score calculation for project:', project.title);
+
+    const report = computeSeoScore(project.url);
 
     // Increment usage
     await user.incrementUsage('seoTools');
 
+    console.log('✅ SEO score calculation completed');
     res.json(report);
   } catch (err) {
     console.error('SEO score calculator error:', err.message);
@@ -380,7 +425,6 @@ const runSeoScoreCalculator = async (req, res) => {
   }
 };
 
-// === Export All Handlers ===
 module.exports = {
   runMetaTagAnalyzer,
   runKeywordDensityAnalyzer,
