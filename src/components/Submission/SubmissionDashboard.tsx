@@ -154,35 +154,40 @@ const SubmissionsDashboard = () => {
   // Ultra-Smart Puppeteer function to open tab and auto-fill
   const openTabAndUltraSmartFill = async (url: string) => {
     if (!selectedProject) {
-      alert('⚠️ Please select a project first!');
+      alert("⚠️ Please select a project first!");
       return;
     }
 
-    setLoading(true);
     try {
+      // First, open the URL in a new tab
+      window.open(url, '_blank');
+      
+      // Show loading state
+      alert("🔄 Opening new tab and starting Ultra-Smart automation...");
+      
+      // Then call the backend automation
       const response = await fetch(`${BASE_URL}/ultra-smart/open-and-ultra-fill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          url: selectedProject.url,
+          url: url,
           projectId: selectedProject._id
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const result = await response.json();
-      alert(`🤖 ULTRA-SMART FILLING COMPLETE! ${result.filledCount} fields filled successfully!`);
+      
+      if (result.success) {
+        alert(`🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields filled successfully\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n\nCheck the opened tab to see the results!`);
+      } else {
+        alert(`❌ Automation failed: ${result.message || 'Unknown error'}`);
+      }
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
       alert('❌ Ultra-smart automation failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 

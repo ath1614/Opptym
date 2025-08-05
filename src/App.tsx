@@ -104,9 +104,11 @@ function App() {
   }
 
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectsLoading, setProjectsLoading] = useState(false);
   const [projectsError, setProjectsError] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [showProjectReport, setShowProjectReport] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -152,6 +154,25 @@ function App() {
   // View reports
   const handleViewReports = () => {
     navigateToTab('reports');
+  };
+
+  // View project report
+  const handleViewProjectReport = async (project: Project) => {
+    setReportLoading(true);
+    try {
+      setSelectedProject(project);
+      // Show the project report directly
+      setShowProjectReport(true);
+      
+      // Simulate loading time for better UX
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error('Error loading project report:', error);
+      alert('Failed to load project report. Please try again.');
+    } finally {
+      setReportLoading(false);
+    }
   };
 
   // View all projects
@@ -300,13 +321,40 @@ function App() {
                           <span>View Details</span>
                         </button>
                         <button
-                          onClick={handleViewReports}
-                          className="px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-all flex items-center space-x-2"
+                          onClick={() => handleViewProjectReport(selectedProject)}
+                          disabled={reportLoading}
+                          className="px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <FileText className="w-4 h-4" />
-                          <span>View Reports</span>
+                          {reportLoading ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                              <span>Loading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FileText className="w-4 h-4" />
+                              <span>View Reports</span>
+                            </>
+                          )}
                         </button>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Project Report Display */}
+                  {showProjectReport && selectedProject && (
+                    <div className="mt-8">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">Project Report: {selectedProject.title}</h2>
+                        <button
+                          onClick={() => setShowProjectReport(false)}
+                          className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all flex items-center space-x-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>Hide Report</span>
+                        </button>
+                      </div>
+                      <ProjectDetails project={selectedProject} />
                     </div>
                   )}
 

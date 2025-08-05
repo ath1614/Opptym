@@ -70,6 +70,7 @@ const plans: PricingPlan[] = [
     features: [
       'All Features',
       '1 SEO Project',
+      '150 Submissions per month',
       'Priority Email Support',
       'Detailed Submission Reports',
       'White-label Reports',
@@ -77,7 +78,7 @@ const plans: PricingPlan[] = [
     ],
     limits: {
       projects: 1,
-      submissions: 100,
+      submissions: 150,
       tools: true,
       support: 'Priority Email'
     },
@@ -95,6 +96,7 @@ const plans: PricingPlan[] = [
     features: [
       'All Features',
       '5 SEO Projects',
+      '750 Submissions per month',
       'Priority Support',
       'Advanced Analytics',
       'Custom Branding',
@@ -102,7 +104,7 @@ const plans: PricingPlan[] = [
     ],
     limits: {
       projects: 5,
-      submissions: 500,
+      submissions: 750,
       tools: true,
       support: 'Priority Support'
     },
@@ -120,6 +122,7 @@ const plans: PricingPlan[] = [
     features: [
       'All Features',
       '10 SEO Projects',
+      '1500 Submissions per month',
       '24/7 Support',
       'Dedicated Account Manager',
       'Unlimited API Access',
@@ -127,7 +130,7 @@ const plans: PricingPlan[] = [
     ],
     limits: {
       projects: 10,
-      submissions: 1000,
+      submissions: 1500,
       tools: true,
       support: '24/7 Support'
     },
