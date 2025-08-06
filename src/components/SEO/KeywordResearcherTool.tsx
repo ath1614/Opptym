@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingUp, Search, BarChart3, Target, Lightbulb, Download, AlertCircle, CheckCircle, TrendingDown } from 'lucide-react';
-import { apiRequest } from '../../lib/api';
+import { getProjects, runKeywordResearcher } from '../../lib/api';
 
 interface KeywordData {
   keyword: string;
@@ -51,7 +51,7 @@ const KeywordResearcherTool: React.FC = () => {
   React.useEffect(() => {
     const loadProjects = async () => {
       try {
-        const response = await apiRequest('GET', '/projects');
+        const response = await getProjects();
         setProjects(response);
       } catch (err) {
         console.error('Failed to load projects:', err);
@@ -71,10 +71,7 @@ const KeywordResearcherTool: React.FC = () => {
     setResult(null);
 
     try {
-      const response = await apiRequest('POST', `/tools/${selectedProject}/run-keyword-research`, {
-        seedKeyword: seedKeyword || undefined
-      });
-      
+      const response = await runKeywordResearcher(selectedProject, seedKeyword || undefined);
       setResult(response);
     } catch (err: any) {
       setError(err.message || 'Failed to research keywords');

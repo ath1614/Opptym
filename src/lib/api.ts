@@ -158,3 +158,9 @@ export const runCanonicalChecker = (projectId: string) =>
 
 export const runSeoScoreCalculator = (projectId: string) =>
   apiRequest(`/tools/${projectId}/run-seo-score`, { method: 'POST' });
+
+export const runKeywordResearcher = (projectId: string, seedKeyword?: string) =>
+  apiRequest(`/tools/${projectId}/run-keyword-research`, { 
+    method: 'POST', 
+    body: JSON.stringify({ seedKeyword }) 
+  });
