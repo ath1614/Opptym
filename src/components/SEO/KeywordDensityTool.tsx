@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runKeywordDensityAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Search, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Target, Edit3, BarChart3 } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -80,6 +80,79 @@ const KeywordDensityTool = () => {
     }));
   };
 
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+    const keywordStats = report.keywordStats || [];
+
+    // Check for low density keywords
+    const lowDensityKeywords = keywordStats.filter((kw: any) => parseFloat(kw.density.replace('%', '')) < 0.5);
+    if (lowDensityKeywords.length > 0) {
+      guides.push({
+        title: 'Optimize Low Density Keywords',
+        description: 'Some keywords have very low density, which may affect SEO performance.',
+        icon: <TrendingUp className="w-4 h-4" />,
+        steps: [
+          'Naturally incorporate low-density keywords into your content',
+          'Use keywords in headings (H1, H2, H3) for better emphasis',
+          'Include keywords in the first paragraph of your content',
+          'Add keywords to image alt text and meta descriptions',
+          'Create content clusters around your target keywords'
+        ]
+      });
+    }
+
+    // Check for high density keywords (keyword stuffing)
+    const highDensityKeywords = keywordStats.filter((kw: any) => parseFloat(kw.density.replace('%', '')) > 2.5);
+    if (highDensityKeywords.length > 0) {
+      guides.push({
+        title: 'Reduce Keyword Stuffing',
+        description: 'Some keywords have very high density, which can be seen as keyword stuffing.',
+        icon: <Edit3 className="w-4 h-4" />,
+        steps: [
+          'Reduce the frequency of overused keywords',
+          'Use synonyms and related terms instead',
+          'Focus on natural, readable content flow',
+          'Expand content length to naturally dilute keyword density',
+          'Use LSI (Latent Semantic Indexing) keywords'
+        ]
+      });
+    }
+
+    // Check for missing keywords
+    if (keywordStats.length === 0) {
+      guides.push({
+        title: 'Add Target Keywords',
+        description: 'No keywords were found in your content. You need to add relevant keywords.',
+        icon: <Target className="w-4 h-4" />,
+        steps: [
+          'Research relevant keywords for your topic',
+          'Include primary and secondary keywords naturally',
+          'Use long-tail keywords for better targeting',
+          'Add keywords to headings and subheadings',
+          'Include keywords in meta descriptions and titles'
+        ]
+      });
+    }
+
+    // General keyword optimization guide
+    guides.push({
+      title: 'Keyword Density Best Practices',
+      description: 'Follow these best practices for optimal keyword density.',
+      icon: <BarChart3 className="w-4 h-4" />,
+      steps: [
+        'Aim for 0.5% to 2.5% keyword density for optimal results',
+        'Use keywords naturally in the flow of your content',
+        'Include keywords in the first 100 words of your content',
+        'Distribute keywords evenly throughout the content',
+        'Use variations and synonyms of your target keywords'
+      ]
+    });
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -120,7 +193,7 @@ const KeywordDensityTool = () => {
             ) : (
               <div className="flex items-center justify-center space-x-2">
                 <Search className="w-5 h-5" />
-                <span>Run Keyword Analysis</span>
+                <span>Run Keyword Density Analysis</span>
               </div>
             )}
           </button>
@@ -136,6 +209,7 @@ const KeywordDensityTool = () => {
           icon={<Search className="w-6 h-6 text-green-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

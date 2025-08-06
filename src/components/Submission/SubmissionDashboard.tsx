@@ -200,7 +200,13 @@ const SubmissionsDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/universal-form/open-and-universal-fill`, {
+      // First, open the URL in a new tab
+      window.open(url, '_blank');
+      
+      // Show loading state
+      alert("🔄 Opening new tab and starting Universal Form automation...");
+      
+      const response = await fetch(`${BASE_URL}/universal-form/${selectedProject._id}/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -215,12 +221,10 @@ const SubmissionsDashboard = () => {
       const result = await response.json();
       
       if (result.success) {
-        const systemsInfo = result.detectedSystems.length > 0 ? ` (Detected: ${result.detectedSystems.join(', ')})` : '';
-        alert(`🌍 UNIVERSAL FORM FILLING COMPLETE! ${result.filledCount} fields filled${systemsInfo}`);
+        alert(`🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n\nCheck the opened tab to see the results!`);
       } else {
-        const errorMsg = result.details || result.error || 'Unknown error';
-        const filledInfo = result.filledCount > 0 ? ` (${result.filledCount} fields were filled before error)` : '';
-        alert(`❌ Universal form automation failed: ${errorMsg}${filledInfo}`);
+        const errorMsg = result.message || result.error || 'Unknown error';
+        alert(`❌ Universal form automation failed: ${errorMsg}`);
       }
     } catch (error) {
       console.error('Universal form automation error:', error);

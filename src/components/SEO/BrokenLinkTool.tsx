@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runBrokenLinkChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Link, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Link, AlertTriangle, CheckCircle, Wrench, ExternalLink, RefreshCw } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -78,6 +78,70 @@ const BrokenLinkTool = () => {
     }));
   };
 
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+    const brokenLinksCount = report.brokenLinks?.length || 0;
+
+    if (brokenLinksCount > 0) {
+      guides.push({
+        title: 'Fix Broken Links',
+        description: 'Broken links can hurt your SEO and user experience. Here\'s how to fix them.',
+        icon: <Wrench className="w-4 h-4" />,
+        steps: [
+          'Check if the linked page has moved to a new URL',
+          'Update the link to point to the correct URL',
+          'If the page is permanently gone, remove the link',
+          'Replace broken links with relevant alternative content',
+          'Set up 301 redirects for moved pages'
+        ]
+      });
+
+      guides.push({
+        title: 'Prevent Future Broken Links',
+        description: 'Implement strategies to prevent broken links from occurring.',
+        icon: <RefreshCw className="w-4 h-4" />,
+        steps: [
+          'Regularly audit your external links (monthly)',
+          'Use link monitoring tools to track link health',
+          'Build relationships with sites you link to',
+          'Create internal link structures that are less likely to break',
+          'Use descriptive anchor text for better link management'
+        ]
+      });
+    } else {
+      guides.push({
+        title: 'Maintain Link Health',
+        description: 'Great! No broken links found. Keep up the good work with these best practices.',
+        icon: <CheckCircle className="w-4 h-4" />,
+        steps: [
+          'Continue regular link audits (quarterly)',
+          'Monitor external sites you link to',
+          'Use link monitoring tools for proactive detection',
+          'Maintain a clean internal linking structure',
+          'Keep your content updated and relevant'
+        ]
+      });
+    }
+
+    // General link optimization guide
+    guides.push({
+      title: 'Link Building Best Practices',
+      description: 'Follow these best practices for effective link management.',
+      icon: <ExternalLink className="w-4 h-4" />,
+      steps: [
+        'Focus on quality over quantity when building links',
+        'Use descriptive anchor text for better SEO',
+        'Link to authoritative and relevant sources',
+        'Create valuable content that others want to link to',
+        'Monitor your backlink profile regularly'
+      ]
+    });
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -127,13 +191,14 @@ const BrokenLinkTool = () => {
 
       {report && (
         <ResultsDisplay
-          title="Broken Link Scan Results"
+          title="Broken Link Analysis Results"
           success={report.success}
           data={report}
           suggestions={report.suggestions || []}
           icon={<Link className="w-6 h-6 text-red-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>
