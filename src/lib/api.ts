@@ -6,8 +6,9 @@ const isProduction = import.meta.env.PROD;
 const getBaseURL = () => {
   if (isProduction) {
     const apiUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
-    // Ensure the URL ends with /api
-    return apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
+    // Ensure the URL ends with /api and doesn't have double slashes
+    const cleanApiUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+    return cleanApiUrl.endsWith('/api') ? cleanApiUrl : `${cleanApiUrl}/api`;
   }
   return 'http://localhost:5050/api';
 };
@@ -34,7 +35,11 @@ export const getAuthHeaders = (): Record<string, string> => {
 
 // API request wrapper
 export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
-  const url = `${BASE_URL}${endpoint}`;
+  // Ensure endpoint starts with / and base URL doesn't end with /
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const cleanBaseURL = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+  const url = `${cleanBaseURL}${cleanEndpoint}`;
+  
   const authHeaders = getAuthHeaders();
   const headers = {
     ...apiConfig.headers,
@@ -45,8 +50,8 @@ export const apiRequest = async (endpoint: string, options: RequestInit = {}) =>
   console.log('🌐 API Request:', {
     url,
     method: options.method || 'GET',
-    endpoint,
-    baseURL: BASE_URL,
+    endpoint: cleanEndpoint,
+    baseURL: cleanBaseURL,
     isProduction,
     viteApiUrl: import.meta.env.VITE_API_URL,
     body: options.body
