@@ -17,6 +17,7 @@ const { runSchemaValidator } = require('../services/tools/schemaValidator');
 const { runAltTextAudit } = require('../services/tools/altTextChecker');
 const { runCanonicalAudit } = require('../services/tools/canonicalChecker');
 const { computeSeoScore } = require('../services/tools/seoScorer');
+const keywordResearcher = require('../services/tools/keywordResearcher');
 
 // Check SEO tool permission
 const checkSeoToolPermission = async (req, res) => {
@@ -430,6 +431,37 @@ const runSeoScoreCalculator = async (req, res) => {
   }
 };
 
+// Keyword Researcher
+const runKeywordResearcher = async (req, res) => {
+  const { projectId } = req.params;
+  const { seedKeyword } = req.body;
+  
+  try {
+    // Check user permissions for SEO tools
+    const user = await checkSeoToolPermission(req, res);
+    if (!user) return;
+
+    const project = await getProjectOrFail(projectId, res);
+    if (!project) return;
+
+    console.log('🔍 Running keyword research for project:', project.title);
+
+    // Use provided seed keyword or fallback to project keywords
+    const keywordToResearch = seedKeyword || project.targetKeywords?.[0] || 'seo tools';
+    
+    const report = await keywordResearcher(keywordToResearch, projectId);
+
+    // Increment usage
+    await user.incrementUsage('seoTools');
+
+    console.log('✅ Keyword research completed');
+    res.json(report);
+  } catch (err) {
+    console.error('Keyword researcher error:', err.message);
+    res.status(500).json({ error: 'Failed to research keywords' });
+  }
+};
+
 module.exports = {
   runMetaTagAnalyzer,
   runKeywordDensityAnalyzer,
@@ -444,5 +476,6 @@ module.exports = {
   runSchemaValidatorTool,
   runAltTextChecker,
   runCanonicalChecker,
-  runSeoScoreCalculator
+  runSeoScoreCalculator,
+  runKeywordResearcher
 };

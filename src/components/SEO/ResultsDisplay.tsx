@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, XCircle, AlertTriangle, Info, TrendingUp, TrendingDown, Clock, Zap, Smartphone, Globe, Code, Image, Link2 } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Info, TrendingUp, TrendingDown, Clock, Zap, Smartphone, Globe, Code, Image, Link2, Lightbulb, BookOpen } from 'lucide-react';
 
 interface ResultsDisplayProps {
   title: string;
@@ -18,6 +18,12 @@ interface ResultsDisplayProps {
     value: string | number | boolean;
     status?: 'good' | 'warning' | 'error';
   }>;
+  improvementGuide?: Array<{
+    title: string;
+    description: string;
+    steps: string[];
+    icon?: React.ReactNode;
+  }>;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -27,7 +33,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   suggestions = [],
   icon,
   metrics = [],
-  details = []
+  details = [],
+  improvementGuide = []
 }) => {
   const getStatusIcon = (status?: 'good' | 'warning' | 'error') => {
     switch (status) {
@@ -120,19 +127,50 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Suggestions */}
       {suggestions.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <h4 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
             <Info className="w-5 h-5 mr-2" />
-            Recommendations
+            Quick Recommendations
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {suggestions.map((suggestion, index) => (
-              <li key={index} className="flex items-start space-x-2 text-blue-700">
-                <span className="text-blue-500 mt-1">•</span>
+              <li key={index} className="flex items-start space-x-3 text-blue-700">
+                <CheckCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <span>{suggestion}</span>
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Detailed Improvement Guide */}
+      {improvementGuide.length > 0 && (
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-6">
+          <h4 className="text-lg font-semibold text-purple-800 mb-6 flex items-center">
+            <BookOpen className="w-5 h-5 mr-2" />
+            How to Improve Your SEO
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {improvementGuide.map((guide, index) => (
+              <div key={index} className="bg-white rounded-lg p-4 border border-purple-100">
+                <div className="flex items-center gap-3 mb-3">
+                  {guide.icon && <div className="text-purple-600">{guide.icon}</div>}
+                  <h5 className="font-semibold text-gray-800">{guide.title}</h5>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">{guide.description}</p>
+                <div className="space-y-2">
+                  {guide.steps.map((step, stepIndex) => (
+                    <div key={stepIndex} className="flex items-start gap-2">
+                      <span className="text-xs bg-purple-100 text-purple-600 rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {stepIndex + 1}
+                      </span>
+                      <span className="text-sm text-gray-700">{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

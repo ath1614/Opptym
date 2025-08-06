@@ -9,6 +9,7 @@ import TechnicalAuditTool from './TechnicalAuditTool';
 import SchemaValidatorTool from './SchemaValidatorTool';
 import AltTextTool from './AltTextTool';
 import CanonicalTool from './CanonicalTool';
+import KeywordResearcherTool from './KeywordResearcherTool';
 import {
   FileText, Search, Link, BarChart, BookOpen,
   Zap,
@@ -17,7 +18,8 @@ import {
   Bug,
   Code,
   Image,
-  Link2
+  Link2,
+  TrendingUp
 } from 'lucide-react';
 import BacklinkTool from './BacklinkTool';
 import KeywordTrackerTool from './KeywordTrackerTool';
@@ -27,7 +29,7 @@ const tools = [
   {
     key: 'meta',
     name: 'Meta Tag Analyzer',
-    description: 'Analyze your site’s meta title and description.',
+    description: 'Analyze your site\'s meta title and description.',
     icon: <FileText className="w-5 h-5 text-purple-600" />
   },
   {
@@ -35,6 +37,12 @@ const tools = [
     name: 'Keyword Density Checker',
     description: 'Evaluate keyword usage and relevance.',
     icon: <Search className="w-5 h-5 text-green-600" />
+  },
+  {
+    key: 'keyword-research',
+    name: 'Keyword Researcher',
+    description: 'Discover new keywords with search volume and competition data.',
+    icon: <TrendingUp className="w-5 h-5 text-emerald-600" />
   },
   {
     key: 'broken-links',
@@ -138,6 +146,7 @@ const SEOToolsDashboard = () => {
 
           {selectedTool === 'meta' && <MetaAnalyzer />}
           {selectedTool === 'keyword-density' && <KeywordDensityTool />}
+          {selectedTool === 'keyword-research' && <KeywordResearcherTool />}
           {selectedTool === 'broken-links' && <BrokenLinkTool />}
           {selectedTool === 'sitemap-robots' && <SitemapRobotsTool />}
           {selectedTool === 'backlinks' && <BacklinkTool />}

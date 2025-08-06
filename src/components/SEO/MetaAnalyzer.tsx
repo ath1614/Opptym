@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runMetaTagAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { FileText, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, AlertTriangle, Edit3, Target, TrendingUp } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -86,8 +86,88 @@ const MetaAnalyzer = () => {
         label: 'Keywords Present',
         value: !!(report.keywords && report.keywords.length > 0),
         status: (report.keywords && report.keywords.length > 0 ? 'good' : 'warning') as 'good' | 'warning'
+      },
+      {
+        label: 'Title Length Optimal',
+        value: ((report.titleLength || 0) >= 30 && (report.titleLength || 0) <= 70),
+        status: ((report.titleLength || 0) >= 30 && (report.titleLength || 0) <= 70 ? 'good' : 'warning') as 'good' | 'warning'
+      },
+      {
+        label: 'Description Length Optimal',
+        value: ((report.descriptionLength || 0) >= 50 && (report.descriptionLength || 0) <= 160),
+        status: ((report.descriptionLength || 0) >= 50 && (report.descriptionLength || 0) <= 160 ? 'good' : 'warning') as 'good' | 'warning'
       }
     ];
+  };
+
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+
+    // Title optimization guide
+    if ((report.titleLength || 0) < 30 || (report.titleLength || 0) > 70) {
+      guides.push({
+        title: 'Optimize Meta Title',
+        description: 'Your meta title needs optimization for better search visibility and click-through rates.',
+        icon: <Edit3 className="w-4 h-4" />,
+        steps: [
+          'Keep title between 30-70 characters for optimal display',
+          'Include your primary keyword near the beginning',
+          'Make it compelling and click-worthy',
+          'Avoid keyword stuffing - focus on user intent',
+          'Include your brand name if space allows'
+        ]
+      });
+    }
+
+    // Description optimization guide
+    if ((report.descriptionLength || 0) < 50 || (report.descriptionLength || 0) > 160) {
+      guides.push({
+        title: 'Optimize Meta Description',
+        description: 'Your meta description needs improvement to increase click-through rates from search results.',
+        icon: <Target className="w-4 h-4" />,
+        steps: [
+          'Keep description between 50-160 characters',
+          'Include your primary keyword naturally',
+          'Write compelling, action-oriented copy',
+          'Include a clear value proposition',
+          'Add a call-to-action if appropriate'
+        ]
+      });
+    }
+
+    // Keywords guide
+    if (!report.keywords || report.keywords.length === 0) {
+      guides.push({
+        title: 'Add Target Keywords',
+        description: 'Your page lacks target keywords which are essential for SEO optimization.',
+        icon: <TrendingUp className="w-4 h-4" />,
+        steps: [
+          'Research relevant keywords for your content',
+          'Include primary and secondary keywords',
+          'Use long-tail keywords for better targeting',
+          'Ensure keywords match user search intent',
+          'Update keywords regularly based on performance'
+        ]
+      });
+    }
+
+    // General meta tag guide
+    guides.push({
+      title: 'Meta Tag Best Practices',
+      description: 'Follow these best practices to maximize your meta tag effectiveness.',
+      icon: <FileText className="w-4 h-4" />,
+      steps: [
+        'Write unique titles and descriptions for each page',
+        'Include your target keyword in both title and description',
+        'Make meta descriptions compelling and informative',
+        'Use action words and emotional triggers',
+        'Test different variations to improve CTR'
+      ]
+    });
+
+    return guides;
   };
 
   return (
@@ -146,6 +226,7 @@ const MetaAnalyzer = () => {
           icon={<FileText className="w-6 h-6 text-purple-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

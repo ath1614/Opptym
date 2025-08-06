@@ -15,7 +15,8 @@ const {
   runSchemaValidatorTool,
   runAltTextChecker,
   runCanonicalChecker,
-  runSeoScoreCalculator
+  runSeoScoreCalculator,
+  runKeywordResearcher
 } = require('../controllers/toolController');
 
 const router = express.Router();
@@ -41,5 +42,6 @@ router.post('/:projectId/run-schema', runSchemaValidatorTool);
 router.post('/:projectId/run-alt-text', runAltTextChecker);
 router.post('/:projectId/run-canonical', runCanonicalChecker);
 router.post('/:projectId/run-seo-score', runSeoScoreCalculator);
+router.post('/:projectId/run-keyword-research', runKeywordResearcher);
 
 module.exports = router;
