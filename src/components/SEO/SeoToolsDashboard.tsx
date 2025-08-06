@@ -19,7 +19,9 @@ import {
   Code,
   Image,
   Link2,
-  TrendingUp
+  TrendingUp,
+  ArrowLeft,
+  Grid
 } from 'lucide-react';
 import BacklinkTool from './BacklinkTool';
 import KeywordTrackerTool from './KeywordTrackerTool';
@@ -117,13 +119,24 @@ const SEOToolsDashboard = () => {
 
   const handleBack = () => setSelectedTool(null);
 
+  // Get the selected tool info for the header
+  const selectedToolInfo = tools.find(tool => tool.key === selectedTool);
+
   return (
     <div className="p-6 space-y-6">
       {!selectedTool ? (
         <>
-          <h2 className="text-2xl font-bold text-gray-900">SEO Tools</h2>
-          <p className="text-gray-600">Run diagnostics or view saved reports</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Grid className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">SEO Tools</h2>
+              <p className="text-gray-600">Run diagnostics or view saved reports</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {tools.map((tool) => (
               <ToolCard
                 key={tool.key}
@@ -137,28 +150,48 @@ const SEOToolsDashboard = () => {
         </>
       ) : (
         <>
-          <button
-            onClick={handleBack}
-            className="text-sm text-blue-600 underline hover:text-blue-800 mb-4"
-          >
-            ← Back to Tools
-          </button>
+          {/* Enhanced Back Button and Tool Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-gray-700 font-medium shadow-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Tools
+              </button>
+              
+              {selectedToolInfo && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    {React.cloneElement(selectedToolInfo.icon, { className: "w-4 h-4 text-white" })}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">{selectedToolInfo.name}</h2>
+                    <p className="text-sm text-gray-600">{selectedToolInfo.description}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-          {selectedTool === 'meta' && <MetaAnalyzer />}
-          {selectedTool === 'keyword-density' && <KeywordDensityTool />}
-          {selectedTool === 'keyword-research' && <KeywordResearcherTool />}
-          {selectedTool === 'broken-links' && <BrokenLinkTool />}
-          {selectedTool === 'sitemap-robots' && <SitemapRobotsTool />}
-          {selectedTool === 'backlinks' && <BacklinkTool />}
-          {selectedTool === 'keyword-tracker' && <KeywordTrackerTool />}
-          {selectedTool === 'page-speed' && <PageSpeedTool />}
-          {selectedTool === 'mobile-audit' && <MobileAuditTool />}
-          {selectedTool === 'competitor' && <CompetitorTool />}
-          {selectedTool === 'technical-audit' && <TechnicalAuditTool />}
-          {selectedTool === 'schema' && <SchemaValidatorTool />}
-          {selectedTool === 'alt-text' && <AltTextTool />}
-          {selectedTool === 'canonical' && <CanonicalTool />}
-
+          {/* Tool Content */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            {selectedTool === 'meta' && <MetaAnalyzer />}
+            {selectedTool === 'keyword-density' && <KeywordDensityTool />}
+            {selectedTool === 'keyword-research' && <KeywordResearcherTool />}
+            {selectedTool === 'broken-links' && <BrokenLinkTool />}
+            {selectedTool === 'sitemap-robots' && <SitemapRobotsTool />}
+            {selectedTool === 'backlinks' && <BacklinkTool />}
+            {selectedTool === 'keyword-tracker' && <KeywordTrackerTool />}
+            {selectedTool === 'page-speed' && <PageSpeedTool />}
+            {selectedTool === 'mobile-audit' && <MobileAuditTool />}
+            {selectedTool === 'competitor' && <CompetitorTool />}
+            {selectedTool === 'technical-audit' && <TechnicalAuditTool />}
+            {selectedTool === 'schema' && <SchemaValidatorTool />}
+            {selectedTool === 'alt-text' && <AltTextTool />}
+            {selectedTool === 'canonical' && <CanonicalTool />}
+          </div>
         </>
       )}
     </div>
