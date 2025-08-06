@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runTechnicalSeoAuditor } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Bug, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Bug, CheckCircle, XCircle, AlertTriangle, Code, Settings, FileText, Link } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -73,13 +73,138 @@ const TechnicalAuditTool = () => {
   };
 
   const getDetails = () => {
-    if (!report?.issues) return [];
+    if (!report?.audit) return [];
     
-    return report.issues.map((issue: any, index: number) => ({
-      label: issue.title || `Issue ${index + 1}`,
-      value: issue.description || 'No description',
-      status: issue.severity === 'critical' ? 'error' as const : 'warning' as const
-    }));
+    return [
+      {
+        label: 'Title Tag',
+        value: report.audit.title || 'Missing',
+        status: report.audit.title ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'Meta Description',
+        value: report.audit.metaDescription ? 'Present' : 'Missing',
+        status: report.audit.metaDescription ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'H1 Count',
+        value: report.audit.h1Count,
+        status: report.audit.h1Count === 1 ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Internal Links',
+        value: report.audit.internalLinks,
+        status: report.audit.internalLinks >= 5 ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Robots Tag',
+        value: report.audit.robotsTag,
+        status: report.audit.robotsTag && !report.audit.robotsTag.includes('noindex') ? 'good' as const : 'warning' as const
+      }
+    ];
+  };
+
+  const getImprovementGuide = () => {
+    if (!report?.audit) return [];
+
+    const guides = [];
+    const issues = report.issues || [];
+
+    // Missing title guide
+    if (!report.audit.title) {
+      guides.push({
+        title: 'Add a Title Tag',
+        description: 'Title tags are crucial for SEO and appear in search results.',
+        icon: <FileText className="w-4 h-4" />,
+        steps: [
+          'Add a unique, descriptive title tag to each page',
+          'Keep titles between 50-60 characters',
+          'Include your primary keyword near the beginning',
+          'Make titles compelling and click-worthy',
+          'Avoid duplicate titles across your site'
+        ]
+      });
+    }
+
+    // Missing meta description guide
+    if (!report.audit.metaDescription) {
+      guides.push({
+        title: 'Add Meta Descriptions',
+        description: 'Meta descriptions appear in search results and influence click-through rates.',
+        icon: <FileText className="w-4 h-4" />,
+        steps: [
+          'Write unique meta descriptions for each page',
+          'Keep descriptions between 150-160 characters',
+          'Include your target keyword naturally',
+          'Make descriptions compelling and action-oriented',
+          'Avoid duplicate meta descriptions'
+        ]
+      });
+    }
+
+    // H1 issues guide
+    if (report.audit.h1Count !== 1) {
+      guides.push({
+        title: 'Fix H1 Heading Structure',
+        description: 'Each page should have exactly one H1 heading for proper SEO structure.',
+        icon: <Code className="w-4 h-4" />,
+        steps: [
+          'Ensure each page has exactly one H1 heading',
+          'Use H1 for the main page title or topic',
+          'Structure other headings with H2, H3, etc.',
+          'Include your primary keyword in the H1',
+          'Make H1 headings descriptive and relevant'
+        ]
+      });
+    }
+
+    // Internal linking guide
+    if (report.audit.internalLinks < 5) {
+      guides.push({
+        title: 'Improve Internal Linking',
+        description: 'Internal links help search engines understand your site structure and distribute page authority.',
+        icon: <Link className="w-4 h-4" />,
+        steps: [
+          'Add more internal links to relevant pages',
+          'Use descriptive anchor text for internal links',
+          'Link to important pages from your homepage',
+          'Create a logical site structure with clear navigation',
+          'Use internal links to guide users through your content'
+        ]
+      });
+    }
+
+    // Robots tag issues guide
+    if (report.audit.robotsTag && report.audit.robotsTag.includes('noindex')) {
+      guides.push({
+        title: 'Fix Robots Meta Tag',
+        description: 'The robots meta tag is preventing search engines from indexing your page.',
+        icon: <Settings className="w-4 h-4" />,
+        steps: [
+          'Remove noindex directive if you want the page indexed',
+          'Use noindex only for private or duplicate pages',
+          'Ensure robots tag is properly formatted',
+          'Test robots tag with Google Search Console',
+          'Monitor indexing status after changes'
+        ]
+      });
+    }
+
+    // General technical SEO guide
+    guides.push({
+      title: 'Improve Technical SEO Foundation',
+      description: 'Strong technical SEO provides the foundation for better rankings.',
+      icon: <Bug className="w-4 h-4" />,
+      steps: [
+        'Fix all technical issues identified in the audit',
+        'Ensure your site has a clear site structure',
+        'Optimize for Core Web Vitals and page speed',
+        'Implement proper schema markup',
+        'Regularly monitor and fix technical issues'
+      ]
+    });
+
+    return guides;
   };
 
   return (
@@ -94,7 +219,7 @@ const TechnicalAuditTool = () => {
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
             >
               <option value="">Choose a project to analyze</option>
               {projects.map((project) => (
@@ -111,7 +236,7 @@ const TechnicalAuditTool = () => {
             className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
               loading || !selectedProjectId
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gray-700 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-700 focus:ring-offset-2'
+                : 'bg-gray-700 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
             }`}
           >
             {loading ? (
@@ -138,6 +263,7 @@ const TechnicalAuditTool = () => {
           icon={<Bug className="w-6 h-6 text-gray-700" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runSitemapRobotsChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { BookOpen, CheckCircle, XCircle } from 'lucide-react';
+import { BookOpen, CheckCircle, XCircle, FileText, Settings, AlertTriangle, Globe } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -102,6 +102,76 @@ const SitemapRobotsTool = () => {
     return details;
   };
 
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+
+    // Sitemap optimization guide
+    if (report.sitemapStatus !== 'Found') {
+      guides.push({
+        title: 'Create XML Sitemap',
+        description: 'An XML sitemap helps search engines discover and index your pages efficiently.',
+        icon: <FileText className="w-4 h-4" />,
+        steps: [
+          'Generate an XML sitemap for your website',
+          'Include all important pages in your sitemap',
+          'Submit your sitemap to Google Search Console',
+          'Keep your sitemap updated when you add new pages',
+          'Ensure your sitemap follows XML sitemap protocol'
+        ]
+      });
+    }
+
+    // Robots.txt optimization guide
+    if (report.robotsStatus !== 'Found') {
+      guides.push({
+        title: 'Create Robots.txt File',
+        description: 'A robots.txt file tells search engines which pages they can and cannot crawl.',
+        icon: <Settings className="w-4 h-4" />,
+        steps: [
+          'Create a robots.txt file in your root directory',
+          'Allow crawling of important pages',
+          'Disallow crawling of admin, private, or duplicate pages',
+          'Specify the location of your XML sitemap',
+          'Test your robots.txt with Google Search Console'
+        ]
+      });
+    }
+
+    // General SEO optimization guide
+    guides.push({
+      title: 'Optimize for Search Engine Crawling',
+      description: 'Improve how search engines discover and understand your website.',
+      icon: <Globe className="w-4 h-4" />,
+      steps: [
+        'Ensure your website has a clear site structure',
+        'Use descriptive URLs for all pages',
+        'Create internal links between related pages',
+        'Optimize page load speed for better crawling',
+        'Monitor crawl errors in Google Search Console'
+      ]
+    });
+
+    // Advanced sitemap guide
+    if (report.sitemapStatus === 'Found') {
+      guides.push({
+        title: 'Enhance Your Sitemap',
+        description: 'Take your sitemap to the next level with advanced features.',
+        icon: <BookOpen className="w-4 h-4" />,
+        steps: [
+          'Add lastmod dates to show when pages were updated',
+          'Include priority values for important pages',
+          'Create separate sitemaps for different content types',
+          'Use sitemap index files for large websites',
+          'Submit sitemap updates when content changes'
+        ]
+      });
+    }
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -158,6 +228,7 @@ const SitemapRobotsTool = () => {
           icon={<BookOpen className="w-6 h-6 text-indigo-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

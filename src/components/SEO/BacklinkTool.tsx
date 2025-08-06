@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runBacklinkScanner } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Link, ExternalLink, TrendingUp } from 'lucide-react';
+import { Link, ExternalLink, TrendingUp, Target, Globe, Users, Award } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -78,6 +78,95 @@ const BacklinkTool = () => {
     }));
   };
 
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+    const backlinkCount = report.backlinks?.length || 0;
+    const uniqueDomains = report.uniqueDomains || 0;
+    const avgDomainAuthority = report.avgDomainAuthority || 0;
+
+    // Low backlink count guide
+    if (backlinkCount < 10) {
+      guides.push({
+        title: 'Build Quality Backlinks',
+        description: 'Increase your website\'s authority by building relevant backlinks from reputable sources.',
+        icon: <Link className="w-4 h-4" />,
+        steps: [
+          'Create high-quality, shareable content',
+          'Reach out to industry influencers and bloggers',
+          'Submit your content to relevant directories',
+          'Participate in industry forums and discussions',
+          'Create infographics and visual content for sharing'
+        ]
+      });
+    }
+
+    // Low domain diversity guide
+    if (uniqueDomains < 5) {
+      guides.push({
+        title: 'Diversify Your Link Sources',
+        description: 'Having backlinks from diverse domains is better than many links from the same source.',
+        icon: <Globe className="w-4 h-4" />,
+        steps: [
+          'Target different types of websites (blogs, news, directories)',
+          'Focus on industry-specific websites',
+          'Build relationships with multiple publishers',
+          'Create content that appeals to different audiences',
+          'Use various link building strategies'
+        ]
+      });
+    }
+
+    // Low domain authority guide
+    if (avgDomainAuthority < 30) {
+      guides.push({
+        title: 'Target High-Authority Websites',
+        description: 'Backlinks from high-authority domains have more SEO value.',
+        icon: <Award className="w-4 h-4" />,
+        steps: [
+          'Research websites with high domain authority in your niche',
+          'Create content that these sites would want to link to',
+          'Build relationships with editors and content managers',
+          'Offer value through guest posting and collaborations',
+          'Focus on quality over quantity in link building'
+        ]
+      });
+    }
+
+    // General backlink strategy guide
+    guides.push({
+      title: 'Develop a Comprehensive Link Building Strategy',
+      description: 'A strategic approach to link building will improve your SEO performance.',
+      icon: <Target className="w-4 h-4" />,
+      steps: [
+        'Audit your current backlink profile regularly',
+        'Disavow toxic or spammy backlinks',
+        'Monitor your competitors\' backlink strategies',
+        'Create linkable assets (studies, research, tools)',
+        'Use social media to amplify your content reach'
+      ]
+    });
+
+    // Advanced backlink guide for good profiles
+    if (backlinkCount >= 50 && avgDomainAuthority >= 40) {
+      guides.push({
+        title: 'Optimize Your Existing Backlink Profile',
+        description: 'Your backlink profile is strong. Focus on maintaining and improving it.',
+        icon: <TrendingUp className="w-4 h-4" />,
+        steps: [
+          'Monitor for lost backlinks and try to recover them',
+          'Update and republish old content to maintain relevance',
+          'Build relationships with your existing link partners',
+          'Create more linkable content to attract new backlinks',
+          'Focus on building brand mentions and citations'
+        ]
+      });
+    }
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -134,6 +223,7 @@ const BacklinkTool = () => {
           icon={<Link className="w-6 h-6 text-blue-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

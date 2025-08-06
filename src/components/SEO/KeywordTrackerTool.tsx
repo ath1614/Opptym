@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runKeywordTracker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Search, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Target, BarChart3, Lightbulb, Award } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -81,6 +81,94 @@ const KeywordTrackerTool = () => {
     }));
   };
 
+  const getImprovementGuide = () => {
+    if (!report?.results) return [];
+
+    const guides = [];
+    const foundKeywords = report.results.filter((r: any) => r.found).length;
+    const totalKeywords = report.results.length;
+    const successRate = totalKeywords > 0 ? (foundKeywords / totalKeywords) : 0;
+    const top3Keywords = report.results.filter((r: any) => r.found && r.position <= 3).length;
+
+    // Low success rate guide
+    if (successRate < 0.3) {
+      guides.push({
+        title: 'Improve Keyword Targeting',
+        description: 'Your keywords are not ranking well. Focus on better keyword selection and optimization.',
+        icon: <Target className="w-4 h-4" />,
+        steps: [
+          'Research long-tail keywords with lower competition',
+          'Optimize your content for specific keyword intent',
+          'Improve on-page SEO elements (title, meta description, headings)',
+          'Create more comprehensive content around your target keywords',
+          'Build internal links to pages targeting these keywords'
+        ]
+      });
+    }
+
+    // No top 3 rankings guide
+    if (top3Keywords === 0) {
+      guides.push({
+        title: 'Target Top 3 Positions',
+        description: 'Getting into the top 3 positions will significantly increase your click-through rates.',
+        icon: <Award className="w-4 h-4" />,
+        steps: [
+          'Focus on user experience and page load speed',
+          'Create content that answers user queries better than competitors',
+          'Build high-quality backlinks from authoritative sources',
+          'Optimize for featured snippets and rich results',
+          'Improve your site\'s overall domain authority'
+        ]
+      });
+    }
+
+    // Content optimization guide
+    guides.push({
+      title: 'Optimize Content for Target Keywords',
+      description: 'Improve your content to better match search intent and user expectations.',
+      icon: <Lightbulb className="w-4 h-4" />,
+      steps: [
+        'Include target keywords naturally in your content',
+        'Use related keywords and synonyms throughout your content',
+        'Create comprehensive, in-depth content that covers the topic thoroughly',
+        'Optimize your content structure with proper headings (H1, H2, H3)',
+        'Include relevant images with optimized alt text'
+      ]
+    });
+
+    // Technical SEO guide
+    guides.push({
+      title: 'Improve Technical SEO Factors',
+      description: 'Technical SEO improvements can help your pages rank better.',
+      icon: <BarChart3 className="w-4 h-4" />,
+      steps: [
+        'Improve page load speed and Core Web Vitals',
+        'Ensure your site is mobile-friendly',
+        'Fix any crawl errors and broken links',
+        'Optimize your site structure and internal linking',
+        'Submit your sitemap to Google Search Console'
+      ]
+    });
+
+    // Advanced ranking guide for good performance
+    if (successRate >= 0.7 && top3Keywords > 0) {
+      guides.push({
+        title: 'Maintain and Improve Rankings',
+        description: 'Your keyword performance is good. Focus on maintaining and improving your positions.',
+        icon: <TrendingUp className="w-4 h-4" />,
+        steps: [
+          'Monitor your rankings regularly for any drops',
+          'Update your content to keep it fresh and relevant',
+          'Continue building quality backlinks',
+          'Expand your keyword portfolio with related terms',
+          'Track and optimize for featured snippets'
+        ]
+      });
+    }
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -137,6 +225,7 @@ const KeywordTrackerTool = () => {
           icon={<Search className="w-6 h-6 text-teal-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

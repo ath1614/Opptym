@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TrendingUp, Search, BarChart3, Target, Lightbulb, Download, AlertCircle, CheckCircle, TrendingDown } from 'lucide-react';
 import { getProjects, runKeywordResearcher } from '../../lib/api';
+import ResultsDisplay from './ResultsDisplay';
 
 interface KeywordData {
   keyword: string;
@@ -78,6 +79,18 @@ const KeywordResearcherTool: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleExport = () => {
+    if (!result) return;
+    const dataStr = JSON.stringify(result, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `keyword-research-${result.seedKeyword}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const getTrendIcon = (trend: string) => {
@@ -164,30 +177,138 @@ const KeywordResearcherTool: React.FC = () => {
     </div>
   );
 
+  const getMetrics = () => {
+    if (!result) return [];
+    
+    return [
+      {
+        label: 'Total Keywords',
+        value: result.analysis.totalKeywords,
+        status: 'good' as const,
+        icon: <Search className="w-4 h-4" />
+      },
+      {
+        label: 'Avg. Search Volume',
+        value: result.analysis.avgSearchVolume.toLocaleString(),
+        status: 'good' as const,
+        icon: <BarChart3 className="w-4 h-4" />
+      },
+      {
+        label: 'Avg. Competition',
+        value: result.analysis.avgCompetition,
+        status: 'good' as const,
+        icon: <Target className="w-4 h-4" />
+      }
+    ];
+  };
+
+  const getDetails = () => {
+    if (!result) return [];
+    
+    return [
+      {
+        label: 'High Volume Keywords (>10k)',
+        value: result.insights.highVolumeKeywords,
+        status: 'good' as const
+      },
+      {
+        label: 'Low Competition Keywords (<0.3)',
+        value: result.insights.lowCompetitionKeywords,
+        status: 'good' as const
+      },
+      {
+        label: 'Rising Trends',
+        value: result.insights.risingTrends,
+        status: 'good' as const
+      }
+    ];
+  };
+
+  const getImprovementGuide = () => {
+    if (!result) return [];
+
+    const guides = [];
+    const avgCompetition = parseFloat(result.analysis.avgCompetition);
+    const avgSearchVolume = result.analysis.avgSearchVolume;
+
+    // High competition guide
+    if (avgCompetition > 0.7) {
+      guides.push({
+        title: 'Target Less Competitive Keywords',
+        description: 'High competition makes it difficult to rank. Focus on long-tail and niche keywords.',
+        icon: <Target className="w-4 h-4" />,
+        steps: [
+          'Focus on long-tail keywords with lower competition',
+          'Target specific, niche topics in your industry',
+          'Use question-based keywords and local SEO',
+          'Create content for emerging trends and topics',
+          'Research keywords with competition scores below 0.5'
+        ]
+      });
+    }
+
+    // Low search volume guide
+    if (avgSearchVolume < 1000) {
+      guides.push({
+        title: 'Balance Search Volume and Competition',
+        description: 'Low search volume keywords may not drive enough traffic.',
+        icon: <BarChart3 className="w-4 h-4" />,
+        steps: [
+          'Mix high-volume and low-competition keywords',
+          'Target keywords with at least 1,000 monthly searches',
+          'Focus on keywords with commercial intent',
+          'Create content clusters around main keywords',
+          'Monitor keyword performance and adjust strategy'
+        ]
+      });
+    }
+
+    // Content strategy guide
+    guides.push({
+      title: 'Develop Content Strategy Around Keywords',
+      description: 'Use your keyword research to create comprehensive content.',
+      icon: <Lightbulb className="w-4 h-4" />,
+      steps: [
+        'Create content for each keyword type (main, long-tail, questions)',
+        'Develop content clusters around main topics',
+        'Use keywords naturally throughout your content',
+        'Create content that answers user intent',
+        'Update and expand content based on keyword performance'
+      ]
+    });
+
+    // Advanced keyword guide
+    guides.push({
+      title: 'Optimize for Featured Snippets',
+      description: 'Target question-based keywords to capture featured snippets.',
+      icon: <TrendingUp className="w-4 h-4" />,
+      steps: [
+        'Create content that directly answers questions',
+        'Use clear, concise answers in your content',
+        'Structure content with proper headings and lists',
+        'Target "how to" and "what is" keywords',
+        'Monitor featured snippet opportunities'
+      ]
+    });
+
+    return guides;
+  };
+
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800">Keyword Researcher</h2>
-            <p className="text-sm text-gray-600">Discover new keywords with search volume and competition data</p>
-          </div>
-        </div>
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Keyword Researcher</h3>
+        <p className="text-gray-600 mb-6">Discover new keywords with search volume and competition data to expand your SEO strategy.</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Project
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
             <select
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             >
-              <option value="">Choose a project...</option>
+              <option value="">Choose a project to analyze</option>
               {projects.map((project) => (
                 <option key={project._id} value={project._id}>
                   {project.title}
@@ -205,28 +326,32 @@ const KeywordResearcherTool: React.FC = () => {
               value={seedKeyword}
               onChange={(e) => setSeedKeyword(e.target.value)}
               placeholder="e.g., seo tools, digital marketing"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
-        </div>
 
-        <button
-          onClick={handleResearch}
-          disabled={loading || !selectedProject}
-          className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Researching Keywords...
-            </>
-          ) : (
-            <>
-              <Search className="w-4 h-4" />
-              Research Keywords
-            </>
-          )}
-        </button>
+          <button
+            onClick={handleResearch}
+            disabled={loading || !selectedProject}
+            className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+              loading || !selectedProject
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2'
+            }`}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Researching...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center space-x-2">
+                <Search className="w-5 h-5" />
+                <span>Research Keywords</span>
+              </div>
+            )}
+          </button>
+        </div>
 
         {error && (
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
@@ -237,128 +362,36 @@ const KeywordResearcherTool: React.FC = () => {
       </div>
 
       {result && (
-        <div className="space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Keywords</p>
-                  <p className="text-2xl font-bold text-gray-900">{result.analysis.totalKeywords}</p>
-                </div>
-                <Search className="w-8 h-8 text-emerald-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Search Volume</p>
-                  <p className="text-2xl font-bold text-gray-900">{result.analysis.avgSearchVolume.toLocaleString()}</p>
-                </div>
-                <BarChart3 className="w-8 h-8 text-blue-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Competition</p>
-                  <p className="text-2xl font-bold text-gray-900">{(parseFloat(result.analysis.avgCompetition) * 100).toFixed(0)}%</p>
-                </div>
-                <Target className="w-8 h-8 text-orange-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Rising Trends</p>
-                  <p className="text-2xl font-bold text-gray-900">{result.insights.risingTrends}</p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Recommendations */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <Lightbulb className="w-5 h-5 text-blue-600" />
-              <h3 className="text-lg font-semibold text-blue-800">Strategic Recommendations</h3>
-            </div>
-            <div className="space-y-3">
-              {result.recommendations.map((rec, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <p className="text-blue-700">{rec}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Detailed Improvement Guide */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">How to Improve Your Keyword Strategy</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="border-l-4 border-emerald-500 pl-4">
-                  <h4 className="font-medium text-gray-800 mb-2">Focus on Long-tail Keywords</h4>
-                  <p className="text-sm text-gray-600">
-                    Long-tail keywords have lower competition and higher conversion rates. Create detailed content around these specific phrases.
-                  </p>
-                </div>
-                <div className="border-l-4 border-blue-500 pl-4">
-                  <h4 className="font-medium text-gray-800 mb-2">Target Question-based Keywords</h4>
-                  <p className="text-sm text-gray-600">
-                    Questions are perfect for featured snippets. Create FAQ pages and comprehensive guides to capture these opportunities.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="border-l-4 border-orange-500 pl-4">
-                  <h4 className="font-medium text-gray-800 mb-2">Monitor Rising Trends</h4>
-                  <p className="text-sm text-gray-600">
-                    Keywords with rising trends indicate growing interest. Create content early to capture this momentum.
-                  </p>
-                </div>
-                <div className="border-l-4 border-purple-500 pl-4">
-                  <h4 className="font-medium text-gray-800 mb-2">Balance Volume vs Competition</h4>
-                  <p className="text-sm text-gray-600">
-                    High-volume keywords are competitive. Mix high-volume targets with low-competition opportunities for sustainable growth.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <>
+          <ResultsDisplay
+            title="Keyword Research Results"
+            success={result.success}
+            data={result}
+            suggestions={result.recommendations}
+            icon={<TrendingUp className="w-6 h-6 text-emerald-600" />}
+            metrics={getMetrics()}
+            details={getDetails()}
+            improvementGuide={getImprovementGuide()}
+          />
 
           {/* Keyword Tables */}
           <div className="space-y-6">
             {result.keywords.main.length > 0 && renderKeywordTable(result.keywords.main, 'Main Keywords', 'main')}
-            {result.keywords.longTail.length > 0 && renderKeywordTable(result.keywords.longTail, 'Long-tail Keywords', 'longTail')}
-            {result.keywords.questions.length > 0 && renderKeywordTable(result.keywords.questions, 'Question-based Keywords', 'questions')}
+            {result.keywords.longTail.length > 0 && renderKeywordTable(result.keywords.longTail, 'Long-Tail Keywords', 'longTail')}
+            {result.keywords.questions.length > 0 && renderKeywordTable(result.keywords.questions, 'Question-Based Keywords', 'questions')}
           </div>
 
           {/* Export Button */}
-          <div className="flex justify-center">
+          <div className="mt-6">
             <button
-              onClick={() => {
-                const dataStr = JSON.stringify(result, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `keyword-research-${result.seedKeyword}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-              }}
-              className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all flex items-center gap-2"
+              onClick={handleExport}
+              className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
               Export Results
             </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

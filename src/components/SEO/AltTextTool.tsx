@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runAltTextChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Image, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Image, CheckCircle, XCircle, AlertTriangle, FileText, Eye, Lightbulb, Award } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -69,31 +69,117 @@ const AltTextTool = () => {
   };
 
   const getDetails = () => {
-    if (!report) return [];
+    if (!report?.audit) return [];
     
-    const details: any[] = [];
-    
-    if (report.imagesWithoutAlt) {
-      report.imagesWithoutAlt.forEach((image: any, index: number) => {
-        details.push({
-          label: `Missing Alt Text ${index + 1}`,
-          value: image.src || 'No source',
-          status: 'error' as const
-        });
+    return [
+      {
+        label: 'Total Images',
+        value: report.audit.totalImages || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'Images with Alt Text',
+        value: report.audit.imagesWithAlt || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'Images Missing Alt Text',
+        value: report.audit.missingAltCount || 0,
+        status: (report.audit.missingAltCount || 0) === 0 ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'Alt Text Quality',
+        value: report.audit.altTextQuality || 'Unknown',
+        status: report.audit.altTextQuality === 'Good' ? 'good' as const : 'warning' as const
+      }
+    ];
+  };
+
+  const getImprovementGuide = () => {
+    if (!report?.audit) return [];
+
+    const guides = [];
+    const missingAltCount = report.audit.missingAltCount || 0;
+    const totalImages = report.audit.totalImages || 0;
+    const altTextQuality = report.audit.altTextQuality;
+
+    // Missing alt text guide
+    if (missingAltCount > 0) {
+      guides.push({
+        title: 'Add Alt Text to Images',
+        description: 'Alt text is essential for accessibility and helps search engines understand your images.',
+        icon: <Image className="w-4 h-4" />,
+        steps: [
+          'Add descriptive alt text to all images',
+          'Use alt="" for decorative images',
+          'Include relevant keywords naturally in alt text',
+          'Keep alt text concise but descriptive',
+          'Test alt text with screen readers'
+        ]
       });
     }
-    
-    if (report.imagesWithAlt) {
-      report.imagesWithAlt.slice(0, 5).forEach((image: any, index: number) => {
-        details.push({
-          label: `Has Alt Text ${index + 1}`,
-          value: image.alt || 'No alt text',
-          status: 'good' as const
-        });
+
+    // Poor alt text quality guide
+    if (altTextQuality && altTextQuality !== 'Good') {
+      guides.push({
+        title: 'Improve Alt Text Quality',
+        description: 'High-quality alt text provides better accessibility and SEO benefits.',
+        icon: <FileText className="w-4 h-4" />,
+        steps: [
+          'Write descriptive alt text that explains the image content',
+          'Avoid generic terms like "image" or "photo"',
+          'Include context that\'s relevant to the page content',
+          'Use natural language that flows with the content',
+          'Consider what information the image conveys'
+        ]
       });
     }
-    
-    return details;
+
+    // Accessibility guide
+    guides.push({
+      title: 'Enhance Image Accessibility',
+      description: 'Making images accessible improves user experience for all visitors.',
+      icon: <Eye className="w-4 h-4" />,
+      steps: [
+        'Ensure all informative images have descriptive alt text',
+        'Use alt="" for decorative images that don\'t add content',
+        'Provide text alternatives for complex images',
+        'Test your site with screen readers',
+        'Consider using ARIA labels for complex image content'
+      ]
+    });
+
+    // SEO optimization guide
+    guides.push({
+      title: 'Optimize Images for SEO',
+      description: 'Well-optimized images can improve your search rankings.',
+      icon: <Award className="w-4 h-4" />,
+      steps: [
+        'Use descriptive filenames for your images',
+        'Optimize image file sizes for faster loading',
+        'Use appropriate image formats (WebP, JPEG, PNG)',
+        'Include relevant keywords in alt text naturally',
+        'Create an image sitemap for better indexing'
+      ]
+    });
+
+    // Advanced optimization guide for good implementation
+    if (missingAltCount === 0 && altTextQuality === 'Good') {
+      guides.push({
+        title: 'Maintain and Enhance Image Optimization',
+        description: 'Your alt text implementation is excellent. Focus on continuous improvement.',
+        icon: <Lightbulb className="w-4 h-4" />,
+        steps: [
+          'Regularly audit your alt text for quality and relevance',
+          'Update alt text when images or content change',
+          'Consider implementing lazy loading for images',
+          'Monitor image performance in search results',
+          'Stay updated with accessibility best practices'
+        ]
+      });
+    }
+
+    return guides;
   };
 
   return (
@@ -152,6 +238,7 @@ const AltTextTool = () => {
           icon={<Image className="w-6 h-6 text-orange-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>

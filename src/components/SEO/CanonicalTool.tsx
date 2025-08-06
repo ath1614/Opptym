@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runCanonicalChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Link2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Link2, CheckCircle, XCircle, AlertTriangle, FileText, Settings, Lightbulb, Award } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -71,35 +71,114 @@ const CanonicalTool = () => {
   const getDetails = () => {
     if (!report) return [];
     
-    const details: any[] = [];
-    
-    if (report.canonicalUrl) {
-      details.push({
+    return [
+      {
+        label: 'Canonical URL Present',
+        value: report.hasCanonical ? 'Yes' : 'No',
+        status: report.hasCanonical ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'Canonical URL Valid',
+        value: report.isValid ? 'Yes' : 'No',
+        status: report.isValid ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'Self-Referencing',
+        value: report.isSelfReferencing ? 'Yes' : 'No',
+        status: report.isSelfReferencing ? 'good' as const : 'warning' as const
+      },
+      {
         label: 'Canonical URL',
-        value: report.canonicalUrl,
-        status: 'good' as const
+        value: report.canonicalUrl || 'Not found',
+        status: report.canonicalUrl ? 'good' as const : 'error' as const
+      }
+    ];
+  };
+
+  const getImprovementGuide = () => {
+    if (!report) return [];
+
+    const guides = [];
+
+    // Missing canonical guide
+    if (!report.hasCanonical) {
+      guides.push({
+        title: 'Add Canonical URLs',
+        description: 'Canonical URLs help prevent duplicate content issues and tell search engines which page is the primary version.',
+        icon: <Link2 className="w-4 h-4" />,
+        steps: [
+          'Add canonical URLs to all pages on your website',
+          'Use the format: <link rel="canonical" href="https://yoursite.com/page" />',
+          'Place canonical tags in the <head> section of your HTML',
+          'Ensure canonical URLs point to the preferred version of each page',
+          'Use absolute URLs rather than relative URLs'
+        ]
       });
     }
-    
-    if (report.currentUrl) {
-      details.push({
-        label: 'Current URL',
-        value: report.currentUrl,
-        status: 'good' as const
+
+    // Invalid canonical guide
+    if (report.hasCanonical && !report.isValid) {
+      guides.push({
+        title: 'Fix Invalid Canonical URLs',
+        description: 'Invalid canonical URLs can confuse search engines and hurt your SEO.',
+        icon: <Settings className="w-4 h-4" />,
+        steps: [
+          'Check that canonical URLs are properly formatted',
+          'Ensure canonical URLs use absolute URLs (https://yoursite.com/page)',
+          'Verify that canonical URLs point to existing pages',
+          'Fix any syntax errors in your canonical tags',
+          'Test canonical URLs with Google Search Console'
+        ]
       });
     }
-    
-    if (report.issues) {
-      report.issues.forEach((issue: string, index: number) => {
-        details.push({
-          label: `Issue ${index + 1}`,
-          value: issue,
-          status: 'error' as const
-        });
+
+    // Not self-referencing guide
+    if (report.hasCanonical && !report.isSelfReferencing) {
+      guides.push({
+        title: 'Use Self-Referencing Canonical URLs',
+        description: 'Self-referencing canonical URLs are the best practice for most pages.',
+        icon: <FileText className="w-4 h-4" />,
+        steps: [
+          'Make canonical URLs point to the same page they\'re on',
+          'Use the exact URL of the current page as the canonical',
+          'Avoid pointing canonical URLs to different pages unless necessary',
+          'Ensure consistency across your entire website',
+          'Test that canonical URLs resolve correctly'
+        ]
       });
     }
-    
-    return details;
+
+    // Duplicate content prevention guide
+    guides.push({
+      title: 'Prevent Duplicate Content Issues',
+      description: 'Proper canonical implementation helps prevent duplicate content problems.',
+      icon: <Award className="w-4 h-4" />,
+      steps: [
+        'Use canonical URLs for pages with similar content',
+        'Implement canonical URLs for pagination and filtering',
+        'Add canonical URLs to print-friendly and mobile versions',
+        'Use canonical URLs for AMP pages',
+        'Monitor for duplicate content issues in Google Search Console'
+      ]
+    });
+
+    // Advanced canonical guide for good implementation
+    if (report.hasCanonical && report.isValid && report.isSelfReferencing) {
+      guides.push({
+        title: 'Optimize Your Canonical Implementation',
+        description: 'Your canonical implementation is good. Focus on advanced optimizations.',
+        icon: <Lightbulb className="w-4 h-4" />,
+        steps: [
+          'Audit your canonical URLs regularly for consistency',
+          'Monitor canonical URL performance in search results',
+          'Consider implementing hreflang tags for international sites',
+          'Use canonical URLs strategically for content consolidation',
+          'Test canonical URL behavior with different user agents'
+        ]
+      });
+    }
+
+    return guides;
   };
 
   return (
@@ -158,6 +237,7 @@ const CanonicalTool = () => {
           icon={<Link2 className="w-6 h-6 text-lime-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          improvementGuide={getImprovementGuide()}
         />
       )}
     </div>
