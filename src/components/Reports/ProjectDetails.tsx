@@ -621,185 +621,504 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
     switch (toolKey) {
       case 'metaTagReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Title Length</div>
-              <div className="value">{reportData.titleLength || 0} chars</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Title Length</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.titleLength || 0} chars</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Description Length</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.descriptionLength || 0} chars</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Found</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.keywords?.length || 0}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Description Length</div>
-              <div className="value">{reportData.descriptionLength || 0} chars</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Keywords Found</div>
-              <div className="value">{reportData.keywords?.length || 0}</div>
-            </div>
+            {reportData.suggestions && reportData.suggestions.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-blue-800 mb-2">Suggestions:</div>
+                <div className="space-y-1">
+                  {reportData.suggestions.map((suggestion: string, index: number) => (
+                    <div key={index} className="text-sm text-blue-700 flex items-start space-x-2">
+                      <span className="text-blue-600 font-bold">{index + 1}.</span>
+                      <span>{suggestion}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       case 'keywordDensityReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Total Words</div>
-              <div className="value">{reportData.totalWords?.toLocaleString() || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Keywords Analyzed</div>
-              <div className="value">{reportData.keywordStats?.length || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Avg Density</div>
-              <div className="value">
-                {reportData.keywordStats?.length > 0 
-                  ? `${(reportData.keywordStats.reduce((sum: number, kw: any) => 
-                      sum + parseFloat(kw.density.replace('%', '')), 0) / reportData.keywordStats.length).toFixed(2)}%`
-                  : '0%'}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Words</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.totalWords?.toLocaleString() || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Analyzed</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.keywordStats?.length || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Avg Density</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.keywordStats?.length > 0 
+                    ? `${(reportData.keywordStats.reduce((sum: number, kw: any) => 
+                        sum + parseFloat(kw.density.replace('%', '')), 0) / reportData.keywordStats.length).toFixed(2)}%`
+                    : '0%'}
+                </div>
               </div>
             </div>
+            {reportData.keywordStats && reportData.keywordStats.length > 0 && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-2">Keyword Analysis:</div>
+                <div className="space-y-2">
+                  {reportData.keywordStats.slice(0, 5).map((kw: any, index: number) => (
+                    <div key={index} className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-800">{kw.keyword}</span>
+                      <span className="text-gray-600">{kw.density} ({kw.count} times)</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'backlinkReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Backlinks</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.totalExternal || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Unique Domains</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.domainsLinkingIn || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Avg Links/Domain</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.domainsLinkingIn > 0 ? Math.round((reportData.totalExternal || 0) / reportData.domainsLinkingIn) : 0}
+                </div>
+              </div>
+            </div>
+            {reportData.domains && Object.keys(reportData.domains).length > 0 && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-2">Top Linking Domains:</div>
+                <div className="space-y-1">
+                  {Object.entries(reportData.domains).slice(0, 5).map(([domain, anchors]: [string, any], index: number) => (
+                    <div key={index} className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-800">{domain}</span>
+                      <span className="text-gray-600">{Array.isArray(anchors) ? anchors.length : 0} links</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       case 'brokenLinksReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Total Links</div>
-              <div className="value">{reportData.totalLinks || 0}</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Links</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.totalLinks || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Broken Links</div>
+                <div className="text-lg font-bold text-red-600">{reportData.brokenCount || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Health Score</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.totalLinks > 0 
+                    ? `${Math.round(((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks) * 100)}%`
+                    : 'N/A'}
+                </div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Broken Links</div>
-              <div className="value">{reportData.brokenCount || 0}</div>
+            {reportData.brokenLinks && reportData.brokenLinks.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-red-800 mb-2">Broken Links Found:</div>
+                <div className="space-y-1">
+                  {reportData.brokenLinks.slice(0, 3).map((link: any, index: number) => (
+                    <div key={index} className="text-sm text-red-700">
+                      {link.url || 'Unknown URL'}
+                    </div>
+                  ))}
+                  {reportData.brokenLinks.length > 3 && (
+                    <div className="text-sm text-red-600">
+                      ... and {reportData.brokenLinks.length - 3} more
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'sitemapReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Sitemap Status</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.sitemapStatus || 'Not Found'}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Robots Status</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.robotsStatus || 'Not Found'}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Health Score</div>
-              <div className="value">
-                {reportData.totalLinks > 0 
-                  ? `${Math.round(((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks) * 100)}%`
-                  : 'N/A'}
+            {reportData.crawlRules && reportData.crawlRules.length > 0 && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-2">Crawl Rules:</div>
+                <div className="space-y-1">
+                  {reportData.crawlRules.slice(0, 5).map((rule: string, index: number) => (
+                    <div key={index} className="text-sm text-gray-700">{rule}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'robotsReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Robots.txt Status</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.robotsStatus || 'Not Found'}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Crawl Rules</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.crawlRules?.length || 0}</div>
               </div>
             </div>
           </div>
         );
 
+      case 'keywordTrackerReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Tracked</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.results?.length || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Found</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.results?.filter((r: any) => r.found).length || 0}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Success Rate</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.results?.length > 0 
+                    ? `${Math.round((reportData.results.filter((r: any) => r.found).length / reportData.results.length) * 100)}%`
+                    : '0%'}
+                </div>
+              </div>
+            </div>
+            {reportData.results && reportData.results.length > 0 && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-2">Keyword Rankings:</div>
+                <div className="space-y-2">
+                  {reportData.results.slice(0, 5).map((result: any, index: number) => (
+                    <div key={index} className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-800">{result.keyword}</span>
+                      <span className={`font-bold ${result.found ? 'text-green-600' : 'text-red-600'}`}>
+                        {result.found ? `Position ${result.position}` : 'Not in top 10'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
       case 'pageSpeedReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Performance Score</div>
-              <div className="value">{reportData.score || 0}/100</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Performance Score</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.score || 0}/100</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">First Contentful Paint</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.metrics?.firstContentfulPaint || 0}ms</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Largest Contentful Paint</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.metrics?.largestContentfulPaint || 0}ms</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">First Contentful Paint</div>
-              <div className="value">{reportData.metrics?.firstContentfulPaint || 0}ms</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Largest Contentful Paint</div>
-              <div className="value">{reportData.metrics?.largestContentfulPaint || 0}ms</div>
-            </div>
+            {reportData.metrics?.cumulativeLayoutShift && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Cumulative Layout Shift</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.metrics.cumulativeLayoutShift.toFixed(3)}</div>
+              </div>
+            )}
           </div>
         );
 
       case 'mobileAuditReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Mobile Friendly</div>
-              <div className="value">{reportData.audit?.isMobileFriendly ? 'Yes' : 'No'}</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Mobile Friendly</div>
+                <div className={`text-lg font-bold ${reportData.audit?.isMobileFriendly ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.audit?.isMobileFriendly ? 'Yes' : 'No'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Viewport Meta</div>
+                <div className={`text-lg font-bold ${reportData.audit?.hasViewportMeta ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.audit?.hasViewportMeta ? 'Present' : 'Missing'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Small Tap Targets</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.audit?.smallTapTargets || 0}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Viewport Meta</div>
-              <div className="value">{reportData.audit?.hasViewportMeta ? 'Present' : 'Missing'}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Small Tap Targets</div>
-              <div className="value">{reportData.audit?.smallTapTargets || 0}</div>
+          </div>
+        );
+
+      case 'competitorReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Analyzed</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.results?.length || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Competitors</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.results?.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0) || 0}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Avg Competitors/Keyword</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.results?.length > 0 
+                    ? Math.round(reportData.results.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0) / reportData.results.length)
+                    : 0}
+                </div>
+              </div>
             </div>
           </div>
         );
 
       case 'technicalAuditReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Title Present</div>
-              <div className="value">{reportData.audit?.title ? 'Yes' : 'No'}</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Title Present</div>
+                <div className={`text-lg font-bold ${reportData.audit?.title ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.audit?.title ? 'Yes' : 'No'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Meta Description</div>
+                <div className={`text-lg font-bold ${reportData.audit?.metaDescription ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.audit?.metaDescription ? 'Yes' : 'No'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">H1 Count</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.audit?.h1Count || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Internal Links</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.audit?.internalLinks || 0}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Meta Description</div>
-              <div className="value">{reportData.audit?.metaDescription ? 'Yes' : 'No'}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">H1 Count</div>
-              <div className="value">{reportData.audit?.h1Count || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Internal Links</div>
-              <div className="value">{reportData.audit?.internalLinks || 0}</div>
-            </div>
+            {reportData.issues && reportData.issues.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-red-800 mb-2">Technical Issues Found:</div>
+                <div className="space-y-1">
+                  {reportData.issues.slice(0, 3).map((issue: string, index: number) => (
+                    <div key={index} className="text-sm text-red-700">{issue}</div>
+                  ))}
+                  {reportData.issues.length > 3 && (
+                    <div className="text-sm text-red-600">
+                      ... and {reportData.issues.length - 3} more issues
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       case 'schemaReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Schema Found</div>
-              <div className="value">{reportData.found ? 'Yes' : 'No'}</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Schema Found</div>
+                <div className={`text-lg font-bold ${reportData.found ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.found ? 'Yes' : 'No'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Schema Types</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.schemaTypes?.length || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Validation Errors</div>
+                <div className="text-lg font-bold text-red-600">{reportData.errors?.length || 0}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Schema Types</div>
-              <div className="value">{reportData.schemaTypes?.length || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Validation Errors</div>
-              <div className="value">{reportData.errors?.length || 0}</div>
-            </div>
+            {reportData.schemaTypes && reportData.schemaTypes.length > 0 && (
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-2">Schema Types Found:</div>
+                <div className="space-y-1">
+                  {reportData.schemaTypes.map((type: string, index: number) => (
+                    <div key={index} className="text-sm text-gray-700">{type}</div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       case 'altTextReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Total Images</div>
-              <div className="value">{reportData.audit?.totalImages || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Missing Alt Text</div>
-              <div className="value">{reportData.audit?.missingAltCount || 0}</div>
-            </div>
-            <div className="metric-card">
-              <div className="label">Coverage</div>
-              <div className="value">
-                {reportData.audit?.totalImages > 0 
-                  ? `${Math.round(((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages) * 100)}%`
-                  : 'N/A'}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Images</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.audit?.totalImages || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Missing Alt Text</div>
+                <div className="text-lg font-bold text-red-600">{reportData.audit?.missingAltCount || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Coverage</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {reportData.audit?.totalImages > 0 
+                    ? `${Math.round(((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages) * 100)}%`
+                    : 'N/A'}
+                </div>
               </div>
             </div>
+            {reportData.audit?.imagesMissingAlt && reportData.audit.imagesMissingAlt.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-red-800 mb-2">Images Missing Alt Text:</div>
+                <div className="space-y-1">
+                  {reportData.audit.imagesMissingAlt.slice(0, 3).map((image: string, index: number) => (
+                    <div key={index} className="text-sm text-red-700">{image}</div>
+                  ))}
+                  {reportData.audit.imagesMissingAlt.length > 3 && (
+                    <div className="text-sm text-red-600">
+                      ... and {reportData.audit.imagesMissingAlt.length - 3} more images
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       case 'canonicalReport':
         return (
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="label">Canonical Present</div>
-              <div className="value">{reportData.canonicalUrl !== 'Not found' ? 'Yes' : 'No'}</div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Canonical Present</div>
+                <div className={`text-lg font-bold ${reportData.canonicalUrl !== 'Not found' ? 'text-green-600' : 'text-red-600'}`}>
+                  {reportData.canonicalUrl !== 'Not found' ? 'Yes' : 'No'}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Issues Found</div>
+                <div className="text-lg font-bold text-red-600">{reportData.issues?.length || 0}</div>
+              </div>
             </div>
-            <div className="metric-card">
-              <div className="label">Issues Found</div>
-              <div className="value">{reportData.issues?.length || 0}</div>
+            {reportData.issues && reportData.issues.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-red-800 mb-2">Canonical Issues:</div>
+                <div className="space-y-1">
+                  {reportData.issues.map((issue: string, index: number) => (
+                    <div key={index} className="text-sm text-red-700">{issue}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'keywordResearcherReport':
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Total Keywords</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.totalKeywords || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Avg Search Volume</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.avgSearchVolume?.toLocaleString() || 0}</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">Avg Competition</div>
+                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.avgCompetition || 0}</div>
+              </div>
             </div>
+            {reportData.recommendations && reportData.recommendations.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="text-sm font-medium text-blue-800 mb-2">Recommendations:</div>
+                <div className="space-y-1">
+                  {reportData.recommendations.slice(0, 3).map((rec: string, index: number) => (
+                    <div key={index} className="text-sm text-blue-700">{rec}</div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
 
       default:
         return (
-          <div className="bg-gray-50 rounded-lg p-4">
-            <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-              {JSON.stringify(reportData, null, 2)}
-            </pre>
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="text-sm font-medium text-gray-700 mb-2">Analysis Results:</div>
+            <div className="text-sm text-gray-600">
+              {reportData && typeof reportData === 'object' ? (
+                <div className="space-y-2">
+                  {Object.entries(reportData).map(([key, value]) => (
+                    <div key={key} className="flex justify-between items-center">
+                      <span className="font-medium text-gray-800 capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}:
+                      </span>
+                      <span className="text-gray-600">
+                        {typeof value === 'object' ? JSON.stringify(value).slice(0, 50) + '...' : String(value)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-gray-500">No data available</div>
+              )}
+            </div>
           </div>
         );
     }
