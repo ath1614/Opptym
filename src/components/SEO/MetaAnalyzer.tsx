@@ -46,23 +46,28 @@ const MetaAnalyzer = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const titleLength = report.titleLength || 0;
+    const descriptionLength = report.descriptionLength || 0;
+    const keywordsCount = Array.isArray(report.keywords) ? report.keywords.length : 0;
+    
     return [
       {
         label: 'Title Length',
-        value: `${report.titleLength || 0} chars`,
-        status: ((report.titleLength || 0) >= 30 && (report.titleLength || 0) <= 70 ? 'good' : 'warning') as 'good' | 'warning',
+        value: `${titleLength} chars`,
+        status: (titleLength >= 30 && titleLength <= 70 ? 'good' : 'warning') as 'good' | 'warning',
         icon: <FileText className="w-4 h-4" />
       },
       {
         label: 'Description Length',
-        value: `${report.descriptionLength || 0} chars`,
-        status: ((report.descriptionLength || 0) >= 50 && (report.descriptionLength || 0) <= 160 ? 'good' : 'warning') as 'good' | 'warning',
+        value: `${descriptionLength} chars`,
+        status: (descriptionLength >= 50 && descriptionLength <= 160 ? 'good' : 'warning') as 'good' | 'warning',
         icon: <FileText className="w-4 h-4" />
       },
       {
         label: 'Keywords Found',
-        value: report.keywords?.length || 0,
-        status: ((report.keywords?.length || 0) > 0 ? 'good' : 'warning') as 'good' | 'warning',
+        value: keywordsCount,
+        status: (keywordsCount > 0 ? 'good' : 'warning') as 'good' | 'warning',
         icon: <FileText className="w-4 h-4" />
       }
     ];
@@ -71,31 +76,42 @@ const MetaAnalyzer = () => {
   const getDetails = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const titleLength = report.titleLength || 0;
+    const descriptionLength = report.descriptionLength || 0;
+    const keywords = Array.isArray(report.keywords) ? report.keywords : [];
+    const keywordsCount = keywords.length;
+    
     return [
       {
         label: 'Meta Title Present',
-        value: !!(report.titleLength && report.titleLength > 0),
-        status: (report.titleLength && report.titleLength > 0 ? 'good' : 'error') as 'good' | 'error'
+        value: titleLength > 0,
+        status: (titleLength > 0 ? 'good' : 'error') as 'good' | 'error'
       },
       {
         label: 'Meta Description Present',
-        value: !!(report.descriptionLength && report.descriptionLength > 0),
-        status: (report.descriptionLength && report.descriptionLength > 0 ? 'good' : 'error') as 'good' | 'error'
+        value: descriptionLength > 0,
+        status: (descriptionLength > 0 ? 'good' : 'error') as 'good' | 'error'
       },
       {
         label: 'Keywords Present',
-        value: !!(report.keywords && report.keywords.length > 0),
-        status: (report.keywords && report.keywords.length > 0 ? 'good' : 'warning') as 'good' | 'warning'
+        value: keywordsCount > 0,
+        status: (keywordsCount > 0 ? 'good' : 'warning') as 'good' | 'warning'
       },
       {
         label: 'Title Length Optimal',
-        value: ((report.titleLength || 0) >= 30 && (report.titleLength || 0) <= 70),
-        status: ((report.titleLength || 0) >= 30 && (report.titleLength || 0) <= 70 ? 'good' : 'warning') as 'good' | 'warning'
+        value: (titleLength >= 30 && titleLength <= 70),
+        status: (titleLength >= 30 && titleLength <= 70 ? 'good' : 'warning') as 'good' | 'warning'
       },
       {
         label: 'Description Length Optimal',
-        value: ((report.descriptionLength || 0) >= 50 && (report.descriptionLength || 0) <= 160),
-        status: ((report.descriptionLength || 0) >= 50 && (report.descriptionLength || 0) <= 160 ? 'good' : 'warning') as 'good' | 'warning'
+        value: (descriptionLength >= 50 && descriptionLength <= 160),
+        status: (descriptionLength >= 50 && descriptionLength <= 160 ? 'good' : 'warning') as 'good' | 'warning'
+      },
+      {
+        label: 'Keywords Count',
+        value: keywordsCount,
+        status: (keywordsCount > 0 ? 'good' : 'warning') as 'good' | 'warning'
       }
     ];
   };

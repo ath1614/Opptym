@@ -46,27 +46,29 @@ const PageSpeedTool = () => {
   const getMetrics = () => {
     if (!report?.metrics) return [];
     
-    const loadTime = parseInt(report.metrics.loadTime);
-    const ttfb = parseInt(report.metrics.ttfb);
-    const domContentLoaded = parseInt(report.metrics.domContentLoaded);
+    // Extract actual data from backend response
+    const firstContentfulPaint = report.metrics.firstContentfulPaint || 0;
+    const largestContentfulPaint = report.metrics.largestContentfulPaint || 0;
+    const cumulativeLayoutShift = report.metrics.cumulativeLayoutShift || 0;
+    const score = report.score || 0;
     
     return [
       {
-        label: 'Load Time',
-        value: report.metrics.loadTime,
-        status: loadTime < 2000 ? 'good' as const : loadTime < 4000 ? 'warning' as const : 'error' as const,
+        label: 'Page Speed Score',
+        value: `${score}/100`,
+        status: score >= 90 ? 'good' as const : score >= 70 ? 'warning' as const : 'error' as const,
         icon: <Clock className="w-4 h-4" />
       },
       {
-        label: 'Time to First Byte',
-        value: report.metrics.ttfb,
-        status: ttfb < 200 ? 'good' as const : ttfb < 600 ? 'warning' as const : 'error' as const,
+        label: 'First Contentful Paint',
+        value: `${firstContentfulPaint}ms`,
+        status: firstContentfulPaint < 1800 ? 'good' as const : firstContentfulPaint < 3000 ? 'warning' as const : 'error' as const,
         icon: <Zap className="w-4 h-4" />
       },
       {
-        label: 'DOM Content Loaded',
-        value: report.metrics.domContentLoaded,
-        status: domContentLoaded < 1500 ? 'good' as const : domContentLoaded < 3000 ? 'warning' as const : 'error' as const,
+        label: 'Largest Contentful Paint',
+        value: `${largestContentfulPaint}ms`,
+        status: largestContentfulPaint < 2500 ? 'good' as const : largestContentfulPaint < 4000 ? 'warning' as const : 'error' as const,
         icon: <TrendingUp className="w-4 h-4" />
       }
     ];
@@ -75,31 +77,37 @@ const PageSpeedTool = () => {
   const getDetails = () => {
     if (!report?.metrics) return [];
     
-    const loadTime = parseInt(report.metrics.loadTime);
-    const ttfb = parseInt(report.metrics.ttfb);
-    const domContentLoaded = parseInt(report.metrics.domContentLoaded);
-    const totalTime = parseInt(report.metrics.totalTime);
+    // Extract actual data from backend response
+    const firstContentfulPaint = report.metrics.firstContentfulPaint || 0;
+    const largestContentfulPaint = report.metrics.largestContentfulPaint || 0;
+    const cumulativeLayoutShift = report.metrics.cumulativeLayoutShift || 0;
+    const score = report.score || 0;
     
     return [
       {
-        label: 'Total Page Load Time',
-        value: report.metrics.totalTime,
-        status: totalTime < 3000 ? 'good' as const : totalTime < 5000 ? 'warning' as const : 'error' as const
+        label: 'Overall Performance Score',
+        value: `${score}/100`,
+        status: score >= 90 ? 'good' as const : score >= 70 ? 'warning' as const : 'error' as const
       },
       {
-        label: 'Fast Load Time (< 2s)',
-        value: loadTime < 2000,
-        status: loadTime < 2000 ? 'good' as const : 'error' as const
+        label: 'Fast FCP (< 1.8s)',
+        value: firstContentfulPaint < 1800,
+        status: firstContentfulPaint < 1800 ? 'good' as const : 'warning' as const
       },
       {
-        label: 'Fast TTFB (< 200ms)',
-        value: ttfb < 200,
-        status: ttfb < 200 ? 'good' as const : 'warning' as const
+        label: 'Fast LCP (< 2.5s)',
+        value: largestContentfulPaint < 2500,
+        status: largestContentfulPaint < 2500 ? 'good' as const : 'warning' as const
       },
       {
-        label: 'Fast DOM Ready (< 1.5s)',
-        value: domContentLoaded < 1500,
-        status: domContentLoaded < 1500 ? 'good' as const : 'warning' as const
+        label: 'Good CLS (< 0.1)',
+        value: cumulativeLayoutShift < 0.1,
+        status: cumulativeLayoutShift < 0.1 ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Cumulative Layout Shift',
+        value: cumulativeLayoutShift.toFixed(3),
+        status: cumulativeLayoutShift < 0.1 ? 'good' as const : 'warning' as const
       }
     ];
   };

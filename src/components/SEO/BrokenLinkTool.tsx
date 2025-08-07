@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runBrokenLinkChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Link, AlertTriangle, CheckCircle, Wrench, ExternalLink, RefreshCw } from 'lucide-react';
+import { Link, AlertTriangle, CheckCircle, Wrench, ExternalLink, RefreshCw, XCircle } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -46,36 +46,75 @@ const BrokenLinkTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const totalLinks = report.totalLinks || 0;
+    const brokenCount = report.brokenCount || 0;
+    const workingLinks = totalLinks - brokenCount;
+    
     return [
       {
-        label: 'Total Links Checked',
-        value: report.totalLinks || 0,
+        label: 'Total Links',
+        value: totalLinks,
         status: 'good' as const,
         icon: <Link className="w-4 h-4" />
       },
       {
-        label: 'Broken Links Found',
-        value: report.brokenLinks?.length || 0,
-        status: (report.brokenLinks?.length || 0) === 0 ? 'good' as const : 'error' as const,
-        icon: <AlertTriangle className="w-4 h-4" />
+        label: 'Broken Links',
+        value: brokenCount,
+        status: (brokenCount === 0 ? 'good' : 'error') as 'good' | 'error',
+        icon: <XCircle className="w-4 h-4" />
       },
       {
-        label: 'Success Rate',
-        value: report.totalLinks > 0 ? `${(((report.totalLinks - (report.brokenLinks?.length || 0)) / report.totalLinks) * 100).toFixed(1)}%` : '100%',
-        status: (report.brokenLinks?.length || 0) === 0 ? 'good' as const : 'warning' as const,
+        label: 'Working Links',
+        value: workingLinks,
+        status: 'good' as const,
         icon: <CheckCircle className="w-4 h-4" />
       }
     ];
   };
 
   const getDetails = () => {
-    if (!report?.brokenLinks) return [];
+    if (!report) return [];
     
-    return report.brokenLinks.map((link: any, index: number) => ({
-      label: `Broken Link ${index + 1}`,
-      value: link.url,
-      status: 'error' as const
-    }));
+    // Extract actual data from backend response
+    const totalLinks = report.totalLinks || 0;
+    const brokenCount = report.brokenCount || 0;
+    const brokenLinks = Array.isArray(report.brokenLinks) ? report.brokenLinks : [];
+    const workingLinks = totalLinks - brokenCount;
+    
+    const details = [
+      {
+        label: 'Total External Links',
+        value: totalLinks,
+        status: 'good' as const
+      },
+      {
+        label: 'Broken Links Found',
+        value: brokenCount,
+        status: (brokenCount === 0 ? 'good' : 'error') as 'good' | 'error'
+      },
+      {
+        label: 'Working Links',
+        value: workingLinks,
+        status: 'good' as const
+      },
+      {
+        label: 'Link Health Score',
+        value: totalLinks > 0 ? `${Math.round(((workingLinks / totalLinks) * 100))}%` : 'N/A',
+        status: (brokenCount === 0 ? 'good' : 'warning') as 'good' | 'warning'
+      }
+    ];
+
+    // Add broken link details
+    brokenLinks.slice(0, 5).forEach((link: any, index: number) => {
+      details.push({
+        label: `Broken Link ${index + 1}`,
+        value: link.url || 'Unknown URL',
+        status: 'error' as const
+      });
+    });
+
+    return details;
   };
 
   const getImprovementGuide = () => {

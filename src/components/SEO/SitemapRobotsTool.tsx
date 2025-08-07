@@ -46,22 +46,27 @@ const SitemapRobotsTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const sitemapStatus = report.sitemapStatus || 'Not Found';
+    const robotsStatus = report.robotsStatus || 'Not Found';
+    const crawlRules = Array.isArray(report.crawlRules) ? report.crawlRules : [];
+    
     return [
       {
         label: 'Sitemap Status',
-        value: report.sitemapStatus || 'Not Found',
-        status: report.sitemapStatus === 'Found' ? 'good' as const : 'error' as const,
+        value: sitemapStatus,
+        status: sitemapStatus === 'Found' ? 'good' as const : 'error' as const,
         icon: <BookOpen className="w-4 h-4" />
       },
       {
         label: 'Robots.txt Status',
-        value: report.robotsStatus || 'Not Found',
-        status: report.robotsStatus === 'Found' ? 'good' as const : 'error' as const,
+        value: robotsStatus,
+        status: robotsStatus === 'Found' ? 'good' as const : 'error' as const,
         icon: <BookOpen className="w-4 h-4" />
       },
       {
         label: 'Crawl Rules',
-        value: report.crawlRules?.length || 0,
+        value: crawlRules.length,
         status: 'good' as const,
         icon: <CheckCircle className="w-4 h-4" />
       }
@@ -71,33 +76,37 @@ const SitemapRobotsTool = () => {
   const getDetails = () => {
     if (!report) return [];
     
-    const details: any[] = [];
+    // Extract actual data from backend response
+    const sitemapStatus = report.sitemapStatus || 'Not Found';
+    const robotsStatus = report.robotsStatus || 'Not Found';
+    const crawlRules = Array.isArray(report.crawlRules) ? report.crawlRules : [];
     
-    if (report.sitemapStatus) {
-      details.push({
+    const details = [
+      {
         label: 'Sitemap Present',
-        value: report.sitemapStatus === 'Found',
-        status: report.sitemapStatus === 'Found' ? 'good' as const : 'error' as const
-      });
-    }
-    
-    if (report.robotsStatus) {
-      details.push({
+        value: sitemapStatus === 'Found',
+        status: sitemapStatus === 'Found' ? 'good' as const : 'error' as const
+      },
+      {
         label: 'Robots.txt Present',
-        value: report.robotsStatus === 'Found',
-        status: report.robotsStatus === 'Found' ? 'good' as const : 'error' as const
-      });
-    }
+        value: robotsStatus === 'Found',
+        status: robotsStatus === 'Found' ? 'good' as const : 'error' as const
+      },
+      {
+        label: 'Crawl Rules Count',
+        value: crawlRules.length,
+        status: 'good' as const
+      }
+    ];
     
-    if (report.crawlRules) {
-      report.crawlRules.forEach((rule: string, index: number) => {
-        details.push({
-          label: `Crawl Rule ${index + 1}`,
-          value: rule,
-          status: 'good' as const
-        });
+    // Add crawl rules details
+    crawlRules.forEach((rule: string, index: number) => {
+      details.push({
+        label: `Crawl Rule ${index + 1}`,
+        value: rule,
+        status: 'good' as const
       });
-    }
+    });
     
     return details;
   };

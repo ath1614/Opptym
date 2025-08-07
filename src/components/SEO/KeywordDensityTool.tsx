@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runKeywordDensityAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Search, TrendingUp, TrendingDown, Target, Edit3, BarChart3 } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Target, Edit3, BarChart3, FileText, BarChart } from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -46,38 +46,66 @@ const KeywordDensityTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const totalWords = report.totalWords || 0;
+    const keywordStats = Array.isArray(report.keywordStats) ? report.keywordStats : [];
+    const avgDensity = keywordStats.length > 0 
+      ? keywordStats.reduce((sum: number, kw: any) => sum + parseFloat(kw.density.replace('%', '')), 0) / keywordStats.length 
+      : 0;
+    
     return [
       {
         label: 'Total Words',
-        value: report.totalWords || 0,
+        value: totalWords.toLocaleString(),
         status: 'good' as const,
-        icon: <Search className="w-4 h-4" />
+        icon: <FileText className="w-4 h-4" />
       },
       {
         label: 'Keywords Analyzed',
-        value: report.keywordStats?.length || 0,
-        status: 'good' as const,
+        value: keywordStats.length,
+        status: (keywordStats.length > 0 ? 'good' : 'warning') as 'good' | 'warning',
         icon: <Search className="w-4 h-4" />
       },
       {
         label: 'Average Density',
-        value: report.keywordStats?.length > 0 
-          ? `${((report.keywordStats.reduce((acc: number, kw: any) => acc + parseFloat(kw.density.replace('%', '')), 0) / report.keywordStats.length)).toFixed(2)}%`
-          : '0%',
-        status: 'good' as const,
-        icon: <TrendingUp className="w-4 h-4" />
+        value: `${avgDensity.toFixed(2)}%`,
+        status: (avgDensity >= 0.5 && avgDensity <= 2.5 ? 'good' : 'warning') as 'good' | 'warning',
+        icon: <BarChart className="w-4 h-4" />
       }
     ];
   };
 
   const getDetails = () => {
-    if (!report?.keywordStats) return [];
+    if (!report) return [];
     
-    return report.keywordStats.map((keyword: any) => ({
-      label: `"${keyword.keyword}"`,
-      value: `${keyword.count} times (${keyword.density})`,
-      status: (parseFloat(keyword.density.replace('%', '')) > 0.5 && parseFloat(keyword.density.replace('%', '')) < 2.5) ? 'good' as const : 'warning' as const
-    }));
+    // Extract actual data from backend response
+    const keywordStats = Array.isArray(report.keywordStats) ? report.keywordStats : [];
+    const totalWords = report.totalWords || 0;
+    
+    const details = [
+      {
+        label: 'Total Word Count',
+        value: totalWords,
+        status: 'good' as const
+      },
+      {
+        label: 'Keywords Found',
+        value: keywordStats.length,
+        status: (keywordStats.length > 0 ? 'good' : 'warning') as 'good' | 'warning'
+      }
+    ];
+
+    // Add individual keyword details
+    keywordStats.forEach((kw: any, index: number) => {
+      const density = parseFloat(kw.density.replace('%', ''));
+      details.push({
+        label: `"${kw.keyword}" Density`,
+        value: `${kw.density} (${kw.count} occurrences)`,
+        status: (density >= 0.5 && density <= 2.5 ? 'good' : 'warning') as 'good' | 'warning'
+      });
+    });
+
+    return details;
   };
 
   const getImprovementGuide = () => {
