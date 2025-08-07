@@ -1,7 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runBrokenLinkChecker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { Link, AlertTriangle, CheckCircle, Wrench, ExternalLink, RefreshCw, XCircle } from 'lucide-react';
+import { 
+  Link, 
+  AlertTriangle, 
+  CheckCircle, 
+  Wrench, 
+  ExternalLink, 
+  RefreshCw, 
+  XCircle,
+  Shield,
+  DollarSign,
+  Building,
+  GraduationCap,
+  Code,
+  Heart,
+  ShoppingCart,
+  FileText,
+  Users,
+  Globe,
+  Zap
+} from 'lucide-react';
 
 type Project = {
   _id: string;
@@ -46,10 +65,11 @@ const BrokenLinkTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
-    // Extract actual data from backend response
+    // Extract enhanced data from backend response
     const totalLinks = report.totalLinks || 0;
     const brokenCount = report.brokenCount || 0;
-    const workingLinks = totalLinks - brokenCount;
+    const workingCount = report.workingCount || (totalLinks - brokenCount);
+    const healthScore = report.overallHealthScore || (totalLinks > 0 ? Math.round(((workingCount / totalLinks) * 100)) : 100);
     
     return [
       {
@@ -65,10 +85,10 @@ const BrokenLinkTool = () => {
         icon: <XCircle className="w-4 h-4" />
       },
       {
-        label: 'Working Links',
-        value: workingLinks,
-        status: 'good' as const,
-        icon: <CheckCircle className="w-4 h-4" />
+        label: 'Health Score',
+        value: `${healthScore}/100`,
+        status: (healthScore >= 90 ? 'good' : healthScore >= 70 ? 'warning' : 'error') as 'good' | 'warning' | 'error',
+        icon: <Shield className="w-4 h-4" />
       }
     ];
   };
@@ -76,11 +96,13 @@ const BrokenLinkTool = () => {
   const getDetails = () => {
     if (!report) return [];
     
-    // Extract actual data from backend response
+    // Extract enhanced data from backend response
     const totalLinks = report.totalLinks || 0;
     const brokenCount = report.brokenCount || 0;
-    const brokenLinks = Array.isArray(report.brokenLinks) ? report.brokenLinks : [];
-    const workingLinks = totalLinks - brokenCount;
+    const workingCount = report.workingCount || (totalLinks - brokenCount);
+    const healthScore = report.overallHealthScore || (totalLinks > 0 ? Math.round(((workingCount / totalLinks) * 100)) : 100);
+    const severityCounts = report.severityCounts || { high: 0, medium: 0, low: 0 };
+    const categories = report.categories || {};
     
     const details = [
       {
@@ -89,32 +111,97 @@ const BrokenLinkTool = () => {
         status: 'good' as const
       },
       {
+        label: 'Working Links',
+        value: workingCount,
+        status: 'good' as const
+      },
+      {
         label: 'Broken Links Found',
         value: brokenCount,
         status: (brokenCount === 0 ? 'good' : 'error') as 'good' | 'error'
       },
       {
-        label: 'Working Links',
-        value: workingLinks,
-        status: 'good' as const
+        label: 'Overall Health Score',
+        value: `${healthScore}/100`,
+        status: (healthScore >= 90 ? 'good' : healthScore >= 70 ? 'warning' : 'error') as 'good' | 'warning' | 'error'
       },
       {
-        label: 'Link Health Score',
-        value: totalLinks > 0 ? `${Math.round(((workingLinks / totalLinks) * 100))}%` : 'N/A',
-        status: (brokenCount === 0 ? 'good' : 'warning') as 'good' | 'warning'
+        label: 'High Priority Issues',
+        value: severityCounts.high,
+        status: (severityCounts.high === 0 ? 'good' : 'error') as 'good' | 'error'
+      },
+      {
+        label: 'Medium Priority Issues',
+        value: severityCounts.medium,
+        status: (severityCounts.medium === 0 ? 'good' : 'warning') as 'good' | 'warning'
+      },
+      {
+        label: 'Low Priority Issues',
+        value: severityCounts.low,
+        status: (severityCounts.low === 0 ? 'good' : 'warning') as 'good' | 'warning'
       }
     ];
 
-    // Add broken link details
-    brokenLinks.slice(0, 5).forEach((link: any, index: number) => {
+    // Add category breakdown
+    Object.entries(categories).forEach(([category, links]: [string, any]) => {
       details.push({
-        label: `Broken Link ${index + 1}`,
-        value: link.url || 'Unknown URL',
-        status: 'error' as const
+        label: `${category.charAt(0).toUpperCase() + category.slice(1)} Links`,
+        value: Array.isArray(links) ? links.length : 0,
+        status: 'warning' as const
       });
     });
 
     return details;
+  };
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'malware':
+        return <Shield className="w-4 h-4 text-red-600" />;
+      case 'financial':
+        return <DollarSign className="w-4 h-4 text-yellow-600" />;
+      case 'government':
+        return <Building className="w-4 h-4 text-blue-600" />;
+      case 'educational':
+        return <GraduationCap className="w-4 h-4 text-green-600" />;
+      case 'technology':
+        return <Code className="w-4 h-4 text-purple-600" />;
+      case 'healthcare':
+        return <Heart className="w-4 h-4 text-pink-600" />;
+      case 'ecommerce':
+        return <ShoppingCart className="w-4 h-4 text-orange-600" />;
+      case 'socialMedia':
+        return <Users className="w-4 h-4 text-indigo-600" />;
+      case 'externalResources':
+        return <FileText className="w-4 h-4 text-gray-600" />;
+      case 'affiliateMarketing':
+        return <DollarSign className="w-4 h-4 text-green-600" />;
+      case 'newsAndMedia':
+        return <Globe className="w-4 h-4 text-blue-600" />;
+      default:
+        return <Link className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'malware':
+        return 'bg-red-50 border-red-200 text-red-800';
+      case 'financial':
+      case 'government':
+      case 'healthcare':
+        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      case 'ecommerce':
+      case 'affiliateMarketing':
+        return 'bg-green-50 border-green-200 text-green-800';
+      case 'technology':
+      case 'educational':
+        return 'bg-blue-50 border-blue-200 text-blue-800';
+      case 'socialMedia':
+        return 'bg-purple-50 border-purple-200 text-purple-800';
+      default:
+        return 'bg-gray-50 border-gray-200 text-gray-800';
+    }
   };
 
   const getImprovementGuide = () => {
@@ -122,70 +209,181 @@ const BrokenLinkTool = () => {
 
     const guides = [];
     const brokenLinksCount = report.brokenLinks?.length || 0;
+    const severityCounts = report.severityCounts || { high: 0, medium: 0, low: 0 };
+    const categories = report.categories || {};
 
     if (brokenLinksCount > 0) {
+      // High priority guide
+      if (severityCounts.high > 0) {
+        guides.push({
+          title: '🚨 High Priority Security Issues',
+          description: 'Address these critical issues immediately to protect your site and users.',
+          icon: <Shield className="w-4 h-4" />,
+          steps: [
+            'Remove any malware or suspicious links immediately',
+            'Update financial and payment service links',
+            'Verify government and official authority links',
+            'Scan your website for security vulnerabilities',
+            'Update healthcare and medical information links'
+          ]
+        });
+      }
+
+      // Medium priority guide
+      if (severityCounts.medium > 0) {
+        guides.push({
+          title: '⚠️ Medium Priority Updates',
+          description: 'Update these links to maintain site quality and user experience.',
+          icon: <RefreshCw className="w-4 h-4" />,
+          steps: [
+            'Update social media platform links',
+            'Check and update e-commerce product links',
+            'Verify educational and research institution links',
+            'Update technology and development resource links',
+            'Review affiliate marketing links for relevance'
+          ]
+        });
+      }
+
+      // Category-specific guides
+      if (categories.malware && categories.malware.length > 0) {
+        guides.push({
+          title: '🛡️ Malware Link Removal',
+          description: 'Critical security action required for detected malware links.',
+          icon: <Shield className="w-4 h-4" />,
+          steps: [
+            'Immediately remove all malware-related links',
+            'Scan your entire website for malware',
+            'Check if your site has been compromised',
+            'Update all security plugins and software',
+            'Monitor for suspicious activity'
+          ]
+        });
+      }
+
+      if (categories.financial && categories.financial.length > 0) {
+        guides.push({
+          title: '💰 Financial Link Updates',
+          description: 'Update financial links to prevent user confusion and maintain trust.',
+          icon: <DollarSign className="w-4 h-4" />,
+          steps: [
+            'Update payment service links (PayPal, Stripe, etc.)',
+            'Verify banking and financial institution links',
+            'Check if financial services are still available',
+            'Remove outdated payment processing links',
+            'Update affiliate program links'
+          ]
+        });
+      }
+
+      if (categories.government && categories.government.length > 0) {
+        guides.push({
+          title: '🏛️ Government Link Verification',
+          description: 'Ensure government links are current and accurate.',
+          icon: <Building className="w-4 h-4" />,
+          steps: [
+            'Find updated government URLs',
+            'Check official government websites',
+            'Archive important government information',
+            'Update regulatory and compliance links',
+            'Verify official authority sources'
+          ]
+        });
+      }
+
+      // General broken link guide
       guides.push({
-        title: 'Fix Broken Links',
-        description: 'Broken links can hurt your SEO and user experience. Here\'s how to fix them.',
+        title: '🔧 General Broken Link Fixes',
+        description: 'Standard procedures for fixing broken links.',
         icon: <Wrench className="w-4 h-4" />,
         steps: [
-          'Check if the linked page has moved to a new URL',
-          'Update the link to point to the correct URL',
-          'If the page is permanently gone, remove the link',
-          'Replace broken links with relevant alternative content',
+          'Check if linked pages have moved to new URLs',
+          'Update links to point to correct destinations',
+          'Remove links to permanently deleted pages',
+          'Replace broken links with relevant alternatives',
           'Set up 301 redirects for moved pages'
-        ]
-      });
-
-      guides.push({
-        title: 'Prevent Future Broken Links',
-        description: 'Implement strategies to prevent broken links from occurring.',
-        icon: <RefreshCw className="w-4 h-4" />,
-        steps: [
-          'Regularly audit your external links (monthly)',
-          'Use link monitoring tools to track link health',
-          'Build relationships with sites you link to',
-          'Create internal link structures that are less likely to break',
-          'Use descriptive anchor text for better link management'
         ]
       });
     } else {
       guides.push({
-        title: 'Maintain Link Health',
-        description: 'Great! No broken links found. Keep up the good work with these best practices.',
+        title: '✅ Excellent Link Health',
+        description: 'Great! No broken links found. Keep up the good work.',
         icon: <CheckCircle className="w-4 h-4" />,
         steps: [
           'Continue regular link audits (quarterly)',
           'Monitor external sites you link to',
           'Use link monitoring tools for proactive detection',
-          'Maintain a clean internal linking structure',
-          'Keep your content updated and relevant'
+          'Maintain clean internal linking structure',
+          'Keep content updated and relevant'
         ]
       });
     }
 
-    // General link optimization guide
+    // Prevention guide
     guides.push({
-      title: 'Link Building Best Practices',
-      description: 'Follow these best practices for effective link management.',
-      icon: <ExternalLink className="w-4 h-4" />,
+      title: '🛡️ Prevent Future Broken Links',
+      description: 'Implement strategies to prevent broken links from occurring.',
+      icon: <Zap className="w-4 h-4" />,
       steps: [
-        'Focus on quality over quantity when building links',
-        'Use descriptive anchor text for better SEO',
-        'Link to authoritative and relevant sources',
-        'Create valuable content that others want to link to',
-        'Monitor your backlink profile regularly'
+        'Set up automated link monitoring',
+        'Regularly audit external links (monthly)',
+        'Build relationships with sites you link to',
+        'Create stable internal link structures',
+        'Use descriptive anchor text for better management'
       ]
     });
 
     return guides;
   };
 
+  // Enhanced suggestions based on classification
+  const getEnhancedSuggestions = () => {
+    if (!report) return [];
+
+    const suggestions = [];
+    const severityCounts = report.severityCounts || { high: 0, medium: 0, low: 0 };
+    const categories = report.categories || {};
+
+    if (severityCounts.high > 0) {
+      suggestions.push(`🚨 ${severityCounts.high} high-priority broken links need immediate attention`);
+    }
+
+    if (severityCounts.medium > 0) {
+      suggestions.push(`⚠️ ${severityCounts.medium} medium-priority links should be updated soon`);
+    }
+
+    if (severityCounts.low > 0) {
+      suggestions.push(`ℹ️ ${severityCounts.low} low-priority links can be addressed later`);
+    }
+
+    if (categories.malware && categories.malware.length > 0) {
+      suggestions.push('🛡️ Malware links detected - immediate security review required');
+    }
+
+    if (categories.financial && categories.financial.length > 0) {
+      suggestions.push('💰 Financial links need updating to prevent user confusion');
+    }
+
+    if (categories.government && categories.government.length > 0) {
+      suggestions.push('🏛️ Government links should be updated for accuracy');
+    }
+
+    if (categories.healthcare && categories.healthcare.length > 0) {
+      suggestions.push('🏥 Healthcare links need verification for medical accuracy');
+    }
+
+    if (categories.ecommerce && categories.ecommerce.length > 0) {
+      suggestions.push('🛒 E-commerce links should be updated to maintain sales');
+    }
+
+    return suggestions;
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Broken Link Scanner</h3>
-        <p className="text-gray-600 mb-6">Identify dead outbound links on your site that may hurt SEO performance.</p>
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Enhanced Broken Link Scanner</h3>
+        <p className="text-gray-600 mb-6">Advanced broken link analysis with malware detection, classification, and priority-based recommendations.</p>
 
         <div className="space-y-4">
           <div>
@@ -216,12 +414,12 @@ const BrokenLinkTool = () => {
             {loading ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Scanning...</span>
+                <span>Scanning with Enhanced Analysis...</span>
               </div>
             ) : (
               <div className="flex items-center justify-center space-x-2">
-                <Link className="w-5 h-5" />
-                <span>Scan for Broken Links</span>
+                <Shield className="w-5 h-5" />
+                <span>Run Enhanced Broken Link Scan</span>
               </div>
             )}
           </button>
@@ -229,16 +427,140 @@ const BrokenLinkTool = () => {
       </div>
 
       {report && (
-        <ResultsDisplay
-          title="Broken Link Analysis Results"
-          success={report.success}
-          data={report}
-          suggestions={report.suggestions || []}
-          icon={<Link className="w-6 h-6 text-red-600" />}
-          metrics={getMetrics()}
-          details={getDetails()}
-          improvementGuide={getImprovementGuide()}
-        />
+        <div className="space-y-6">
+          {/* Enhanced Results Display */}
+          <ResultsDisplay
+            title="Enhanced Broken Link Analysis Results"
+            success={report.success}
+            data={report}
+            suggestions={getEnhancedSuggestions()}
+            icon={<Shield className="w-6 h-6 text-red-600" />}
+            metrics={getMetrics()}
+            details={getDetails()}
+            improvementGuide={getImprovementGuide()}
+          />
+
+          {/* Category Breakdown */}
+          {report.categories && Object.keys(report.categories).length > 0 && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">Broken Links by Category</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Object.entries(report.categories).map(([category, links]: [string, any]) => (
+                  <div key={category} className={`p-4 rounded-lg border ${getCategoryColor(category)}`}>
+                    <div className="flex items-center space-x-3 mb-2">
+                      {getCategoryIcon(category)}
+                      <span className="font-medium capitalize">
+                        {category.replace(/([A-Z])/g, ' $1').trim()}
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold">{Array.isArray(links) ? links.length : 0}</div>
+                    <div className="text-sm opacity-75">broken links</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Severity Breakdown */}
+          {report.severityCounts && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">Priority Breakdown</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Shield className="w-5 h-5 text-red-600" />
+                    <span className="font-medium text-red-800">High Priority</span>
+                  </div>
+                  <div className="text-2xl font-bold text-red-600">{report.severityCounts.high || 0}</div>
+                  <div className="text-sm text-red-600">Security & Critical Issues</div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                    <span className="font-medium text-yellow-800">Medium Priority</span>
+                  </div>
+                  <div className="text-2xl font-bold text-yellow-600">{report.severityCounts.medium || 0}</div>
+                  <div className="text-sm text-yellow-600">Business & User Experience</div>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Link className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-blue-800">Low Priority</span>
+                  </div>
+                  <div className="text-2xl font-bold text-blue-600">{report.severityCounts.low || 0}</div>
+                  <div className="text-sm text-blue-600">General & Content Links</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Detailed Broken Links */}
+          {report.brokenLinks && report.brokenLinks.length > 0 && (
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">Detailed Analysis</h4>
+              <div className="space-y-4">
+                {report.brokenLinks.slice(0, 8).map((link: any, index: number) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800 truncate">{link.url}</div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          {link.text && link.text !== 'No text' ? `"${link.text}"` : 'No link text'}
+                        </div>
+                      </div>
+                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        link.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        link.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
+                        {link.priority} priority
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600">Category:</span>
+                        <span className="ml-2 font-medium capitalize">
+                          {link.classification?.category?.replace(/([A-Z])/g, ' $1').trim() || 'General'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Severity:</span>
+                        <span className={`ml-2 font-medium ${
+                          link.classification?.severity === 'high' ? 'text-red-600' :
+                          link.classification?.severity === 'medium' ? 'text-yellow-600' :
+                          'text-blue-600'
+                        }`}>
+                          {link.classification?.severity || 'low'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {link.recommendations && link.recommendations.length > 0 && (
+                      <div className="mt-3">
+                        <div className="text-sm text-gray-600 mb-2">Recommendations:</div>
+                        <ul className="space-y-1">
+                          {link.recommendations.slice(0, 2).map((rec: string, recIndex: number) => (
+                            <li key={recIndex} className="text-sm text-gray-700 flex items-start space-x-2">
+                              <span className="text-gray-500">•</span>
+                              <span>{rec}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                
+                {report.brokenLinks.length > 8 && (
+                  <div className="text-center text-gray-600">
+                    ... and {report.brokenLinks.length - 8} more broken links
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
