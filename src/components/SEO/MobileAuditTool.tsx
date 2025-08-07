@@ -46,23 +46,29 @@ const MobileAuditTool = () => {
   const getMetrics = () => {
     if (!report?.audit) return [];
     
+    // Extract actual data from backend response
+    const isMobileFriendly = report.audit.isMobileFriendly || false;
+    const hasViewportMeta = report.audit.hasViewportMeta || false;
+    const smallTapTargets = report.audit.smallTapTargets || 0;
+    const fontSizeOk = report.audit.fontSizeOk || false;
+    
     return [
       {
         label: 'Mobile Friendly',
-        value: report.audit.isMobileFriendly ? 'Yes' : 'No',
-        status: report.audit.isMobileFriendly ? 'good' as const : 'error' as const,
+        value: isMobileFriendly ? 'Yes' : 'No',
+        status: isMobileFriendly ? 'good' as const : 'error' as const,
         icon: <Smartphone className="w-4 h-4" />
       },
       {
         label: 'Viewport Meta Tag',
-        value: report.audit.hasViewportMeta ? 'Present' : 'Missing',
-        status: report.audit.hasViewportMeta ? 'good' as const : 'error' as const,
+        value: hasViewportMeta ? 'Present' : 'Missing',
+        status: hasViewportMeta ? 'good' as const : 'error' as const,
         icon: <CheckCircle className="w-4 h-4" />
       },
       {
         label: 'Small Tap Targets',
-        value: report.audit.smallTapTargets,
-        status: report.audit.smallTapTargets === 0 ? 'good' as const : 'warning' as const,
+        value: smallTapTargets,
+        status: smallTapTargets === 0 ? 'good' as const : 'warning' as const,
         icon: <AlertTriangle className="w-4 h-4" />
       }
     ];
@@ -71,26 +77,32 @@ const MobileAuditTool = () => {
   const getDetails = () => {
     if (!report?.audit) return [];
     
+    // Extract actual data from backend response
+    const isMobileFriendly = report.audit.isMobileFriendly || false;
+    const hasViewportMeta = report.audit.hasViewportMeta || false;
+    const smallTapTargets = report.audit.smallTapTargets || 0;
+    const fontSizeOk = report.audit.fontSizeOk || false;
+    
     return [
       {
         label: 'Viewport Meta Tag',
-        value: report.audit.hasViewportMeta,
-        status: report.audit.hasViewportMeta ? 'good' as const : 'error' as const
+        value: hasViewportMeta,
+        status: hasViewportMeta ? 'good' as const : 'error' as const
       },
       {
         label: 'Font Size OK',
-        value: report.audit.fontSizeOk,
-        status: report.audit.fontSizeOk ? 'good' as const : 'warning' as const
+        value: fontSizeOk,
+        status: fontSizeOk ? 'good' as const : 'warning' as const
       },
       {
         label: 'No Small Tap Targets',
-        value: report.audit.smallTapTargets === 0,
-        status: report.audit.smallTapTargets === 0 ? 'good' as const : 'warning' as const
+        value: smallTapTargets === 0,
+        status: smallTapTargets === 0 ? 'good' as const : 'warning' as const
       },
       {
         label: 'Overall Mobile Score',
-        value: report.audit.isMobileFriendly ? 'Excellent' : 'Needs Improvement',
-        status: report.audit.isMobileFriendly ? 'good' as const : 'error' as const
+        value: isMobileFriendly ? 'Excellent' : 'Needs Improvement',
+        status: isMobileFriendly ? 'good' as const : 'error' as const
       }
     ];
   };

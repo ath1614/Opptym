@@ -46,23 +46,28 @@ const SchemaValidatorTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const schemaTypes = Array.isArray(report.schemaTypes) ? report.schemaTypes : [];
+    const found = report.found || false;
+    const errors = Array.isArray(report.errors) ? report.errors : [];
+    
     return [
       {
-        label: 'Schema Types Found',
-        value: report.schemaTypes?.length || 0,
-        status: (report.schemaTypes?.length || 0) > 0 ? 'good' as const : 'warning' as const,
+        label: 'Schema Found',
+        value: found ? 'Yes' : 'No',
+        status: found ? 'good' as const : 'warning' as const,
         icon: <Code className="w-4 h-4" />
       },
       {
-        label: 'Valid Schemas',
-        value: report.validSchemas?.length || 0,
-        status: 'good' as const,
+        label: 'Schema Types',
+        value: schemaTypes.length,
+        status: schemaTypes.length > 0 ? 'good' as const : 'warning' as const,
         icon: <CheckCircle className="w-4 h-4" />
       },
       {
         label: 'Validation Errors',
-        value: report.errors?.length || 0,
-        status: (report.errors?.length || 0) === 0 ? 'good' as const : 'error' as const,
+        value: errors.length,
+        status: errors.length === 0 ? 'good' as const : 'error' as const,
         icon: <AlertTriangle className="w-4 h-4" />
       }
     ];
@@ -71,27 +76,37 @@ const SchemaValidatorTool = () => {
   const getDetails = () => {
     if (!report) return [];
     
-    const details: any[] = [];
+    // Extract actual data from backend response
+    const schemaTypes = Array.isArray(report.schemaTypes) ? report.schemaTypes : [];
+    const found = report.found || false;
+    const errors = Array.isArray(report.errors) ? report.errors : [];
     
-    if (report.schemaTypes) {
-      report.schemaTypes.forEach((type: string, index: number) => {
-        details.push({
-          label: `Schema Type ${index + 1}`,
-          value: type,
-          status: 'good' as const
-        });
+    const details = [
+      {
+        label: 'Structured Data Present',
+        value: found,
+        status: found ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Schema Types Found',
+        value: schemaTypes.length,
+        status: schemaTypes.length > 0 ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Validation Status',
+        value: errors.length === 0 ? 'Valid' : 'Has Errors',
+        status: errors.length === 0 ? 'good' as const : 'error' as const
+      }
+    ];
+
+    // Add schema type details
+    schemaTypes.forEach((type: string, index: number) => {
+      details.push({
+        label: `Schema Type ${index + 1}`,
+        value: type,
+        status: 'good' as const
       });
-    }
-    
-    if (report.errors) {
-      report.errors.forEach((error: string, index: number) => {
-        details.push({
-          label: `Error ${index + 1}`,
-          value: error,
-          status: 'error' as const
-        });
-      });
-    }
+    });
     
     return details;
   };

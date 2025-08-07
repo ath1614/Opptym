@@ -46,8 +46,11 @@ const KeywordTrackerTool = () => {
   const getMetrics = () => {
     if (!report?.results) return [];
     
-    const foundKeywords = report.results.filter((r: any) => r.found).length;
-    const totalKeywords = report.results.length;
+    // Extract actual data from backend response
+    const results = Array.isArray(report.results) ? report.results : [];
+    const foundKeywords = results.filter((r: any) => r.found).length;
+    const totalKeywords = results.length;
+    const successRate = totalKeywords > 0 ? (foundKeywords / totalKeywords) * 100 : 0;
     
     return [
       {
@@ -64,8 +67,8 @@ const KeywordTrackerTool = () => {
       },
       {
         label: 'Success Rate',
-        value: totalKeywords > 0 ? `${((foundKeywords / totalKeywords) * 100).toFixed(1)}%` : '0%',
-        status: (foundKeywords / totalKeywords) > 0.5 ? 'good' as const : 'warning' as const,
+        value: `${successRate.toFixed(1)}%`,
+        status: successRate > 50 ? 'good' as const : 'warning' as const,
         icon: <TrendingDown className="w-4 h-4" />
       }
     ];
@@ -74,21 +77,48 @@ const KeywordTrackerTool = () => {
   const getDetails = () => {
     if (!report?.results) return [];
     
-    return report.results.map((result: any, index: number) => ({
-      label: `"${result.keyword}"`,
-      value: result.found ? `Position: ${result.position}` : 'Not in top 10',
-      status: result.found ? 'good' as const : 'warning' as const
-    }));
+    // Extract actual data from backend response
+    const results = Array.isArray(report.results) ? report.results : [];
+    
+    const details = [
+      {
+        label: 'Total Keywords Analyzed',
+        value: results.length,
+        status: 'good' as const
+      },
+      {
+        label: 'Keywords in Top 10',
+        value: results.filter((r: any) => r.found && r.position <= 10).length,
+        status: 'good' as const
+      },
+      {
+        label: 'Keywords in Top 3',
+        value: results.filter((r: any) => r.found && r.position <= 3).length,
+        status: 'good' as const
+      }
+    ];
+
+    // Add individual keyword results
+    results.forEach((result: any, index: number) => {
+      details.push({
+        label: `"${result.keyword}"`,
+        value: result.found ? `Position: ${result.position}` : 'Not in top 10',
+        status: result.found ? 'good' : 'warning'
+      });
+    });
+    
+    return details;
   };
 
   const getImprovementGuide = () => {
     if (!report?.results) return [];
 
     const guides = [];
-    const foundKeywords = report.results.filter((r: any) => r.found).length;
-    const totalKeywords = report.results.length;
+    const results = Array.isArray(report.results) ? report.results : [];
+    const foundKeywords = results.filter((r: any) => r.found).length;
+    const totalKeywords = results.length;
     const successRate = totalKeywords > 0 ? (foundKeywords / totalKeywords) : 0;
-    const top3Keywords = report.results.filter((r: any) => r.found && r.position <= 3).length;
+    const top3Keywords = results.filter((r: any) => r.found && r.position <= 3).length;
 
     // Low success rate guide
     if (successRate < 0.3) {

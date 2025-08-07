@@ -44,30 +44,34 @@ const TechnicalAuditTool = () => {
   };
 
   const getMetrics = () => {
-    if (!report) return [];
+    if (!report?.audit) return [];
     
-    const issues = report.issues || [];
-    const criticalIssues = issues.filter((issue: any) => issue.severity === 'critical').length;
-    const warnings = issues.filter((issue: any) => issue.severity === 'warning').length;
+    // Extract actual data from backend response
+    const title = report.audit.title || 'N/A';
+    const metaDescription = report.audit.metaDescription || 'N/A';
+    const h1Count = report.audit.h1Count || 0;
+    const internalLinks = report.audit.internalLinks || 0;
+    const robotsTag = report.audit.robotsTag || 'N/A';
+    const issues = Array.isArray(report.issues) ? report.issues : [];
     
     return [
       {
-        label: 'Total Issues Found',
+        label: 'Technical Issues Found',
         value: issues.length,
         status: issues.length === 0 ? 'good' as const : 'warning' as const,
         icon: <Bug className="w-4 h-4" />
       },
       {
-        label: 'Critical Issues',
-        value: criticalIssues,
-        status: criticalIssues === 0 ? 'good' as const : 'error' as const,
-        icon: <AlertTriangle className="w-4 h-4" />
+        label: 'H1 Headings',
+        value: h1Count,
+        status: h1Count === 1 ? 'good' as const : 'warning' as const,
+        icon: <CheckCircle className="w-4 h-4" />
       },
       {
-        label: 'Warnings',
-        value: warnings,
-        status: warnings === 0 ? 'good' as const : 'warning' as const,
-        icon: <CheckCircle className="w-4 h-4" />
+        label: 'Internal Links',
+        value: internalLinks,
+        status: internalLinks >= 5 ? 'good' as const : 'warning' as const,
+        icon: <Link className="w-4 h-4" />
       }
     ];
   };
@@ -75,31 +79,44 @@ const TechnicalAuditTool = () => {
   const getDetails = () => {
     if (!report?.audit) return [];
     
+    // Extract actual data from backend response
+    const title = report.audit.title || 'N/A';
+    const metaDescription = report.audit.metaDescription || 'N/A';
+    const h1Count = report.audit.h1Count || 0;
+    const internalLinks = report.audit.internalLinks || 0;
+    const robotsTag = report.audit.robotsTag || 'N/A';
+    const issues = Array.isArray(report.issues) ? report.issues : [];
+    
     return [
       {
-        label: 'Title Tag',
-        value: report.audit.title || 'Missing',
-        status: report.audit.title ? 'good' as const : 'error' as const
+        label: 'Title Tag Present',
+        value: title !== 'N/A',
+        status: title !== 'N/A' ? 'good' as const : 'error' as const
       },
       {
-        label: 'Meta Description',
-        value: report.audit.metaDescription ? 'Present' : 'Missing',
-        status: report.audit.metaDescription ? 'good' as const : 'error' as const
+        label: 'Meta Description Present',
+        value: metaDescription !== 'N/A',
+        status: metaDescription !== 'N/A' ? 'good' as const : 'error' as const
       },
       {
-        label: 'H1 Count',
-        value: report.audit.h1Count,
-        status: report.audit.h1Count === 1 ? 'good' as const : 'warning' as const
+        label: 'Single H1 Heading',
+        value: h1Count === 1,
+        status: h1Count === 1 ? 'good' as const : 'warning' as const
       },
       {
-        label: 'Internal Links',
-        value: report.audit.internalLinks,
-        status: report.audit.internalLinks >= 5 ? 'good' as const : 'warning' as const
+        label: 'Adequate Internal Links',
+        value: internalLinks >= 5,
+        status: internalLinks >= 5 ? 'good' as const : 'warning' as const
       },
       {
-        label: 'Robots Tag',
-        value: report.audit.robotsTag,
-        status: report.audit.robotsTag && !report.audit.robotsTag.includes('noindex') ? 'good' as const : 'warning' as const
+        label: 'Robots Tag OK',
+        value: !robotsTag.includes('noindex') && !robotsTag.includes('nofollow'),
+        status: (!robotsTag.includes('noindex') && !robotsTag.includes('nofollow')) ? 'good' as const : 'warning' as const
+      },
+      {
+        label: 'Total Issues Found',
+        value: issues.length,
+        status: issues.length === 0 ? 'good' as const : 'warning' as const
       }
     ];
   };

@@ -46,8 +46,11 @@ const CompetitorTool = () => {
   const getMetrics = () => {
     if (!report?.results) return [];
     
-    const totalCompetitors = report.results.reduce((acc: number, result: any) => acc + result.competitors.length, 0);
-    const totalKeywords = report.results.length;
+    // Extract actual data from backend response
+    const results = Array.isArray(report.results) ? report.results : [];
+    const totalCompetitors = results.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0);
+    const totalKeywords = results.length;
+    const avgCompetitors = totalKeywords > 0 ? (totalCompetitors / totalKeywords) : 0;
     
     return [
       {
@@ -64,7 +67,7 @@ const CompetitorTool = () => {
       },
       {
         label: 'Average Competitors per Keyword',
-        value: totalKeywords > 0 ? (totalCompetitors / totalKeywords).toFixed(1) : 0,
+        value: avgCompetitors.toFixed(1),
         status: 'good' as const,
         icon: <TrendingUp className="w-4 h-4" />
       }
@@ -74,11 +77,32 @@ const CompetitorTool = () => {
   const getDetails = () => {
     if (!report?.results) return [];
     
-    return report.results.slice(0, 5).map((result: any, index: number) => ({
-      label: `Keyword: "${result.keyword}"`,
-      value: `${result.competitors.length} competitors found`,
-      status: 'good' as const
-    }));
+    // Extract actual data from backend response
+    const results = Array.isArray(report.results) ? report.results : [];
+    
+    const details = [
+      {
+        label: 'Total Keywords Analyzed',
+        value: results.length,
+        status: 'good' as const
+      },
+      {
+        label: 'Total Competitors Found',
+        value: results.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0),
+        status: 'good' as const
+      }
+    ];
+
+    // Add competitor details
+    results.slice(0, 5).forEach((result: any, index: number) => {
+      details.push({
+        label: `Keyword: "${result.keyword}"`,
+        value: `${result.competitors?.length || 0} competitors found`,
+        status: 'good' as const
+      });
+    });
+    
+    return details;
   };
 
   const getImprovementGuide = () => {

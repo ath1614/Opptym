@@ -46,23 +46,29 @@ const CanonicalTool = () => {
   const getMetrics = () => {
     if (!report) return [];
     
+    // Extract actual data from backend response
+    const canonicalUrl = report.canonicalUrl || 'Not found';
+    const issues = Array.isArray(report.issues) ? report.issues : [];
+    const hasCanonical = canonicalUrl !== 'Not found';
+    const isValid = hasCanonical && issues.length === 0;
+    
     return [
       {
-        label: 'Canonical URL Present',
-        value: report.hasCanonical ? 'Yes' : 'No',
-        status: report.hasCanonical ? 'good' as const : 'error' as const,
+        label: 'Canonical Tag Present',
+        value: hasCanonical ? 'Yes' : 'No',
+        status: hasCanonical ? 'good' as const : 'error' as const,
         icon: <Link2 className="w-4 h-4" />
       },
       {
-        label: 'Canonical URL Valid',
-        value: report.isValid ? 'Yes' : 'No',
-        status: report.isValid ? 'good' as const : 'error' as const,
+        label: 'Canonical Valid',
+        value: isValid ? 'Yes' : 'No',
+        status: isValid ? 'good' as const : 'warning' as const,
         icon: <CheckCircle className="w-4 h-4" />
       },
       {
-        label: 'Self-Referencing',
-        value: report.isSelfReferencing ? 'Yes' : 'No',
-        status: report.isSelfReferencing ? 'good' as const : 'warning' as const,
+        label: 'Issues Found',
+        value: issues.length,
+        status: issues.length === 0 ? 'good' as const : 'warning' as const,
         icon: <AlertTriangle className="w-4 h-4" />
       }
     ];
@@ -71,28 +77,40 @@ const CanonicalTool = () => {
   const getDetails = () => {
     if (!report) return [];
     
-    return [
+    // Extract actual data from backend response
+    const canonicalUrl = report.canonicalUrl || 'Not found';
+    const issues = Array.isArray(report.issues) ? report.issues : [];
+    const hasCanonical = canonicalUrl !== 'Not found';
+    const isValid = hasCanonical && issues.length === 0;
+    
+    const details = [
       {
-        label: 'Canonical URL Present',
-        value: report.hasCanonical ? 'Yes' : 'No',
-        status: report.hasCanonical ? 'good' as const : 'error' as const
+        label: 'Canonical URL Found',
+        value: hasCanonical,
+        status: hasCanonical ? 'good' as const : 'error' as const
       },
       {
         label: 'Canonical URL Valid',
-        value: report.isValid ? 'Yes' : 'No',
-        status: report.isValid ? 'good' as const : 'error' as const
+        value: isValid,
+        status: isValid ? 'good' as const : 'warning' as const
       },
       {
-        label: 'Self-Referencing',
-        value: report.isSelfReferencing ? 'Yes' : 'No',
-        status: report.isSelfReferencing ? 'good' as const : 'warning' as const
-      },
-      {
-        label: 'Canonical URL',
-        value: report.canonicalUrl || 'Not found',
-        status: report.canonicalUrl ? 'good' as const : 'error' as const
+        label: 'Issues Count',
+        value: issues.length,
+        status: issues.length === 0 ? 'good' as const : 'warning' as const
       }
     ];
+
+    // Add issue details
+    issues.forEach((issue: string, index: number) => {
+      details.push({
+        label: `Issue ${index + 1}`,
+        value: issue,
+        status: 'warning' as const
+      });
+    });
+    
+    return details;
   };
 
   const getImprovementGuide = () => {

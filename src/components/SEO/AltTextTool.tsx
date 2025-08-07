@@ -44,26 +44,32 @@ const AltTextTool = () => {
   };
 
   const getMetrics = () => {
-    if (!report) return [];
+    if (!report?.audit) return [];
+    
+    // Extract actual data from backend response
+    const totalImages = report.audit.totalImages || 0;
+    const missingAltCount = report.audit.missingAltCount || 0;
+    const imagesMissingAlt = Array.isArray(report.audit.imagesMissingAlt) ? report.audit.imagesMissingAlt : [];
+    const altTextQuality = report.audit.altTextQuality || 'Unknown';
     
     return [
       {
         label: 'Total Images',
-        value: report.totalImages || 0,
+        value: totalImages,
         status: 'good' as const,
         icon: <Image className="w-4 h-4" />
       },
       {
-        label: 'Images with Alt Text',
-        value: report.imagesWithAlt?.length || 0,
-        status: 'good' as const,
-        icon: <CheckCircle className="w-4 h-4" />
+        label: 'Missing Alt Text',
+        value: missingAltCount,
+        status: missingAltCount === 0 ? 'good' as const : 'error' as const,
+        icon: <AlertTriangle className="w-4 h-4" />
       },
       {
-        label: 'Images Missing Alt Text',
-        value: report.imagesWithoutAlt?.length || 0,
-        status: (report.imagesWithoutAlt?.length || 0) === 0 ? 'good' as const : 'error' as const,
-        icon: <AlertTriangle className="w-4 h-4" />
+        label: 'Alt Text Quality',
+        value: altTextQuality,
+        status: altTextQuality === 'Good' ? 'good' as const : 'warning' as const,
+        icon: <CheckCircle className="w-4 h-4" />
       }
     ];
   };
@@ -71,28 +77,45 @@ const AltTextTool = () => {
   const getDetails = () => {
     if (!report?.audit) return [];
     
-    return [
+    // Extract actual data from backend response
+    const totalImages = report.audit.totalImages || 0;
+    const missingAltCount = report.audit.missingAltCount || 0;
+    const imagesMissingAlt = Array.isArray(report.audit.imagesMissingAlt) ? report.audit.imagesMissingAlt : [];
+    const altTextQuality = report.audit.altTextQuality || 'Unknown';
+    
+    const details = [
       {
-        label: 'Total Images',
-        value: report.audit.totalImages || 0,
+        label: 'Total Images Found',
+        value: totalImages,
         status: 'good' as const
       },
       {
         label: 'Images with Alt Text',
-        value: report.audit.imagesWithAlt || 0,
+        value: totalImages - missingAltCount,
         status: 'good' as const
       },
       {
         label: 'Images Missing Alt Text',
-        value: report.audit.missingAltCount || 0,
-        status: (report.audit.missingAltCount || 0) === 0 ? 'good' as const : 'error' as const
+        value: missingAltCount,
+        status: missingAltCount === 0 ? 'good' as const : 'error' as const
       },
       {
-        label: 'Alt Text Quality',
-        value: report.audit.altTextQuality || 'Unknown',
-        status: report.audit.altTextQuality === 'Good' ? 'good' as const : 'warning' as const
+        label: 'Alt Text Coverage',
+        value: totalImages > 0 ? `${Math.round(((totalImages - missingAltCount) / totalImages) * 100)}%` : 'N/A',
+        status: missingAltCount === 0 ? 'good' as const : 'warning' as const
       }
     ];
+
+    // Add missing alt text details
+    imagesMissingAlt.slice(0, 5).forEach((image: string, index: number) => {
+      details.push({
+        label: `Missing Alt: Image ${index + 1}`,
+        value: image,
+        status: 'error' as const
+      });
+    });
+    
+    return details;
   };
 
   const getImprovementGuide = () => {

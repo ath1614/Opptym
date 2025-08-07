@@ -178,47 +178,80 @@ const KeywordResearcherTool: React.FC = () => {
   );
 
   const getMetrics = () => {
-    if (!result) return [];
+    if (!result?.analysis) return [];
+    
+    // Extract actual data from backend response
+    const totalKeywords = result.analysis.totalKeywords || 0;
+    const avgSearchVolume = result.analysis.avgSearchVolume || 0;
+    const avgCompetition = result.analysis.avgCompetition || 0;
+    const insights = result.insights || {};
     
     return [
       {
-        label: 'Total Keywords',
-        value: result.analysis.totalKeywords,
+        label: 'Total Keywords Found',
+        value: totalKeywords,
         status: 'good' as const,
         icon: <Search className="w-4 h-4" />
       },
       {
-        label: 'Avg. Search Volume',
-        value: result.analysis.avgSearchVolume.toLocaleString(),
-        status: 'good' as const,
-        icon: <BarChart3 className="w-4 h-4" />
+        label: 'Average Search Volume',
+        value: avgSearchVolume.toLocaleString(),
+        status: avgSearchVolume > 5000 ? 'good' as const : 'warning' as const,
+        icon: <TrendingUp className="w-4 h-4" />
       },
       {
-        label: 'Avg. Competition',
-        value: result.analysis.avgCompetition,
-        status: 'good' as const,
-        icon: <Target className="w-4 h-4" />
+        label: 'Average Competition',
+        value: `${(parseFloat(String(avgCompetition)) * 100).toFixed(1)}%`,
+        status: parseFloat(String(avgCompetition)) < 0.5 ? 'good' as const : 'warning' as const,
+        icon: <BarChart3 className="w-4 h-4" />
       }
     ];
   };
 
   const getDetails = () => {
-    if (!result) return [];
+    if (!result?.analysis) return [];
+    
+    // Extract actual data from backend response
+    const totalKeywords = result.analysis.totalKeywords || 0;
+    const avgSearchVolume = result.analysis.avgSearchVolume || 0;
+    const avgCompetition = result.analysis.avgCompetition || 0;
+    const keywordTypes = result.analysis.keywordTypes || {};
+    const insights = result.insights || {};
     
     return [
       {
-        label: 'High Volume Keywords (>10k)',
-        value: result.insights.highVolumeKeywords,
+        label: 'Seed Keyword',
+        value: result.seedKeyword || 'N/A',
         status: 'good' as const
       },
       {
-        label: 'Low Competition Keywords (<0.3)',
-        value: result.insights.lowCompetitionKeywords,
+        label: 'Main Keywords',
+        value: keywordTypes.main || 0,
         status: 'good' as const
       },
       {
-        label: 'Rising Trends',
-        value: result.insights.risingTrends,
+        label: 'Long-tail Keywords',
+        value: keywordTypes.longTail || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'Question Keywords',
+        value: keywordTypes.questions || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'High Volume Keywords',
+        value: insights.highVolumeKeywords || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'Low Competition Keywords',
+        value: insights.lowCompetitionKeywords || 0,
+        status: 'good' as const
+      },
+      {
+        label: 'Rising Trend Keywords',
+        value: insights.risingTrends || 0,
         status: 'good' as const
       }
     ];
