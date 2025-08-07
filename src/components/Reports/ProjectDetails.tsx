@@ -131,10 +131,35 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
     if (project.brokenLinksReport) {
       const report = project.brokenLinksReport as any;
       let score = 10;
+      
       if (report.brokenCount > 0) {
-        score -= report.brokenCount * 2;
-        suggestions.push(`Fix ${report.brokenCount} broken link(s)`);
+        // Calculate penalty based on severity levels
+        const highPriority = report.severityCounts?.high || 0;
+        const mediumPriority = report.severityCounts?.medium || 0;
+        const lowPriority = report.severityCounts?.low || 0;
+        
+        // High priority links (malware, financial, government) are more critical
+        score -= highPriority * 3;
+        score -= mediumPriority * 2;
+        score -= lowPriority * 1;
+        
+        // Add specific suggestions based on categories
+        if (highPriority > 0) {
+          suggestions.push(`Fix ${highPriority} high-priority broken links (malware, financial, government)`);
+        }
+        if (mediumPriority > 0) {
+          suggestions.push(`Update ${mediumPriority} medium-priority broken links`);
+        }
+        if (lowPriority > 0) {
+          suggestions.push(`Review ${lowPriority} low-priority broken links`);
+        }
+        
+        // Special warning for malware links
+        if (report.categories?.malware && report.categories.malware.length > 0) {
+          suggestions.push('🚨 MALWARE LINKS DETECTED - Immediate security review required');
+        }
       }
+      
       scores['Broken Links'] = Math.max(0, score);
       totalScore += score;
       totalTools++;
@@ -740,27 +765,133 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
               <div className="bg-white rounded-lg p-3 border border-gray-200">
                 <div className="text-sm font-medium text-gray-700 mb-1">Health Score</div>
                 <div className="text-lg font-bold text-gray-900">
-                  {reportData.totalLinks > 0 
+                  {reportData.overallHealthScore || (reportData.totalLinks > 0 
                     ? `${Math.round(((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks) * 100)}%`
-                    : 'N/A'}
+                    : 'N/A')}
                 </div>
               </div>
             </div>
-            {reportData.brokenLinks && reportData.brokenLinks.length > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <div className="text-sm font-medium text-red-800 mb-2">Broken Links Found:</div>
-                <div className="space-y-1">
-                  {reportData.brokenLinks.slice(0, 3).map((link: any, index: number) => (
-                    <div key={index} className="text-sm text-red-700">
-                      {link.url || 'Unknown URL'}
+            
+            {/* Severity Breakdown */}
+            {reportData.severityCounts && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="text-sm font-medium text-red-800 mb-1">High Priority</div>
+                  <div className="text-lg font-bold text-red-600">{reportData.severityCounts.high || 0}</div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="text-sm font-medium text-yellow-800 mb-1">Medium Priority</div>
+                  <div className="text-lg font-bold text-yellow-600">{reportData.severityCounts.medium || 0}</div>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="text-sm font-medium text-blue-800 mb-1">Low Priority</div>
+                  <div className="text-lg font-bold text-blue-600">{reportData.severityCounts.low || 0}</div>
+                </div>
+              </div>
+            )}
+            
+            {/* Categories Breakdown */}
+            {reportData.categories && Object.keys(reportData.categories).length > 0 && (
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="text-sm font-medium text-gray-700 mb-3">Broken Links by Category:</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {Object.entries(reportData.categories).map(([category, links]: [string, any]) => (
+                    <div key={category} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                      <div className="flex items-center space-x-2">
+                        <span className={`w-3 h-3 rounded-full ${
+                          category === 'malware' ? 'bg-red-500' :
+                          category === 'financial' || category === 'government' ? 'bg-yellow-500' :
+                          'bg-blue-500'
+                        }`}></span>
+                        <span className="text-sm font-medium text-gray-800 capitalize">
+                          {category.replace(/([A-Z])/g, ' $1').trim()}
+                        </span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-900">{links.length}</span>
                     </div>
                   ))}
-                  {reportData.brokenLinks.length > 3 && (
-                    <div className="text-sm text-red-600">
-                      ... and {reportData.brokenLinks.length - 3} more
-                    </div>
-                  )}
                 </div>
+              </div>
+            )}
+            
+            {/* Detailed Broken Links */}
+            {reportData.brokenLinks && reportData.brokenLinks.length > 0 && (
+              <div className="space-y-3">
+                <div className="text-sm font-medium text-gray-700">Detailed Analysis:</div>
+                {reportData.brokenLinks.slice(0, 5).map((link: any, index: number) => (
+                  <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-red-800 truncate">{link.url}</div>
+                        <div className="text-xs text-red-600 mt-1">
+                          {link.text && link.text !== 'No text' ? `"${link.text}"` : 'No link text'}
+                        </div>
+                      </div>
+                      <div className={`px-2 py-1 rounded text-xs font-medium ${
+                        link.priority === 'high' ? 'bg-red-200 text-red-800' :
+                        link.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' :
+                        'bg-blue-200 text-blue-800'
+                      }`}>
+                        {link.priority} priority
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-600">Category:</span>
+                        <span className="text-xs font-medium text-gray-800 capitalize">
+                          {link.classification?.category?.replace(/([A-Z])/g, ' $1').trim() || 'General'}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-600">Severity:</span>
+                        <span className={`text-xs font-medium ${
+                          link.classification?.severity === 'high' ? 'text-red-600' :
+                          link.classification?.severity === 'medium' ? 'text-yellow-600' :
+                          'text-blue-600'
+                        }`}>
+                          {link.classification?.severity || 'low'}
+                        </span>
+                      </div>
+                      
+                      {link.recommendations && link.recommendations.length > 0 && (
+                        <div className="mt-2">
+                          <div className="text-xs text-gray-600 mb-1">Recommendations:</div>
+                          <ul className="space-y-1">
+                            {link.recommendations.slice(0, 2).map((rec: string, recIndex: number) => (
+                              <li key={recIndex} className="text-xs text-red-700 flex items-start space-x-1">
+                                <span className="text-red-600">•</span>
+                                <span>{rec}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                {reportData.brokenLinks.length > 5 && (
+                  <div className="text-sm text-gray-600 text-center">
+                    ... and {reportData.brokenLinks.length - 5} more broken links
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Overall Recommendations */}
+            {reportData.recommendations && reportData.recommendations.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="text-sm font-medium text-blue-800 mb-2">Overall Recommendations:</div>
+                <ul className="space-y-2">
+                  {reportData.recommendations.map((rec: string, index: number) => (
+                    <li key={index} className="text-sm text-blue-700 flex items-start space-x-2">
+                      <span className="text-blue-600 font-bold">{index + 1}.</span>
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
