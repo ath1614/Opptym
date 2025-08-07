@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import html2pdf from 'html2pdf.js';
 import { 
   CheckCircle, 
@@ -22,7 +22,11 @@ import {
   Target,
   MapPin,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  Star,
+  Award,
+  Shield,
+  Activity
 } from 'lucide-react';
 
 type Submission = {
@@ -35,6 +39,8 @@ type SEOScore = {
   total: number;
   breakdown: Record<string, number>;
   suggestions?: string[];
+  grade: 'A' | 'B' | 'C' | 'D' | 'F';
+  color: string;
 };
 
 type Project = {
@@ -63,6 +69,7 @@ type Project = {
   mobileAuditReport?: object;
   competitorReport?: object;
   technicalAuditReport?: object;
+  keywordResearcherReport?: object;
 
   submissions?: Submission[];
   seoScore?: SEOScore;
@@ -75,12 +82,190 @@ interface ProjectDetailsProps {
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Calculate SEO Score based on available reports
+  const calculatedSeoScore = useMemo(() => {
+    const scores: Record<string, number> = {};
+    let totalScore = 0;
+    let totalTools = 0;
+    const suggestions: string[] = [];
+
+    // Meta Tag Analysis (0-10 points)
+    if (project.metaTagReport) {
+      const report = project.metaTagReport as any;
+      let score = 10;
+      if (!report.titleLength || report.titleLength < 30 || report.titleLength > 70) {
+        score -= 3;
+        suggestions.push('Optimize meta title length (30-70 characters)');
+      }
+      if (!report.descriptionLength || report.descriptionLength < 50 || report.descriptionLength > 160) {
+        score -= 3;
+        suggestions.push('Optimize meta description length (50-160 characters)');
+      }
+      if (!report.keywords || report.keywords.length === 0) {
+        score -= 2;
+        suggestions.push('Add relevant keywords to meta tags');
+      }
+      scores['Meta Tags'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Keyword Density (0-10 points)
+    if (project.keywordDensityReport) {
+      const report = project.keywordDensityReport as any;
+      let score = 10;
+      if (report.keywordStats) {
+        const avgDensity = report.keywordStats.reduce((sum: number, kw: any) => 
+          sum + parseFloat(kw.density.replace('%', '')), 0) / report.keywordStats.length;
+        if (avgDensity < 0.5 || avgDensity > 2.5) {
+          score -= 5;
+          suggestions.push('Optimize keyword density (0.5-2.5%)');
+        }
+      }
+      scores['Keyword Density'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Broken Links (0-10 points)
+    if (project.brokenLinksReport) {
+      const report = project.brokenLinksReport as any;
+      let score = 10;
+      if (report.brokenCount > 0) {
+        score -= report.brokenCount * 2;
+        suggestions.push(`Fix ${report.brokenCount} broken link(s)`);
+      }
+      scores['Broken Links'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Page Speed (0-10 points)
+    if (project.pageSpeedReport) {
+      const report = project.pageSpeedReport as any;
+      let score = 10;
+      if (report.score < 90) {
+        score -= (90 - report.score) / 10;
+        suggestions.push('Improve page loading speed');
+      }
+      scores['Page Speed'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Mobile Audit (0-10 points)
+    if (project.mobileAuditReport) {
+      const report = project.mobileAuditReport as any;
+      let score = 10;
+      if (!report.audit?.isMobileFriendly) {
+        score -= 5;
+        suggestions.push('Make website mobile-friendly');
+      }
+      if (!report.audit?.hasViewportMeta) {
+        score -= 3;
+        suggestions.push('Add viewport meta tag');
+      }
+      scores['Mobile Optimization'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Technical SEO (0-10 points)
+    if (project.technicalAuditReport) {
+      const report = project.technicalAuditReport as any;
+      let score = 10;
+      if (report.issues && report.issues.length > 0) {
+        score -= report.issues.length * 2;
+        suggestions.push(`Fix ${report.issues.length} technical SEO issue(s)`);
+      }
+      scores['Technical SEO'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Schema Markup (0-10 points)
+    if (project.schemaReport) {
+      const report = project.schemaReport as any;
+      let score = 10;
+      if (!report.found) {
+        score -= 5;
+        suggestions.push('Implement structured data markup');
+      }
+      if (report.errors && report.errors.length > 0) {
+        score -= report.errors.length;
+        suggestions.push('Fix schema markup errors');
+      }
+      scores['Schema Markup'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Alt Text (0-10 points)
+    if (project.altTextReport) {
+      const report = project.altTextReport as any;
+      let score = 10;
+      if (report.audit?.missingAltCount > 0) {
+        score -= report.audit.missingAltCount;
+        suggestions.push(`Add alt text to ${report.audit.missingAltCount} image(s)`);
+      }
+      scores['Alt Text'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Canonical Tags (0-10 points)
+    if (project.canonicalReport) {
+      const report = project.canonicalReport as any;
+      let score = 10;
+      if (!report.canonicalUrl || report.canonicalUrl === 'Not found') {
+        score -= 5;
+        suggestions.push('Add canonical URL tags');
+      }
+      if (report.issues && report.issues.length > 0) {
+        score -= report.issues.length * 2;
+        suggestions.push('Fix canonical tag issues');
+      }
+      scores['Canonical Tags'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Calculate final score and grade
+    const finalScore = totalTools > 0 ? Math.round(totalScore / totalTools) : 0;
+    let grade: 'A' | 'B' | 'C' | 'D' | 'F';
+    let color: string;
+
+    if (finalScore >= 90) {
+      grade = 'A';
+      color = 'from-green-500 to-emerald-600';
+    } else if (finalScore >= 80) {
+      grade = 'B';
+      color = 'from-blue-500 to-cyan-600';
+    } else if (finalScore >= 70) {
+      grade = 'C';
+      color = 'from-yellow-500 to-orange-600';
+    } else if (finalScore >= 60) {
+      grade = 'D';
+      color = 'from-orange-500 to-red-600';
+    } else {
+      grade = 'F';
+      color = 'from-red-500 to-pink-600';
+    }
+
+    return {
+      total: finalScore,
+      breakdown: scores,
+      suggestions: suggestions.slice(0, 5), // Limit to top 5 suggestions
+      grade,
+      color
+    };
+  }, [project]);
+
   const downloadPDF = () => {
     if (reportRef.current) {
-      // Clone the element to avoid modifying the original
       const element = reportRef.current.cloneNode(true) as HTMLElement;
       
-      // Add PDF-specific styles for better layout - ensure all content is visible
+      // Enhanced PDF-specific styles for professional layout
       const style = document.createElement('style');
       style.textContent = `
         @media print {
@@ -94,202 +279,192 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           body {
             margin: 0 !important;
             padding: 0 !important;
-            font-size: 11px !important;
-            line-height: 1.3 !important;
-            overflow: visible !important;
-          }
-          
-          .card-modern {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
-            margin-bottom: 12px !important;
-            padding: 10px !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 6px !important;
+            font-size: 10px !important;
+            line-height: 1.2 !important;
+            font-family: Arial, sans-serif !important;
+            color: #000 !important;
             background: white !important;
-            overflow: visible !important;
-            max-height: none !important;
-            height: auto !important;
           }
           
-          .grid {
-            display: block !important;
+          .page-break-before {
+            page-break-before: always !important;
           }
           
-          .grid > * {
-            margin-bottom: 12px !important;
+          .page-break-after {
+            page-break-after: always !important;
+          }
+          
+          .no-break {
             page-break-inside: avoid !important;
-            overflow: visible !important;
           }
           
-          .flex {
-            display: block !important;
+          /* Header styling */
+          .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+            border-radius: 8px !important;
           }
           
-          .space-y-4 > * {
-            margin-bottom: 8px !important;
+          .report-header h1 {
+            font-size: 24px !important;
+            margin: 0 0 10px 0 !important;
+            font-weight: bold !important;
           }
           
-          .space-y-6 > * {
+          .report-header p {
+            font-size: 14px !important;
+            margin: 0 !important;
+            opacity: 0.9 !important;
+          }
+          
+          /* Section styling */
+          .report-section {
+            background: white !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            padding: 15px !important;
+            margin-bottom: 15px !important;
+            page-break-inside: avoid !important;
+          }
+          
+          .section-header {
+            border-bottom: 2px solid #3b82f6 !important;
+            padding-bottom: 8px !important;
             margin-bottom: 12px !important;
           }
           
-          .space-y-8 > * {
-            margin-bottom: 16px !important;
+          .section-header h2 {
+            font-size: 18px !important;
+            font-weight: bold !important;
+            color: #1f2937 !important;
+            margin: 0 !important;
           }
           
-          h1, h2, h3, h4, h5, h6 {
-            margin-top: 0 !important;
-            margin-bottom: 8px !important;
-            page-break-after: avoid !important;
-            overflow: visible !important;
+          /* SEO Score styling */
+          .seo-score {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: white !important;
+            padding: 20px !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+            margin-bottom: 20px !important;
           }
           
-          h1 { font-size: 20px !important; }
-          h2 { font-size: 18px !important; }
-          h3 { font-size: 16px !important; }
-          h4 { font-size: 14px !important; }
-          h5 { font-size: 12px !important; }
-          h6 { font-size: 11px !important; }
-          
-          p {
-            margin: 0 0 6px 0 !important;
-            line-height: 1.3 !important;
-            overflow: visible !important;
+          .seo-score .grade {
+            font-size: 48px !important;
+            font-weight: bold !important;
+            margin: 0 !important;
           }
           
-          .text-sm { font-size: 10px !important; }
-          .text-xs { font-size: 9px !important; }
-          
-          .bg-gradient-to-r {
-            background: #f3f4f6 !important;
-            border: 1px solid #d1d5db !important;
+          .seo-score .score {
+            font-size: 24px !important;
+            margin: 5px 0 !important;
           }
           
-          .rounded-xl, .rounded-lg, .rounded-md {
-            border-radius: 4px !important;
+          /* Metrics grid */
+          .metrics-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+            gap: 10px !important;
+            margin-bottom: 15px !important;
           }
           
-          .p-6 { padding: 8px !important; }
-          .p-4 { padding: 6px !important; }
-          .p-3 { padding: 4px !important; }
-          .p-2 { padding: 3px !important; }
-          
-          .mb-6 { margin-bottom: 8px !important; }
-          .mb-4 { margin-bottom: 6px !important; }
-          .mb-3 { margin-bottom: 4px !important; }
-          .mb-2 { margin-bottom: 3px !important; }
-          
-          .mt-4 { margin-top: 6px !important; }
-          .mt-3 { margin-top: 4px !important; }
-          .mt-2 { margin-top: 3px !important; }
-          
-          .w-12, .w-10, .w-8, .w-6, .w-5, .w-4 {
-            width: auto !important;
-            height: auto !important;
-          }
-          
-          .h-12, .h-10, .h-8, .h-6, .h-5, .h-4 {
-            height: auto !important;
-          }
-          
-          .flex.items-center {
-            display: block !important;
-          }
-          
-          .flex.items-center > * {
-            display: inline-block !important;
-            margin-right: 6px !important;
-          }
-          
-          .justify-between {
-            display: block !important;
-          }
-          
-          .justify-between > * {
-            display: block !important;
-            margin-bottom: 4px !important;
-          }
-          
-          .space-x-2 > * {
-            margin-right: 3px !important;
-          }
-          
-          .space-x-3 > * {
-            margin-right: 4px !important;
-          }
-          
-          .space-x-4 > * {
-            margin-right: 6px !important;
-          }
-          
-          .grid-cols-1, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
-            display: block !important;
-          }
-          
-          .grid-cols-1 > *, .grid-cols-2 > *, .grid-cols-3 > *, .grid-cols-4 > * {
-            display: block !important;
-            margin-bottom: 8px !important;
-          }
-          
-          .text-center {
+          .metric-card {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            padding: 10px !important;
             text-align: center !important;
           }
           
-          .text-right {
-            text-align: right !important;
+          .metric-card .label {
+            font-size: 11px !important;
+            color: #64748b !important;
+            margin-bottom: 5px !important;
           }
           
-          .font-bold { font-weight: bold !important; }
-          .font-semibold { font-weight: 600 !important; }
-          .font-medium { font-weight: 500 !important; }
+          .metric-card .value {
+            font-size: 16px !important;
+            font-weight: bold !important;
+            color: #1f2937 !important;
+          }
           
-          .text-gray-900 { color: #000 !important; }
-          .text-gray-800 { color: #1f2937 !important; }
-          .text-gray-700 { color: #374151 !important; }
-          .text-gray-600 { color: #4b5563 !important; }
-          .text-gray-500 { color: #6b7280 !important; }
-          .text-gray-400 { color: #9ca3af !important; }
-          
-          .bg-blue-500, .bg-green-500, .bg-red-500, .bg-yellow-500, .bg-purple-500 {
-            background: #f3f4f6 !important;
+          /* Tool reports */
+          .tool-report {
+            background: #f9fafb !important;
             border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 12px !important;
+            margin-bottom: 10px !important;
           }
           
-          .text-white {
-            color: #000 !important;
+          .tool-report h3 {
+            font-size: 14px !important;
+            font-weight: bold !important;
+            color: #374151 !important;
+            margin: 0 0 8px 0 !important;
           }
           
-          .border {
-            border: 1px solid #e5e7eb !important;
+          .tool-report .details {
+            font-size: 11px !important;
+            color: #6b7280 !important;
           }
           
-          .shadow-lg, .shadow-xl {
-            box-shadow: none !important;
+          /* Status indicators */
+          .status-good {
+            color: #059669 !important;
+            font-weight: bold !important;
           }
           
-          .backdrop-blur-sm {
-            backdrop-filter: none !important;
+          .status-warning {
+            color: #d97706 !important;
+            font-weight: bold !important;
           }
           
-          .bg-white\/80 {
-            background: white !important;
+          .status-error {
+            color: #dc2626 !important;
+            font-weight: bold !important;
           }
           
-          .border-white\/20 {
-            border-color: #e5e7eb !important;
+          /* Tables */
+          table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 10px 0 !important;
+            font-size: 10px !important;
           }
           
-          /* CRITICAL: Remove all scrolling and height restrictions */
-          .overflow-hidden {
-            overflow: visible !important;
+          th, td {
+            border: 1px solid #d1d5db !important;
+            padding: 6px 8px !important;
+            text-align: left !important;
           }
           
-          .overflow-y-auto {
-            overflow: visible !important;
+          th {
+            background: #f3f4f6 !important;
+            font-weight: bold !important;
           }
           
-          .overflow-x-auto {
+          /* Lists */
+          ul, ol {
+            margin: 8px 0 !important;
+            padding-left: 20px !important;
+          }
+          
+          li {
+            margin-bottom: 4px !important;
+            font-size: 11px !important;
+          }
+          
+          /* Hide unnecessary elements */
+          .no-print {
+            display: none !important;
+          }
+          
+          /* Ensure all content is visible */
+          .overflow-hidden, .overflow-y-auto, .overflow-x-auto {
             overflow: visible !important;
           }
           
@@ -300,68 +475,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           .h-96, .h-80, .h-64, .h-48, .h-32 {
             height: auto !important;
           }
-          
-          .scrollbar-hide {
-            scrollbar-width: none !important;
-          }
-          
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none !important;
-          }
-          
-          /* Ensure all content is visible */
-          .min-h-screen {
-            min-height: auto !important;
-          }
-          
-          .h-screen {
-            height: auto !important;
-          }
-          
-          /* Force all content to be visible */
-          div, section, article {
-            overflow: visible !important;
-            max-height: none !important;
-            height: auto !important;
-          }
-          
-          /* Ensure tables and lists are fully visible */
-          table {
-            width: 100% !important;
-            font-size: 9px !important;
-          }
-          
-          th, td {
-            padding: 2px 4px !important;
-            border: 1px solid #e5e7eb !important;
-          }
-          
-          ul, ol {
-            margin: 0 0 6px 0 !important;
-            padding-left: 16px !important;
-          }
-          
-          li {
-            margin-bottom: 2px !important;
-          }
-          
-          /* Ensure all SEO tool sections are visible */
-          [class*="tool-"], [class*="analysis-"], [class*="report-"] {
-            overflow: visible !important;
-            max-height: none !important;
-            height: auto !important;
-            display: block !important;
-          }
         }
       `;
       element.appendChild(style);
 
       html2pdf()
         .set({
-          margin: [0.2, 0.2, 0.2, 0.2],
-          filename: `${project.title}_SEO_Report.pdf`,
+          margin: [0.3, 0.3, 0.3, 0.3],
+          filename: `${project.title}_SEO_Report_${new Date().toISOString().split('T')[0]}.pdf`,
           html2canvas: { 
-            scale: 1.2,
+            scale: 1.5,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
@@ -477,6 +600,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
       icon: <Settings className="w-5 h-5" />,
       color: 'from-gray-500 to-slate-600',
       description: 'Comprehensive technical analysis'
+    },
+    keywordResearcherReport: {
+      title: 'Keyword Research',
+      icon: <Search className="w-5 h-5" />,
+      color: 'from-indigo-500 to-purple-600',
+      description: 'Keyword research and analysis'
     }
   };
 
@@ -485,29 +614,194 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
     project[key as keyof Project] && Object.keys(project[key as keyof Project] as object).length > 0
   );
 
-  const getStatusIcon = (status?: 'good' | 'warning' | 'error') => {
-    switch (status) {
-      case 'good':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'warning':
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-      case 'error':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return <Info className="w-4 h-4 text-blue-500" />;
-    }
-  };
+  // Function to render tool-specific data in a structured way
+  const renderToolData = (toolKey: string, reportData: any) => {
+    const config = toolConfigs[toolKey as keyof typeof toolConfigs];
+    
+    switch (toolKey) {
+      case 'metaTagReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Title Length</div>
+              <div className="value">{reportData.titleLength || 0} chars</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Description Length</div>
+              <div className="value">{reportData.descriptionLength || 0} chars</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Keywords Found</div>
+              <div className="value">{reportData.keywords?.length || 0}</div>
+            </div>
+          </div>
+        );
 
-  const getStatusColor = (status?: 'good' | 'warning' | 'error') => {
-    switch (status) {
-      case 'good':
-        return 'text-green-600 bg-green-50 border-green-200';
-      case 'warning':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'error':
-        return 'text-red-600 bg-red-50 border-red-200';
+      case 'keywordDensityReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Total Words</div>
+              <div className="value">{reportData.totalWords?.toLocaleString() || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Keywords Analyzed</div>
+              <div className="value">{reportData.keywordStats?.length || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Avg Density</div>
+              <div className="value">
+                {reportData.keywordStats?.length > 0 
+                  ? `${(reportData.keywordStats.reduce((sum: number, kw: any) => 
+                      sum + parseFloat(kw.density.replace('%', '')), 0) / reportData.keywordStats.length).toFixed(2)}%`
+                  : '0%'}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'brokenLinksReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Total Links</div>
+              <div className="value">{reportData.totalLinks || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Broken Links</div>
+              <div className="value">{reportData.brokenCount || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Health Score</div>
+              <div className="value">
+                {reportData.totalLinks > 0 
+                  ? `${Math.round(((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks) * 100)}%`
+                  : 'N/A'}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'pageSpeedReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Performance Score</div>
+              <div className="value">{reportData.score || 0}/100</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">First Contentful Paint</div>
+              <div className="value">{reportData.metrics?.firstContentfulPaint || 0}ms</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Largest Contentful Paint</div>
+              <div className="value">{reportData.metrics?.largestContentfulPaint || 0}ms</div>
+            </div>
+          </div>
+        );
+
+      case 'mobileAuditReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Mobile Friendly</div>
+              <div className="value">{reportData.audit?.isMobileFriendly ? 'Yes' : 'No'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Viewport Meta</div>
+              <div className="value">{reportData.audit?.hasViewportMeta ? 'Present' : 'Missing'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Small Tap Targets</div>
+              <div className="value">{reportData.audit?.smallTapTargets || 0}</div>
+            </div>
+          </div>
+        );
+
+      case 'technicalAuditReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Title Present</div>
+              <div className="value">{reportData.audit?.title ? 'Yes' : 'No'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Meta Description</div>
+              <div className="value">{reportData.audit?.metaDescription ? 'Yes' : 'No'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">H1 Count</div>
+              <div className="value">{reportData.audit?.h1Count || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Internal Links</div>
+              <div className="value">{reportData.audit?.internalLinks || 0}</div>
+            </div>
+          </div>
+        );
+
+      case 'schemaReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Schema Found</div>
+              <div className="value">{reportData.found ? 'Yes' : 'No'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Schema Types</div>
+              <div className="value">{reportData.schemaTypes?.length || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Validation Errors</div>
+              <div className="value">{reportData.errors?.length || 0}</div>
+            </div>
+          </div>
+        );
+
+      case 'altTextReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Total Images</div>
+              <div className="value">{reportData.audit?.totalImages || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Missing Alt Text</div>
+              <div className="value">{reportData.audit?.missingAltCount || 0}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Coverage</div>
+              <div className="value">
+                {reportData.audit?.totalImages > 0 
+                  ? `${Math.round(((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages) * 100)}%`
+                  : 'N/A'}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'canonicalReport':
+        return (
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <div className="label">Canonical Present</div>
+              <div className="value">{reportData.canonicalUrl !== 'Not found' ? 'Yes' : 'No'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="label">Issues Found</div>
+              <div className="value">{reportData.issues?.length || 0}</div>
+            </div>
+          </div>
+        );
+
       default:
-        return 'text-blue-600 bg-blue-50 border-blue-200';
+        return (
+          <div className="bg-gray-50 rounded-lg p-4">
+            <pre className="text-xs text-gray-700 whitespace-pre-wrap">
+              {JSON.stringify(reportData, null, 2)}
+            </pre>
+          </div>
+        );
     }
   };
 
@@ -597,59 +891,59 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           </div>
 
           {/* SEO Score */}
-          {project.seoScore && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800">SEO Score</h2>
-                  <p className="text-sm text-gray-600">Overall performance and optimization score</p>
-                </div>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">SEO Performance Score</h2>
+                <p className="text-sm text-gray-600">Overall performance and optimization score</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Main Score */}
+              <div className={`bg-gradient-to-r ${calculatedSeoScore.color} rounded-xl p-6 text-white text-center`}>
+                <div className="text-4xl font-bold mb-2">{calculatedSeoScore.grade}</div>
+                <div className="text-2xl font-semibold">{calculatedSeoScore.total}/100</div>
+                <div className="text-sm opacity-90 mt-2">Overall Score</div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-yellow-800">Total Score</span>
-                    <TrendingUp className="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div className="mt-2">
-                    <span className="text-3xl font-bold text-yellow-700">{project.seoScore.total}/130</span>
-                  </div>
+              {/* Score Breakdown */}
+              <div className="md:col-span-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Score Breakdown</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {Object.entries(calculatedSeoScore.breakdown).map(([tool, score]) => (
+                    <div key={tool} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="text-sm font-medium text-gray-700">{tool}</div>
+                      <div className="text-xl font-bold text-gray-900">{score}/10</div>
+                    </div>
+                  ))}
                 </div>
-                
-                {project.seoScore.breakdown && Object.entries(project.seoScore.breakdown).map(([tool, score]) => (
-                  <div key={tool} className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-blue-800">{tool}</span>
-                      <CheckCircle className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div className="mt-2">
-                      <span className="text-2xl font-bold text-blue-700">{score}/10</span>
-                    </div>
-                  </div>
-                ))}
               </div>
-
-              {Array.isArray(project.seoScore.suggestions) && project.seoScore.suggestions.length > 0 && (
-                <div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4">
-                  <h4 className="font-semibold text-red-800 mb-2">Suggestions for Improvement:</h4>
-                  <ul className="space-y-1">
-                    {project.seoScore.suggestions.map((suggestion, i) => (
-                      <li key={i} className="text-sm text-red-700 flex items-start space-x-2">
-                        <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                        <span>{suggestion}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
-          )}
 
-          {/* Tool Reports - Only show used tools */}
+            {/* Suggestions */}
+            {calculatedSeoScore.suggestions && calculatedSeoScore.suggestions.length > 0 && (
+              <div className="mt-6 bg-red-50 border border-red-200 rounded-xl p-4">
+                <h4 className="font-semibold text-red-800 mb-3 flex items-center">
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Top Improvement Suggestions:
+                </h4>
+                <ul className="space-y-2">
+                  {calculatedSeoScore.suggestions.map((suggestion, i) => (
+                    <li key={i} className="text-sm text-red-700 flex items-start space-x-2">
+                      <span className="text-red-600 font-bold">{i + 1}.</span>
+                      <span>{suggestion}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Tool Reports */}
           {usedTools.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
               <div className="flex items-center space-x-3 mb-6">
@@ -677,34 +971,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                         </div>
                       </div>
                       
-                      <div className="bg-white rounded-lg p-4 border border-gray-200">
-                        <div className="overflow-visible">
-                          {reportData && typeof reportData === 'object' ? (
-                            <div className="space-y-2">
-                              {Object.entries(reportData).map(([key, value]) => (
-                                <div key={key} className="border-b border-gray-100 pb-2 last:border-b-0">
-                                  <div className="font-medium text-gray-800 text-xs capitalize">
-                                    {key.replace(/([A-Z])/g, ' $1').trim()}:
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-1">
-                                    {typeof value === 'object' ? (
-                                      <pre className="whitespace-pre-wrap text-xs">
-                                        {JSON.stringify(value, null, 2)}
-                                      </pre>
-                                    ) : (
-                                      <span>{String(value)}</span>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                              {JSON.stringify(reportData, null, 2)}
-                            </pre>
-                          )}
-                        </div>
-                      </div>
+                      {renderToolData(key, reportData)}
                     </div>
                   );
                 })}
