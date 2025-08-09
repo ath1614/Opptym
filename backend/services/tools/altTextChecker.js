@@ -18,11 +18,18 @@ const runAltTextAudit = async (url) => {
       }
     });
 
+    // Determine alt text quality
+    const altTextQuality = withoutAlt.length === 0 ? 'Good' : 
+                           withoutAlt.length <= total * 0.2 ? 'Fair' : 'Poor';
+
     return {
       success: true,
-      totalImages: total,
-      missingAltCount: withoutAlt.length,
-      imagesMissingAlt: withoutAlt,
+      audit: {
+        totalImages: total,
+        missingAltCount: withoutAlt.length,
+        imagesMissingAlt: withoutAlt,
+        altTextQuality: altTextQuality
+      },
       suggestions: withoutAlt.length
         ? ['Add descriptive alt attributes to all images for accessibility and SEO.']
         : ['All images have valid alt tags. Good job!']

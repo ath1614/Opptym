@@ -35,6 +35,13 @@ const CompetitorTool = () => {
     setLoading(true);
     try {
       const res = await runCompetitorAnalyzer(selectedProjectId);
+      console.log('🔍 Competitor Analyzer Response:', res);
+      console.log('🔍 Response structure:', {
+        success: res.success,
+        hasResults: !!res.results,
+        resultsType: Array.isArray(res.results) ? 'array' : typeof res.results,
+        resultsLength: Array.isArray(res.results) ? res.results.length : 'N/A'
+      });
       setReport(res);
     } catch (err) {
       console.error('Analyzer failed:', err);

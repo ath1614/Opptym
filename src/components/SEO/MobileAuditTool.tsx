@@ -35,6 +35,13 @@ const MobileAuditTool = () => {
     setLoading(true);
     try {
       const res = await runMobileAuditChecker(selectedProjectId);
+      console.log('🔍 Mobile Audit Response:', res);
+      console.log('🔍 Response structure:', {
+        success: res.success,
+        hasAudit: !!res.audit,
+        auditType: typeof res.audit,
+        auditKeys: res.audit ? Object.keys(res.audit) : []
+      });
       setReport(res);
     } catch (err) {
       console.error('Analyzer failed:', err);

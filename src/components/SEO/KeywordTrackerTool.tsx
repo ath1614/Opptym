@@ -35,6 +35,15 @@ const KeywordTrackerTool = () => {
     setLoading(true);
     try {
       const res = await runKeywordTracker(selectedProjectId);
+      console.log('🔍 Keyword Tracker Response:', res);
+      console.log('🔍 Response structure:', {
+        success: res.success,
+        hasResults: !!res.results,
+        resultsType: Array.isArray(res.results) ? 'array' : typeof res.results,
+        resultsLength: Array.isArray(res.results) ? res.results.length : 'N/A',
+        hasAudit: !!res.audit,
+        auditType: typeof res.audit
+      });
       setReport(res);
     } catch (err) {
       console.error('Analyzer failed:', err);
