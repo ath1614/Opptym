@@ -19,7 +19,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import axios from 'axios';
-import { BASE_URL } from '../../lib/api';
 import { getUserDisplayName } from '../../utils/userUtils';
 import { useAuth } from '../../hooks/useAuth';
 import SubscriptionStatus from '../Subscription/SubscriptionStatus';
@@ -145,8 +144,8 @@ export default function Dashboard() {
       console.log('🔍 Fetching dashboard data...');
 
       const [projectsResponse, submissionsResponse] = await Promise.all([
-        axios.get(`${BASE_URL}/projects`, { headers }),
-        axios.get(`${BASE_URL}/submissions`, { headers })
+        axios.get('/api/projects', { headers }),
+        axios.get('/api/submissions', { headers })
       ]);
 
       const projectsData = projectsResponse.data;
@@ -227,7 +226,7 @@ export default function Dashboard() {
       if (previousSubmissions > 0) {
         growthRate = Math.round(((recentSubmissions - previousSubmissions) / previousSubmissions) * 100);
       } else if (recentSubmissions > 0) {
-        growthRate = 100; // New activity
+        growthRate = 100; // If no previous submissions but recent ones, that's 100% growth
       }
 
       console.log('🔍 Calculated stats:', { 

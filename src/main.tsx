@@ -10,10 +10,17 @@ const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
 const getAxiosBaseURL = () => {
-  if (isProduction) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
-    // For axios, we want the base URL without /api since endpoints will be added directly
+  // Check if VITE_API_URL is set (this indicates deployed backend preference)
+  const apiUrl = import.meta.env.VITE_API_URL;
+  
+  if (apiUrl) {
+    // VITE_API_URL is set, use it (remove /api suffix if present)
     return apiUrl.endsWith('/api') ? apiUrl.replace('/api', '') : apiUrl;
+  }
+  
+  // Fallback: use localhost in development, deployed URL in production
+  if (isProduction) {
+    return 'https://opptym-backend.onrender.com';
   }
   return 'http://localhost:5050';
 };

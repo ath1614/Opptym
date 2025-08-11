@@ -7,6 +7,6 @@ const { protect } = require('../middleware/authMiddleware');
 router.get('/:projectId', protect, universalFormController.runUniversalFormAnalysis);
 
 // Automation execution routes
-router.post('/:projectId/execute', protect, universalFormController.executeAutomation);
+router.post('/:projectId/execute', protect, universalFormController.executeUniversalForm);
 
 module.exports = router; 

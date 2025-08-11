@@ -13,8 +13,8 @@ import {
   TrendingUp,
   BarChart3
 } from 'lucide-react';
-import { BASE_URL } from '../../lib/api';
 import axios from 'axios';
+import { useAuth } from '../../hooks/useAuth';
 
 interface SubscriptionDetails {
   subscription: string;
@@ -38,6 +38,8 @@ interface SubscriptionDetails {
 const SubscriptionStatus = () => {
   const [subscription, setSubscription] = useState<SubscriptionDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
 
   useEffect(() => {
     fetchSubscriptionDetails();
@@ -45,12 +47,28 @@ const SubscriptionStatus = () => {
 
   const fetchSubscriptionDetails = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/subscription/details`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('No authentication token found');
+        return;
+      }
+
+      const response = await axios.get('/api/subscription/details', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      setSubscription(response.data);
-    } catch (error) {
+
+      if (response.data.success) {
+        setSubscription(response.data.subscription);
+        setError(null);
+      } else {
+        setError(response.data.message || 'Failed to fetch subscription details');
+      }
+    } catch (error: any) {
       console.error('Error fetching subscription details:', error);
+      setError(error.response?.data?.message || 'Failed to fetch subscription details');
     } finally {
       setLoading(false);
     }

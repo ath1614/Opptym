@@ -1,20 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
-// API Configuration - ensure /api prefix is always included
-const isDevelopment = import.meta.env.DEV;
-const isProduction = import.meta.env.PROD;
-
-const getBaseURL = () => {
-  if (isProduction) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
-    // Ensure the URL ends with /api
-    return apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
-  }
-  return 'http://localhost:5050/api';
-};
-
-const BASE_URL = getBaseURL();
+// Use the same axios instance configured in main.tsx
+// The axios.defaults.baseURL is already set to the correct base URL
 
 interface User {
   id: string;
@@ -75,7 +63,7 @@ export const useAuthProvider = (): AuthContextType => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get(`${BASE_URL}/auth/profile`, {
+      const response = await axios.get('/api/auth/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -99,12 +87,11 @@ export const useAuthProvider = (): AuthContextType => {
     try {
       console.log('🔐 Login attempt:', {
         email,
-        baseURL: BASE_URL,
-        fullUrl: `${BASE_URL}/auth/login`,
-        axiosBaseURL: axios.defaults.baseURL
+        axiosBaseURL: axios.defaults.baseURL,
+        fullUrl: `${axios.defaults.baseURL}/api/auth/login`
       });
       
-      const res = await axios.post(`${BASE_URL}/auth/login`, { email, password });
+      const res = await axios.post('/api/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       
       // First set user from token
@@ -129,7 +116,7 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      await axios.post(`${BASE_URL}/auth/signup`, { username, email, password });
+      await axios.post('/api/auth/signup', { username, email, password });
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
