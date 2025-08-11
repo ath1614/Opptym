@@ -47,7 +47,10 @@ A comprehensive SEO tools and automation platform built with React, Node.js, and
 - ✅ Fixed API URL construction issues
 - ✅ Improved automation functionality
 - ✅ Professional back button and navigation design
+- ✅ **NEW: 254 submission sites across 7 categories**
+- ✅ **NEW: Fixed automation to open new Chrome browser**
+- ✅ **NEW: Enhanced Puppeteer automation service**
 
 ---
 
-*Last updated: December 2024* 
+*Last updated: December 2024 - Automation Fix & 254 Sites Update* 
