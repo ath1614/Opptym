@@ -9,17 +9,68 @@ const signup = async (req, res) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   
   const { username, email, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
 
   try {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return res.status(400).json({ 
+        error: 'INVALID_EMAIL',
+        message: 'Please enter a valid email address' 
+      });
+    }
+
+    // Validate password strength
+    if (!password || password.length < 6) {
+      return res.status(400).json({ 
+        error: 'WEAK_PASSWORD',
+        message: 'Password must be at least 6 characters long' 
+      });
+    }
+
+    // Validate username
+    if (!username || username.length < 3) {
+      return res.status(400).json({ 
+        error: 'INVALID_USERNAME',
+        message: 'Username must be at least 3 characters long' 
+      });
+    }
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        error: 'EMAIL_EXISTS',
+        message: 'An account with this email already exists. Please login instead.' 
+      });
+    }
+
+    // Check if username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ 
+        error: 'USERNAME_EXISTS',
+        message: 'This username is already taken. Please choose a different one.' 
+      });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({ 
       username, 
       email, 
       password: hashed
     });
-    res.status(201).json({ message: 'User created', isAdmin: user.isAdmin });
+    
+    res.status(201).json({ 
+      message: 'Account created successfully! You can now login.',
+      isAdmin: user.isAdmin 
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message || 'Signup failed' });
+    console.error('Signup error:', err);
+    res.status(400).json({ 
+      error: 'SIGNUP_FAILED',
+      message: 'Failed to create account. Please try again.' 
+    });
   }
 };
 
@@ -34,22 +85,40 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            return res.status(400).json({ 
+                error: 'INVALID_EMAIL',
+                message: 'Please enter a valid email address' 
+            });
+        }
+        
+        if (!password) {
+            return res.status(400).json({ 
+                error: 'MISSING_PASSWORD',
+                message: 'Password is required' 
+            });
         }
         
         const user = await User.findOne({ email });
         console.log("🔍 Found user:", user ? 'Yes' : 'No');
       
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ 
+                error: 'USER_NOT_FOUND',
+                message: 'No account found with this email address. Please check your email or sign up.' 
+            });
         }
       
         const match = await bcrypt.compare(password, user.password);
         console.log("✅ Password match:", match);
       
         if (!match) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ 
+                error: 'WRONG_PASSWORD',
+                message: 'Incorrect password. Please try again.' 
+            });
         }
       
         // Use fallback JWT secret if environment variable is not set

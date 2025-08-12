@@ -105,9 +105,34 @@ export const useAuthProvider = (): AuthContextType => {
 
       // Then refresh user data from server to get complete profile
       await refreshUser();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      throw error;
+      
+      // Handle specific error types with user-friendly messages
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (error.response?.data?.error) {
+        switch (error.response.data.error) {
+          case 'INVALID_EMAIL':
+            errorMessage = '❌ Please enter a valid email address.';
+            break;
+          case 'MISSING_PASSWORD':
+            errorMessage = '❌ Password is required.';
+            break;
+          case 'USER_NOT_FOUND':
+            errorMessage = '❌ No account found with this email address.\n\nPlease check your email or sign up for a new account.';
+            break;
+          case 'WRONG_PASSWORD':
+            errorMessage = '❌ Incorrect password.\n\nPlease check your password and try again.';
+            break;
+          default:
+            errorMessage = error.response.data.message || 'Login failed. Please try again.';
+        }
+      }
+      
+      // Show error popup
+      alert(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -117,10 +142,42 @@ export const useAuthProvider = (): AuthContextType => {
     setIsLoading(true);
     try {
       await axios.post('/api/auth/signup', { username, email, password });
+      
+      // Show success message
+      alert('✅ Account created successfully! You can now login.');
+      
       await login(email, password);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      throw error;
+      
+      // Handle specific error types with user-friendly messages
+      let errorMessage = 'Registration failed. Please try again.';
+      
+      if (error.response?.data?.error) {
+        switch (error.response.data.error) {
+          case 'INVALID_EMAIL':
+            errorMessage = '❌ Please enter a valid email address.';
+            break;
+          case 'WEAK_PASSWORD':
+            errorMessage = '❌ Password must be at least 6 characters long.';
+            break;
+          case 'INVALID_USERNAME':
+            errorMessage = '❌ Username must be at least 3 characters long.';
+            break;
+          case 'EMAIL_EXISTS':
+            errorMessage = '❌ An account with this email already exists.\n\nPlease login instead or use a different email.';
+            break;
+          case 'USERNAME_EXISTS':
+            errorMessage = '❌ This username is already taken.\n\nPlease choose a different username.';
+            break;
+          default:
+            errorMessage = error.response.data.message || 'Registration failed. Please try again.';
+        }
+      }
+      
+      // Show error popup
+      alert(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
     }
