@@ -635,139 +635,269 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     setExpandedCategories(newExpanded);
   };
 
-  // New client-side automation function
+  // Smart automation with copy-paste script approach
   const performClientSideAutomation = async (url: string, projectData: any) => {
     try {
-      // Create a new window with the target URL
-      const newWindow = window.open(url, '_blank', 'width=1200,height=800');
+      // Generate the automation script
+      const automationScript = generateAutomationScript(projectData);
       
-      if (!newWindow) {
-        alert('❌ Popup blocked! Please allow popups for this site and try again.');
-        return;
-      }
+      // Open the target URL in a new tab
+      window.open(url, '_blank');
+      
+      // Show the script to the user
+      const scriptText = `🤖 SMART FORM AUTOMATION SCRIPT
 
-      // Wait for the page to load
-      setTimeout(() => {
-        try {
-          // Inject automation script
-          const automationScript = `
-            (function() {
-              console.log('🤖 Starting client-side form automation...');
-              
-              // Project data
-              const projectData = ${JSON.stringify(projectData)};
-              
-              // Common form field selectors
-              const fieldSelectors = {
-                name: ['input[name*="name" i]', 'input[id*="name" i]', 'input[placeholder*="name" i]', '#name', '.name'],
-                email: ['input[type="email"]', 'input[name*="email" i]', 'input[id*="email" i]', 'input[placeholder*="email" i]', '#email', '.email'],
-                phone: ['input[type="tel"]', 'input[name*="phone" i]', 'input[name*="mobile" i]', 'input[id*="phone" i]', 'input[placeholder*="phone" i]', '#phone', '.phone'],
-                company: ['input[name*="company" i]', 'input[name*="business" i]', 'input[id*="company" i]', 'input[placeholder*="company" i]', '#company', '.company'],
-                website: ['input[type="url"]', 'input[name*="website" i]', 'input[name*="url" i]', 'input[id*="website" i]', 'input[placeholder*="website" i]', '#website', '.website'],
-                address: ['input[name*="address" i]', 'textarea[name*="address" i]', 'input[id*="address" i]', 'input[placeholder*="address" i]', '#address', '.address'],
-                city: ['input[name*="city" i]', 'input[id*="city" i]', 'input[placeholder*="city" i]', '#city', '.city'],
-                state: ['input[name*="state" i]', 'select[name*="state" i]', 'input[id*="state" i]', 'input[placeholder*="state" i]', '#state', '.state'],
-                country: ['input[name*="country" i]', 'select[name*="country" i]', 'input[id*="country" i]', 'input[placeholder*="country" i]', '#country', '.country'],
-                description: ['textarea[name*="description" i]', 'textarea[name*="message" i]', 'textarea[id*="description" i]', 'textarea[placeholder*="description" i]', '#description', '.description']
-              };
-              
-              // Function to find and fill a field
-              function fillField(fieldType, value) {
-                if (!value) return false;
-                
-                const selectors = fieldSelectors[fieldType];
-                for (let selector of selectors) {
-                  const elements = document.querySelectorAll(selector);
-                  for (let element of elements) {
-                    if (element.offsetParent !== null && !element.disabled && !element.readOnly) {
-                      element.focus();
-                      element.value = value;
-                      element.dispatchEvent(new Event('input', { bubbles: true }));
-                      element.dispatchEvent(new Event('change', { bubbles: true }));
-                      console.log('✅ Filled', fieldType, 'with:', value);
-                      return true;
-                    }
-                  }
-                }
-                return false;
-              }
-              
-              // Fill all available fields
-              let filledCount = 0;
-              
-              if (projectData.name) filledCount += fillField('name', projectData.name) ? 1 : 0;
-              if (projectData.email) filledCount += fillField('email', projectData.email) ? 1 : 0;
-              if (projectData.phone) filledCount += fillField('phone', projectData.phone) ? 1 : 0;
-              if (projectData.companyName) filledCount += fillField('company', projectData.companyName) ? 1 : 0;
-              if (projectData.url) filledCount += fillField('website', projectData.url) ? 1 : 0;
-              if (projectData.address) filledCount += fillField('address', projectData.address) ? 1 : 0;
-              if (projectData.city) filledCount += fillField('city', projectData.city) ? 1 : 0;
-              if (projectData.state) filledCount += fillField('state', projectData.state) ? 1 : 0;
-              if (projectData.country) filledCount += fillField('country', projectData.country) ? 1 : 0;
-              if (projectData.description) filledCount += fillField('description', projectData.description) ? 1 : 0;
-              
-              // Show success message
-              const successDiv = document.createElement('div');
-              successDiv.style.cssText = \`
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #10B981;
-                color: white;
-                padding: 15px 20px;
-                border-radius: 8px;
-                z-index: 10000;
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                animation: slideIn 0.3s ease-out;
-              \`;
-              successDiv.innerHTML = \`
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 18px;">🤖</span>
-                  <div>
-                    <div style="font-weight: bold; margin-bottom: 4px;">Form Auto-Filled!</div>
-                    <div style="font-size: 12px; opacity: 0.9;">\${filledCount} fields filled automatically</div>
-                  </div>
-                </div>
-              \`;
-              
-              // Add animation
-              const style = document.createElement('style');
-              style.textContent = \`
-                @keyframes slideIn {
-                  from { transform: translateX(100%); opacity: 0; }
-                  to { transform: translateX(0); opacity: 1; }
-                }
-              \`;
-              document.head.appendChild(style);
-              document.body.appendChild(successDiv);
-              
-              // Remove message after 5 seconds
-              setTimeout(() => {
-                if (successDiv.parentNode) {
-                  successDiv.parentNode.removeChild(successDiv);
-                }
-              }, 5000);
-              
-              console.log('🎉 Form automation completed! Filled', filledCount, 'fields');
-              
-            })();
-          `;
-          
-          // Execute the script in the new window
-          (newWindow as any).eval(automationScript);
-          
-        } catch (error) {
-          console.error('Automation script error:', error);
-          newWindow.alert('❌ Automation failed. Please fill the form manually.');
-        }
-      }, 2000); // Wait 2 seconds for page to load
+📋 Copy and paste this script into the browser console on the target website:
+
+${automationScript}
+
+💡 Instructions:
+1. Open the target website in a new tab
+2. Press F12 to open Developer Tools
+3. Go to Console tab
+4. Paste the script above and press Enter
+5. Watch the forms auto-fill! 🎉
+
+🔗 Target URL: ${url}`;
+
+      // Create a modal to show the script
+      showScriptModal(scriptText, url);
       
     } catch (error) {
-      console.error('Client-side automation error:', error);
-      alert('❌ Failed to open automation window. Please try again.');
+      console.error('Automation error:', error);
+      alert('❌ Failed to generate automation script. Please try again.');
     }
+  };
+
+  // Generate the automation script
+  const generateAutomationScript = (projectData: any) => {
+    return `(function() {
+  console.log('🤖 Starting Smart Form Automation...');
+  
+  // Project data
+  const projectData = ${JSON.stringify(projectData)};
+  
+  // Enhanced field selectors for better matching
+  const fieldSelectors = {
+    name: [
+      'input[name*="name" i]', 'input[id*="name" i]', 'input[placeholder*="name" i]',
+      'input[name*="full" i]', 'input[name*="first" i]', 'input[name*="last" i]',
+      '#name', '.name', '[name="name"]', '[id="name"]'
+    ],
+    email: [
+      'input[type="email"]', 'input[name*="email" i]', 'input[id*="email" i]',
+      'input[placeholder*="email" i]', 'input[name*="mail" i]',
+      '#email', '.email', '[name="email"]', '[id="email"]'
+    ],
+    phone: [
+      'input[type="tel"]', 'input[name*="phone" i]', 'input[name*="mobile" i]',
+      'input[name*="telephone" i]', 'input[id*="phone" i]', 'input[placeholder*="phone" i]',
+      '#phone', '.phone', '[name="phone"]', '[name="mobile"]'
+    ],
+    company: [
+      'input[name*="company" i]', 'input[name*="business" i]', 'input[name*="organization" i]',
+      'input[id*="company" i]', 'input[placeholder*="company" i]', 'input[placeholder*="business" i]',
+      '#company', '.company', '[name="company"]', '[name="business"]'
+    ],
+    website: [
+      'input[type="url"]', 'input[name*="website" i]', 'input[name*="url" i]',
+      'input[name*="site" i]', 'input[id*="website" i]', 'input[placeholder*="website" i]',
+      '#website', '.website', '[name="website"]', '[name="url"]'
+    ],
+    address: [
+      'input[name*="address" i]', 'textarea[name*="address" i]', 'input[id*="address" i]',
+      'input[placeholder*="address" i]', 'input[name*="street" i]',
+      '#address', '.address', '[name="address"]', '[name="street"]'
+    ],
+    city: [
+      'input[name*="city" i]', 'input[id*="city" i]', 'input[placeholder*="city" i]',
+      'input[name*="town" i]', '#city', '.city', '[name="city"]'
+    ],
+    state: [
+      'input[name*="state" i]', 'select[name*="state" i]', 'input[id*="state" i]',
+      'input[placeholder*="state" i]', 'input[name*="province" i]',
+      '#state', '.state', '[name="state"]', '[name="province"]'
+    ],
+    country: [
+      'input[name*="country" i]', 'select[name*="country" i]', 'input[id*="country" i]',
+      'input[placeholder*="country" i]', '#country', '.country', '[name="country"]'
+    ],
+    description: [
+      'textarea[name*="description" i]', 'textarea[name*="message" i]', 'textarea[name*="comment" i]',
+      'textarea[id*="description" i]', 'textarea[placeholder*="description" i]',
+      '#description', '.description', '[name="description"]', '[name="message"]'
+    ]
+  };
+  
+  // Smart field filling function
+  function fillField(fieldType, value) {
+    if (!value) return false;
+    
+    const selectors = fieldSelectors[fieldType];
+    for (let selector of selectors) {
+      const elements = document.querySelectorAll(selector);
+      for (let element of elements) {
+        if (element.offsetParent !== null && !element.disabled && !element.readOnly) {
+          try {
+            element.focus();
+            element.value = value;
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+            element.dispatchEvent(new Event('change', { bubbles: true }));
+            element.dispatchEvent(new Event('blur', { bubbles: true }));
+            console.log('✅ Filled', fieldType, 'with:', value);
+            return true;
+          } catch (e) {
+            console.log('⚠️ Failed to fill', fieldType, ':', e.message);
+          }
+        }
+      }
+    }
+    return false;
+  }
+  
+  // Fill all available fields
+  let filledCount = 0;
+  const filledFields = [];
+  
+  if (projectData.name) {
+    if (fillField('name', projectData.name)) {
+      filledCount++;
+      filledFields.push('Name');
+    }
+  }
+  if (projectData.email) {
+    if (fillField('email', projectData.email)) {
+      filledCount++;
+      filledFields.push('Email');
+    }
+  }
+  if (projectData.phone) {
+    if (fillField('phone', projectData.phone)) {
+      filledCount++;
+      filledFields.push('Phone');
+    }
+  }
+  if (projectData.companyName) {
+    if (fillField('company', projectData.companyName)) {
+      filledCount++;
+      filledFields.push('Company');
+    }
+  }
+  if (projectData.url) {
+    if (fillField('website', projectData.url)) {
+      filledCount++;
+      filledFields.push('Website');
+    }
+  }
+  if (projectData.address) {
+    if (fillField('address', projectData.address)) {
+      filledCount++;
+      filledFields.push('Address');
+    }
+  }
+  if (projectData.city) {
+    if (fillField('city', projectData.city)) {
+      filledCount++;
+      filledFields.push('City');
+    }
+  }
+  if (projectData.state) {
+    if (fillField('state', projectData.state)) {
+      filledCount++;
+      filledFields.push('State');
+    }
+  }
+  if (projectData.country) {
+    if (fillField('country', projectData.country)) {
+      filledCount++;
+      filledFields.push('Country');
+    }
+  }
+  if (projectData.description) {
+    if (fillField('description', projectData.description)) {
+      filledCount++;
+      filledFields.push('Description');
+    }
+  }
+  
+  // Show success message
+  const successDiv = document.createElement('div');
+  successDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 20px; border-radius: 12px; z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); animation: slideIn 0.4s ease-out; max-width: 300px; backdrop-filter: blur(10px);';
+  
+  successDiv.innerHTML = '<div style="display: flex; align-items: flex-start; gap: 12px;"><div style="font-size: 24px;">🤖</div><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 8px; font-size: 16px;">Form Auto-Filled!</div><div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px;">' + filledCount + ' fields filled automatically</div><div style="font-size: 12px; opacity: 0.8; line-height: 1.4;"><strong>Filled:</strong> ' + filledFields.join(', ') + '</div></div></div>';
+  
+  // Add animation
+  const style = document.createElement('style');
+  style.textContent = '@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+  document.head.appendChild(style);
+  document.body.appendChild(successDiv);
+  
+  // Remove message after 8 seconds
+  setTimeout(() => {
+    if (successDiv.parentNode) {
+      successDiv.style.animation = 'slideOut 0.3s ease-in forwards';
+      setTimeout(() => {
+        if (successDiv.parentNode) {
+          successDiv.parentNode.removeChild(successDiv);
+        }
+      }, 300);
+    }
+  }, 8000);
+  
+  // Add slideOut animation
+  const slideOutStyle = document.createElement('style');
+  slideOutStyle.textContent = '@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }';
+  document.head.appendChild(slideOutStyle);
+  
+  console.log('🎉 Smart form automation completed! Filled', filledCount, 'fields:', filledFields);
+  
+})();`;
+  };
+
+  // Show script modal
+  const showScriptModal = (scriptText: string, url: string) => {
+    // Create modal container
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px);';
+    
+    // Create modal content
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 16px; padding: 30px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;';
+    
+    content.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;"><div style="font-size: 32px;">🤖</div><div><h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Smart Form Automation</h2><p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Copy and paste this script to auto-fill forms</p></div></div><div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;"><span style="font-weight: 600; color: #374151;">Automation Script</span><button id="copyScript" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px;">Copy Script</button></div><pre style="background: #1f2937; color: #f9fafb; padding: 15px; border-radius: 6px; font-size: 12px; line-height: 1.4; overflow-x: auto; white-space: pre-wrap; margin: 0;">' + scriptText + '</pre></div><div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 15px; margin-bottom: 20px;"><div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 18px;">💡</span><span style="font-weight: 600; color: #065f46;">How to Use:</span></div><ol style="margin: 0; padding-left: 20px; color: #047857; line-height: 1.6;"><li>Open the target website in a new tab</li><li>Press <strong>F12</strong> to open Developer Tools</li><li>Go to the <strong>Console</strong> tab</li><li>Paste the script above and press <strong>Enter</strong></li><li>Watch the forms auto-fill! 🎉</li></ol></div><div style="display: flex; gap: 12px;"><button id="openUrl" style="flex: 1; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Open Target Website</button><button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button></div>';
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('copyScript')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(scriptText).then(() => {
+        const btn = document.getElementById('copyScript');
+        if (btn) {
+          btn.textContent = 'Copied!';
+          btn.style.background = '#10b981';
+          setTimeout(() => {
+            btn.textContent = 'Copy Script';
+            btn.style.background = '#3b82f6';
+          }, 2000);
+        }
+      });
+    });
+    
+    document.getElementById('openUrl')?.addEventListener('click', () => {
+      window.open(url, '_blank');
+    });
+    
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    });
   };
 
   return (
