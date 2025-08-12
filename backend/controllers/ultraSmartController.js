@@ -80,7 +80,11 @@ const openAndUltraFill = async (req, res) => {
     // Initialize Puppeteer
     const initialized = await automationService.initialize();
     if (!initialized) {
-      return res.status(500).json({ error: 'Failed to initialize browser automation' });
+      console.error('❌ Failed to initialize Puppeteer browser');
+      return res.status(500).json({ 
+        error: 'Failed to initialize browser automation',
+        message: 'Browser automation service is temporarily unavailable. Please try again later.'
+      });
     }
 
     // Navigate to the URL
@@ -113,7 +117,7 @@ const openAndUltraFill = async (req, res) => {
       processingTime: `${Math.floor(Math.random() * 3) + 2} seconds`,
       submitted: submitted,
       screenshot: screenshotPath,
-      message: `Ultra-smart automation completed successfully! Filled ${fillResult.totalFieldsFilled} fields.`,
+      message: `🤖 Ultra-smart automation completed successfully! Filled ${fillResult.totalFieldsFilled} fields on ${url}`,
       details: {
         projectData: projectData,
         automationSteps: [
@@ -122,7 +126,8 @@ const openAndUltraFill = async (req, res) => {
           'Forms detected',
           'Fields filled',
           submitted ? 'Form submitted' : 'Manual submission required'
-        ]
+        ],
+        note: 'Automation completed on server. Check the target website for results.'
       }
     };
 

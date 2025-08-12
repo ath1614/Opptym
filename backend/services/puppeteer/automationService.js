@@ -8,8 +8,11 @@ class AutomationService {
 
   async initialize() {
     try {
-      this.browser = await puppeteer.launch({
-        headless: false, // Always false to show browser to user
+      // Check if we're in a server environment (Render, Heroku, etc.)
+      const isServerEnvironment = process.env.NODE_ENV === 'production' || process.env.RENDER;
+      
+      const launchOptions = {
+        headless: isServerEnvironment ? 'new' : false, // Use 'new' headless mode on servers
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -18,13 +21,37 @@ class AutomationService {
           '--no-first-run',
           '--no-zygote',
           '--disable-gpu',
-          '--start-maximized', // Start maximized
           '--disable-web-security',
-          '--disable-features=VizDisplayCompositor'
+          '--disable-features=VizDisplayCompositor',
+          '--disable-extensions',
+          '--disable-plugins',
+          '--disable-images',
+          '--disable-javascript',
+          '--disable-background-timer-throttling',
+          '--disable-backgrounding-occluded-windows',
+          '--disable-renderer-backgrounding',
+          '--disable-field-trial-config',
+          '--disable-ipc-flooding-protection'
         ],
-        defaultViewport: null, // Use full viewport
-        ignoreDefaultArgs: ['--enable-automation'] // Hide automation bar
-      });
+        defaultViewport: { width: 1280, height: 720 },
+        ignoreDefaultArgs: ['--enable-automation']
+      };
+
+      // Add server-specific options
+      if (isServerEnvironment) {
+        launchOptions.args.push(
+          '--single-process',
+          '--no-zygote',
+          '--disable-dev-shm-usage',
+          '--disable-gpu-sandbox'
+        );
+      } else {
+        // Local development - show browser window
+        launchOptions.args.push('--start-maximized');
+        launchOptions.defaultViewport = null;
+      }
+
+      this.browser = await puppeteer.launch(launchOptions);
       
       this.page = await this.browser.newPage();
       

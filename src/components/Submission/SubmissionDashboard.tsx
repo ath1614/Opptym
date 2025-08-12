@@ -492,7 +492,7 @@ const SubmissionsDashboard = () => {
 
     try {
       // Show loading state
-      alert("🔄 Opening new Chrome browser and starting Ultra-Smart automation...\n\nA new Chrome window will open automatically to fill the forms!");
+      alert("🔄 Starting Ultra-Smart automation on server...\n\n🤖 Browser automation is running in the background!\n⏱️ Please wait while forms are being filled...");
       
       // Get the backend URL from environment or use default
       const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
@@ -513,7 +513,7 @@ const SubmissionsDashboard = () => {
       const result = await response.json();
       
       if (result.success) {
-        alert(`🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields filled successfully\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n\nCheck the opened Chrome browser to see the results!`);
+        alert(`🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields filled successfully\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n🌐 Target URL: ${result.url}\n\n✅ Automation completed on server!\n📋 Check the target website for filled forms.`);
       } else {
         alert(`❌ Automation failed: ${result.message || 'Unknown error'}`);
       }
@@ -533,7 +533,7 @@ const SubmissionsDashboard = () => {
     setLoading(true);
     try {
       // Show loading state
-      alert("🔄 Opening new Chrome browser and starting Universal Form automation...\n\nA new Chrome window will open automatically to fill the forms!");
+      alert("🔄 Starting Universal Form automation on server...\n\n🤖 Browser automation is running in the background!\n⏱️ Please wait while forms are being filled...");
       
       // Get the backend URL from environment or use default
       const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
@@ -553,7 +553,7 @@ const SubmissionsDashboard = () => {
       const result = await response.json();
       
       if (result.success) {
-        alert(`🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n\nCheck the opened Chrome browser to see the results!`);
+        alert(`🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n🌐 Target URL: ${result.url}\n\n✅ Automation completed on server!\n📋 Check the target website for filled forms.`);
       } else {
         const errorMsg = result.message || result.error || 'Unknown error';
         alert(`❌ Universal form automation failed: ${errorMsg}`);
