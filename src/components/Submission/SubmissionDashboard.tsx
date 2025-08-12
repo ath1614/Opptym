@@ -494,8 +494,11 @@ const SubmissionsDashboard = () => {
       // Show loading state
       alert("🔄 Opening new Chrome browser and starting Ultra-Smart automation...\n\nA new Chrome window will open automatically to fill the forms!");
       
+      // Get the backend URL from environment or use default
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
+      
       // Call the backend automation which will open a new Chrome browser
-      const response = await fetch('/api/ultra-smart/open-and-ultra-fill', {
+      const response = await fetch(`${backendUrl}/api/ultra-smart/open-and-ultra-fill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -532,7 +535,10 @@ const SubmissionsDashboard = () => {
       // Show loading state
       alert("🔄 Opening new Chrome browser and starting Universal Form automation...\n\nA new Chrome window will open automatically to fill the forms!");
       
-      const response = await fetch(`/api/universal-form/${selectedProject._id}/execute`, {
+      // Get the backend URL from environment or use default
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
+      
+      const response = await fetch(`${backendUrl}/api/universal-form/${selectedProject._id}/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
