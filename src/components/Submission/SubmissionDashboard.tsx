@@ -16,6 +16,8 @@ import {
   Bot,
   Sparkles,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   Play,
   Settings,
   BookOpen,
@@ -439,6 +441,7 @@ const SubmissionsDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [projectsError, setProjectsError] = useState<string | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   const fetchProjects = async () => {
     try {
@@ -626,6 +629,16 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     }
   };
 
+  const toggleCategoryExpansion = (category: string) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category);
+    } else {
+      newExpanded.add(category);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -794,7 +807,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               
               {/* Platform List */}
               <div className="p-6 space-y-3">
-                {sites.map((site) => (
+                {(expandedCategories.has(category) ? sites : sites.slice(0, 5)).map((site) => (
                   <div key={site.name} className="bg-gray-50/50 rounded-xl p-4 hover:bg-gray-100/50 transition-all border border-gray-100">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -851,6 +864,28 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                     </div>
                   </div>
                 ))}
+                
+                {/* Show More/Less Button */}
+                {sites.length > 5 && (
+                  <div className="flex justify-center pt-4">
+                    <button
+                      onClick={() => toggleCategoryExpansion(category)}
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white text-sm rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all shadow-md hover:shadow-lg"
+                    >
+                      {expandedCategories.has(category) ? (
+                        <>
+                          <ChevronUp className="w-4 h-4 mr-2" />
+                          Show Less ({sites.length - 5} hidden)
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Show More ({sites.length - 5} more)
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
