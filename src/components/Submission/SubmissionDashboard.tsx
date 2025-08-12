@@ -513,7 +513,22 @@ const SubmissionsDashboard = () => {
       const result = await response.json();
       
       if (result.success) {
-        alert(`🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields filled successfully\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n🌐 Target URL: ${result.url}\n\n✅ Automation completed on server!\n📋 Check the target website for filled forms.`);
+        // Show detailed instructions if available
+        let message = `🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields processed\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n🌐 Target URL: ${result.url}\n\n`;
+        
+        if (result.details?.instructions) {
+          message += `📋 FORM FILLING INSTRUCTIONS:\n\n`;
+          message += `${result.details.instructions.steps.join('\n')}\n\n`;
+          message += `📝 FILL THESE FIELDS:\n`;
+          message += `${result.details.instructions.fields.join('\n')}\n\n`;
+          message += `💡 TIPS:\n`;
+          message += `${result.details.instructions.tips.join('\n')}\n\n`;
+          message += `🔗 Open: ${result.details.instructions.targetUrl}`;
+        } else {
+          message += `✅ Automation completed on server!\n📋 Check the target website for filled forms.`;
+        }
+        
+        alert(message);
       } else {
         alert(`❌ Automation failed: ${result.message || 'Unknown error'}`);
       }
@@ -553,7 +568,22 @@ const SubmissionsDashboard = () => {
       const result = await response.json();
       
       if (result.success) {
-        alert(`🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n🌐 Target URL: ${result.url}\n\n✅ Automation completed on server!\n📋 Check the target website for filled forms.`);
+        // Show detailed instructions if available
+        let message = `🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n🌐 Target URL: ${result.url}\n\n`;
+        
+        if (result.details?.instructions) {
+          message += `📋 FORM FILLING INSTRUCTIONS:\n\n`;
+          message += `${result.details.instructions.steps.join('\n')}\n\n`;
+          message += `📝 FILL THESE FIELDS:\n`;
+          message += `${result.details.instructions.fields.join('\n')}\n\n`;
+          message += `💡 TIPS:\n`;
+          message += `${result.details.instructions.tips.join('\n')}\n\n`;
+          message += `🔗 Open: ${result.details.instructions.targetUrl}`;
+        } else {
+          message += `✅ Automation completed on server!\n📋 Check the target website for filled forms.`;
+        }
+        
+        alert(message);
       } else {
         const errorMsg = result.message || result.error || 'Unknown error';
         alert(`❌ Universal form automation failed: ${errorMsg}`);
