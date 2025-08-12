@@ -57,7 +57,7 @@ const siteMap: Record<string, {
     description: 'Business directories and local listings',
     sites: [
       { name: 'Blahoo', url: 'https://www.blahoo.net/', description: 'Web directory', difficulty: 'easy' },
-      { name: 'Caida', url: 'https://caida.eu/', description: 'European directory', difficulty: 'easy' },
+      { name: 'Caida', url: 'https://caida.eu/submit.php', description: 'European directory', difficulty: 'easy' },
       { name: 'Pink Linker', url: 'http://www.pinklinker.com/', description: 'Directory submission', difficulty: 'easy' },
       { name: 'Grey Linker', url: 'http://www.greylinker.com/', description: 'Directory listing', difficulty: 'easy' },
       { name: 'SEO Deep Links', url: 'https://www.seodeeplinks.net/', description: 'SEO directory', difficulty: 'medium' },
