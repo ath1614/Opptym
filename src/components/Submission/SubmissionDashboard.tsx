@@ -483,7 +483,7 @@ const SubmissionsDashboard = () => {
     }
   };
 
-  // Ultra-Smart Puppeteer function to open new Chrome browser and auto-fill
+  // Ultra-Smart Client-Side Automation function
   const openTabAndUltraSmartFill = async (url: string) => {
     if (!selectedProject) {
       alert("⚠️ Please select a project first!");
@@ -491,54 +491,34 @@ const SubmissionsDashboard = () => {
     }
 
     try {
-      // Show loading state
-      alert("🔄 Starting Ultra-Smart automation on server...\n\n🤖 Browser automation is running in the background!\n⏱️ Please wait while forms are being filled...");
-      
-      // Get the backend URL from environment or use default
-      const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
-      
-      // Call the backend automation which will open a new Chrome browser
-      const response = await fetch(`${backendUrl}/api/ultra-smart/open-and-ultra-fill`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          url: url,
-          projectId: selectedProject._id
-        })
-      });
+      // Prepare project data for client-side automation
+      const projectData = {
+        name: (selectedProject as any).name,
+        email: (selectedProject as any).email,
+        phone: (selectedProject as any).businessPhone,
+        companyName: (selectedProject as any).companyName,
+        url: selectedProject.url,
+        description: selectedProject.description,
+        address: (selectedProject as any).address1,
+        city: (selectedProject as any).city,
+        state: (selectedProject as any).state,
+        country: (selectedProject as any).country,
+        pincode: (selectedProject as any).pincode
+      };
 
-      const result = await response.json();
+      // Show starting message
+      alert("🚀 Starting Ultra-Smart Client-Side Automation!\n\n🤖 Opening target website in new window\n📝 Will auto-fill forms with your project data\n💡 Watch for the green success message!\n\n⚠️ Make sure to allow popups for this site!");
+
+      // Perform client-side automation
+      await performClientSideAutomation(url, projectData);
       
-      if (result.success) {
-        // Show detailed instructions if available
-        let message = `🤖 ULTRA-SMART FILLING COMPLETE!\n\n✅ ${result.filledCount} fields processed\n⏱️ Processing time: ${result.processingTime}\n🎯 Accuracy: ${result.accuracy}%\n🌐 Target URL: ${result.url}\n\n`;
-        
-        if (result.details?.instructions) {
-          message += `📋 FORM FILLING INSTRUCTIONS:\n\n`;
-          message += `${result.details.instructions.steps.join('\n')}\n\n`;
-          message += `📝 FILL THESE FIELDS:\n`;
-          message += `${result.details.instructions.fields.join('\n')}\n\n`;
-          message += `💡 TIPS:\n`;
-          message += `${result.details.instructions.tips.join('\n')}\n\n`;
-          message += `🔗 Open: ${result.details.instructions.targetUrl}`;
-        } else {
-          message += `✅ Automation completed on server!\n📋 Check the target website for filled forms.`;
-        }
-        
-        alert(message);
-      } else {
-        alert(`❌ Automation failed: ${result.message || 'Unknown error'}`);
-      }
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
       alert('❌ Ultra-smart automation failed. Please try again.');
     }
   };
 
-  // Universal Form Puppeteer function to open new Chrome browser and auto-fill ANY form system
+  // Universal Form Client-Side Automation function
   const openTabAndUniversalFill = async (url: string) => {
     if (!selectedProject) {
       alert('⚠️ Please select a project first!');
@@ -547,47 +527,27 @@ const SubmissionsDashboard = () => {
 
     setLoading(true);
     try {
-      // Show loading state
-      alert("🔄 Starting Universal Form automation on server...\n\n🤖 Browser automation is running in the background!\n⏱️ Please wait while forms are being filled...");
+      // Prepare project data for client-side automation
+      const projectData = {
+        name: (selectedProject as any).name,
+        email: (selectedProject as any).email,
+        phone: (selectedProject as any).businessPhone,
+        companyName: (selectedProject as any).companyName,
+        url: selectedProject.url,
+        description: selectedProject.description,
+        address: (selectedProject as any).address1,
+        city: (selectedProject as any).city,
+        state: (selectedProject as any).state,
+        country: (selectedProject as any).country,
+        pincode: (selectedProject as any).pincode
+      };
+
+      // Show starting message
+      alert("🌍 Starting Universal Form Client-Side Automation!\n\n🤖 Opening target website in new window\n📝 Will auto-fill forms with your project data\n💡 Watch for the green success message!\n\n⚠️ Make sure to allow popups for this site!");
+
+      // Perform client-side automation
+      await performClientSideAutomation(url, projectData);
       
-      // Get the backend URL from environment or use default
-      const backendUrl = import.meta.env.VITE_API_URL || 'https://opptym-backend.onrender.com';
-      
-      const response = await fetch(`${backendUrl}/api/universal-form/${selectedProject._id}/execute`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          url: url,
-          projectId: selectedProject._id
-        })
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        // Show detailed instructions if available
-        let message = `🌍 UNIVERSAL FORM FILLING COMPLETE!\n\n✅ ${result.automationResults?.successfulSubmissions || 0} submissions successful\n⏱️ Processing time: ${result.automationResults?.processingTime || 'N/A'}\n📊 Total directories: ${result.automationResults?.totalSubmissions || 0}\n🌐 Target URL: ${result.url}\n\n`;
-        
-        if (result.details?.instructions) {
-          message += `📋 FORM FILLING INSTRUCTIONS:\n\n`;
-          message += `${result.details.instructions.steps.join('\n')}\n\n`;
-          message += `📝 FILL THESE FIELDS:\n`;
-          message += `${result.details.instructions.fields.join('\n')}\n\n`;
-          message += `💡 TIPS:\n`;
-          message += `${result.details.instructions.tips.join('\n')}\n\n`;
-          message += `🔗 Open: ${result.details.instructions.targetUrl}`;
-        } else {
-          message += `✅ Automation completed on server!\n📋 Check the target website for filled forms.`;
-        }
-        
-        alert(message);
-      } else {
-        const errorMsg = result.message || result.error || 'Unknown error';
-        alert(`❌ Universal form automation failed: ${errorMsg}`);
-      }
     } catch (error) {
       console.error('Universal form automation error:', error);
       alert('❌ Universal form automation failed. Please try again.');
@@ -673,6 +633,141 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       newExpanded.add(category);
     }
     setExpandedCategories(newExpanded);
+  };
+
+  // New client-side automation function
+  const performClientSideAutomation = async (url: string, projectData: any) => {
+    try {
+      // Create a new window with the target URL
+      const newWindow = window.open(url, '_blank', 'width=1200,height=800');
+      
+      if (!newWindow) {
+        alert('❌ Popup blocked! Please allow popups for this site and try again.');
+        return;
+      }
+
+      // Wait for the page to load
+      setTimeout(() => {
+        try {
+          // Inject automation script
+          const automationScript = `
+            (function() {
+              console.log('🤖 Starting client-side form automation...');
+              
+              // Project data
+              const projectData = ${JSON.stringify(projectData)};
+              
+              // Common form field selectors
+              const fieldSelectors = {
+                name: ['input[name*="name" i]', 'input[id*="name" i]', 'input[placeholder*="name" i]', '#name', '.name'],
+                email: ['input[type="email"]', 'input[name*="email" i]', 'input[id*="email" i]', 'input[placeholder*="email" i]', '#email', '.email'],
+                phone: ['input[type="tel"]', 'input[name*="phone" i]', 'input[name*="mobile" i]', 'input[id*="phone" i]', 'input[placeholder*="phone" i]', '#phone', '.phone'],
+                company: ['input[name*="company" i]', 'input[name*="business" i]', 'input[id*="company" i]', 'input[placeholder*="company" i]', '#company', '.company'],
+                website: ['input[type="url"]', 'input[name*="website" i]', 'input[name*="url" i]', 'input[id*="website" i]', 'input[placeholder*="website" i]', '#website', '.website'],
+                address: ['input[name*="address" i]', 'textarea[name*="address" i]', 'input[id*="address" i]', 'input[placeholder*="address" i]', '#address', '.address'],
+                city: ['input[name*="city" i]', 'input[id*="city" i]', 'input[placeholder*="city" i]', '#city', '.city'],
+                state: ['input[name*="state" i]', 'select[name*="state" i]', 'input[id*="state" i]', 'input[placeholder*="state" i]', '#state', '.state'],
+                country: ['input[name*="country" i]', 'select[name*="country" i]', 'input[id*="country" i]', 'input[placeholder*="country" i]', '#country', '.country'],
+                description: ['textarea[name*="description" i]', 'textarea[name*="message" i]', 'textarea[id*="description" i]', 'textarea[placeholder*="description" i]', '#description', '.description']
+              };
+              
+              // Function to find and fill a field
+              function fillField(fieldType, value) {
+                if (!value) return false;
+                
+                const selectors = fieldSelectors[fieldType];
+                for (let selector of selectors) {
+                  const elements = document.querySelectorAll(selector);
+                  for (let element of elements) {
+                    if (element.offsetParent !== null && !element.disabled && !element.readOnly) {
+                      element.focus();
+                      element.value = value;
+                      element.dispatchEvent(new Event('input', { bubbles: true }));
+                      element.dispatchEvent(new Event('change', { bubbles: true }));
+                      console.log('✅ Filled', fieldType, 'with:', value);
+                      return true;
+                    }
+                  }
+                }
+                return false;
+              }
+              
+              // Fill all available fields
+              let filledCount = 0;
+              
+              if (projectData.name) filledCount += fillField('name', projectData.name) ? 1 : 0;
+              if (projectData.email) filledCount += fillField('email', projectData.email) ? 1 : 0;
+              if (projectData.phone) filledCount += fillField('phone', projectData.phone) ? 1 : 0;
+              if (projectData.companyName) filledCount += fillField('company', projectData.companyName) ? 1 : 0;
+              if (projectData.url) filledCount += fillField('website', projectData.url) ? 1 : 0;
+              if (projectData.address) filledCount += fillField('address', projectData.address) ? 1 : 0;
+              if (projectData.city) filledCount += fillField('city', projectData.city) ? 1 : 0;
+              if (projectData.state) filledCount += fillField('state', projectData.state) ? 1 : 0;
+              if (projectData.country) filledCount += fillField('country', projectData.country) ? 1 : 0;
+              if (projectData.description) filledCount += fillField('description', projectData.description) ? 1 : 0;
+              
+              // Show success message
+              const successDiv = document.createElement('div');
+              successDiv.style.cssText = \`
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10B981;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideIn 0.3s ease-out;
+              \`;
+              successDiv.innerHTML = \`
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 18px;">🤖</span>
+                  <div>
+                    <div style="font-weight: bold; margin-bottom: 4px;">Form Auto-Filled!</div>
+                    <div style="font-size: 12px; opacity: 0.9;">\${filledCount} fields filled automatically</div>
+                  </div>
+                </div>
+              \`;
+              
+              // Add animation
+              const style = document.createElement('style');
+              style.textContent = \`
+                @keyframes slideIn {
+                  from { transform: translateX(100%); opacity: 0; }
+                  to { transform: translateX(0); opacity: 1; }
+                }
+              \`;
+              document.head.appendChild(style);
+              document.body.appendChild(successDiv);
+              
+              // Remove message after 5 seconds
+              setTimeout(() => {
+                if (successDiv.parentNode) {
+                  successDiv.parentNode.removeChild(successDiv);
+                }
+              }, 5000);
+              
+              console.log('🎉 Form automation completed! Filled', filledCount, 'fields');
+              
+            })();
+          `;
+          
+          // Execute the script in the new window
+          (newWindow as any).eval(automationScript);
+          
+        } catch (error) {
+          console.error('Automation script error:', error);
+          newWindow.alert('❌ Automation failed. Please fill the form manually.');
+        }
+      }, 2000); // Wait 2 seconds for page to load
+      
+    } catch (error) {
+      console.error('Client-side automation error:', error);
+      alert('❌ Failed to open automation window. Please try again.');
+    }
   };
 
   return (
