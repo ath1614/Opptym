@@ -36,7 +36,7 @@ cd ..
 vercel login
 vercel --prod
 # Add environment variable in Vercel dashboard:
-# VITE_API_URL = https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api
+# VITE_API_URL = http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api
 ```
 
 ### **Step 5: Configure CORS (1 minute)**
@@ -48,7 +48,7 @@ FRONTEND_URL=https://your-vercel-url.vercel.app
 ## 🎉 **Done! Your app is live!**
 
 **Frontend**: `https://your-project.vercel.app`  
-**Backend**: `https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io`
+**Backend**: `http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io`
 
 ---
 
@@ -59,7 +59,7 @@ FRONTEND_URL=https://your-vercel-url.vercel.app
 ./deploy.sh
 
 # Check backend health
-curl https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api/health
+curl http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api/health
 
 # View Railway logs
 railway logs

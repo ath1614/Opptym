@@ -6,8 +6,8 @@
 🌐 **Main Application**: https://ooptym2-1-ctyjh4itc-ishita-singhs-projects-ffc21a05.vercel.app
 
 ### **Backend (Render)**
-🔧 **API Endpoint**: https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io
-🔍 **Health Check**: https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api/health
+🔧 **API Endpoint**: http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io
+🔍 **Health Check**: http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api/health
 
 ---
 
@@ -99,7 +99,7 @@
 ## 📞 **Support Information**
 
 ### **Technical Details**
-- **Backend URL**: https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io
+- **Backend URL**: http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io
 - **Frontend URL**: https://ooptym2-1-ctyjh4itc-ishita-singhs-projects-ffc21a05.vercel.app
 - **Database**: MongoDB Atlas
 - **Payment**: Stripe (test mode)

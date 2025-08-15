@@ -20,7 +20,7 @@ const getAxiosBaseURL = () => {
   
       // Fallback: use localhost in development, deployed URL in production
     if (isProduction) {
-      return 'https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io';
+      return 'http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io';
     }
   return 'http://localhost:5050';
 };

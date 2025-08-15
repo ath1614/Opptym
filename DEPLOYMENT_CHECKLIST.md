@@ -46,7 +46,7 @@ Use this checklist to ensure your deployment is complete and working correctly.
   - [ ] Build Command: `npm run build`
   - [ ] Output Directory: `dist`
 - [ ] Environment variables set:
-  - [ ] `VITE_API_URL=https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api`
+  - [ ] `VITE_API_URL=http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api`
 
 ### Frontend Testing
 - [ ] Vercel deployment successful
