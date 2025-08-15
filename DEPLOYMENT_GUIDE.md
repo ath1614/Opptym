@@ -153,7 +153,7 @@ vercel --prod
 1. Go to your Vercel dashboard
 2. Select your project
 3. Go to "Settings" → "Environment Variables"
-4. Add: `VITE_API_URL` = `https://your-railway-backend-url.railway.app/api`
+4. Add: `VITE_API_URL` = `https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api`
 5. Redeploy: Go to "Deployments" → "Redeploy"
 
 ---

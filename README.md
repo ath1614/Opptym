@@ -5,7 +5,7 @@ A comprehensive SEO tools and automation platform built with React, Node.js, and
 ## 🚀 Live Demo
 
 - **Frontend**: [https://opptym.vercel.app](https://opptym.vercel.app)
-- **Backend**: [https://opptym-backend.onrender.com](https://opptym-backend.onrender.com)
+- **Backend**: [https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io](https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io)
 
 ## ✨ Features
 

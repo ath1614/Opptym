@@ -63,7 +63,7 @@ This guide will help you deploy OPPTYM to production while keeping it accessible
    ```
    Edit `.env`:
    ```
-   VITE_API_URL=https://opptym-backend.railway.app/api
+   VITE_API_URL=https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api
    ```
 
 3. **Deploy to Vercel**
@@ -75,7 +75,7 @@ This guide will help you deploy OPPTYM to production while keeping it accessible
      - Output Directory: `dist`
    - Add environment variable:
      ```
-     VITE_API_URL=https://opptym-backend.railway.app/api
+     VITE_API_URL=https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api
      ```
 
 ## 🔄 Step 4: Development Workflow
@@ -114,14 +114,14 @@ PORT=5050
 
 #### Frontend (Vercel)
 ```
-VITE_API_URL=https://opptym-backend.railway.app/api
+VITE_API_URL=https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api
 ```
 
 ## 🧪 Step 5: Testing Deployment
 
 1. **Test Backend**
    ```bash
-   curl https://opptym-backend.railway.app/health
+   curl https://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io/api/health
    ```
 
 2. **Test Frontend**
