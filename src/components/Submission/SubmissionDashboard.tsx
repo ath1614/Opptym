@@ -483,6 +483,106 @@ const SubmissionsDashboard = () => {
     }
   };
 
+  // Ultra smart automation with server-side Puppeteer
+  const performClientSideAutomation = async (url: string, projectData: any) => {
+    try {
+      console.log('🚀 Starting server-side automation for:', url);
+      
+      // Call the backend automation API
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io'}/api/ultra-smart/automate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          url: url,
+          projectId: selectedProject?._id
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show success modal
+        showAutomationSuccessModal(result.data);
+      } else {
+        throw new Error(result.message || 'Automation failed');
+      }
+
+    } catch (error) {
+      console.error('Automation error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`❌ Automation failed: ${errorMessage}`);
+    }
+  };
+
+  // Show automation success modal
+  const showAutomationSuccessModal = (data: any) => {
+    // Create modal container
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+    
+    // Create modal content
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; border-radius: 16px; padding: 30px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;';
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">🤖</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Completed!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Server-side Puppeteer automation successful</p>
+        </div>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">✅</span>
+          <span style="font-weight: 600; color: #065f46;">Automation Results:</span>
+        </div>
+        <div style="color: #047857; line-height: 1.6; font-size: 14px;">
+          <div><strong>URL:</strong> ${data.url}</div>
+          <div><strong>Fields Filled:</strong> ${data.fieldsFilled}/${data.totalFields}</div>
+          <div><strong>Form Submitted:</strong> ${data.formSubmitted ? 'Yes' : 'No'}</div>
+          <div><strong>Project:</strong> ${data.projectName}</div>
+          <div><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</div>
+        </div>
+      </div>
+      
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 18px;">💡</span>
+          <span style="font-weight: 600; color: #92400e;">What happened:</span>
+        </div>
+        <ul style="margin: 0; padding-left: 20px; color: #92400e; line-height: 1.5; font-size: 14px;">
+          <li>Puppeteer browser opened on the server</li>
+          <li>Navigated to the target website</li>
+          <li>Automatically detected and filled form fields</li>
+          <li>${data.formSubmitted ? 'Successfully submitted the form' : 'Form ready for manual submission'}</li>
+          <li>Browser closed automatically</li>
+        </ul>
+      </div>
+      
+      <div style="display: flex; gap: 12px;">
+        <button id="openUrl" style="flex: 1; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Check Target Website</button>
+        <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('openUrl')?.addEventListener('click', () => {
+      window.open(data.url, '_blank');
+    });
+    
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  };
+
   // Ultra-Smart Client-Side Automation function
   const openTabAndUltraSmartFill = async (url: string) => {
     if (!selectedProject) {
@@ -633,21 +733,6 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       newExpanded.add(category);
     }
     setExpandedCategories(newExpanded);
-  };
-
-  // Universal smart form filling guide
-  const performClientSideAutomation = async (url: string, projectData: any) => {
-    try {
-      // Open the target URL in a new tab
-      window.open(url, '_blank');
-      
-      // Create the form filling guide
-      showSmartFormGuide(projectData, url);
-      
-    } catch (error) {
-      console.error('Automation error:', error);
-      alert('❌ Failed to open form guide. Please try again.');
-    }
   };
 
   // Generate smart form filling guide

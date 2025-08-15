@@ -18,10 +18,10 @@ const getAxiosBaseURL = () => {
     return apiUrl.endsWith('/api') ? apiUrl.replace('/api', '') : apiUrl;
   }
   
-  // Fallback: use localhost in development, deployed URL in production
-  if (isProduction) {
-    return 'https://opptym-backend.onrender.com';
-  }
+      // Fallback: use localhost in development, deployed URL in production
+    if (isProduction) {
+      return 'http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io';
+    }
   return 'http://localhost:5050';
 };
 
