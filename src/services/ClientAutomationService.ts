@@ -21,83 +21,108 @@ export class ClientAutomationService {
 
   // Create a bookmarklet that can be used to fill forms
   createBookmarklet(): string {
-    const script = `
-      (function() {
-        console.log('🚀 Starting form automation...');
+         const script = `
+       (function() {
+         console.log('🚀 Starting form automation...');
+         console.log('📋 Project data received:', ${JSON.stringify(this.projectData)});
+         console.log('🌐 Current URL:', window.location.href);
+         console.log('📄 Page title:', document.title);
+         
+         const projectData = ${JSON.stringify(this.projectData)};
         
-        const projectData = ${JSON.stringify(this.projectData)};
-        
-        // Function to map field to value
-        function mapFieldToValue(input) {
-          const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
-          const fieldType = input.type.toLowerCase();
+                 // Function to map field to value
+         function mapFieldToValue(input) {
+           const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
+           const fieldType = input.type.toLowerCase();
+           
+           console.log('🔍 Mapping field:', {
+             fieldName: fieldName,
+             fieldType: fieldType,
+             originalName: input.name,
+             originalId: input.id,
+             originalPlaceholder: input.placeholder
+           });
           
-          // Email fields
-          if (fieldName.includes('email') || fieldType === 'email') {
-            return projectData.email;
-          }
-          
-          // Name fields
-          if (fieldName.includes('name') || fieldName.includes('fullname') || fieldName.includes('firstname')) {
-            return projectData.name;
-          }
-          
-          // Phone fields
-          if (fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('contact')) {
-            return projectData.phone;
-          }
-          
-          // Company fields
-          if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization')) {
-            return projectData.companyName;
-          }
-          
-          // Website/URL fields
-          if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site')) {
-            return projectData.url;
-          }
-          
-          // Address fields
-          if (fieldName.includes('address') || fieldName.includes('street')) {
-            return projectData.address || '';
-          }
-          
-          // City fields
-          if (fieldName.includes('city')) {
-            return projectData.city || '';
-          }
-          
-          // State fields
-          if (fieldName.includes('state') || fieldName.includes('province')) {
-            return projectData.state || '';
-          }
-          
-          // Zip/Postal code fields
-          if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode')) {
-            return projectData.pincode || '';
-          }
-          
-          // Country fields
-          if (fieldName.includes('country')) {
-            return projectData.country || '';
-          }
-          
-          // Description fields
-          if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('message')) {
-            return projectData.description;
-          }
-          
-          // Category fields
-          if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry')) {
-            return projectData.companyName;
-          }
-          
-          // Title fields
-          if (fieldName.includes('title')) {
-            return projectData.companyName;
-          }
-          
-          return null;
+                     // Email fields
+           if (fieldName.includes('email') || fieldType === 'email') {
+             console.log('📧 Matched email field, value:', projectData.email);
+             return projectData.email;
+           }
+           
+           // Name fields
+           if (fieldName.includes('name') || fieldName.includes('fullname') || fieldName.includes('firstname')) {
+             console.log('👤 Matched name field, value:', projectData.name);
+             return projectData.name;
+           }
+           
+           // Phone fields
+           if (fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('contact')) {
+             console.log('📞 Matched phone field, value:', projectData.phone);
+             return projectData.phone;
+           }
+           
+           // Company fields
+           if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization')) {
+             console.log('🏢 Matched company field, value:', projectData.companyName);
+             return projectData.companyName;
+           }
+           
+           // Website/URL fields
+           if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site')) {
+             console.log('🌐 Matched website field, value:', projectData.url);
+             return projectData.url;
+           }
+           
+           // Address fields
+           if (fieldName.includes('address') || fieldName.includes('street')) {
+             console.log('📍 Matched address field, value:', projectData.address || '');
+             return projectData.address || '';
+           }
+           
+           // City fields
+           if (fieldName.includes('city')) {
+             console.log('🏙️ Matched city field, value:', projectData.city || '');
+             return projectData.city || '';
+           }
+           
+           // State fields
+           if (fieldName.includes('state') || fieldName.includes('province')) {
+             console.log('🏛️ Matched state field, value:', projectData.state || '');
+             return projectData.state || '';
+           }
+           
+           // Zip/Postal code fields
+           if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode')) {
+             console.log('📮 Matched zip field, value:', projectData.pincode || '');
+             return projectData.pincode || '';
+           }
+           
+           // Country fields
+           if (fieldName.includes('country')) {
+             console.log('🌍 Matched country field, value:', projectData.country || '');
+             return projectData.country || '';
+           }
+           
+           // Description fields
+           if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('message')) {
+             console.log('📝 Matched description field, value:', projectData.description);
+             return projectData.description;
+           }
+           
+           // Category fields
+           if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry')) {
+             console.log('🏷️ Matched category field, value:', projectData.companyName);
+             return projectData.companyName;
+           }
+           
+           // Title fields
+           if (fieldName.includes('title')) {
+             console.log('📋 Matched title field, value:', projectData.companyName);
+             return projectData.companyName;
+           }
+           
+           console.log('❌ No match found for field:', fieldName);
+           return null;
         }
         
         // Function to fill field with animation
@@ -135,75 +160,157 @@ export class ClientAutomationService {
           });
         }
         
-        // Main automation function
-        async function automateForms() {
-          try {
-            // Wait a bit for any dynamic content to load
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Get all forms on the page
-            const forms = document.querySelectorAll('form');
-            console.log('Found ' + forms.length + ' forms on the page');
+                 // Main automation function
+         async function automateForms() {
+           try {
+             console.log('🔄 Starting form automation process...');
+             
+             // Wait a bit for any dynamic content to load
+             console.log('⏳ Waiting for page to fully load...');
+             await new Promise(resolve => setTimeout(resolve, 2000));
+             console.log('✅ Page load wait completed');
+             
+             // Get all forms on the page
+             const forms = document.querySelectorAll('form');
+             console.log('📝 Found ' + forms.length + ' forms on the page');
+             
+             if (forms.length === 0) {
+               console.warn('⚠️ No forms found on this page');
+               alert('No forms found on this page. Please make sure you are on a page with forms.');
+               return;
+             }
             
             let totalFieldsFilled = 0;
             
-            for (let formIndex = 0; formIndex < forms.length; formIndex++) {
-              const form = forms[formIndex];
-              console.log('Processing form ' + (formIndex + 1) + '/' + forms.length);
+                         for (let formIndex = 0; formIndex < forms.length; formIndex++) {
+               const form = forms[formIndex];
+               console.log('🔄 Processing form ' + (formIndex + 1) + '/' + forms.length);
+               console.log('📋 Form details:', {
+                 action: form.action,
+                 method: form.method,
+                 id: form.id,
+                 className: form.className
+               });
+               
+               // Get all input fields in this form
+               const inputs = form.querySelectorAll('input, textarea, select');
+               console.log('📝 Form ' + (formIndex + 1) + ' has ' + inputs.length + ' fields');
+               
+               if (inputs.length === 0) {
+                 console.warn('⚠️ Form ' + (formIndex + 1) + ' has no input fields');
+                 continue;
+               }
               
-              // Get all input fields in this form
-              const inputs = form.querySelectorAll('input, textarea, select');
-              console.log('Form ' + (formIndex + 1) + ' has ' + inputs.length + ' fields');
-              
-              for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
-                const input = inputs[inputIndex];
-                
-                try {
-                  // Skip if field is disabled, readonly, or already has a value
-                  if (input.disabled || input.readOnly || input.value) {
-                    continue;
-                  }
-                  
-                  // Determine what to fill based on field properties
-                  const fieldValue = mapFieldToValue(input);
-                  
-                  if (fieldValue) {
-                    // Fill the field with animation
-                    await fillFieldWithAnimation(input, fieldValue);
-                    
-                    totalFieldsFilled++;
-                    console.log('✅ Filled field: ' + (input.name || input.id || input.placeholder) + ' with: ' + fieldValue);
-                    
-                    // Small delay between fields for visual effect
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                  }
-                } catch (fieldError) {
-                  console.log('⚠️ Skipping field ' + (inputIndex + 1) + ': ' + fieldError);
-                  continue;
-                }
-              }
+                             for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
+                 const input = inputs[inputIndex];
+                 
+                 console.log('🔍 Processing field ' + (inputIndex + 1) + '/' + inputs.length + ':', {
+                   type: input.type,
+                   name: input.name,
+                   id: input.id,
+                   placeholder: input.placeholder,
+                   value: input.value,
+                   disabled: input.disabled,
+                   readOnly: input.readOnly
+                 });
+                 
+                 try {
+                   // Skip if field is disabled, readonly, or already has a value
+                   if (input.disabled) {
+                     console.log('⏭️ Skipping disabled field:', input.name || input.id);
+                     continue;
+                   }
+                   
+                   if (input.readOnly) {
+                     console.log('⏭️ Skipping readonly field:', input.name || input.id);
+                     continue;
+                   }
+                   
+                   if (input.value) {
+                     console.log('⏭️ Skipping field with existing value:', input.name || input.id, '=', input.value);
+                     continue;
+                   }
+                   
+                   // Determine what to fill based on field properties
+                   console.log('🤔 Mapping field to value...');
+                   const fieldValue = mapFieldToValue(input);
+                   
+                   if (fieldValue) {
+                     console.log('✅ Found value for field:', input.name || input.id, '=', fieldValue);
+                     
+                     // Fill the field with animation
+                     console.log('🎨 Starting field animation...');
+                     await fillFieldWithAnimation(input, fieldValue);
+                     
+                     totalFieldsFilled++;
+                     console.log('✅ Successfully filled field: ' + (input.name || input.id || input.placeholder) + ' with: ' + fieldValue);
+                     
+                     // Small delay between fields for visual effect
+                     console.log('⏳ Waiting between fields...');
+                     await new Promise(resolve => setTimeout(resolve, 500));
+                   } else {
+                     console.log('❌ No value mapped for field:', input.name || input.id);
+                   }
+                 } catch (fieldError) {
+                   console.error('❌ Error processing field ' + (inputIndex + 1) + ':', fieldError);
+                   console.error('❌ Field details:', {
+                     type: input.type,
+                     name: input.name,
+                     id: input.id,
+                     error: fieldError.message || fieldError
+                   });
+                   continue;
+                 }
+               }
             }
             
-            console.log('🎯 Total fields filled: ' + totalFieldsFilled);
-            
-            // Show success notification
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 500;';
-            notification.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">✅</span><span>Form filled successfully! You can now submit.</span></div>';
-            
-            document.body.appendChild(notification);
-            
-            // Remove notification after 5 seconds
-            setTimeout(() => {
-              if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-              }
-            }, 5000);
-            
-          } catch (error) {
-            console.error('Automation error:', error);
-            alert('❌ Automation failed: ' + error.message);
-          }
+                         console.log('🎯 Total fields filled: ' + totalFieldsFilled);
+             console.log('📊 Automation summary:', {
+               totalForms: forms.length,
+               totalFieldsFilled: totalFieldsFilled,
+               success: true
+             });
+             
+             // Show success notification
+             console.log('🎉 Creating success notification...');
+             const notification = document.createElement('div');
+             notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 500;';
+             notification.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">✅</span><span>Form filled successfully! You can now submit.</span></div>';
+             
+             document.body.appendChild(notification);
+             console.log('✅ Success notification displayed');
+             
+             // Remove notification after 5 seconds
+             setTimeout(() => {
+               if (notification.parentNode) {
+                 notification.parentNode.removeChild(notification);
+                 console.log('🗑️ Success notification removed');
+               }
+             }, 5000);
+             
+           } catch (error) {
+             console.error('❌ Automation error:', error);
+             console.error('❌ Error details:', {
+               message: error.message || 'Unknown error',
+               stack: error.stack || 'No stack trace',
+               name: error.name || 'Unknown error type'
+             });
+             
+             // Show error notification
+             const errorNotification = document.createElement('div');
+             errorNotification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 500;';
+             errorNotification.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">❌</span><span>Automation failed: ' + (error.message || 'Unknown error') + '</span></div>';
+             
+             document.body.appendChild(errorNotification);
+             
+             setTimeout(() => {
+               if (errorNotification.parentNode) {
+                 errorNotification.parentNode.removeChild(errorNotification);
+               }
+             }, 5000);
+             
+             alert('❌ Automation failed: ' + (error.message || 'Unknown error'));
+           }
         }
         
         // Start automation
@@ -217,21 +324,39 @@ export class ClientAutomationService {
   // Start automation by opening URL and providing instructions
   async startAutomation(url: string): Promise<void> {
     try {
+      console.log('🚀 Starting client automation for URL:', url);
+      console.log('📋 Project data:', this.projectData);
+      
       // Open the URL in a new tab
+      console.log('🌐 Opening new window...');
       const newWindow = window.open(url, '_blank', 'width=1200,height=800');
       
       if (!newWindow) {
+        console.error('❌ Popup blocked! Please allow popups for this site.');
         throw new Error('Popup blocked! Please allow popups for this site.');
       }
 
+      console.log('✅ New window opened successfully');
+      console.log('🔧 Creating bookmarklet...');
+
       // Create the bookmarklet
       const bookmarklet = this.createBookmarklet();
+      console.log('✅ Bookmarklet created successfully');
+      console.log('🔗 Bookmarklet length:', bookmarklet.length, 'characters');
       
       // Show instructions to the user
+      console.log('📋 Showing instructions overlay...');
       this.showInstructions(newWindow, bookmarklet);
+      
+      console.log('✅ Client automation setup completed successfully');
 
     } catch (error) {
-      console.error('Client automation error:', error);
+      console.error('❌ Client automation error:', error);
+      console.error('❌ Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace',
+        name: error instanceof Error ? error.name : 'Unknown error type'
+      });
       throw error;
     }
   }
