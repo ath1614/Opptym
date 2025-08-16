@@ -5,7 +5,7 @@ const isProduction = import.meta.env.PROD;
 // Base URL configuration - ensure /api prefix is always included
 const getBaseURL = () => {
   if (isProduction) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io';
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://api.opptym.com';
     // Ensure the URL ends with /api and doesn't have double slashes
     const cleanApiUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
     return cleanApiUrl.endsWith('/api') ? cleanApiUrl : `${cleanApiUrl}/api`;
