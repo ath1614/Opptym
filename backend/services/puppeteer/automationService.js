@@ -8,11 +8,10 @@ class AutomationService {
 
   async initialize() {
     try {
-      // Check if we're in a server environment (Render, Heroku, etc.)
-      const isServerEnvironment = process.env.NODE_ENV === 'production' || process.env.RENDER;
+      console.log('🚀 Initializing Puppeteer browser...');
       
       const launchOptions = {
-        headless: false, // Always show browser window so user can see automation
+        headless: 'new',
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -25,35 +24,54 @@ class AutomationService {
           '--disable-features=VizDisplayCompositor',
           '--disable-extensions',
           '--disable-plugins',
-          '--start-maximized',
           '--disable-background-timer-throttling',
           '--disable-backgrounding-occluded-windows',
           '--disable-renderer-backgrounding',
           '--disable-field-trial-config',
-          '--disable-ipc-flooding-protection'
+          '--disable-ipc-flooding-protection',
+          '--window-size=1920,1080',
+          '--single-process',
+          '--disable-gpu-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor',
+          '--disable-extensions',
+          '--disable-plugins'
         ],
-        defaultViewport: null, // Use full window size
-        ignoreDefaultArgs: ['--enable-automation']
+        defaultViewport: { width: 1920, height: 1080 },
+        ignoreDefaultArgs: ['--enable-automation'],
+        timeout: 30000
       };
 
-      // Always show browser window for better user experience
-      launchOptions.args.push('--start-maximized');
-      launchOptions.defaultViewport = null;
-
+      console.log('🔧 Launching browser with options:', launchOptions);
       this.browser = await puppeteer.launch(launchOptions);
+      console.log('✅ Browser launched successfully');
       
       this.page = await this.browser.newPage();
+      console.log('✅ New page created successfully');
       
       // Set viewport
-      await this.page.setViewport({ width: 1280, height: 720 });
+      await this.page.setViewport({ width: 1920, height: 1080 });
+      console.log('✅ Viewport set successfully');
       
       // Set user agent
       await this.page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+      console.log('✅ User agent set successfully');
       
       console.log('✅ Puppeteer browser initialized successfully');
       return true;
     } catch (error) {
       console.error('❌ Failed to initialize Puppeteer:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
       return false;
     }
   }
