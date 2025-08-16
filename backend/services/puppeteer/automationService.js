@@ -12,7 +12,7 @@ class AutomationService {
       const isServerEnvironment = process.env.NODE_ENV === 'production' || process.env.RENDER;
       
       const launchOptions = {
-        headless: isServerEnvironment ? 'new' : false, // Use 'new' headless mode on servers
+        headless: false, // Always show browser window so user can see automation
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -25,31 +25,20 @@ class AutomationService {
           '--disable-features=VizDisplayCompositor',
           '--disable-extensions',
           '--disable-plugins',
-          '--disable-images',
-          '--disable-javascript',
+          '--start-maximized',
           '--disable-background-timer-throttling',
           '--disable-backgrounding-occluded-windows',
           '--disable-renderer-backgrounding',
           '--disable-field-trial-config',
           '--disable-ipc-flooding-protection'
         ],
-        defaultViewport: { width: 1280, height: 720 },
+        defaultViewport: null, // Use full window size
         ignoreDefaultArgs: ['--enable-automation']
       };
 
-      // Add server-specific options
-      if (isServerEnvironment) {
-        launchOptions.args.push(
-          '--single-process',
-          '--no-zygote',
-          '--disable-dev-shm-usage',
-          '--disable-gpu-sandbox'
-        );
-      } else {
-        // Local development - show browser window
-        launchOptions.args.push('--start-maximized');
-        launchOptions.defaultViewport = null;
-      }
+      // Always show browser window for better user experience
+      launchOptions.args.push('--start-maximized');
+      launchOptions.defaultViewport = null;
 
       this.browser = await puppeteer.launch(launchOptions);
       
@@ -77,8 +66,9 @@ class AutomationService {
         timeout: 30000 
       });
       
-      // Wait for page to load
-      await this.delay(2000);
+      // Wait for page to load and show user what's happening
+      console.log('⏳ Waiting for page to fully load...');
+      await this.delay(3000);
       console.log('✅ Page loaded successfully');
       return true;
     } catch (error) {
@@ -154,8 +144,8 @@ class AutomationService {
               
               console.log(`✅ Filled field: ${inputInfo.name || inputInfo.id || inputInfo.placeholder} with: ${fieldValue}`);
               
-              // Small delay between fields
-              await this.delay(200);
+              // Longer delay between fields so user can see the automation
+              await this.delay(1000);
             }
           } catch (fieldError) {
             console.log(`⚠️ Skipping field ${inputIndex + 1}: ${fieldError.message}`);
@@ -276,6 +266,10 @@ class AutomationService {
   async close() {
     try {
       if (this.browser) {
+        // Wait a bit before closing so user can see the final result
+        console.log('⏳ Waiting 5 seconds before closing browser...');
+        await this.delay(5000);
+        
         await this.browser.close();
         console.log('🔒 Browser closed successfully');
       }
