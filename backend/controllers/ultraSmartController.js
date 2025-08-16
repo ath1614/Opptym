@@ -76,11 +76,15 @@ const openAndUltraFill = async (req, res) => {
       
       console.log('✅ Form submission result:', submitted);
 
+      // Capture the filled form before closing
+      console.log('📸 Capturing filled form for user...');
+      const formCapture = await automationService.captureFilledForm();
+
       // Close browser
       await automationService.close();
       console.log('✅ Browser closed successfully');
 
-      // Return success response
+      // Return success response with form capture
       return res.status(200).json({
         success: true,
         message: 'Ultra smart automation completed successfully!',
@@ -91,6 +95,9 @@ const openAndUltraFill = async (req, res) => {
           totalFields: fillResult.totalFieldsFound,
           filledFields: fillResult.filledFields,
           formSubmitted: submitted,
+          formScreenshot: formCapture?.screenshot || null,
+          formUrl: formCapture?.url || url,
+          formData: formCapture?.formData || [],
           timestamp: new Date().toISOString()
         }
       });

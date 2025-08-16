@@ -263,6 +263,68 @@ class AutomationService {
     }
   }
 
+  async captureFilledForm() {
+    try {
+      console.log('📸 Capturing filled form...');
+      
+      // Wait a bit for any animations to complete
+      await this.delay(2000);
+      
+      // Take a screenshot of the filled form
+      const screenshot = await this.page.screenshot({ 
+        fullPage: true,
+        type: 'png'
+      });
+      
+      // Convert to base64 for easy transmission
+      const base64Screenshot = screenshot.toString('base64');
+      
+      // Get the current URL
+      const currentUrl = this.page.url();
+      
+      // Get form data for reference
+      const formData = await this.page.evaluate(() => {
+        const forms = document.querySelectorAll('form');
+        const formInfo = [];
+        
+        forms.forEach((form, index) => {
+          const inputs = form.querySelectorAll('input, textarea, select');
+          const filledFields = [];
+          
+          inputs.forEach(input => {
+            if (input.value) {
+              filledFields.push({
+                name: input.name || input.id || input.placeholder || `Field ${index}`,
+                value: input.value,
+                type: input.type || input.tagName.toLowerCase()
+              });
+            }
+          });
+          
+          formInfo.push({
+            formIndex: index,
+            filledFields: filledFields
+          });
+        });
+        
+        return formInfo;
+      });
+      
+      console.log('✅ Form captured successfully');
+      
+      return {
+        screenshot: base64Screenshot,
+        url: currentUrl,
+        formData: formData,
+        timestamp: new Date().toISOString()
+      };
+      
+    } catch (error) {
+      console.error('❌ Error capturing filled form:', error);
+      return null;
+    }
+  }
+
   async close() {
     try {
       if (this.browser) {

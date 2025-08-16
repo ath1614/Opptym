@@ -550,6 +550,23 @@ const SubmissionsDashboard = () => {
         </div>
       </div>
       
+      ${data.formScreenshot ? `
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">📸</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Filled Form Preview:</span>
+        </div>
+        <div style="text-align: center;">
+          <img src="data:image/png;base64,${data.formScreenshot}" 
+               style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" 
+               alt="Filled form screenshot" />
+          <p style="margin: 8px 0 0 0; color: #0c4a6e; font-size: 12px;">
+            This is how your form looked after automation filled it with your project data
+          </p>
+        </div>
+      </div>
+      ` : ''}
+      
       <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <span style="font-size: 18px;">💡</span>
@@ -564,8 +581,11 @@ const SubmissionsDashboard = () => {
         </ul>
       </div>
       
-      <div style="display: flex; gap: 12px;">
-        <button id="openUrl" style="flex: 1; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Check Target Website</button>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="openUrl" style="flex: 1; min-width: 150px; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Check Target Website</button>
+        ${data.formUrl && data.formUrl !== data.url ? `
+        <button id="openFilledForm" style="flex: 1; min-width: 150px; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📝 View Filled Form</button>
+        ` : ''}
         <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
       </div>
     `;
@@ -576,6 +596,10 @@ const SubmissionsDashboard = () => {
     // Add event listeners
     document.getElementById('openUrl')?.addEventListener('click', () => {
       window.open(data.url, '_blank');
+    });
+    
+    document.getElementById('openFilledForm')?.addEventListener('click', () => {
+      window.open(data.formUrl, '_blank');
     });
     
     document.getElementById('closeModal')?.addEventListener('click', () => {
