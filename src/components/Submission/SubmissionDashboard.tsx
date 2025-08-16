@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // Use axios directly with relative paths like other components
 import axios from 'axios';
+import { ClientAutomationService } from '../../services/ClientAutomationService';
 import { 
   Download, 
   Globe, 
@@ -617,28 +618,29 @@ const SubmissionsDashboard = () => {
     try {
       // Prepare project data for client-side automation
       const projectData = {
-        name: (selectedProject as any).name,
-        email: (selectedProject as any).email,
-        phone: (selectedProject as any).businessPhone,
-        companyName: (selectedProject as any).companyName,
-        url: selectedProject.url,
-        description: selectedProject.description,
-        address: (selectedProject as any).address1,
-        city: (selectedProject as any).city,
-        state: (selectedProject as any).state,
-        country: (selectedProject as any).country,
-        pincode: (selectedProject as any).pincode
+        name: (selectedProject as any).name || '',
+        email: (selectedProject as any).email || '',
+        phone: (selectedProject as any).businessPhone || '',
+        companyName: (selectedProject as any).companyName || '',
+        url: selectedProject.url || '',
+        description: selectedProject.description || '',
+        address: (selectedProject as any).address1 || '',
+        city: (selectedProject as any).city || '',
+        state: (selectedProject as any).state || '',
+        country: (selectedProject as any).country || '',
+        pincode: (selectedProject as any).pincode || ''
       };
 
       // Show starting message
       alert("🚀 Starting Ultra-Smart Client-Side Automation!\n\n🤖 Opening target website in new window\n📝 Will auto-fill forms with your project data\n💡 Watch for the green success message!\n\n⚠️ Make sure to allow popups for this site!");
 
-      // Perform client-side automation
-      await performClientSideAutomation(url, projectData);
+      // Create and start client automation service
+      const automationService = new ClientAutomationService(projectData);
+      await automationService.startAutomation(url);
       
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
-      alert('❌ Ultra-smart automation failed. Please try again.');
+      alert(`❌ Ultra-smart automation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -1083,10 +1085,10 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                           onClick={() => openTabAndUltraSmartFill(site.url)}
                           disabled={loading}
                           className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
-                          title="Ultra-Smart Fill"
+                          title="Watch Form Auto-Fill (Client-Side)"
                         >
                           <Bot className="w-3 h-3 mr-1" />
-                          Ultra-Smart
+                          Watch Auto-Fill
                         </button>
                         
                         <button
