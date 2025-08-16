@@ -348,6 +348,9 @@ export class ClientAutomationService {
       console.log('📋 Showing instructions overlay...');
       this.showInstructions(newWindow, bookmarklet);
       
+      // Also show instructions in the current window as fallback
+      this.showFallbackInstructions(bookmarklet, url);
+      
       console.log('✅ Client automation setup completed successfully');
 
     } catch (error) {
@@ -361,10 +364,13 @@ export class ClientAutomationService {
     }
   }
 
-  private showInstructions(window: Window, bookmarklet: string): void {
-    // Create instructions overlay
-    const overlay = window.document.createElement('div');
-    overlay.style.cssText = `
+  // Fallback instructions for cross-origin issues
+  private showFallbackInstructions(bookmarklet: string, url: string): void {
+    console.log('📋 Showing fallback instructions...');
+    
+    // Create a simple modal in the current window
+    const modal = document.createElement('div');
+    modal.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -377,6 +383,122 @@ export class ClientAutomationService {
       z-index: 10000;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">🤖</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Manual Auto-Fill Setup</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Cross-origin restrictions detected</p>
+        </div>
+      </div>
+      
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">⚠️</span>
+          <span style="font-weight: 600; color: #92400e;">Cross-Origin Issue Detected</span>
+        </div>
+        <p style="color: #92400e; line-height: 1.6; font-size: 14px; margin: 0;">
+          The target website has security restrictions that prevent automatic overlay creation. 
+          Please follow the manual steps below.
+        </p>
+      </div>
+      
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">📋</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Manual Steps:</span>
+        </div>
+        <ol style="margin: 0; padding-left: 20px; color: #0c4a6e; line-height: 1.6; font-size: 14px;">
+          <li>Go to the target website: <a href="${url}" target="_blank" style="color: #0ea5e9;">${url}</a></li>
+          <li>Copy the bookmarklet code below</li>
+          <li>Create a new bookmark in your browser</li>
+          <li>Paste the code as the bookmark URL</li>
+          <li>Click the bookmark on the target website</li>
+        </ol>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🔗</span>
+          <span style="font-weight: 600; color: #065f46;">Bookmarklet Code:</span>
+        </div>
+        <textarea 
+          readonly 
+          style="width: 100%; height: 80px; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-family: monospace; font-size: 12px; resize: vertical;"
+          onclick="this.select();"
+        >${bookmarklet}</textarea>
+        <p style="margin: 8px 0 0 0; color: #065f46; font-size: 12px;">
+          Click the textarea above to select all, then copy (Ctrl+C / Cmd+C)
+        </p>
+      </div>
+      
+      <div style="display: flex; gap: 12px;">
+        <button id="copyBookmarklet" style="background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy to Clipboard</button>
+        <button id="closeFallback" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const copyButton = document.getElementById('copyBookmarklet');
+    const closeButton = document.getElementById('closeFallback');
+    
+    if (copyButton) {
+      copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(bookmarklet).then(() => {
+          copyButton.textContent = '✅ Copied!';
+          setTimeout(() => {
+            copyButton.textContent = '📋 Copy to Clipboard';
+          }, 2000);
+        }).catch(() => {
+          alert('Please manually copy the bookmarklet code from the textarea above.');
+        });
+      });
+    }
+    
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+      });
+    }
+    
+    console.log('✅ Fallback instructions displayed');
+  }
+
+  private showInstructions(window: Window, bookmarklet: string): void {
+    try {
+      console.log('📋 Attempting to show instructions overlay...');
+      
+      // Create instructions overlay
+      const overlay = window.document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      `;
     
     const content = window.document.createElement('div');
     content.style.cssText = `
@@ -438,12 +560,26 @@ export class ClientAutomationService {
     overlay.appendChild(content);
     window.document.body.appendChild(overlay);
     
-    // Add event listener to close button
-    const closeButton = window.document.getElementById('closeInstructions');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        window.document.body.removeChild(overlay);
-      });
-    }
-  }
+         // Add event listener to close button
+     const closeButton = window.document.getElementById('closeInstructions');
+     if (closeButton) {
+       closeButton.addEventListener('click', () => {
+         window.document.body.removeChild(overlay);
+       });
+     }
+     
+     console.log('✅ Instructions overlay created successfully');
+     
+   } catch (error) {
+     console.error('❌ Error creating instructions overlay:', error);
+     console.error('❌ This might be due to cross-origin restrictions');
+     
+     // Fallback: Show alert with bookmarklet
+     try {
+       window.alert('Cross-origin restrictions detected. Please manually copy and paste this bookmarklet into your browser:\n\n' + bookmarklet);
+     } catch (alertError) {
+       console.error('❌ Even alert failed:', alertError);
+     }
+   }
+ }
 }
