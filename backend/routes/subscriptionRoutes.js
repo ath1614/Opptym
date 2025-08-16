@@ -4,6 +4,7 @@ const subscriptionController = require('../controllers/subscriptionController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Subscription management routes
+router.get('/status', protect, subscriptionController.getSubscriptionDetails);
 router.get('/details', protect, subscriptionController.getSubscriptionDetails);
 router.get('/feature/:feature', protect, subscriptionController.checkFeatureAccess);
 router.post('/track-usage', protect, subscriptionController.trackUsage);
