@@ -22,7 +22,7 @@ const getAxiosBaseURL = () => {
     if (isProduction) {
       return 'https://api.opptym.com';
     }
-  return 'http://localhost:5050';
+  return 'http://localhost:3000';
 };
 
 const axiosBaseURL = getAxiosBaseURL();

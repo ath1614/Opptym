@@ -47,7 +47,7 @@ const SubscriptionStatus = () => {
       fetchSubscriptionDetails();
     } else {
       setLoading(false);
-      setError('Please log in to view subscription details');
+      setError(null); // Don't show error, just show default state
     }
   }, []);
 
@@ -75,8 +75,12 @@ const SubscriptionStatus = () => {
       }
     } catch (error: any) {
       console.error('Error fetching subscription details:', error);
+      // Don't set error for network issues, just show default state
       if (error.response?.status === 401) {
         setError('Please log in to view subscription details');
+      } else if (error.code === 'NETWORK_ERROR' || error.message.includes('Network Error')) {
+        // Network error - show default state without error
+        setError(null);
       } else {
         setError(error.response?.data?.message || 'Failed to fetch subscription details');
       }
@@ -150,20 +154,41 @@ const SubscriptionStatus = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-2 mb-3">
+            <Crown className="w-6 h-6 text-blue-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Subscription Status</h3>
+          </div>
+          <div className="flex items-center justify-center space-x-2">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+            <span className="text-sm text-gray-600">Loading subscription details...</span>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!subscription) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-center space-x-2">
-          <AlertTriangle className="w-5 h-5 text-blue-600" />
-          <span className="text-blue-800">
-            {error || 'Please log in to view subscription details'}
-          </span>
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-2 mb-3">
+            <Crown className="w-6 h-6 text-blue-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Subscription Status</h3>
+          </div>
+          <p className="text-gray-700 mb-4">
+            {error ? 'Unable to load subscription details' : 'Please log in to view subscription details'}
+          </p>
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center justify-center space-x-2">
+              <Star className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">Free Plan Active</span>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-1">
+              Basic features available
+            </p>
+          </div>
         </div>
       </div>
     );
