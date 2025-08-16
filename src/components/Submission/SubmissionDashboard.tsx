@@ -489,7 +489,7 @@ const SubmissionsDashboard = () => {
       console.log('🚀 Starting server-side automation for:', url);
       
       // Call the backend automation API
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://zc4ck4k48gwk0wko44gosgs4.77.37.44.119.sslip.io'}/api/ultra-smart/automate`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://api.opptym.com'}/api/ultra-smart/automate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
