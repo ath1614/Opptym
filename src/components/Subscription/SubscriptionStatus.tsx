@@ -39,10 +39,16 @@ const SubscriptionStatus = () => {
   const [subscription, setSubscription] = useState<SubscriptionDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { token } = useAuth();
 
   useEffect(() => {
-    fetchSubscriptionDetails();
+    // Only fetch subscription details if user is authenticated
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchSubscriptionDetails();
+    } else {
+      setLoading(false);
+      setError('Please log in to view subscription details');
+    }
   }, []);
 
   const fetchSubscriptionDetails = async () => {
@@ -51,6 +57,7 @@ const SubscriptionStatus = () => {
       const token = localStorage.getItem('token');
       if (!token) {
         setError('No authentication token found');
+        setLoading(false);
         return;
       }
 
@@ -60,15 +67,19 @@ const SubscriptionStatus = () => {
         }
       });
 
-      if (response.data.success) {
-        setSubscription(response.data.subscription);
+      if (response.data) {
+        setSubscription(response.data);
         setError(null);
       } else {
-        setError(response.data.message || 'Failed to fetch subscription details');
+        setError('Failed to fetch subscription details');
       }
     } catch (error: any) {
       console.error('Error fetching subscription details:', error);
-      setError(error.response?.data?.message || 'Failed to fetch subscription details');
+      if (error.response?.status === 401) {
+        setError('Please log in to view subscription details');
+      } else {
+        setError(error.response?.data?.message || 'Failed to fetch subscription details');
+      }
     } finally {
       setLoading(false);
     }
@@ -147,10 +158,12 @@ const SubscriptionStatus = () => {
 
   if (!subscription) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <div className="flex items-center space-x-2">
-          <XCircle className="w-5 h-5 text-red-600" />
-          <span className="text-red-800">Unable to load subscription details</span>
+          <AlertTriangle className="w-5 h-5 text-blue-600" />
+          <span className="text-blue-800">
+            {error || 'Please log in to view subscription details'}
+          </span>
         </div>
       </div>
     );
