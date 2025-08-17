@@ -615,6 +615,50 @@ const SubmissionsDashboard = () => {
       return;
     }
 
+    // Show loading popup
+    const loadingModal = document.createElement('div');
+    loadingModal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    loadingContent.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Watch Auto-Fill</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Preparing your project data and opening the target website...</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #10b981; font-weight: 500;">Loading...</span>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    loadingModal.appendChild(loadingContent);
+    document.body.appendChild(loadingModal);
+
     try {
       // Prepare project data for client-side automation
       const projectData = {
@@ -631,9 +675,6 @@ const SubmissionsDashboard = () => {
         pincode: (selectedProject as any).pincode || ''
       };
 
-      // Show starting message
-      alert("🚀 Starting Ultra-Smart Client-Side Automation!\n\n🤖 Opening target website in new window\n📝 Will auto-fill forms with your project data\n💡 Watch for the green success message!\n\n⚠️ Make sure to allow popups for this site!");
-
       // Create and start client automation service
       const automationService = new ClientAutomationService(projectData);
       await automationService.startAutomation(url);
@@ -641,6 +682,11 @@ const SubmissionsDashboard = () => {
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
       alert(`❌ Ultra-smart automation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
     }
   };
 
@@ -652,33 +698,80 @@ const SubmissionsDashboard = () => {
     }
 
     setLoading(true);
+    
+    // Show loading popup
+    const loadingModal = document.createElement('div');
+    loadingModal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    loadingContent.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Universal Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Preparing your project data and opening the target website...</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #3b82f6; font-weight: 500;">Loading...</span>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    loadingModal.appendChild(loadingContent);
+    document.body.appendChild(loadingModal);
+    
     try {
       // Prepare project data for client-side automation
       const projectData = {
-        name: (selectedProject as any).name,
-        email: (selectedProject as any).email,
-        phone: (selectedProject as any).businessPhone,
-        companyName: (selectedProject as any).companyName,
-        url: selectedProject.url,
-        description: selectedProject.description,
-        address: (selectedProject as any).address1,
-        city: (selectedProject as any).city,
-        state: (selectedProject as any).state,
-        country: (selectedProject as any).country,
-        pincode: (selectedProject as any).pincode
+        name: (selectedProject as any).name || '',
+        email: (selectedProject as any).email || '',
+        phone: (selectedProject as any).businessPhone || '',
+        companyName: (selectedProject as any).companyName || '',
+        url: selectedProject.url || '',
+        description: selectedProject.description || '',
+        address: (selectedProject as any).address1 || '',
+        city: (selectedProject as any).city || '',
+        state: (selectedProject as any).state || '',
+        country: (selectedProject as any).country || '',
+        pincode: (selectedProject as any).pincode || ''
       };
 
-      // Show starting message
-      alert("🌍 Starting Universal Form Client-Side Automation!\n\n🤖 Opening target website in new window\n📝 Will auto-fill forms with your project data\n💡 Watch for the green success message!\n\n⚠️ Make sure to allow popups for this site!");
-
-      // Perform client-side automation
-      await performClientSideAutomation(url, projectData);
+      // Create and start client automation service
+      const automationService = new ClientAutomationService(projectData);
+      await automationService.startAutomation(url);
       
     } catch (error) {
       console.error('Universal form automation error:', error);
       alert('❌ Universal form automation failed. Please try again.');
     } finally {
       setLoading(false);
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
     }
   };
 

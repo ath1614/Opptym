@@ -457,13 +457,14 @@ export class ClientAutomationService {
           <span style="font-weight: 600; color: #0c4a6e;">Automatic Steps:</span>
         </div>
         <ol style="margin: 0; padding-left: 20px; color: #0c4a6e; line-height: 1.6; font-size: 14px;">
-          <li>Go to the target website: <a href="${url}" target="_blank" style="color: #0ea5e9;">${url}</a></li>
-          <li>Copy the bookmarklet code below</li>
-          <li>Create a new bookmark in your browser</li>
-          <li>Paste the code as the bookmark URL</li>
-          <li>Click the bookmark on the target website</li>
-          <li><strong>Watch forms fill automatically!</strong></li>
-          <li><strong>Submit the form when ready</strong></li>
+          <li><strong>Copy the bookmarklet code</strong> using the "📋 Copy Bookmarklet" button below</li>
+          <li><strong>Right-click your bookmarks bar</strong> → Select "Add page" or "Add bookmark"</li>
+          <li><strong>Name it</strong> "Auto-Fill Forms" (or any name you like)</li>
+          <li><strong>Paste the code</strong> into the URL/Address field</li>
+          <li><strong>Save the bookmark</strong></li>
+          <li><strong>Go to target website</strong> → Click "🌐 Open Website" below</li>
+          <li><strong>Click your bookmark</strong> → Forms will fill automatically!</li>
+          <li><strong>Submit the form</strong> → Click the submit button on the website</li>
         </ol>
       </div>
       
