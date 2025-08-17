@@ -378,18 +378,13 @@ export class ClientAutomationService {
       console.log('📋 Showing instructions modal...');
       this.showFallbackInstructions(bookmarklet, url);
       
-      // Try to open the URL in a new tab (but don't try to access it)
+      // Open the URL in a new tab without trying to access it
       console.log('🌐 Opening target website in new tab...');
-      try {
-        const newWindow = window.open(url, '_blank', 'width=1200,height=800');
-        if (newWindow) {
-          console.log('✅ Target website opened successfully');
-        } else {
-          console.warn('⚠️ Popup blocked, but instructions are still available');
-        }
-      } catch (openError) {
-        console.warn('⚠️ Could not open target website:', openError);
-        // This is okay - the instructions modal is still available
+      const newWindow = window.open(url, '_blank', 'width=1200,height=800');
+      if (newWindow) {
+        console.log('✅ Target website opened successfully');
+      } else {
+        console.warn('⚠️ Popup blocked, but instructions are still available');
       }
       
       console.log('✅ Client automation setup completed successfully');
@@ -405,11 +400,11 @@ export class ClientAutomationService {
     }
   }
 
-  // Fallback instructions for cross-origin issues
+  // Enhanced instructions with manual form filling guide
   private showFallbackInstructions(bookmarklet: string, url: string): void {
-    console.log('📋 Showing fallback instructions...');
+    console.log('📋 Showing enhanced instructions...');
     
-    // Create a simple modal in the current window
+    // Create a comprehensive modal in the current window
     const modal = document.createElement('div');
     modal.style.cssText = `
       position: fixed;
@@ -441,26 +436,25 @@ export class ClientAutomationService {
       <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
         <div style="font-size: 32px;">🤖</div>
         <div>
-          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Manual Auto-Fill Setup</h2>
-          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Cross-origin restrictions detected</p>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Form Auto-Fill Setup</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Choose your preferred method below</p>
         </div>
       </div>
       
-      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="font-size: 18px;">⚠️</span>
-          <span style="font-weight: 600; color: #92400e;">Cross-Origin Issue Detected</span>
+          <span style="font-size: 18px;">🚀</span>
+          <span style="font-weight: 600; color: #065f46;">Method 1: Automatic Form Filling (Recommended)</span>
         </div>
-        <p style="color: #92400e; line-height: 1.6; font-size: 14px; margin: 0;">
-          The target website has security restrictions that prevent automatic overlay creation. 
-          Please follow the manual steps below.
+        <p style="color: #065f46; line-height: 1.6; font-size: 14px; margin: 0 0 12px 0;">
+          Use the bookmarklet to automatically fill forms on the target website.
         </p>
       </div>
       
       <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <span style="font-size: 18px;">📋</span>
-          <span style="font-weight: 600; color: #0c4a6e;">Manual Steps:</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Automatic Steps:</span>
         </div>
         <ol style="margin: 0; padding-left: 20px; color: #0c4a6e; line-height: 1.6; font-size: 14px;">
           <li>Go to the target website: <a href="${url}" target="_blank" style="color: #0ea5e9;">${url}</a></li>
@@ -471,6 +465,29 @@ export class ClientAutomationService {
           <li><strong>Watch forms fill automatically!</strong></li>
           <li><strong>Submit the form when ready</strong></li>
         </ol>
+      </div>
+      
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">✏️</span>
+          <span style="font-weight: 600; color: #92400e;">Method 2: Manual Form Filling</span>
+        </div>
+        <p style="color: #92400e; line-height: 1.6; font-size: 14px; margin: 0 0 12px 0;">
+          If the bookmarklet doesn't work, you can manually fill the form using your project data below.
+        </p>
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+            <div><strong>Name:</strong> ${this.projectData.name}</div>
+            <div><strong>Email:</strong> ${this.projectData.email}</div>
+            <div><strong>Phone:</strong> ${this.projectData.phone}</div>
+            <div><strong>Company:</strong> ${this.projectData.companyName}</div>
+            <div><strong>Website:</strong> ${this.projectData.url}</div>
+            <div><strong>Description:</strong> ${this.projectData.description.substring(0, 50)}${this.projectData.description.length > 50 ? '...' : ''}</div>
+          </div>
+        </div>
+        <p style="color: #92400e; line-height: 1.6; font-size: 12px; margin: 0;">
+          Copy these values and paste them into the corresponding form fields on the target website.
+        </p>
       </div>
       
       <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
@@ -488,19 +505,21 @@ export class ClientAutomationService {
         </p>
       </div>
       
-      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <span style="font-size: 18px;">💡</span>
-          <span style="font-weight: 600; color: #92400e;">How to Access Filled Form:</span>
+          <span style="font-weight: 600; color: #0c4a6e;">How to Access & Submit Filled Form:</span>
         </div>
-        <p style="color: #92400e; line-height: 1.6; font-size: 14px; margin: 0;">
-          After clicking the bookmarklet, the forms will be filled automatically on the target website. 
-          You can then interact with the filled form directly on that website - submit it, modify fields, etc.
+        <p style="color: #0c4a6e; line-height: 1.6; font-size: 14px; margin: 0;">
+          After the form is filled (either automatically or manually), you can interact with it directly on the target website. 
+          Review the filled fields, make any changes if needed, and click the submit button to complete your submission.
         </p>
       </div>
       
-      <div style="display: flex; gap: 12px;">
-        <button id="copyBookmarklet" style="background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy to Clipboard</button>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="copyBookmarklet" style="background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Bookmarklet</button>
+        <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
+        <button id="openTargetWebsite" style="background: #8b5cf6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Open Website</button>
         <button id="closeFallback" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
       </div>
     `;
@@ -509,19 +528,47 @@ export class ClientAutomationService {
     document.body.appendChild(modal);
     
     // Add event listeners
-    const copyButton = document.getElementById('copyBookmarklet');
+    const copyBookmarkletButton = document.getElementById('copyBookmarklet');
+    const copyProjectDataButton = document.getElementById('copyProjectData');
+    const openWebsiteButton = document.getElementById('openTargetWebsite');
     const closeButton = document.getElementById('closeFallback');
     
-    if (copyButton) {
-      copyButton.addEventListener('click', () => {
+    if (copyBookmarkletButton) {
+      copyBookmarkletButton.addEventListener('click', () => {
         navigator.clipboard.writeText(bookmarklet).then(() => {
-          copyButton.textContent = '✅ Copied!';
+          copyBookmarkletButton.textContent = '✅ Copied!';
           setTimeout(() => {
-            copyButton.textContent = '📋 Copy to Clipboard';
+            copyBookmarkletButton.textContent = '📋 Copy Bookmarklet';
           }, 2000);
         }).catch(() => {
           alert('Please manually copy the bookmarklet code from the textarea above.');
         });
+      });
+    }
+    
+    if (copyProjectDataButton) {
+      copyProjectDataButton.addEventListener('click', () => {
+        const projectDataText = `Name: ${this.projectData.name}
+Email: ${this.projectData.email}
+Phone: ${this.projectData.phone}
+Company: ${this.projectData.companyName}
+Website: ${this.projectData.url}
+Description: ${this.projectData.description}`;
+        
+        navigator.clipboard.writeText(projectDataText).then(() => {
+          copyProjectDataButton.textContent = '✅ Copied!';
+          setTimeout(() => {
+            copyProjectDataButton.textContent = '📋 Copy Project Data';
+          }, 2000);
+        }).catch(() => {
+          alert('Please manually copy the project data from the modal above.');
+        });
+      });
+    }
+    
+    if (openWebsiteButton) {
+      openWebsiteButton.addEventListener('click', () => {
+        window.open(url, '_blank', 'width=1200,height=800');
       });
     }
     
