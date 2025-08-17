@@ -271,22 +271,63 @@ export class ClientAutomationService {
                success: true
              });
              
-             // Show success notification
+             // Show success notification with action buttons
              console.log('🎉 Creating success notification...');
              const notification = document.createElement('div');
-             notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 500;';
-             notification.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">✅</span><span>Form filled successfully! You can now submit.</span></div>';
+             notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 500; min-width: 300px;';
+             
+             notification.innerHTML = 
+               '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">' +
+                 '<span style="font-size: 18px;">✅</span>' +
+                 '<span style="font-weight: 600;">Form filled successfully!</span>' +
+               '</div>' +
+               '<p style="margin: 0 0 12px 0; opacity: 0.9;">' + totalFieldsFilled + ' fields filled with your project data.</p>' +
+               '<div style="display: flex; gap: 8px;">' +
+                 '<button id="viewFilledForm" style="background: #ffffff; color: #10b981; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500;">🌐 View Form</button>' +
+                 '<button id="closeNotification" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Close</button>' +
+               '</div>';
              
              document.body.appendChild(notification);
              console.log('✅ Success notification displayed');
              
-             // Remove notification after 5 seconds
+             // Add event listeners for buttons
+             const viewFormButton = document.getElementById('viewFilledForm');
+             const closeButton = document.getElementById('closeNotification');
+             
+             if (viewFormButton) {
+               viewFormButton.addEventListener('click', () => {
+                 console.log('🌐 User clicked View Form button');
+                 // The form is already filled on the current page, so just scroll to it
+                 const forms = document.querySelectorAll('form');
+                 if (forms.length > 0) {
+                   forms[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                   // Highlight the form briefly
+                   forms[0].style.border = '3px solid #10b981';
+                   forms[0].style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.3)';
+                   setTimeout(() => {
+                     forms[0].style.border = '';
+                     forms[0].style.boxShadow = '';
+                   }, 3000);
+                 }
+               });
+             }
+             
+             if (closeButton) {
+               closeButton.addEventListener('click', () => {
+                 if (notification.parentNode) {
+                   notification.parentNode.removeChild(notification);
+                   console.log('🗑️ Success notification closed by user');
+                 }
+               });
+             }
+             
+             // Remove notification after 10 seconds (longer for better UX)
              setTimeout(() => {
                if (notification.parentNode) {
                  notification.parentNode.removeChild(notification);
-                 console.log('🗑️ Success notification removed');
+                 console.log('🗑️ Success notification auto-removed');
                }
-             }, 5000);
+             }, 10000);
              
            } catch (error) {
              console.error('❌ Automation error:', error);
@@ -427,6 +468,8 @@ export class ClientAutomationService {
           <li>Create a new bookmark in your browser</li>
           <li>Paste the code as the bookmark URL</li>
           <li>Click the bookmark on the target website</li>
+          <li><strong>Watch forms fill automatically!</strong></li>
+          <li><strong>Submit the form when ready</strong></li>
         </ol>
       </div>
       
@@ -442,6 +485,17 @@ export class ClientAutomationService {
         >${bookmarklet}</textarea>
         <p style="margin: 8px 0 0 0; color: #065f46; font-size: 12px;">
           Click the textarea above to select all, then copy (Ctrl+C / Cmd+C)
+        </p>
+      </div>
+      
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 18px;">💡</span>
+          <span style="font-weight: 600; color: #92400e;">How to Access Filled Form:</span>
+        </div>
+        <p style="color: #92400e; line-height: 1.6; font-size: 14px; margin: 0;">
+          After clicking the bookmarklet, the forms will be filled automatically on the target website. 
+          You can then interact with the filled form directly on that website - submit it, modify fields, etc.
         </p>
       </div>
       
