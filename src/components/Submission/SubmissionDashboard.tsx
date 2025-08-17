@@ -608,6 +608,93 @@ const SubmissionsDashboard = () => {
     });
   };
 
+  // Show client automation success modal with View Filled Form button
+  const showClientAutomationSuccessModal = (url: string, projectData: any) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">✅</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Setup Complete!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your form filling tools are ready to use</p>
+        </div>
+      </div>
+      
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🎯</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Next Steps:</span>
+        </div>
+        <ul style="margin: 0; padding-left: 20px; color: #0c4a6e; line-height: 1.6; font-size: 14px;">
+          <li>Follow the instructions in the modal that opened</li>
+          <li>Copy the bookmarklet and create a bookmark</li>
+          <li>Go to the target website and click your bookmark</li>
+          <li>Watch forms fill automatically!</li>
+          <li>Submit the form when ready</li>
+        </ul>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">📝</span>
+          <span style="font-weight: 600; color: #065f46;">Project Data Ready:</span>
+        </div>
+        <div style="font-size: 12px; color: #065f46; line-height: 1.4;">
+          <div><strong>Name:</strong> ${projectData.name}</div>
+          <div><strong>Email:</strong> ${projectData.email}</div>
+          <div><strong>Company:</strong> ${projectData.companyName}</div>
+          <div><strong>Website:</strong> ${projectData.url}</div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="openTargetWebsite" style="flex: 1; min-width: 150px; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Open Target Website</button>
+        <button id="viewFilledForm" style="flex: 1; min-width: 150px; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📝 View Filled Form</button>
+        <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('openTargetWebsite')?.addEventListener('click', () => {
+      window.open(url, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('viewFilledForm')?.addEventListener('click', () => {
+      window.open(url, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  };
+
   // Ultra-Smart Client-Side Automation function
   const openTabAndUltraSmartFill = async (url: string) => {
     if (!selectedProject) {
@@ -678,6 +765,9 @@ const SubmissionsDashboard = () => {
       // Create and start client automation service
       const automationService = new ClientAutomationService(projectData);
       await automationService.startAutomation(url);
+      
+      // Show success modal with View Filled Form button
+      showClientAutomationSuccessModal(url, projectData);
       
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
@@ -762,6 +852,9 @@ const SubmissionsDashboard = () => {
       // Create and start client automation service
       const automationService = new ClientAutomationService(projectData);
       await automationService.startAutomation(url);
+      
+      // Show success modal with View Filled Form button
+      showClientAutomationSuccessModal(url, projectData);
       
     } catch (error) {
       console.error('Universal form automation error:', error);
