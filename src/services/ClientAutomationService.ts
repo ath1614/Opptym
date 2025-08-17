@@ -327,29 +327,29 @@ export class ClientAutomationService {
       console.log('🚀 Starting client automation for URL:', url);
       console.log('📋 Project data:', this.projectData);
       
-      // Open the URL in a new tab
-      console.log('🌐 Opening new window...');
-      const newWindow = window.open(url, '_blank', 'width=1200,height=800');
-      
-      if (!newWindow) {
-        console.error('❌ Popup blocked! Please allow popups for this site.');
-        throw new Error('Popup blocked! Please allow popups for this site.');
-      }
-
-      console.log('✅ New window opened successfully');
+      // Create the bookmarklet first
       console.log('🔧 Creating bookmarklet...');
-
-      // Create the bookmarklet
       const bookmarklet = this.createBookmarklet();
       console.log('✅ Bookmarklet created successfully');
       console.log('🔗 Bookmarklet length:', bookmarklet.length, 'characters');
       
-      // Show instructions to the user
-      console.log('📋 Showing instructions overlay...');
-      this.showInstructions(newWindow, bookmarklet);
-      
-      // Also show instructions in the current window as fallback
+      // Show instructions in the current window (no cross-origin issues)
+      console.log('📋 Showing instructions modal...');
       this.showFallbackInstructions(bookmarklet, url);
+      
+      // Try to open the URL in a new tab (but don't try to access it)
+      console.log('🌐 Opening target website in new tab...');
+      try {
+        const newWindow = window.open(url, '_blank', 'width=1200,height=800');
+        if (newWindow) {
+          console.log('✅ Target website opened successfully');
+        } else {
+          console.warn('⚠️ Popup blocked, but instructions are still available');
+        }
+      } catch (openError) {
+        console.warn('⚠️ Could not open target website:', openError);
+        // This is okay - the instructions modal is still available
+      }
       
       console.log('✅ Client automation setup completed successfully');
 
@@ -480,106 +480,5 @@ export class ClientAutomationService {
     console.log('✅ Fallback instructions displayed');
   }
 
-  private showInstructions(window: Window, bookmarklet: string): void {
-    try {
-      console.log('📋 Attempting to show instructions overlay...');
-      
-      // Create instructions overlay
-      const overlay = window.document.createElement('div');
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      `;
-    
-    const content = window.document.createElement('div');
-    content.style.cssText = `
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    `;
-    
-    content.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-        <div style="font-size: 32px;">🤖</div>
-        <div>
-          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Form Auto-Fill Instructions</h2>
-          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Follow these steps to auto-fill the form</p>
-        </div>
-      </div>
-      
-      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="font-size: 18px;">📋</span>
-          <span style="font-weight: 600; color: #0c4a6e;">Step-by-Step Instructions:</span>
-        </div>
-        <ol style="margin: 0; padding-left: 20px; color: #0c4a6e; line-height: 1.6; font-size: 14px;">
-          <li>Wait for this page to fully load</li>
-          <li>Drag the button below to your bookmarks bar</li>
-          <li>Click the bookmarklet to start auto-filling</li>
-          <li>Watch as forms are filled automatically</li>
-          <li>Submit the form when ready</li>
-        </ol>
-      </div>
-      
-      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="font-size: 18px;">🔗</span>
-          <span style="font-weight: 600; color: #065f46;">Auto-Fill Bookmarklet:</span>
-        </div>
-        <div style="text-align: center;">
-          <a href="${bookmarklet}" 
-             style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; margin-bottom: 8px;"
-             onclick="setTimeout(() => { this.parentElement.parentElement.parentElement.parentElement.parentElement.remove(); }, 1000);">
-            🤖 Auto-Fill Forms
-          </a>
-          <p style="margin: 8px 0 0 0; color: #065f46; font-size: 12px;">
-            Click this button to start auto-filling forms on this page
-          </p>
-        </div>
-      </div>
-      
-      <div style="display: flex; gap: 12px;">
-        <button id="closeInstructions" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close Instructions</button>
-      </div>
-    `;
-    
-    overlay.appendChild(content);
-    window.document.body.appendChild(overlay);
-    
-         // Add event listener to close button
-     const closeButton = window.document.getElementById('closeInstructions');
-     if (closeButton) {
-       closeButton.addEventListener('click', () => {
-         window.document.body.removeChild(overlay);
-       });
-     }
-     
-     console.log('✅ Instructions overlay created successfully');
-     
-   } catch (error) {
-     console.error('❌ Error creating instructions overlay:', error);
-     console.error('❌ This might be due to cross-origin restrictions');
-     
-     // Fallback: Show alert with bookmarklet
-     try {
-       window.alert('Cross-origin restrictions detected. Please manually copy and paste this bookmarklet into your browser:\n\n' + bookmarklet);
-     } catch (alertError) {
-       console.error('❌ Even alert failed:', alertError);
-     }
-   }
- }
+    // Removed showInstructions method to avoid cross-origin issues
 }
