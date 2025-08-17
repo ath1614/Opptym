@@ -486,6 +486,50 @@ const SubmissionsDashboard = () => {
 
   // Ultra smart automation with server-side Puppeteer
   const performClientSideAutomation = async (url: string, projectData: any) => {
+    // Show loading popup
+    const loadingModal = document.createElement('div');
+    loadingModal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    loadingContent.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Server Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Puppeteer is filling forms on the server...</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #8b5cf6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #8b5cf6; font-weight: 500;">Processing...</span>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    loadingModal.appendChild(loadingContent);
+    document.body.appendChild(loadingModal);
+
     try {
       console.log('🚀 Starting server-side automation for:', url);
       
@@ -514,7 +558,12 @@ const SubmissionsDashboard = () => {
     } catch (error) {
       console.error('Automation error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      alert(`❌ Automation failed: ${errorMessage}`);
+      showPopup(`❌ Automation failed: ${errorMessage}`, 'error');
+    } finally {
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
     }
   };
 
@@ -584,9 +633,7 @@ const SubmissionsDashboard = () => {
       
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
         <button id="openUrl" style="flex: 1; min-width: 150px; background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Check Target Website</button>
-        ${data.formUrl && data.formUrl !== data.url ? `
         <button id="openFilledForm" style="flex: 1; min-width: 150px; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">📝 View Filled Form</button>
-        ` : ''}
         <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
       </div>
     `;
@@ -600,12 +647,74 @@ const SubmissionsDashboard = () => {
     });
     
     document.getElementById('openFilledForm')?.addEventListener('click', () => {
-      window.open(data.formUrl, '_blank');
+      window.open(data.url, '_blank');
     });
     
     document.getElementById('closeModal')?.addEventListener('click', () => {
       document.body.removeChild(modal);
     });
+  };
+
+  // Show popup instead of alert
+  const showPopup = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    const getIconAndColor = () => {
+      switch (type) {
+        case 'success': return { icon: '✅', color: '#10b981' };
+        case 'error': return { icon: '❌', color: '#ef4444' };
+        case 'warning': return { icon: '⚠️', color: '#f59e0b' };
+        default: return { icon: 'ℹ️', color: '#3b82f6' };
+      }
+    };
+    
+    const { icon, color } = getIconAndColor();
+    
+    content.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">${icon}</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;">${type.charAt(0).toUpperCase() + type.slice(1)}</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">${message}</p>
+      <button id="closePopup" style="background: ${color}; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;">OK</button>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listener
+    document.getElementById('closePopup')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Auto-close after 5 seconds
+    setTimeout(() => {
+      if (modal.parentNode) {
+        document.body.removeChild(modal);
+      }
+    }, 5000);
   };
 
   // Show client automation success modal with View Filled Form button
@@ -698,7 +807,7 @@ const SubmissionsDashboard = () => {
   // Ultra-Smart Client-Side Automation function
   const openTabAndUltraSmartFill = async (url: string) => {
     if (!selectedProject) {
-      alert("⚠️ Please select a project first!");
+      showPopup("⚠️ Please select a project first!", "warning");
       return;
     }
 
@@ -771,7 +880,7 @@ const SubmissionsDashboard = () => {
       
     } catch (error) {
       console.error('Ultra-smart automation error:', error);
-      alert(`❌ Ultra-smart automation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showPopup(`❌ Ultra-smart automation failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
     } finally {
       // Remove loading modal
       if (loadingModal.parentNode) {
@@ -783,7 +892,7 @@ const SubmissionsDashboard = () => {
   // Universal Form Client-Side Automation function
   const openTabAndUniversalFill = async (url: string) => {
     if (!selectedProject) {
-      alert('⚠️ Please select a project first!');
+      showPopup('⚠️ Please select a project first!', 'warning');
       return;
     }
 
@@ -858,7 +967,7 @@ const SubmissionsDashboard = () => {
       
     } catch (error) {
       console.error('Universal form automation error:', error);
-      alert('❌ Universal form automation failed. Please try again.');
+      showPopup('❌ Universal form automation failed. Please try again.', 'error');
     } finally {
       setLoading(false);
       // Remove loading modal
