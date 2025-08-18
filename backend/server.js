@@ -64,7 +64,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Database connection
+// Database connection with error handling
 const connectDB = async () => {
   try {
     // Use environment variable for MongoDB URI, with properly encoded fallback
@@ -106,7 +106,8 @@ const connectDB = async () => {
     console.error('🔍 Full error:', err);
     console.error('🔍 Error name:', err.name);
     console.error('🔍 Error code:', err.code);
-    process.exit(1);
+    console.log('⚠️ Server will start without database connection');
+    console.log('⚠️ Some features may not work properly');
   }
 };
 
@@ -142,17 +143,76 @@ app.post('/api/test-signup', (req, res) => {
   });
 });
 
-// API Routes (load without email verification first)
-app.use('/api/auth', require('./routes/authroutes'));
-app.use('/api/projects', require('./routes/projectRoutes'));
-app.use('/api/submissions', require('./routes/submissionRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/directories', require('./routes/directoryRoutes'));
-app.use('/api/tools', require('./routes/toolRoutes'));
-app.use('/api/ultra-smart', require('./routes/ultraSmartRoutes'));
-app.use('/api/universal-form', require('./routes/universalFormRoutes'));
-app.use('/api/subscription', require('./routes/subscriptionRoutes'));
-app.use('/api/payment', require('./routes/paymentRoutes'));
+// API Routes (load with error handling)
+try {
+  app.use('/api/auth', require('./routes/authroutes'));
+  console.log('✅ Auth routes loaded');
+} catch (error) {
+  console.error('❌ Error loading auth routes:', error);
+}
+
+try {
+  app.use('/api/projects', require('./routes/projectRoutes'));
+  console.log('✅ Project routes loaded');
+} catch (error) {
+  console.error('❌ Error loading project routes:', error);
+}
+
+try {
+  app.use('/api/submissions', require('./routes/submissionRoutes'));
+  console.log('✅ Submission routes loaded');
+} catch (error) {
+  console.error('❌ Error loading submission routes:', error);
+}
+
+try {
+  app.use('/api/admin', require('./routes/adminRoutes'));
+  console.log('✅ Admin routes loaded');
+} catch (error) {
+  console.error('❌ Error loading admin routes:', error);
+}
+
+try {
+  app.use('/api/directories', require('./routes/directoryRoutes'));
+  console.log('✅ Directory routes loaded');
+} catch (error) {
+  console.error('❌ Error loading directory routes:', error);
+}
+
+try {
+  app.use('/api/tools', require('./routes/toolRoutes'));
+  console.log('✅ Tool routes loaded');
+} catch (error) {
+  console.error('❌ Error loading tool routes:', error);
+}
+
+try {
+  app.use('/api/ultra-smart', require('./routes/ultraSmartRoutes'));
+  console.log('✅ Ultra-smart routes loaded');
+} catch (error) {
+  console.error('❌ Error loading ultra-smart routes:', error);
+}
+
+try {
+  app.use('/api/universal-form', require('./routes/universalFormRoutes'));
+  console.log('✅ Universal form routes loaded');
+} catch (error) {
+  console.error('❌ Error loading universal form routes:', error);
+}
+
+try {
+  app.use('/api/subscription', require('./routes/subscriptionRoutes'));
+  console.log('✅ Subscription routes loaded');
+} catch (error) {
+  console.error('❌ Error loading subscription routes:', error);
+}
+
+try {
+  app.use('/api/payment', require('./routes/paymentRoutes'));
+  console.log('✅ Payment routes loaded');
+} catch (error) {
+  console.error('❌ Error loading payment routes:', error);
+}
 
 // Load email verification routes after basic setup
 try {
