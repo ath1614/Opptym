@@ -167,31 +167,80 @@ app.get('/api/test-email-config', (req, res) => {
 // Test SMTP connection endpoint
 app.get('/api/test-smtp', async (req, res) => {
   try {
-    const emailConfig = require('./config/emailConfig');
-    const { transporter } = emailConfig;
+    const nodemailer = require('nodemailer');
     
-    // Check if transporter is mock
-    if (!transporter.verify) {
-      res.status(400).json({ 
-        error: 'Mock transporter detected',
-        message: 'Email configuration is using mock transporter. Real SMTP not configured properly.',
-        timestamp: new Date().toISOString()
-      });
-      return;
+    // Test different SMTP configurations
+    const configs = [
+      {
+        name: 'Hostinger SSL (Port 465)',
+        config: {
+          host: 'smtp.hostinger.com',
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+          }
+        }
+      },
+      {
+        name: 'Hostinger TLS (Port 587)',
+        config: {
+          host: 'smtp.hostinger.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+          }
+        }
+      },
+      {
+        name: 'Hostinger with TLS upgrade',
+        config: {
+          host: 'smtp.hostinger.com',
+          port: 587,
+          secure: false,
+          requireTLS: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+          }
+        }
+      }
+    ];
+    
+    const results = [];
+    
+    for (const config of configs) {
+      try {
+        console.log(`Testing ${config.name}...`);
+        const transporter = nodemailer.createTransporter(config.config);
+        const verifyResult = await transporter.verify();
+        results.push({
+          config: config.name,
+          success: true,
+          result: verifyResult
+        });
+        console.log(`✅ ${config.name} - Success`);
+      } catch (error) {
+        results.push({
+          config: config.name,
+          success: false,
+          error: error.message
+        });
+        console.log(`❌ ${config.name} - Failed: ${error.message}`);
+      }
     }
     
-    // Test SMTP connection
-    const testResult = await transporter.verify();
-    
     res.status(200).json({ 
-      message: 'SMTP connection test',
-      success: true,
-      testResult,
+      message: 'SMTP configuration test results',
+      results,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({ 
-      error: 'SMTP connection failed',
+      error: 'SMTP test failed',
       message: error.message,
       timestamp: new Date().toISOString()
     });

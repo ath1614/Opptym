@@ -1,21 +1,43 @@
 const nodemailer = require('nodemailer');
 
-// Email configuration for Hostinger SMTP
-const emailConfig = {
-  host: 'smtp.hostinger.com',
-  port: 465,
-  secure: true, // SSL
-  auth: {
-    user: process.env.EMAIL_USER || 'your-email@opptym.com', // Replace with actual email
-    pass: process.env.EMAIL_PASSWORD || 'your-email-password' // Replace with actual password
-  },
-  // Additional options for better compatibility
-  tls: {
-    rejectUnauthorized: false
-  },
-  debug: true, // Enable debug output
-  logger: true // Log to console
+// Email configuration for Hostinger SMTP - Try multiple configurations
+const getEmailConfig = () => {
+  const baseConfig = {
+    auth: {
+      user: process.env.EMAIL_USER || 'your-email@opptym.com',
+      pass: process.env.EMAIL_PASSWORD || 'your-email-password'
+    }
+  };
+
+  // Try different configurations
+  const configs = [
+    {
+      name: 'SSL Port 465',
+      config: {
+        ...baseConfig,
+        host: 'smtp.hostinger.com',
+        port: 465,
+        secure: true,
+        tls: { rejectUnauthorized: false }
+      }
+    },
+    {
+      name: 'TLS Port 587',
+      config: {
+        ...baseConfig,
+        host: 'smtp.hostinger.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        tls: { rejectUnauthorized: false }
+      }
+    }
+  ];
+
+  return configs[0]; // Start with SSL configuration
 };
+
+const emailConfig = getEmailConfig();
 
 // Check if email credentials are properly configured
 const isEmailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD && 
