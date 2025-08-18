@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
+import { showPopup } from '../utils/popup';
 
 // Use the same axios instance configured in main.tsx
 // The axios.defaults.baseURL is already set to the correct base URL
@@ -131,7 +132,7 @@ export const useAuthProvider = (): AuthContextType => {
       }
       
       // Show error popup
-      alert(errorMessage);
+      showPopup(errorMessage, 'error');
       throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -144,7 +145,7 @@ export const useAuthProvider = (): AuthContextType => {
       await axios.post('/api/auth/signup', { username, email, password });
       
       // Show success message
-      alert('✅ Account created successfully! You can now login.');
+      showPopup('✅ Account created successfully! You can now login.', 'success');
       
       await login(email, password);
     } catch (error: any) {
@@ -176,7 +177,7 @@ export const useAuthProvider = (): AuthContextType => {
       }
       
       // Show error popup
-      alert(errorMessage);
+      showPopup(errorMessage, 'error');
       throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
