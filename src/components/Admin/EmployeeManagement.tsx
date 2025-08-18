@@ -16,6 +16,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import axios from 'axios';
+import { showPopup, showConfirmPopup } from '../../utils/popup';
 
 interface TeamMember {
   id: string;
@@ -185,9 +186,9 @@ const EmployeeManagement = () => {
       });
       
       fetchTeamData();
-      alert('Team member invited successfully!');
+      showPopup('Team member invited successfully!', 'success');
     } catch (error: any) {
-      alert('Error inviting team member: ' + (error.response?.data?.error || error.message));
+      showPopup('Error inviting team member: ' + (error.response?.data?.error || error.message), 'error');
     }
   };
 
@@ -200,25 +201,25 @@ const EmployeeManagement = () => {
       setShowEditModal(false);
       setSelectedMember(null);
       fetchTeamData();
-      alert('Team member updated successfully!');
+      showPopup('Team member updated successfully!', 'success');
     } catch (error: any) {
-      alert('Error updating team member: ' + (error.response?.data?.error || error.message));
+      showPopup('Error updating team member: ' + (error.response?.data?.error || error.message), 'error');
     }
   };
 
   const handleRemoveMember = async (memberId: string) => {
-    if (!confirm('Are you sure you want to remove this team member?')) return;
-    
-    try {
-      await axios.delete(`/api/subscription/team/member/${memberId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      
-      fetchTeamData();
-      alert('Team member removed successfully!');
-    } catch (error: any) {
-      alert('Error removing team member: ' + (error.response?.data?.error || error.message));
-    }
+    showConfirmPopup('Are you sure you want to remove this team member?', async () => {
+      try {
+        await axios.delete(`/api/subscription/team/member/${memberId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        
+        fetchTeamData();
+        showPopup('Team member removed successfully!', 'success');
+      } catch (error: any) {
+        showPopup('Error removing team member: ' + (error.response?.data?.error || error.message), 'error');
+      }
+    });
   };
 
   const handleRoleChange = (role: string) => {
