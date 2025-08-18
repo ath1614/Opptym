@@ -5,11 +5,6 @@ const { transporter, emailTemplates } = require('../config/emailConfig');
 const crypto = require('crypto');
 
 const signup = async (req, res) => {
-  // Add CORS headers
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  
   const { username, email, password } = req.body;
 
   try {
@@ -95,11 +90,6 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    // Add CORS headers
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    
     console.log("🛠️ Incoming login payload:", req.body);
   
     try {
