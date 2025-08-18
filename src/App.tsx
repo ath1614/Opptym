@@ -15,6 +15,7 @@ import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
+import VerifyEmail from './pages/VerifyEmail';
 import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
 
 function App() {
@@ -444,37 +445,45 @@ function App() {
 
   return (
     <AuthContext.Provider value={authProvider}>
-      <div className="min-h-screen bg-gray-50">
-        {!authProvider.user ? (
-          <div>
-            {authMode === 'landing' ? (
-              <LandingPage
-                onLoginClick={() => setAuthMode('login')}
-                onRegisterClick={() => setAuthMode('register')}
-              />
-            ) : authMode === 'login' ? (
-              <Login onSwitchToRegister={() => setAuthMode('register')} />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        
+        {/* Auth routes */}
+        <Route path="/" element={
+          <div className="min-h-screen bg-gray-50">
+            {!authProvider.user ? (
+              <div>
+                {authMode === 'landing' ? (
+                  <LandingPage
+                    onLoginClick={() => setAuthMode('login')}
+                    onRegisterClick={() => setAuthMode('register')}
+                  />
+                ) : authMode === 'login' ? (
+                  <Login onSwitchToRegister={() => setAuthMode('register')} />
+                ) : (
+                  <Register onSwitchToLogin={() => setAuthMode('login')} />
+                )}
+              </div>
             ) : (
-              <Register onSwitchToLogin={() => setAuthMode('login')} />
+              <div className="flex h-screen overflow-hidden">
+                <Sidebar
+                  activeTab={activeTab}
+                  setActiveTab={updateActiveTab}
+                  isCollapsed={sidebarCollapsed}
+                  setIsCollapsed={setSidebarCollapsed}
+                />
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+                  <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                    {renderContent()}
+                  </main>
+                </div>
+              </div>
             )}
           </div>
-        ) : (
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar
-              activeTab={activeTab}
-              setActiveTab={updateActiveTab}
-              isCollapsed={sidebarCollapsed}
-              setIsCollapsed={setSidebarCollapsed}
-            />
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-              <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-                {renderContent()}
-              </main>
-            </div>
-          </div>
-        )}
-      </div>
+        } />
+      </Routes>
     </AuthContext.Provider>
   );
 }
