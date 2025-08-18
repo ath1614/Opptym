@@ -97,6 +97,195 @@ router.post('/users', protect, adminOnly, async (req, res) => {
   }
 });
 
+// Update user verification status (admin only)
+router.put('/users/:userId/verify', protect, adminOnly, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { isEmailVerified, status } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update verification status
+    if (isEmailVerified !== undefined) {
+      user.isEmailVerified = isEmailVerified;
+      if (isEmailVerified && !user.emailVerifiedAt) {
+        user.emailVerifiedAt = new Date();
+      }
+    }
+
+    // Update account status
+    if (status) {
+      user.status = status;
+    }
+
+    await user.save();
+
+    // Return updated user without password
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.json(userResponse);
+  } catch (error) {
+    console.error('Error updating user verification:', error);
+    res.status(500).json({ error: 'Failed to update user verification status' });
+  }
+});
+
+// Send verification email to user (admin only)
+router.post('/users/:userId/send-verification', protect, adminOnly, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { transporter, emailTemplates } = require('../config/emailConfig');
+    const crypto = require('crypto');
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ error: 'User email is already verified' });
+    }
+
+    // Generate new verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Save token to user
+    user.emailVerificationToken = verificationToken;
+    user.emailVerificationExpires = verificationExpires;
+    await user.save();
+
+    // Send verification email
+    const mailOptions = emailTemplates.verificationEmail(verificationToken, user.email);
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: 'Verification email sent successfully' });
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    res.status(500).json({ error: 'Failed to send verification email' });
+  }
+});
+
+// Plan management routes
+// Get all plans (admin only)
+router.get('/plans', protect, adminOnly, async (req, res) => {
+  try {
+    // Define plans structure
+    const plans = {
+      free: {
+        name: 'Free',
+        price: 0,
+        features: ['Basic SEO tools', 'Limited submissions', '3-day trial'],
+        limits: { projects: 10, submissions: 50, teamMembers: 0 }
+      },
+      starter: {
+        name: 'Starter',
+        price: 999,
+        features: ['All SEO tools', '150 submissions/month', 'Email support'],
+        limits: { projects: 1, submissions: 150, teamMembers: 0 }
+      },
+      pro: {
+        name: 'Pro',
+        price: 3999,
+        features: ['All SEO tools', '750 submissions/month', 'Team management', 'Priority support'],
+        limits: { projects: 5, submissions: 750, teamMembers: 3 }
+      },
+      business: {
+        name: 'Business',
+        price: 8999,
+        features: ['All SEO tools', '1500 submissions/month', 'Advanced analytics', 'Dedicated support'],
+        limits: { projects: 10, submissions: 1500, teamMembers: 10 }
+      },
+      enterprise: {
+        name: 'Enterprise',
+        price: 19999,
+        features: ['Unlimited everything', 'Custom integrations', 'Dedicated account manager'],
+        limits: { projects: -1, submissions: -1, teamMembers: -1 }
+      }
+    };
+
+    res.json(plans);
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+    res.status(500).json({ error: 'Failed to fetch plans' });
+  }
+});
+
+// Create new plan (admin only)
+router.post('/plans', protect, adminOnly, async (req, res) => {
+  try {
+    const { name, price, features, limits, isActive } = req.body;
+
+    // Validate required fields
+    if (!name || price === undefined) {
+      return res.status(400).json({ error: 'Name and price are required' });
+    }
+
+    // In a real application, you would save this to a database
+    // For now, we'll just return success
+    const newPlan = {
+      id: Date.now().toString(),
+      name,
+      price,
+      features: features || [],
+      limits: limits || {},
+      isActive: isActive !== false
+    };
+
+    res.status(201).json(newPlan);
+  } catch (error) {
+    console.error('Error creating plan:', error);
+    res.status(500).json({ error: 'Failed to create plan' });
+  }
+});
+
+// Update plan (admin only)
+router.put('/plans/:planId', protect, adminOnly, async (req, res) => {
+  try {
+    const { planId } = req.params;
+    const { name, price, features, limits, isActive } = req.body;
+
+    // Validate required fields
+    if (!name || price === undefined) {
+      return res.status(400).json({ error: 'Name and price are required' });
+    }
+
+    // In a real application, you would update this in a database
+    const updatedPlan = {
+      id: planId,
+      name,
+      price,
+      features: features || [],
+      limits: limits || {},
+      isActive: isActive !== false
+    };
+
+    res.json(updatedPlan);
+  } catch (error) {
+    console.error('Error updating plan:', error);
+    res.status(500).json({ error: 'Failed to update plan' });
+  }
+});
+
+// Delete plan (admin only)
+router.delete('/plans/:planId', protect, adminOnly, async (req, res) => {
+  try {
+    const { planId } = req.params;
+
+    // In a real application, you would delete this from a database
+    // For now, we'll just return success
+
+    res.json({ message: 'Plan deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting plan:', error);
+    res.status(500).json({ error: 'Failed to delete plan' });
+  }
+});
+
 // Update user (admin only)
 router.put('/users/:id', protect, adminOnly, async (req, res) => {
   try {

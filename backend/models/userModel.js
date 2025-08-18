@@ -90,8 +90,14 @@ const userSchema = new mongoose.Schema({
   status: { 
     type: String, 
     enum: ['active', 'inactive', 'suspended', 'banned', 'pending'], 
-    default: 'active' 
+    default: 'pending' 
   },
+  
+  // Email Verification
+  isEmailVerified: { type: Boolean, default: false },
+  emailVerificationToken: { type: String },
+  emailVerificationExpires: { type: Date },
+  emailVerifiedAt: { type: Date },
   
   // Subscription & Billing
   subscription: { 

@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { transporter, emailTemplates } = require('../config/emailConfig');
+const crypto = require('crypto');
 
 const signup = async (req, res) => {
   // Add CORS headers
@@ -55,15 +57,33 @@ const signup = async (req, res) => {
     }
 
     const hashed = await bcrypt.hash(password, 10);
+    
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    
     const user = await User.create({ 
       username, 
       email, 
-      password: hashed
+      password: hashed,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires,
+      status: 'pending' // User starts as pending until email is verified
     });
     
+    // Send verification email
+    try {
+      const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
+      await transporter.sendMail(mailOptions);
+    } catch (emailError) {
+      console.error('Error sending verification email:', emailError);
+      // Don't fail signup if email fails, but log it
+    }
+    
     res.status(201).json({ 
-      message: 'Account created successfully! You can now login.',
-      isAdmin: user.isAdmin 
+      message: 'Account created successfully! Please check your email to verify your account.',
+      isAdmin: user.isAdmin,
+      requiresVerification: true
     });
   } catch (err) {
     console.error('Signup error:', err);
@@ -118,6 +138,22 @@ const login = async (req, res) => {
             return res.status(401).json({ 
                 error: 'WRONG_PASSWORD',
                 message: 'Incorrect password. Please try again.' 
+            });
+        }
+        
+        // Check if email is verified
+        if (!user.isEmailVerified) {
+            return res.status(401).json({ 
+                error: 'EMAIL_NOT_VERIFIED',
+                message: 'Please verify your email address before logging in. Check your inbox for a verification link.' 
+            });
+        }
+        
+        // Check if account is active
+        if (user.status !== 'active') {
+            return res.status(401).json({ 
+                error: 'ACCOUNT_INACTIVE',
+                message: 'Your account is not active. Please contact support.' 
             });
         }
       

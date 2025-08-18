@@ -100,6 +100,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', require('./routes/authroutes'));
+app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/submissions', require('./routes/submissionRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
