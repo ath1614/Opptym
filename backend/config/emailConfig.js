@@ -22,6 +22,14 @@ console.log('📧 EMAIL_PASSWORD exists:', !!process.env.EMAIL_PASSWORD);
 console.log('📧 EMAIL_USER value:', process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 10) + '...' : 'NOT SET');
 console.log('📧 EMAIL_PASSWORD length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'NOT SET');
 
+// For debugging - show all environment variables that contain 'EMAIL'
+console.log('📧 All EMAIL-related env vars:');
+Object.keys(process.env).forEach(key => {
+  if (key.toLowerCase().includes('email')) {
+    console.log(`📧 ${key}: ${process.env[key] ? 'SET' : 'NOT SET'}`);
+  }
+});
+
 // Create transporter with error handling
 let transporter;
 if (isEmailConfigured) {

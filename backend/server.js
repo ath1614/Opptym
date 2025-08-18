@@ -145,17 +145,23 @@ app.post('/api/test-signup', (req, res) => {
 
 // Test email configuration endpoint
 app.get('/api/test-email-config', (req, res) => {
-  const emailConfig = require('./config/emailConfig');
-  res.status(200).json({ 
-    message: 'Email configuration test',
-    emailUserExists: !!process.env.EMAIL_USER,
-    emailPasswordExists: !!process.env.EMAIL_PASSWORD,
-    emailUserValue: process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 10) + '...' : 'NOT SET',
-    emailPasswordLength: process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'NOT SET',
-    transporterExists: !!emailConfig.transporter,
-    emailTemplatesExist: !!emailConfig.emailTemplates,
-    timestamp: new Date().toISOString()
-  });
+  try {
+    res.status(200).json({ 
+      message: 'Email configuration test',
+      emailUserExists: !!process.env.EMAIL_USER,
+      emailPasswordExists: !!process.env.EMAIL_PASSWORD,
+      emailUserValue: process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 10) + '...' : 'NOT SET',
+      emailPasswordLength: process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'NOT SET',
+      allEnvVars: Object.keys(process.env).filter(key => key.toLowerCase().includes('email')),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Failed to test email config',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // API Routes (load with error handling)
