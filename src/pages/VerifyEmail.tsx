@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { showPopup } from '../utils/popup';
 
 const VerifyEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +16,7 @@ const VerifyEmail: React.FC = () => {
       if (!token) {
         setStatus('error');
         setMessage('No verification token found. Please check your email for the correct verification link.');
+        showPopup('❌ No verification token found. Please check your email for the correct verification link.', 'error');
         return;
       }
 
@@ -24,6 +26,7 @@ const VerifyEmail: React.FC = () => {
         if (response.data.success) {
           setStatus('success');
           setMessage('Email verified successfully! You can now login to your account.');
+          showPopup('✅ Email verified successfully! You can now login to your account.', 'success');
           
           // Redirect to login after 3 seconds
           setTimeout(() => {
@@ -32,13 +35,16 @@ const VerifyEmail: React.FC = () => {
         } else {
           setStatus('error');
           setMessage(response.data.message || 'Verification failed. Please try again.');
+          showPopup(`❌ ${response.data.message || 'Verification failed. Please try again.'}`, 'error');
         }
       } catch (error: any) {
         setStatus('error');
         if (error.response?.data?.message) {
           setMessage(error.response.data.message);
+          showPopup(`❌ ${error.response.data.message}`, 'error');
         } else {
           setMessage('Verification failed. Please check your email for a new verification link or contact support.');
+          showPopup('❌ Verification failed. Please check your email for a new verification link or contact support.', 'error');
         }
       }
     };

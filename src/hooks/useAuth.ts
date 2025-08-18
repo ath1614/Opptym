@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
-import { showPopup } from '../utils/popup';
+import { showPopup, showOTPPopup } from '../utils/popup';
 
 // Use the same axios instance configured in main.tsx
 // The axios.defaults.baseURL is already set to the correct base URL
@@ -89,30 +89,78 @@ export const useAuthProvider = (): AuthContextType => {
       console.log('🔐 Login attempt:', {
         email,
         axiosBaseURL: axios.defaults.baseURL,
-        fullUrl: `${axios.defaults.baseURL}/api/auth/login`
+        fullUrl: `${axios.defaults.baseURL}/api/otp/login/generate`
       });
       
-      const res = await axios.post('/api/auth/login', { email, password });
-      localStorage.setItem('token', res.data.token);
+      // Step 1: Generate login OTP
+      const otpResponse = await axios.post('/api/otp/login/generate', { email, password });
       
-      // First set user from token
-      const userFromToken = decodeUser(res.data.token);
-      setUser({
-        ...userFromToken,
-        isAdmin: res.data.isAdmin,
-        subscription: res.data.subscription,
-        email: res.data.email,
-      });
+      if (otpResponse.data.success) {
+              // Step 2: Show OTP popup for verification
+      return new Promise<void>((resolve, reject) => {
+        showOTPPopup(
+          email,
+          async (otp: string) => {
+            try {
+              // Step 3: Verify OTP and complete login
+              const verifyResponse = await axios.post('/api/otp/login/verify', { email, otp });
+              
+              if (verifyResponse.data.success) {
+                localStorage.setItem('token', verifyResponse.data.token);
+                
+                // Set user from token
+                const userFromToken = decodeUser(verifyResponse.data.token);
+                setUser({
+                  ...userFromToken,
+                  isAdmin: verifyResponse.data.user.isAdmin,
+                  subscription: verifyResponse.data.user.subscription,
+                  email: verifyResponse.data.user.email,
+                });
 
-      // Then refresh user data from server to get complete profile
-      await refreshUser();
+                // Refresh user data from server
+                await refreshUser();
+                showPopup('✅ Login successful!', 'success');
+                resolve();
+              } else {
+                showPopup('❌ OTP verification failed. Please try again.', 'error');
+                reject(new Error('OTP verification failed'));
+              }
+            } catch (error: any) {
+              console.error('OTP verification error:', error);
+              const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
+              showPopup(`❌ ${errorMessage}`, 'error');
+              reject(new Error(errorMessage));
+            }
+          },
+          async () => {
+            // Resend OTP
+            try {
+              await axios.post('/api/otp/login/generate', { email, password });
+              showPopup('✅ New OTP sent to your email!', 'success');
+            } catch (error: any) {
+              const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
+              showPopup(`❌ ${errorMessage}`, 'error');
+            }
+          },
+          () => {
+            // Cancel OTP verification
+            showPopup('❌ Login cancelled.', 'warning');
+            reject(new Error('Login cancelled'));
+          }
+        );
+      });
+      } else {
+        throw new Error(otpResponse.data.message || 'Failed to generate OTP');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       
       // Handle specific error types with user-friendly messages
       let errorMessage = 'Login failed. Please try again.';
       
-      if (error.response?.data?.error) {
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
         switch (error.response.data.error) {
           case 'INVALID_EMAIL':
             errorMessage = '❌ Please enter a valid email address.';
@@ -142,19 +190,80 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      await axios.post('/api/auth/signup', { username, email, password });
+      // Step 1: Generate signup OTP
+      const otpResponse = await axios.post('/api/otp/signup/generate', { email });
       
-      // Show success message
-      showPopup('✅ Account created successfully! You can now login.', 'success');
-      
-      await login(email, password);
+      if (otpResponse.data.success) {
+        // Step 2: Show OTP popup for verification
+        return new Promise<void>((resolve, reject) => {
+          showOTPPopup(
+            email,
+            async (otp: string) => {
+              try {
+                // Step 3: Verify OTP and complete registration
+                const verifyResponse = await axios.post('/api/otp/signup/verify', { 
+                  email, 
+                  otp, 
+                  username, 
+                  password 
+                });
+                
+                if (verifyResponse.data.success) {
+                  localStorage.setItem('token', verifyResponse.data.token);
+                  
+                  // Set user from token
+                  const userFromToken = decodeUser(verifyResponse.data.token);
+                  setUser({
+                    ...userFromToken,
+                    isAdmin: verifyResponse.data.user.isAdmin,
+                    subscription: verifyResponse.data.user.subscription,
+                    email: verifyResponse.data.user.email,
+                  });
+
+                  // Refresh user data from server
+                  await refreshUser();
+                  showPopup('✅ Account created successfully! Welcome to Opptym!', 'success');
+                  resolve();
+                } else {
+                  showPopup('❌ OTP verification failed. Please try again.', 'error');
+                  reject(new Error('OTP verification failed'));
+                }
+              } catch (error: any) {
+                console.error('OTP verification error:', error);
+                const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
+                showPopup(`❌ ${errorMessage}`, 'error');
+                reject(new Error(errorMessage));
+              }
+            },
+            async () => {
+              // Resend OTP
+              try {
+                await axios.post('/api/otp/signup/generate', { email });
+                showPopup('✅ New OTP sent to your email!', 'success');
+              } catch (error: any) {
+                const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
+                showPopup(`❌ ${errorMessage}`, 'error');
+              }
+            },
+            () => {
+              // Cancel OTP verification
+              showPopup('❌ Registration cancelled.', 'warning');
+              reject(new Error('Registration cancelled'));
+            }
+          );
+        });
+      } else {
+        throw new Error(otpResponse.data.message || 'Failed to generate OTP');
+      }
     } catch (error: any) {
       console.error('Registration error:', error);
       
       // Handle specific error types with user-friendly messages
       let errorMessage = 'Registration failed. Please try again.';
       
-      if (error.response?.data?.error) {
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
         switch (error.response.data.error) {
           case 'INVALID_EMAIL':
             errorMessage = '❌ Please enter a valid email address.';
