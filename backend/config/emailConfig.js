@@ -32,17 +32,38 @@ Object.keys(process.env).forEach(key => {
 
 // Create transporter with error handling
 let transporter;
-if (isEmailConfigured) {
+
+function createRealTransporter() {
   try {
-    transporter = nodemailer.createTransporter(emailConfig);
+    const realTransporter = nodemailer.createTransporter(emailConfig);
     console.log('✅ Email transporter created successfully');
+    return realTransporter;
   } catch (error) {
     console.error('❌ Error creating email transporter:', error);
-    createMockTransporter();
+    return null;
+  }
+}
+
+function createMockTransporter() {
+  console.log('⚠️ Using mock email transporter (no real emails will be sent)');
+  return {
+    sendMail: async (mailOptions) => {
+      console.log('📧 Mock email sent:', mailOptions.to);
+      console.log('📧 Subject:', mailOptions.subject);
+      console.log('📧 Email content preview:', mailOptions.html ? mailOptions.html.substring(0, 100) + '...' : 'No HTML content');
+      return { messageId: 'mock-message-id-' + Date.now() };
+    }
+  };
+}
+
+// Initialize transporter
+if (isEmailConfigured) {
+  transporter = createRealTransporter();
+  if (!transporter) {
+    transporter = createMockTransporter();
   }
 } else {
-  console.log('⚠️ Using mock email transporter (no real emails will be sent)');
-  createMockTransporter();
+  transporter = createMockTransporter();
 }
 
 function createMockTransporter() {
@@ -123,7 +144,20 @@ const emailTemplates = {
   })
 };
 
+// Function to get current email configuration status
+function getEmailConfigStatus() {
+  return {
+    isConfigured: isEmailConfigured,
+    emailUserExists: !!process.env.EMAIL_USER,
+    emailPasswordExists: !!process.env.EMAIL_PASSWORD,
+    emailUserValue: process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 10) + '...' : 'NOT SET',
+    emailPasswordLength: process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'NOT SET',
+    transporterType: transporter && transporter.sendMail ? 'real' : 'mock'
+  };
+}
+
 module.exports = {
   transporter,
-  emailTemplates
+  emailTemplates,
+  getEmailConfigStatus
 };
