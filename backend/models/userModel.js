@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 // Role-based permissions schema
 const permissionSchema = new mongoose.Schema({
@@ -71,101 +72,153 @@ const usageSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   // Basic Info
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  
-  // Profile Info
-  firstName: { type: String },
-  lastName: { type: String },
-  phone: { type: String },
-  company: { type: String },
-  position: { type: String },
-  avatar: { type: String },
-  
-  // Account Status
-  isAdmin: { type: Boolean, default: false },
-  isOwner: { type: Boolean, default: false }, // Business owner
-  isEmployee: { type: Boolean, default: false },
-  status: { 
-    type: String, 
-    enum: ['active', 'inactive', 'suspended', 'banned', 'pending'], 
-    default: 'pending' 
-  },
-  
-  // Email Verification
-  isEmailVerified: { type: Boolean, default: false },
-  emailVerificationToken: { type: String },
-  emailVerificationExpires: { type: Date },
-  emailVerifiedAt: { type: Date },
-  
-  // Subscription & Billing
-  subscription: { 
-    type: String, 
-    enum: ['free', 'starter', 'pro', 'business', 'enterprise'], 
-    default: 'free' 
-  },
-  subscriptionStatus: {
+  username: {
     type: String,
-    enum: ['active', 'canceled', 'past_due', 'unpaid', 'trial'],
-    default: 'active'
+    required: true,
+    unique: true,
+    trim: true
   },
-  subscriptionStartDate: { type: Date },
-  subscriptionEndDate: { type: Date },
-  trialStartDate: { type: Date },
-  trialEndDate: { type: Date },
-  stripeCustomerId: { type: String },
-  stripeSubscriptionId: { type: String },
-  
-  // Role & Permissions
-  role: { 
-    type: String, 
-    enum: ['owner', 'admin', 'manager', 'analyst', 'viewer', 'employee'],
-    default: 'viewer'
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
   },
-  customPermissions: { type: permissionSchema, default: () => ({}) },
-  
-  // Team Management
-  teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
-  teamRole: { type: String },
-  teamMembers: [teamMemberSchema],
-  invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  
-  // Usage Tracking
-  currentUsage: { 
-    type: usageSchema, 
-    default: () => {
-      const now = new Date();
-      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      return {
-        month: currentMonth,
-        projectsCreated: 0,
-        submissionsMade: 0,
-        apiCallsUsed: 0,
-        seoToolsUsed: 0,
-        lastReset: now
-      };
-    }
+  password: {
+    type: String,
+    required: true
   },
-  usageHistory: [usageSchema],
-  
-  // Security & Access
-  lastLogin: { type: Date },
-  loginAttempts: { type: Number, default: 0 },
-  lockUntil: { type: Date },
-  twoFactorEnabled: { type: Boolean, default: false },
-  twoFactorSecret: { type: String },
-  
-  // Timestamps
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'active', 'suspended'],
+    default: 'pending'
+  },
+  subscription: {
+    type: String,
+    enum: ['free', 'basic', 'premium', 'enterprise'],
+    default: 'free'
+  },
+  subscriptionExpiresAt: {
+    type: Date
+  },
+  // Email verification fields
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: {
+    type: String
+  },
+  emailVerificationExpires: {
+    type: Date
+  },
+  emailVerifiedAt: {
+    type: Date
+  },
+  // OTP verification fields for signup
+  signupOTP: {
+    type: String
+  },
+  signupOTPExpires: {
+    type: Date
+  },
+  isSignupOTPVerified: {
+    type: Boolean,
+    default: false
+  },
+  // OTP verification fields for login
+  loginOTP: {
+    type: String
+  },
+  loginOTPExpires: {
+    type: Date
+  },
+  isLoginOTPVerified: {
+    type: Boolean,
+    default: false
+  },
+  // OTP settings
+  otpEnabled: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-// Pre-save middleware to update timestamps
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Update timestamp on save
 userSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   next();
 });
+
+// Method to compare password
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Method to generate OTP
+userSchema.methods.generateOTP = function(type = 'signup') {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  
+  if (type === 'signup') {
+    this.signupOTP = otp;
+    this.signupOTPExpires = expiresAt;
+    this.isSignupOTPVerified = false;
+  } else if (type === 'login') {
+    this.loginOTP = otp;
+    this.loginOTPExpires = expiresAt;
+    this.isLoginOTPVerified = false;
+  }
+  
+  return otp;
+};
+
+// Method to verify OTP
+userSchema.methods.verifyOTP = function(otp, type = 'signup') {
+  const now = new Date();
+  
+  if (type === 'signup') {
+    if (this.signupOTP !== otp) return false;
+    if (this.signupOTPExpires < now) return false;
+    this.isSignupOTPVerified = true;
+    this.signupOTP = undefined;
+    this.signupOTPExpires = undefined;
+  } else if (type === 'login') {
+    if (this.loginOTP !== otp) return false;
+    if (this.loginOTPExpires < now) return false;
+    this.isLoginOTPVerified = true;
+    this.loginOTP = undefined;
+    this.loginOTPExpires = undefined;
+  }
+  
+  return true;
+};
 
 // Virtual for full name
 userSchema.virtual('fullName').get(function() {
