@@ -64,14 +64,14 @@ let transporter;
 function createRealTransporter() {
   try {
     console.log('📧 Creating real SMTP transporter with config:', {
-      host: emailConfig.host,
-      port: emailConfig.port,
-      secure: emailConfig.secure,
-      user: emailConfig.auth.user,
-      passLength: emailConfig.auth.pass ? emailConfig.auth.pass.length : 0
+      host: emailConfig.config.host,
+      port: emailConfig.config.port,
+      secure: emailConfig.config.secure,
+      user: emailConfig.config.auth.user,
+      passLength: emailConfig.config.auth.pass ? emailConfig.config.auth.pass.length : 0
     });
     
-    const realTransporter = nodemailer.createTransport(emailConfig);
+    const realTransporter = nodemailer.createTransport(emailConfig.config);
     console.log('✅ Email transporter created successfully');
     return realTransporter;
   } catch (error) {
@@ -126,7 +126,7 @@ function createMockTransporter() {
 // Email templates
 const emailTemplates = {
   verificationEmail: (token, userEmail) => ({
-    from: `"Opptym" <${emailConfig.auth.user}>`,
+    from: `"Opptym" <${emailConfig.config.auth.user}>`,
     to: userEmail,
     subject: 'Verify Your Opptym Account',
     html: `
@@ -161,7 +161,7 @@ const emailTemplates = {
   }),
 
   welcomeEmail: (userEmail, userName) => ({
-    from: `"Opptym" <${emailConfig.auth.user}>`,
+    from: `"Opptym" <${emailConfig.config.auth.user}>`,
     to: userEmail,
     subject: 'Welcome to Opptym - Your Account is Verified!',
     html: `
