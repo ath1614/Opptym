@@ -17,6 +17,10 @@ const isEmailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD &
                          process.env.EMAIL_PASSWORD !== 'your-email-password';
 
 console.log('📧 Email configuration status:', isEmailConfigured ? '✅ Configured' : '⚠️ Not configured');
+console.log('📧 EMAIL_USER exists:', !!process.env.EMAIL_USER);
+console.log('📧 EMAIL_PASSWORD exists:', !!process.env.EMAIL_PASSWORD);
+console.log('📧 EMAIL_USER value:', process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 10) + '...' : 'NOT SET');
+console.log('📧 EMAIL_PASSWORD length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'NOT SET');
 
 // Create transporter with error handling
 let transporter;
