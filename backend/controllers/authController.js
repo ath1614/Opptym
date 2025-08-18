@@ -1,8 +1,21 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { transporter, emailTemplates } = require('../config/emailConfig');
 const crypto = require('crypto');
+
+// Load email config with error handling
+let transporter, emailTemplates;
+try {
+  const emailConfig = require('../config/emailConfig');
+  transporter = emailConfig.transporter;
+  emailTemplates = emailConfig.emailTemplates;
+  console.log('✅ Email configuration loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading email configuration:', error);
+  console.log('⚠️ Email verification will be disabled');
+  transporter = null;
+  emailTemplates = null;
+}
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -66,20 +79,30 @@ const signup = async (req, res) => {
       status: 'pending' // User starts as pending until email is verified
     });
     
-    // Send verification email
-    try {
-      const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
-      await transporter.sendMail(mailOptions);
-      console.log('✅ Signup verification email sent successfully to:', email);
-    } catch (emailError) {
-      console.error('❌ Error sending signup verification email:', emailError);
-      // Don't fail signup if email fails, but log it
+    // Send verification email (only if email config is available)
+    if (transporter && emailTemplates) {
+      try {
+        const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
+        await transporter.sendMail(mailOptions);
+        console.log('✅ Signup verification email sent successfully to:', email);
+      } catch (emailError) {
+        console.error('❌ Error sending signup verification email:', emailError);
+        // Don't fail signup if email fails, but log it
+      }
+    } else {
+      console.log('⚠️ Email verification disabled - user created without email verification');
+      // Mark user as verified for now since email is disabled
+      user.isEmailVerified = true;
+      user.status = 'active';
+      await user.save();
     }
     
     res.status(201).json({ 
-      message: 'Account created successfully! Please check your email to verify your account.',
+      message: transporter && emailTemplates 
+        ? 'Account created successfully! Please check your email to verify your account.'
+        : 'Account created successfully! You can now login.',
       isAdmin: user.isAdmin,
-      requiresVerification: true
+      requiresVerification: transporter && emailTemplates
     });
   } catch (err) {
     console.error('Signup error:', err);

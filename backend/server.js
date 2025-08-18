@@ -6,6 +6,9 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+console.log('🚀 Starting OPPTYM Backend...');
+console.log('📧 Email config will be loaded after basic setup');
+
 const app = express();
 
 // Trust proxy for rate limiting behind load balancers
@@ -139,9 +142,8 @@ app.post('/api/test-signup', (req, res) => {
   });
 });
 
-// API Routes
+// API Routes (load without email verification first)
 app.use('/api/auth', require('./routes/authroutes'));
-app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/submissions', require('./routes/submissionRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
@@ -151,6 +153,15 @@ app.use('/api/ultra-smart', require('./routes/ultraSmartRoutes'));
 app.use('/api/universal-form', require('./routes/universalFormRoutes'));
 app.use('/api/subscription', require('./routes/subscriptionRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
+
+// Load email verification routes after basic setup
+try {
+  app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
+  console.log('✅ Email verification routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading email verification routes:', error);
+  console.log('⚠️ Email verification will be disabled');
+}
 
 console.log('✅ Payment routes mounted at /api/payment');
 
