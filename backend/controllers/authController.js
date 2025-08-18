@@ -88,6 +88,11 @@ const signup = async (req, res) => {
       } catch (emailError) {
         console.error('❌ Error sending signup verification email:', emailError);
         // Don't fail signup if email fails, but log it
+        // Mark user as verified temporarily since email failed
+        user.isEmailVerified = true;
+        user.status = 'active';
+        await user.save();
+        console.log('⚠️ User marked as verified due to email failure');
       }
     } else {
       console.log('⚠️ Email verification disabled - user created without email verification');

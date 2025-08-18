@@ -167,7 +167,19 @@ app.get('/api/test-email-config', (req, res) => {
 // Test SMTP connection endpoint
 app.get('/api/test-smtp', async (req, res) => {
   try {
-    const nodemailer = require('nodemailer');
+    // Check if nodemailer is available
+    let nodemailer;
+    try {
+      nodemailer = require('nodemailer');
+      console.log('✅ Nodemailer loaded successfully');
+    } catch (error) {
+      res.status(500).json({ 
+        error: 'Nodemailer not available',
+        message: 'Nodemailer package is not installed. Please check package.json and redeploy.',
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
     
     // Test different SMTP configurations
     const configs = [
@@ -189,19 +201,6 @@ app.get('/api/test-smtp', async (req, res) => {
           host: 'smtp.hostinger.com',
           port: 587,
           secure: false,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD
-          }
-        }
-      },
-      {
-        name: 'Hostinger with TLS upgrade',
-        config: {
-          host: 'smtp.hostinger.com',
-          port: 587,
-          secure: false,
-          requireTLS: true,
           auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD
