@@ -158,7 +158,12 @@ export const useAuthProvider = (): AuthContextType => {
       // Handle specific error types with user-friendly messages
       let errorMessage = 'Login failed. Please try again.';
       
-      if (error.response?.data?.message) {
+      if (error.response?.data?.error === 'OTP_REQUIRED') {
+        // Redirect to OTP flow
+        showPopup('🔄 Redirecting to OTP verification...', 'info');
+        // The OTP flow will be handled by the new login function
+        return;
+      } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.error) {
         switch (error.response.data.error) {

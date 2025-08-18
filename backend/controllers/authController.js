@@ -64,51 +64,15 @@ const signup = async (req, res) => {
       });
     }
 
-    const hashed = await bcrypt.hash(password, 10);
-    
-    // Generate verification token
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-    
-    const user = await User.create({ 
-      username, 
-      email, 
-      password: hashed,
-      emailVerificationToken: verificationToken,
-      emailVerificationExpires: verificationExpires,
-      status: 'pending' // User starts as pending until email is verified
+    // Redirect to OTP flow instead of direct signup
+    return res.status(200).json({
+      success: false,
+      error: 'OTP_REQUIRED',
+      message: 'Please use the new OTP verification system. The direct signup endpoint has been deprecated.',
+      redirectToOTP: true,
+      useOTPEndpoint: '/api/otp/signup/generate'
     });
     
-    // Send verification email (only if email config is available)
-    if (transporter && emailTemplates) {
-      try {
-        const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
-        await transporter.sendMail(mailOptions);
-        console.log('✅ Signup verification email sent successfully to:', email);
-      } catch (emailError) {
-        console.error('❌ Error sending signup verification email:', emailError);
-        // Don't fail signup if email fails, but log it
-        // Mark user as verified temporarily since email failed
-        user.isEmailVerified = true;
-        user.status = 'active';
-        await user.save();
-        console.log('⚠️ User marked as verified due to email failure');
-      }
-    } else {
-      console.log('⚠️ Email verification disabled - user created without email verification');
-      // Mark user as verified for now since email is disabled
-      user.isEmailVerified = true;
-      user.status = 'active';
-      await user.save();
-    }
-    
-    res.status(201).json({ 
-      message: transporter && emailTemplates 
-        ? 'Account created successfully! Please check your email to verify your account.'
-        : 'Account created successfully! You can now login.',
-      isAdmin: user.isAdmin,
-      requiresVerification: transporter && emailTemplates
-    });
   } catch (err) {
     console.error('Signup error:', err);
     res.status(400).json({ 
@@ -140,63 +104,15 @@ const login = async (req, res) => {
             });
         }
         
-        const user = await User.findOne({ email });
-        console.log("🔍 Found user:", user ? 'Yes' : 'No');
-      
-        if (!user) {
-            return res.status(401).json({ 
-                error: 'USER_NOT_FOUND',
-                message: 'No account found with this email address. Please check your email or sign up.' 
-            });
-        }
-      
-        const match = await bcrypt.compare(password, user.password);
-        console.log("✅ Password match:", match);
-      
-        if (!match) {
-            return res.status(401).json({ 
-                error: 'WRONG_PASSWORD',
-                message: 'Incorrect password. Please try again.' 
-            });
-        }
-        
-        // Check if email is verified
-        if (!user.isEmailVerified) {
-            return res.status(401).json({ 
-                error: 'EMAIL_NOT_VERIFIED',
-                message: 'Please verify your email address before logging in. Check your inbox for a verification link.' 
-            });
-        }
-        
-        // Check if account is active
-        if (user.status !== 'active') {
-            return res.status(401).json({ 
-                error: 'ACCOUNT_INACTIVE',
-                message: 'Your account is not active. Please contact support.' 
-            });
-        }
-      
-        // Use fallback JWT secret if environment variable is not set
-        const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
-        console.log("🔑 JWT Secret configured:", !!process.env.JWT_SECRET);
-      
-        const token = jwt.sign({ 
-            userId: user._id, 
-            username: user.username,
-            isAdmin: user.isAdmin, 
-            subscription: user.subscription, 
-            email: user.email 
-        }, jwtSecret, { expiresIn: '7d' });
-        
-        console.log("✅ Login successful for user:", user.email);
-        
-        res.json({ 
-            token, 
-            isAdmin: user.isAdmin, 
-            subscription: user.subscription, 
-            email: user.email,
-            username: user.username
+        // Redirect to OTP flow instead of direct login
+        return res.status(200).json({
+            success: false,
+            error: 'OTP_REQUIRED',
+            message: 'Please use the new OTP verification system. The direct login endpoint has been deprecated.',
+            redirectToOTP: true,
+            useOTPEndpoint: '/api/otp/login/generate'
         });
+        
     } catch (error) {
         console.error("❌ Login error:", error);
         res.status(500).json({ error: 'Login failed. Please try again.' });
