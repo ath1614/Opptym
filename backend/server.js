@@ -164,6 +164,30 @@ app.get('/api/test-email-config', (req, res) => {
   }
 });
 
+// Test SMTP connection endpoint
+app.get('/api/test-smtp', async (req, res) => {
+  try {
+    const emailConfig = require('./config/emailConfig');
+    const { transporter } = emailConfig;
+    
+    // Test SMTP connection
+    const testResult = await transporter.verify();
+    
+    res.status(200).json({ 
+      message: 'SMTP connection test',
+      success: true,
+      testResult,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'SMTP connection failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // API Routes (load with error handling)
 try {
   app.use('/api/auth', require('./routes/authroutes'));

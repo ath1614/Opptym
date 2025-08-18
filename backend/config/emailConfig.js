@@ -8,7 +8,13 @@ const emailConfig = {
   auth: {
     user: process.env.EMAIL_USER || 'your-email@opptym.com', // Replace with actual email
     pass: process.env.EMAIL_PASSWORD || 'your-email-password' // Replace with actual password
-  }
+  },
+  // Additional options for better compatibility
+  tls: {
+    rejectUnauthorized: false
+  },
+  debug: true, // Enable debug output
+  logger: true // Log to console
 };
 
 // Check if email credentials are properly configured
