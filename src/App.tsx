@@ -17,6 +17,7 @@ import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import VerifyEmail from './pages/VerifyEmail';
 import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
+import { showPopup } from './utils/popup';
 
 function App() {
   const authProvider = useAuthProvider();
@@ -169,7 +170,7 @@ function App() {
       
     } catch (error) {
       console.error('Error loading project report:', error);
-      alert('Failed to load project report. Please try again.');
+      showPopup('Failed to load project report. Please try again.', 'error');
     } finally {
       setReportLoading(false);
     }

@@ -1,3 +1,5 @@
+import { showPopup } from '../utils/popup';
+
 export interface ProjectData {
   name: string;
   email: string;
@@ -176,7 +178,7 @@ export class ClientAutomationService {
              
              if (forms.length === 0) {
                console.warn('⚠️ No forms found on this page');
-               alert('No forms found on this page. Please make sure you are on a page with forms.');
+               showPopup('No forms found on this page. Please make sure you are on a page with forms.', 'warning');
                return;
              }
             
@@ -350,7 +352,7 @@ export class ClientAutomationService {
                }
              }, 5000);
              
-             alert('❌ Automation failed: ' + (error.message || 'Unknown error'));
+             showPopup('❌ Automation failed: ' + (error.message || 'Unknown error'), 'error');
            }
         }
         
@@ -542,7 +544,7 @@ export class ClientAutomationService {
             copyBookmarkletButton.textContent = '📋 Copy Bookmarklet';
           }, 2000);
         }).catch(() => {
-          alert('Please manually copy the bookmarklet code from the textarea above.');
+          showPopup('Please manually copy the bookmarklet code from the textarea above.', 'warning');
         });
       });
     }
@@ -562,7 +564,7 @@ Description: ${this.projectData.description}`;
             copyProjectDataButton.textContent = '📋 Copy Project Data';
           }, 2000);
         }).catch(() => {
-          alert('Please manually copy the project data from the modal above.');
+          showPopup('Please manually copy the project data from the modal above.', 'warning');
         });
       });
     }

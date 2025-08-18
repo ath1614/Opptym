@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getProjects, runKeywordTracker } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
 import { Search, TrendingUp, TrendingDown, Target, BarChart3, Lightbulb, Award } from 'lucide-react';
+import { showPopup } from '../../utils/popup';
 
 type Project = {
   _id: string;
@@ -28,7 +29,7 @@ const KeywordTrackerTool = () => {
 
   const handleRunAnalyzer = async () => {
     if (!selectedProjectId) {
-      alert('Please select a project');
+      showPopup('Please select a project', 'warning');
       return;
     }
 

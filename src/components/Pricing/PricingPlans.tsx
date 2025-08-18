@@ -14,6 +14,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { BASE_URL } from '../../lib/api';
 import axios from 'axios';
+import { showPopup } from '../../utils/popup';
 
 interface PricingPlan {
   id: string;
@@ -181,20 +182,20 @@ export default function PricingPlans() {
     
     // Check if user is already on this plan
     if (user?.subscription === planId) {
-      alert('You are already on this plan!');
+      showPopup('You are already on this plan!', 'info');
       setSelectedPlan(null);
       return;
     }
     
     if (!user || !user.email || !selected || selected.price === 0) {
-      alert('You must be logged in to upgrade to a paid plan.');
+      showPopup('You must be logged in to upgrade to a paid plan.', 'warning');
       setSelectedPlan(null);
       return;
     }
     
     const priceId = getStripePriceId(planId, billingCycle);
     if (!priceId) {
-      alert('No Stripe price ID found for this plan.');
+      showPopup('No Stripe price ID found for this plan.', 'error');
       setSelectedPlan(null);
       return;
     }
@@ -209,7 +210,7 @@ export default function PricingPlans() {
       });
       window.location.href = res.data.url;
     } catch (err: any) {
-      alert('Failed to initiate payment: ' + (err.response?.data?.error || err.message));
+      showPopup('Failed to initiate payment: ' + (err.response?.data?.error || err.message), 'error');
       setSelectedPlan(null);
     }
   };
