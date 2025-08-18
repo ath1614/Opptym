@@ -175,7 +175,19 @@ app.get('/api/test-smtp', async (req, res) => {
     } catch (error) {
       res.status(500).json({ 
         error: 'Nodemailer not available',
-        message: 'Nodemailer package is not installed. Please check package.json and redeploy.',
+        message: `Nodemailer package is not installed. Error: ${error.message}. Please check package.json and redeploy.`,
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
+    
+    // Check if createTransporter method exists
+    if (typeof nodemailer.createTransporter !== 'function') {
+      res.status(500).json({ 
+        error: 'Nodemailer method not available',
+        message: 'nodemailer.createTransporter is not a function. This indicates a package installation issue.',
+        nodemailerType: typeof nodemailer,
+        nodemailerKeys: Object.keys(nodemailer || {}),
         timestamp: new Date().toISOString()
       });
       return;
@@ -327,6 +339,58 @@ try {
 }
 
 console.log('✅ Payment routes mounted at /api/payment');
+
+// Test package installation endpoint
+app.get('/api/test-packages', (req, res) => {
+  try {
+    const packageTests = {};
+    
+    // Test nodemailer
+    try {
+      const nodemailer = require('nodemailer');
+      packageTests.nodemailer = {
+        available: true,
+        type: typeof nodemailer,
+        hasCreateTransporter: typeof nodemailer.createTransporter === 'function',
+        keys: Object.keys(nodemailer || {}).slice(0, 10) // First 10 keys
+      };
+    } catch (error) {
+      packageTests.nodemailer = {
+        available: false,
+        error: error.message
+      };
+    }
+    
+    // Test other packages
+    const packages = ['express', 'mongoose', 'bcryptjs', 'jsonwebtoken'];
+    for (const pkg of packages) {
+      try {
+        const module = require(pkg);
+        packageTests[pkg] = {
+          available: true,
+          type: typeof module
+        };
+      } catch (error) {
+        packageTests[pkg] = {
+          available: false,
+          error: error.message
+        };
+      }
+    }
+    
+    res.status(200).json({
+      message: 'Package installation test',
+      packageTests,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Package test failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
 
 // Root endpoint
 app.get('/', (req, res) => {
