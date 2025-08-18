@@ -11,8 +11,38 @@ const emailConfig = {
   }
 };
 
-// Create transporter
-const transporter = nodemailer.createTransporter(emailConfig);
+// Check if email credentials are properly configured
+const isEmailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD && 
+                         process.env.EMAIL_USER !== 'your-email@opptym.com' && 
+                         process.env.EMAIL_PASSWORD !== 'your-email-password';
+
+console.log('📧 Email configuration status:', isEmailConfigured ? '✅ Configured' : '⚠️ Not configured');
+
+// Create transporter with error handling
+let transporter;
+if (isEmailConfigured) {
+  try {
+    transporter = nodemailer.createTransporter(emailConfig);
+    console.log('✅ Email transporter created successfully');
+  } catch (error) {
+    console.error('❌ Error creating email transporter:', error);
+    createMockTransporter();
+  }
+} else {
+  console.log('⚠️ Using mock email transporter (no real emails will be sent)');
+  createMockTransporter();
+}
+
+function createMockTransporter() {
+  transporter = {
+    sendMail: async (mailOptions) => {
+      console.log('📧 Mock email sent:', mailOptions.to);
+      console.log('📧 Subject:', mailOptions.subject);
+      console.log('📧 Email content preview:', mailOptions.html ? mailOptions.html.substring(0, 100) + '...' : 'No HTML content');
+      return { messageId: 'mock-message-id-' + Date.now() };
+    }
+  };
+}
 
 // Email templates
 const emailTemplates = {

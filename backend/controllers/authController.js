@@ -70,8 +70,9 @@ const signup = async (req, res) => {
     try {
       const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
       await transporter.sendMail(mailOptions);
+      console.log('✅ Signup verification email sent successfully to:', email);
     } catch (emailError) {
-      console.error('Error sending verification email:', emailError);
+      console.error('❌ Error sending signup verification email:', emailError);
       // Don't fail signup if email fails, but log it
     }
     

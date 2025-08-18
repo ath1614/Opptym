@@ -133,9 +133,14 @@ const resendVerificationEmail = async (req, res) => {
     await user.save();
 
     // Send verification email
-    const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
-    
-    await transporter.sendMail(mailOptions);
+    try {
+      const mailOptions = emailTemplates.verificationEmail(verificationToken, email);
+      await transporter.sendMail(mailOptions);
+      console.log('✅ Verification email resent successfully to:', email);
+    } catch (emailError) {
+      console.error('❌ Error resending verification email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     res.status(200).json({ 
       success: true, 
