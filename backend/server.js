@@ -170,6 +170,16 @@ app.get('/api/test-smtp', async (req, res) => {
     const emailConfig = require('./config/emailConfig');
     const { transporter } = emailConfig;
     
+    // Check if transporter is mock
+    if (!transporter.verify) {
+      res.status(400).json({ 
+        error: 'Mock transporter detected',
+        message: 'Email configuration is using mock transporter. Real SMTP not configured properly.',
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
+    
     // Test SMTP connection
     const testResult = await transporter.verify();
     

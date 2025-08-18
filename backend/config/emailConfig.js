@@ -41,11 +41,24 @@ let transporter;
 
 function createRealTransporter() {
   try {
+    console.log('📧 Creating real SMTP transporter with config:', {
+      host: emailConfig.host,
+      port: emailConfig.port,
+      secure: emailConfig.secure,
+      user: emailConfig.auth.user,
+      passLength: emailConfig.auth.pass ? emailConfig.auth.pass.length : 0
+    });
+    
     const realTransporter = nodemailer.createTransporter(emailConfig);
     console.log('✅ Email transporter created successfully');
     return realTransporter;
   } catch (error) {
     console.error('❌ Error creating email transporter:', error);
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code
+    });
     return null;
   }
 }
@@ -64,11 +77,16 @@ function createMockTransporter() {
 
 // Initialize transporter
 if (isEmailConfigured) {
+  console.log('📧 Attempting to create real SMTP transporter...');
   transporter = createRealTransporter();
   if (!transporter) {
+    console.log('❌ Real transporter creation failed, falling back to mock');
     transporter = createMockTransporter();
+  } else {
+    console.log('✅ Real SMTP transporter created successfully');
   }
 } else {
+  console.log('⚠️ Email not configured, using mock transporter');
   transporter = createMockTransporter();
 }
 
