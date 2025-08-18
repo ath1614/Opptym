@@ -181,11 +181,11 @@ app.get('/api/test-smtp', async (req, res) => {
       return;
     }
     
-    // Check if createTransporter method exists
-    if (typeof nodemailer.createTransporter !== 'function') {
+    // Check if createTransport method exists (correct method name)
+    if (typeof nodemailer.createTransport !== 'function') {
       res.status(500).json({ 
         error: 'Nodemailer method not available',
-        message: 'nodemailer.createTransporter is not a function. This indicates a package installation issue.',
+        message: 'nodemailer.createTransport is not a function. This indicates a package installation issue.',
         nodemailerType: typeof nodemailer,
         nodemailerKeys: Object.keys(nodemailer || {}),
         timestamp: new Date().toISOString()
@@ -226,7 +226,7 @@ app.get('/api/test-smtp', async (req, res) => {
     for (const config of configs) {
       try {
         console.log(`Testing ${config.name}...`);
-        const transporter = nodemailer.createTransporter(config.config);
+        const transporter = nodemailer.createTransport(config.config);
         const verifyResult = await transporter.verify();
         results.push({
           config: config.name,
@@ -351,7 +351,7 @@ app.get('/api/test-packages', (req, res) => {
       packageTests.nodemailer = {
         available: true,
         type: typeof nodemailer,
-        hasCreateTransporter: typeof nodemailer.createTransporter === 'function',
+        hasCreateTransport: typeof nodemailer.createTransport === 'function',
         keys: Object.keys(nodemailer || {}).slice(0, 10) // First 10 keys
       };
     } catch (error) {

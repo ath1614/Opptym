@@ -71,7 +71,7 @@ function createRealTransporter() {
       passLength: emailConfig.auth.pass ? emailConfig.auth.pass.length : 0
     });
     
-    const realTransporter = nodemailer.createTransporter(emailConfig);
+    const realTransporter = nodemailer.createTransport(emailConfig);
     console.log('✅ Email transporter created successfully');
     return realTransporter;
   } catch (error) {
