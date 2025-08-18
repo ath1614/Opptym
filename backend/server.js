@@ -11,27 +11,9 @@ const app = express();
 // Trust proxy for rate limiting behind load balancers
 app.set('trust proxy', 1);
 
-// CORS configuration - allow specific origins for production
-const allowedOrigins = [
-  'https://opptym.com',
-  'https://www.opptym.com',
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'http://localhost:4173'
-];
-
+// CORS configuration - allow all origins temporarily for debugging
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('🚫 CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -46,6 +28,8 @@ app.use(cors({
   ],
   exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
 }));
+
+console.log('🌐 CORS configured to allow all origins');
 
 // Handle preflight requests
 app.options('*', cors());
@@ -66,6 +50,12 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use('/api/', limiter);
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.path} - Origin: ${req.headers.origin || 'No origin'}`);
+  next();
+});
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -126,7 +116,26 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     message: 'OPPTYM Backend is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    cors: 'enabled'
+  });
+});
+
+// Test CORS endpoint
+app.get('/api/test-cors', (req, res) => {
+  res.status(200).json({ 
+    message: 'CORS is working!',
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Test signup endpoint (for debugging)
+app.post('/api/test-signup', (req, res) => {
+  res.status(200).json({ 
+    message: 'Signup endpoint is accessible',
+    body: req.body,
+    timestamp: new Date().toISOString()
   });
 });
 
