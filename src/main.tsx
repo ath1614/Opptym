@@ -8,6 +8,11 @@ import axios from 'axios'
 // Set base URL for axios
 axios.defaults.baseURL = 'https://api.opptym.com';
 
+// Force cache busting for development
+if (import.meta.env.DEV) {
+  console.log('🔄 Development mode - Cache busting enabled');
+}
+
 // Add request interceptor to include token
 axios.interceptors.request.use(
   (config) => {
@@ -31,8 +36,19 @@ axios.interceptors.response.use(
     if (error.response?.status === 401) {
       console.log('🔍 401 Unauthorized - Clearing token and redirecting to login');
       
-      // Clear invalid token
+      // Clear invalid token and all auth data
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+      
+      // Force clear any cached data
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name);
+          });
+        });
+      }
       
       // Show popup to user
       if (typeof window !== 'undefined') {
@@ -67,17 +83,55 @@ axios.interceptors.response.use(
         }, 5000);
       }
       
-      // Reload page to redirect to login
+      // Force reload page to clear all state
       setTimeout(() => {
-        window.location.reload();
+        window.location.href = '/';
       }, 2000);
     }
     return Promise.reject(error);
   }
 );
 
+// Check for invalid token on app startup
+const checkAndClearInvalidToken = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      // Basic token validation
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        console.log('🔍 Invalid token format detected on startup - clearing');
+        localStorage.removeItem('token');
+        return;
+      }
+      
+      const payload = JSON.parse(atob(parts[1]));
+      if (!payload.userId || !payload.email) {
+        console.log('🔍 Invalid token payload detected on startup - clearing');
+        localStorage.removeItem('token');
+        return;
+      }
+      
+      // Check if token is expired
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        console.log('🔍 Expired token detected on startup - clearing');
+        localStorage.removeItem('token');
+        return;
+      }
+    } catch (error) {
+      console.log('🔍 Error validating token on startup - clearing');
+      localStorage.removeItem('token');
+    }
+  }
+};
+
+// Run token validation on startup
+checkAndClearInvalidToken();
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
 )

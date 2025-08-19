@@ -96,6 +96,23 @@ function App() {
     }
   }, []);
 
+  // Manual logout function for debugging
+  const handleManualLogout = () => {
+    console.log('🔍 Manual logout triggered');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
+    window.location.reload();
+  };
+
+  // Add manual logout to window for debugging
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).manualLogout = handleManualLogout;
+      console.log('🔍 Manual logout available: window.manualLogout()');
+    }
+  }, []);
+
   // Development mode quick login helper - DISABLED FOR OTP SYSTEM
   // const handleQuickLogin = async () => {
   //   try {
