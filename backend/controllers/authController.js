@@ -17,6 +17,147 @@ try {
   emailTemplates = null;
 }
 
+// Simple direct login (bypass OTP for testing)
+const directLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Generate JWT token
+    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    
+    console.log('🔐 Generating JWT token for direct login user:', user._id);
+    console.log('🔐 JWT Secret available:', !!process.env.JWT_SECRET);
+    
+    const tokenPayload = {
+      userId: user._id.toString(),
+      username: user.username || '',
+      isAdmin: user.isAdmin || false,
+      subscription: user.subscription || 'free',
+      email: user.email
+    };
+    
+    console.log('🔐 Token payload:', tokenPayload);
+    
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '7d' });
+    
+    console.log('🔐 Token generated successfully, length:', token.length);
+
+    res.status(200).json({
+      success: true,
+      message: 'Login successful!',
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        subscription: user.subscription
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Error in direct login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Login failed. Please try again.'
+    });
+  }
+};
+
+// Simple direct signup (bypass OTP for testing)
+const directSignup = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username, email, and password are required'
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email already exists'
+      });
+    }
+
+    // Create new user
+    const user = new User({
+      username,
+      email,
+      password,
+      isEmailVerified: true,
+      status: 'active'
+    });
+
+    await user.save();
+
+    // Generate JWT token
+    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    
+    console.log('🔐 Generating JWT token for direct signup user:', user._id);
+    
+    const tokenPayload = {
+      userId: user._id.toString(),
+      username: user.username || '',
+      isAdmin: user.isAdmin || false,
+      subscription: user.subscription || 'free',
+      email: user.email
+    };
+    
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '7d' });
+
+    res.status(200).json({
+      success: true,
+      message: 'Account created successfully!',
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        subscription: user.subscription
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Error in direct signup:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Signup failed. Please try again.'
+    });
+  }
+};
+
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -304,4 +445,4 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, updateProfile, changePassword, getProfile, exportUserData, deleteAccount };
+module.exports = { signup, login, updateProfile, changePassword, getProfile, exportUserData, deleteAccount, directLogin, directSignup };

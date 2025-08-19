@@ -169,83 +169,36 @@ export const useAuthProvider = (): AuthContextType => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log('🔐 Login attempt:', {
-        email,
-        axiosBaseURL: axios.defaults.baseURL,
-        fullUrl: `${axios.defaults.baseURL}/api/otp/login/generate`
-      });
+      console.log('🔐 Direct login attempt:', { email });
       
-      // Step 1: Generate login OTP
-      const otpResponse = await axios.post('/api/otp/login/generate', { email, password });
+      // Use direct login (bypass OTP for now)
+      const loginResponse = await axios.post('/api/auth/direct-login', { email, password });
       
-      if (otpResponse.data.success) {
-        console.log('✅ OTP generated successfully, showing popup...');
+      if (loginResponse.data.success) {
+        console.log('✅ Direct login successful');
+        const token = loginResponse.data.token;
         
-        // Step 2: Show OTP popup for verification
-        return new Promise<void>((resolve, reject) => {
-          showOTPPopup(
-            email,
-            async (otp: string) => {
-              try {
-                console.log('🔐 Verifying OTP...');
-                // Step 3: Verify OTP and complete login
-                const verifyResponse = await axios.post('/api/otp/login/verify', { email, otp });
-                
-                if (verifyResponse.data.success) {
-                  console.log('✅ OTP verified successfully');
-                  const token = verifyResponse.data.token;
-                  
-                  // Validate token before storing
-                  const userFromToken = decodeUser(token);
-                  if (!userFromToken) {
-                    throw new Error('Invalid token received from server');
-                  }
-                  
-                  localStorage.setItem('token', token);
-                  
-                  // Set user from token
-                  setUser({
-                    ...userFromToken,
-                    isAdmin: verifyResponse.data.user.isAdmin,
-                    subscription: verifyResponse.data.user.subscription,
-                    email: verifyResponse.data.user.email,
-                  } as User);
+        // Validate token before storing
+        const userFromToken = decodeUser(token);
+        if (!userFromToken) {
+          throw new Error('Invalid token received from server');
+        }
+        
+        localStorage.setItem('token', token);
+        
+        // Set user from token
+        setUser({
+          ...userFromToken,
+          isAdmin: loginResponse.data.user.isAdmin,
+          subscription: loginResponse.data.user.subscription,
+          email: loginResponse.data.user.email,
+        } as User);
 
-                  // Refresh user data from server
-                  await refreshUser();
-                  showPopup('✅ Login successful!', 'success');
-                  resolve();
-                } else {
-                  showPopup('❌ OTP verification failed. Please try again.', 'error');
-                  reject(new Error('OTP verification failed'));
-                }
-              } catch (error: any) {
-                console.error('OTP verification error:', error);
-                const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
-                showPopup(`❌ ${errorMessage}`, 'error');
-                reject(new Error(errorMessage));
-              }
-            },
-            async () => {
-              // Resend OTP
-              try {
-                console.log('🔄 Resending OTP...');
-                await axios.post('/api/otp/login/generate', { email, password });
-                showPopup('✅ New OTP sent to your email!', 'success');
-              } catch (error: any) {
-                const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
-                showPopup(`❌ ${errorMessage}`, 'error');
-              }
-            },
-            () => {
-              // Cancel OTP verification
-              showPopup('❌ Login cancelled.', 'warning');
-              reject(new Error('Login cancelled'));
-            }
-          );
-        });
+        // Refresh user data from server
+        await refreshUser();
+        showPopup('✅ Login successful!', 'success');
       } else {
-        throw new Error(otpResponse.data.message || 'Failed to generate OTP');
+        throw new Error(loginResponse.data.message || 'Login failed');
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -290,84 +243,36 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log('📝 Registration attempt:', { username, email });
+      console.log('📝 Direct registration attempt:', { username, email });
       
-      // Step 1: Generate signup OTP
-      const otpResponse = await axios.post('/api/otp/signup/generate', { email });
+      // Use direct signup (bypass OTP for now)
+      const signupResponse = await axios.post('/api/auth/direct-signup', { username, email, password });
       
-      if (otpResponse.data.success) {
-        console.log('✅ Signup OTP generated successfully, showing popup...');
+      if (signupResponse.data.success) {
+        console.log('✅ Direct signup successful');
+        const token = signupResponse.data.token;
         
-        // Step 2: Show OTP popup for verification
-        return new Promise<void>((resolve, reject) => {
-          showOTPPopup(
-            email,
-            async (otp: string) => {
-              try {
-                console.log('🔐 Verifying signup OTP...');
-                // Step 3: Verify OTP and complete registration
-                const verifyResponse = await axios.post('/api/otp/signup/verify', { 
-                  email, 
-                  otp, 
-                  username, 
-                  password 
-                });
-                
-                if (verifyResponse.data.success) {
-                  console.log('✅ Signup OTP verified successfully');
-                  const token = verifyResponse.data.token;
-                  
-                  // Validate token before storing
-                  const userFromToken = decodeUser(token);
-                  if (!userFromToken) {
-                    throw new Error('Invalid token received from server');
-                  }
-                  
-                  localStorage.setItem('token', token);
-                  
-                  // Set user from token
-                  setUser({
-                    ...userFromToken,
-                    isAdmin: verifyResponse.data.user.isAdmin,
-                    subscription: verifyResponse.data.user.subscription,
-                    email: verifyResponse.data.user.email,
-                  });
-
-                  // Refresh user data from server
-                  await refreshUser();
-                  showPopup('✅ Account created successfully! Welcome to Opptym!', 'success');
-                  resolve();
-                } else {
-                  showPopup('❌ OTP verification failed. Please try again.', 'error');
-                  reject(new Error('OTP verification failed'));
-                }
-              } catch (error: any) {
-                console.error('OTP verification error:', error);
-                const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
-                showPopup(`❌ ${errorMessage}`, 'error');
-                reject(new Error(errorMessage));
-              }
-            },
-            async () => {
-              // Resend OTP
-              try {
-                console.log('🔄 Resending signup OTP...');
-                await axios.post('/api/otp/signup/generate', { email });
-                showPopup('✅ New OTP sent to your email!', 'success');
-              } catch (error: any) {
-                const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
-                showPopup(`❌ ${errorMessage}`, 'error');
-              }
-            },
-            () => {
-              // Cancel OTP verification
-              showPopup('❌ Registration cancelled.', 'warning');
-              reject(new Error('Registration cancelled'));
-            }
-          );
+        // Validate token before storing
+        const userFromToken = decodeUser(token);
+        if (!userFromToken) {
+          throw new Error('Invalid token received from server');
+        }
+        
+        localStorage.setItem('token', token);
+        
+        // Set user from token
+        setUser({
+          ...userFromToken,
+          isAdmin: signupResponse.data.user.isAdmin,
+          subscription: signupResponse.data.user.subscription,
+          email: signupResponse.data.user.email,
         });
+
+        // Refresh user data from server
+        await refreshUser();
+        showPopup('✅ Account created successfully! Welcome to Opptym!', 'success');
       } else {
-        throw new Error(otpResponse.data.message || 'Failed to generate OTP');
+        throw new Error(signupResponse.data.message || 'Signup failed');
       }
     } catch (error: any) {
       console.error('Registration error:', error);
