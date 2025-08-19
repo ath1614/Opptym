@@ -91,9 +91,16 @@ const generateSignupOTP = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error generating signup OTP:', error);
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     res.status(500).json({
       success: false,
-      message: 'Failed to generate OTP. Please try again.'
+      message: 'Failed to generate OTP. Please try again.',
+      error: error.message
     });
   }
 };
@@ -283,9 +290,16 @@ const generateLoginOTP = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error generating login OTP:', error);
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     res.status(500).json({
       success: false,
-      message: 'Failed to generate OTP. Please try again.'
+      message: 'Failed to generate OTP. Please try again.',
+      error: error.message
     });
   }
 };

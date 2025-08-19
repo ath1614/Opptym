@@ -74,9 +74,10 @@ const userSchema = new mongoose.Schema({
   // Basic Info
   username: {
     type: String,
-    required: true,
+    required: false, // Make optional for OTP generation
     unique: true,
-    trim: true
+    trim: true,
+    sparse: true // Allow multiple null values
   },
   email: {
     type: String,
@@ -87,7 +88,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: false // Make optional for OTP generation
   },
   isAdmin: {
     type: Boolean,
@@ -100,7 +101,7 @@ const userSchema = new mongoose.Schema({
   },
   subscription: {
     type: String,
-    enum: ['free', 'basic', 'premium', 'enterprise'],
+    enum: ['free', 'starter', 'pro', 'business', 'enterprise'],
     default: 'free'
   },
   subscriptionExpiresAt: {

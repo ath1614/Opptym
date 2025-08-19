@@ -349,6 +349,40 @@ try {
 
 console.log('✅ Payment routes mounted at /api/payment');
 
+// Test User model endpoint
+app.get('/api/test-user-model', async (req, res) => {
+  try {
+    const User = require('./models/userModel');
+    console.log('✅ User model loaded successfully');
+    
+    // Try to create a test user
+    const testUser = new User({
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'testpass'
+    });
+    
+    console.log('✅ Test user created successfully');
+    console.log('✅ User schema fields:', Object.keys(testUser.schema.paths));
+    
+    res.status(200).json({
+      message: 'User model test',
+      userModelLoaded: true,
+      testUserCreated: true,
+      schemaFields: Object.keys(testUser.schema.paths),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ User model test failed:', error);
+    res.status(500).json({
+      error: 'User model test failed',
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Test JWT configuration endpoint
 app.get('/api/test-jwt', (req, res) => {
   try {
