@@ -69,6 +69,33 @@ function App() {
     }
   }, [activeTab]);
 
+  // Clear invalid tokens on app startup
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        // Basic token validation
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+          console.log('🔍 Invalid token structure, clearing...');
+          localStorage.removeItem('token');
+          return;
+        }
+        
+        // Try to decode payload
+        const payload = JSON.parse(atob(parts[1]));
+        if (!payload.userId || !payload.email) {
+          console.log('🔍 Invalid token payload, clearing...');
+          localStorage.removeItem('token');
+          return;
+        }
+      } catch (error) {
+        console.log('🔍 Token decoding failed, clearing...');
+        localStorage.removeItem('token');
+      }
+    }
+  }, []);
+
   // Development mode quick login helper - DISABLED FOR OTP SYSTEM
   // const handleQuickLogin = async () => {
   //   try {
@@ -453,7 +480,7 @@ function App() {
         {/* Auth routes */}
         <Route path="/" element={
           <div className="min-h-screen bg-gray-50">
-            {!authProvider.user ? (
+            {!authProvider.user || !authProvider.user.id || !authProvider.user.email ? (
               <div>
                 {authMode === 'landing' ? (
                   <LandingPage
