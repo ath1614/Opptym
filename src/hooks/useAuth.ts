@@ -44,24 +44,65 @@ export const useAuthProvider = (): AuthContextType => {
   const decodeUser = (token: string): User | null => {
     try {
       // Validate token format
-      if (!token || typeof token !== 'string' || !token.includes('.')) {
-        console.error('Invalid token format');
+      if (!token || typeof token !== 'string') {
+        console.error('Token is null, undefined, or not a string');
+        localStorage.removeItem('token');
+        return null;
+      }
+
+      // Check if token has the correct JWT format (3 parts separated by dots)
+      if (!token.includes('.') || token.split('.').length !== 3) {
+        console.error('Invalid JWT token format - should have 3 parts separated by dots');
         localStorage.removeItem('token');
         return null;
       }
       
       const parts = token.split('.');
-      if (parts.length !== 3) {
-        console.error('Invalid JWT token structure');
+      
+      // Validate each part
+      if (!parts[0] || !parts[1] || !parts[2]) {
+        console.error('Invalid JWT token structure - missing parts');
         localStorage.removeItem('token');
         return null;
       }
       
-      const payload = JSON.parse(atob(parts[1]));
+      // Decode the payload (second part)
+      let payload;
+      try {
+        // Handle base64url decoding with proper padding
+        let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        
+        // Add padding if needed
+        while (base64.length % 4) {
+          base64 += '=';
+        }
+        
+        const jsonPayload = atob(base64);
+        payload = JSON.parse(jsonPayload);
+      } catch (decodeError) {
+        console.error('Error decoding JWT payload:', decodeError);
+        console.error('Token parts:', parts);
+        console.error('Base64 part:', parts[1]);
+        localStorage.removeItem('token');
+        return null;
+      }
       
       // Validate payload has required fields
+      if (!payload || typeof payload !== 'object') {
+        console.error('Invalid token payload - not an object');
+        localStorage.removeItem('token');
+        return null;
+      }
+      
       if (!payload.userId || !payload.email) {
-        console.error('Invalid token payload - missing required fields');
+        console.error('Invalid token payload - missing required fields (userId or email)');
+        localStorage.removeItem('token');
+        return null;
+      }
+      
+      // Check if token is expired
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        console.error('Token has expired');
         localStorage.removeItem('token');
         return null;
       }
@@ -86,8 +127,21 @@ export const useAuthProvider = (): AuthContextType => {
   const refreshUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        console.log('🔍 No token found for refresh');
+        return;
+      }
 
+      // Validate token before making request
+      const userFromToken = decodeUser(token);
+      if (!userFromToken) {
+        console.log('🔍 Invalid token found during refresh, clearing...');
+        localStorage.removeItem('token');
+        setUser(null);
+        return;
+      }
+
+      console.log('🔍 Fetching user profile from server...');
       const response = await axios.get('/api/auth/profile', {
         headers: {
           Authorization: `Bearer ${token}`
@@ -95,14 +149,20 @@ export const useAuthProvider = (): AuthContextType => {
       });
 
       if (response.data.user) {
+        console.log('✅ User profile refreshed successfully');
         setUser(response.data.user);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error refreshing user data:', error);
-      // If refresh fails, clear the token and user
-      console.error('Failed to refresh user data, clearing token');
-      localStorage.removeItem('token');
-      setUser(null);
+      
+      // If refresh fails with 401, clear the token and user
+      if (error.response?.status === 401) {
+        console.log('🔍 401 error during refresh, clearing token and user');
+        localStorage.removeItem('token');
+        setUser(null);
+      } else {
+        console.error('🔍 Non-401 error during refresh, keeping current state');
+      }
     }
   };
 
@@ -119,61 +179,71 @@ export const useAuthProvider = (): AuthContextType => {
       const otpResponse = await axios.post('/api/otp/login/generate', { email, password });
       
       if (otpResponse.data.success) {
-              // Step 2: Show OTP popup for verification
-      return new Promise<void>((resolve, reject) => {
-        showOTPPopup(
-          email,
-          async (otp: string) => {
-            try {
-              // Step 3: Verify OTP and complete login
-              const verifyResponse = await axios.post('/api/otp/login/verify', { email, otp });
-              
-              if (verifyResponse.data.success) {
-                localStorage.setItem('token', verifyResponse.data.token);
+        console.log('✅ OTP generated successfully, showing popup...');
+        
+        // Step 2: Show OTP popup for verification
+        return new Promise<void>((resolve, reject) => {
+          showOTPPopup(
+            email,
+            async (otp: string) => {
+              try {
+                console.log('🔐 Verifying OTP...');
+                // Step 3: Verify OTP and complete login
+                const verifyResponse = await axios.post('/api/otp/login/verify', { email, otp });
                 
-                                  // Set user from token
-                  const userFromToken = decodeUser(verifyResponse.data.token);
-                  if (userFromToken) {
-                    setUser({
-                      ...userFromToken,
-                      isAdmin: verifyResponse.data.user.isAdmin,
-                      subscription: verifyResponse.data.user.subscription,
-                      email: verifyResponse.data.user.email,
-                    } as User);
+                if (verifyResponse.data.success) {
+                  console.log('✅ OTP verified successfully');
+                  const token = verifyResponse.data.token;
+                  
+                  // Validate token before storing
+                  const userFromToken = decodeUser(token);
+                  if (!userFromToken) {
+                    throw new Error('Invalid token received from server');
                   }
+                  
+                  localStorage.setItem('token', token);
+                  
+                  // Set user from token
+                  setUser({
+                    ...userFromToken,
+                    isAdmin: verifyResponse.data.user.isAdmin,
+                    subscription: verifyResponse.data.user.subscription,
+                    email: verifyResponse.data.user.email,
+                  } as User);
 
-                // Refresh user data from server
-                await refreshUser();
-                showPopup('✅ Login successful!', 'success');
-                resolve();
-              } else {
-                showPopup('❌ OTP verification failed. Please try again.', 'error');
-                reject(new Error('OTP verification failed'));
+                  // Refresh user data from server
+                  await refreshUser();
+                  showPopup('✅ Login successful!', 'success');
+                  resolve();
+                } else {
+                  showPopup('❌ OTP verification failed. Please try again.', 'error');
+                  reject(new Error('OTP verification failed'));
+                }
+              } catch (error: any) {
+                console.error('OTP verification error:', error);
+                const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
+                showPopup(`❌ ${errorMessage}`, 'error');
+                reject(new Error(errorMessage));
               }
-            } catch (error: any) {
-              console.error('OTP verification error:', error);
-              const errorMessage = error.response?.data?.message || 'OTP verification failed. Please try again.';
-              showPopup(`❌ ${errorMessage}`, 'error');
-              reject(new Error(errorMessage));
+            },
+            async () => {
+              // Resend OTP
+              try {
+                console.log('🔄 Resending OTP...');
+                await axios.post('/api/otp/login/generate', { email, password });
+                showPopup('✅ New OTP sent to your email!', 'success');
+              } catch (error: any) {
+                const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
+                showPopup(`❌ ${errorMessage}`, 'error');
+              }
+            },
+            () => {
+              // Cancel OTP verification
+              showPopup('❌ Login cancelled.', 'warning');
+              reject(new Error('Login cancelled'));
             }
-          },
-          async () => {
-            // Resend OTP
-            try {
-              await axios.post('/api/otp/login/generate', { email, password });
-              showPopup('✅ New OTP sent to your email!', 'success');
-            } catch (error: any) {
-              const errorMessage = error.response?.data?.message || 'Failed to resend OTP. Please try again.';
-              showPopup(`❌ ${errorMessage}`, 'error');
-            }
-          },
-          () => {
-            // Cancel OTP verification
-            showPopup('❌ Login cancelled.', 'warning');
-            reject(new Error('Login cancelled'));
-          }
-        );
-      });
+          );
+        });
       } else {
         throw new Error(otpResponse.data.message || 'Failed to generate OTP');
       }
@@ -220,16 +290,21 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log('📝 Registration attempt:', { username, email });
+      
       // Step 1: Generate signup OTP
       const otpResponse = await axios.post('/api/otp/signup/generate', { email });
       
       if (otpResponse.data.success) {
+        console.log('✅ Signup OTP generated successfully, showing popup...');
+        
         // Step 2: Show OTP popup for verification
         return new Promise<void>((resolve, reject) => {
           showOTPPopup(
             email,
             async (otp: string) => {
               try {
+                console.log('🔐 Verifying signup OTP...');
                 // Step 3: Verify OTP and complete registration
                 const verifyResponse = await axios.post('/api/otp/signup/verify', { 
                   email, 
@@ -239,18 +314,24 @@ export const useAuthProvider = (): AuthContextType => {
                 });
                 
                 if (verifyResponse.data.success) {
-                  localStorage.setItem('token', verifyResponse.data.token);
+                  console.log('✅ Signup OTP verified successfully');
+                  const token = verifyResponse.data.token;
+                  
+                  // Validate token before storing
+                  const userFromToken = decodeUser(token);
+                  if (!userFromToken) {
+                    throw new Error('Invalid token received from server');
+                  }
+                  
+                  localStorage.setItem('token', token);
                   
                   // Set user from token
-                  const userFromToken = decodeUser(verifyResponse.data.token);
-                  if (userFromToken) {
-                    setUser({
-                      ...userFromToken,
-                      isAdmin: verifyResponse.data.user.isAdmin,
-                      subscription: verifyResponse.data.user.subscription,
-                      email: verifyResponse.data.user.email,
-                    });
-                  }
+                  setUser({
+                    ...userFromToken,
+                    isAdmin: verifyResponse.data.user.isAdmin,
+                    subscription: verifyResponse.data.user.subscription,
+                    email: verifyResponse.data.user.email,
+                  });
 
                   // Refresh user data from server
                   await refreshUser();
@@ -270,6 +351,7 @@ export const useAuthProvider = (): AuthContextType => {
             async () => {
               // Resend OTP
               try {
+                console.log('🔄 Resending signup OTP...');
                 await axios.post('/api/otp/signup/generate', { email });
                 showPopup('✅ New OTP sent to your email!', 'success');
               } catch (error: any) {

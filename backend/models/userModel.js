@@ -178,7 +178,20 @@ userSchema.pre('save', function(next) {
 
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+  try {
+    // If password is not hashed (plain text), hash it first for comparison
+    if (!this.password.startsWith('$2a$') && !this.password.startsWith('$2b$')) {
+      console.log('⚠️ Password appears to be plain text, hashing for comparison');
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+      await this.save();
+    }
+    
+    return bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    console.error('Error comparing password:', error);
+    return false;
+  }
 };
 
 // Method to generate OTP

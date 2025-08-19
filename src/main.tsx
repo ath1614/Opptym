@@ -18,11 +18,21 @@ axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Validate token format before sending
+      if (token.includes('.') && token.split('.').length === 3) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log('🔍 Request with valid token:', config.url);
+      } else {
+        console.log('🔍 Invalid token format, removing from request');
+        localStorage.removeItem('token');
+      }
+    } else {
+      console.log('🔍 No token found for request:', config.url);
     }
     return config;
   },
   (error) => {
+    console.error('🔍 Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
@@ -30,14 +40,17 @@ axios.interceptors.request.use(
 // Add response interceptor to handle 401 errors
 axios.interceptors.response.use(
   (response) => {
+    console.log('✅ Response success:', response.config.url);
     return response;
   },
   (error) => {
+    console.error('❌ Response error:', error.config?.url, error.response?.status, error.response?.data);
+    
     if (error.response?.status === 401) {
-      console.log('🔍 401 Unauthorized - AGGRESSIVE CLEANUP');
+      console.log('🔍 401 Unauthorized - Clearing authentication data');
       
-      // AGGRESSIVE CLEAR - Clear everything
-      localStorage.clear();
+      // Clear authentication data
+      localStorage.removeItem('token');
       sessionStorage.clear();
       
       // Clear cookies
@@ -54,9 +67,11 @@ axios.interceptors.response.use(
         });
       }
       
-      // IMMEDIATE REDIRECT
-      window.location.href = '/';
-      return Promise.reject(error);
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
+        console.log('🔍 Redirecting to login page');
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }
@@ -68,14 +83,30 @@ const checkAndClearInvalidToken = () => {
   if (token) {
     try {
       // Basic token validation
-      const parts = token.split('.');
-      if (parts.length !== 3) {
+      if (!token.includes('.') || token.split('.').length !== 3) {
         console.log('🔍 Invalid token format detected on startup - clearing');
         localStorage.removeItem('token');
         return;
       }
       
-      const payload = JSON.parse(atob(parts[1]));
+      const parts = token.split('.');
+      if (!parts[0] || !parts[1] || !parts[2]) {
+        console.log('🔍 Invalid token structure detected on startup - clearing');
+        localStorage.removeItem('token');
+        return;
+      }
+      
+      // Try to decode payload
+      let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      
+      // Add padding if needed
+      while (base64.length % 4) {
+        base64 += '=';
+      }
+      
+      const jsonPayload = atob(base64);
+      const payload = JSON.parse(jsonPayload);
+      
       if (!payload.userId || !payload.email) {
         console.log('🔍 Invalid token payload detected on startup - clearing');
         localStorage.removeItem('token');
@@ -88,10 +119,14 @@ const checkAndClearInvalidToken = () => {
         localStorage.removeItem('token');
         return;
       }
+      
+      console.log('✅ Valid token found on startup');
     } catch (error) {
       console.log('🔍 Error validating token on startup - clearing');
       localStorage.removeItem('token');
     }
+  } else {
+    console.log('🔍 No token found on startup');
   }
 };
 

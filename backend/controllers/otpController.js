@@ -136,7 +136,7 @@ const verifySignupOTP = async (req, res) => {
 
     // Complete registration
     user.username = username;
-    user.password = password;
+    user.password = password; // Password will be hashed by the pre-save middleware
     user.isSignupOTPVerified = true;
     user.isEmailVerified = true;
     user.status = 'active';
@@ -147,17 +147,26 @@ const verifySignupOTP = async (req, res) => {
 
     // Generate JWT token
     const jwt = require('jsonwebtoken');
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        username: user.username,
-        isAdmin: user.isAdmin,
-        subscription: user.subscription,
-        email: user.email
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    
+    console.log('🔐 Generating JWT token for signup user:', user._id);
+    console.log('🔐 JWT Secret available:', !!process.env.JWT_SECRET);
+    console.log('🔐 Using JWT Secret:', jwtSecret.substring(0, 10) + '...');
+    
+    const tokenPayload = {
+      userId: user._id.toString(),
+      username: user.username || '',
+      isAdmin: user.isAdmin || false,
+      subscription: user.subscription || 'free',
+      email: user.email
+    };
+    
+    console.log('🔐 Token payload:', tokenPayload);
+    
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '7d' });
+    
+    console.log('🔐 Token generated successfully, length:', token.length);
+    console.log('🔐 Token preview:', token.substring(0, 50) + '...');
 
     res.status(200).json({
       success: true,
@@ -325,17 +334,26 @@ const verifyLoginOTP = async (req, res) => {
 
     // Generate JWT token
     const jwt = require('jsonwebtoken');
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        username: user.username,
-        isAdmin: user.isAdmin,
-        subscription: user.subscription,
-        email: user.email
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    
+    console.log('🔐 Generating JWT token for login user:', user._id);
+    console.log('🔐 JWT Secret available:', !!process.env.JWT_SECRET);
+    console.log('🔐 Using JWT Secret:', jwtSecret.substring(0, 10) + '...');
+    
+    const tokenPayload = {
+      userId: user._id.toString(),
+      username: user.username || '',
+      isAdmin: user.isAdmin || false,
+      subscription: user.subscription || 'free',
+      email: user.email
+    };
+    
+    console.log('🔐 Token payload:', tokenPayload);
+    
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '7d' });
+    
+    console.log('🔐 Token generated successfully, length:', token.length);
+    console.log('🔐 Token preview:', token.substring(0, 50) + '...');
 
     res.status(200).json({
       success: true,
