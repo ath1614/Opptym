@@ -69,18 +69,18 @@ function App() {
     }
   }, [activeTab]);
 
-  // Development mode quick login helper
-  const handleQuickLogin = async () => {
-    try {
-      console.log('🔍 Attempting quick login...');
-      await authProvider.login('test@example.com', 'password123');
-      console.log('✅ Quick login successful');
-    } catch (error) {
-      console.error('❌ Quick login failed:', error);
-      // If quick login fails, show registration form
-      setAuthMode('register');
-    }
-  };
+  // Development mode quick login helper - DISABLED FOR OTP SYSTEM
+  // const handleQuickLogin = async () => {
+  //   try {
+  //     console.log('🔍 Attempting quick login...');
+  //     await authProvider.login('test@example.com', 'password123');
+  //     console.log('✅ Quick login successful');
+  //   } catch (error) {
+  //     console.error('❌ Quick login failed:', error);
+  //     // If quick login fails, show registration form
+  //     setAuthMode('register');
+  //   }
+  // };
 
   interface Project {
     _id: string;

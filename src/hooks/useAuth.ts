@@ -43,7 +43,19 @@ export const useAuthProvider = (): AuthContextType => {
 
   const decodeUser = (token: string): User => {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Validate token format
+      if (!token || typeof token !== 'string' || !token.includes('.')) {
+        console.error('Invalid token format');
+        return { id: '', username: '', email: '' };
+      }
+      
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        console.error('Invalid JWT token structure');
+        return { id: '', username: '', email: '' };
+      }
+      
+      const payload = JSON.parse(atob(parts[1]));
       return { 
         id: payload.userId, 
         username: payload.username,
@@ -55,6 +67,8 @@ export const useAuthProvider = (): AuthContextType => {
       };
     } catch (error) {
       console.error('Error decoding token:', error);
+      // Clear invalid token
+      localStorage.removeItem('token');
       return { id: '', username: '', email: '' };
     }
   };
@@ -314,11 +328,19 @@ export const useAuthProvider = (): AuthContextType => {
           console.log('🔍 Decoding user from token...');
           const userFromToken = decodeUser(token);
           console.log('🔍 User from token:', userFromToken);
-          setUser(userFromToken);
           
-          // Try to refresh user data from server
-          console.log('🔍 Refreshing user data from server...');
-          await refreshUser();
+          // Check if user data is valid
+          if (userFromToken.id && userFromToken.email) {
+            setUser(userFromToken);
+            
+            // Try to refresh user data from server
+            console.log('🔍 Refreshing user data from server...');
+            await refreshUser();
+          } else {
+            console.log('🔍 Invalid user data from token, clearing...');
+            localStorage.removeItem('token');
+            setUser(null);
+          }
         } catch (error) {
           console.error('🔍 Error initializing auth:', error);
           // If token is invalid, remove it
