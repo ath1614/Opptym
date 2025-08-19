@@ -29,20 +29,40 @@ const generateSignupOTP = async (req, res) => {
     // Create or update user with OTP
     let user = existingUser;
     if (!user) {
-      user = new User({
-        email,
-        signupOTP: otp,
-        signupOTPExpires: expiresAt,
-        isSignupOTPVerified: false,
-        status: 'pending'
-      });
+      try {
+        console.log('🔍 Creating new user for OTP:', email);
+        user = new User({
+          email,
+          signupOTP: otp,
+          signupOTPExpires: expiresAt,
+          isSignupOTPVerified: false,
+          status: 'pending'
+        });
+        console.log('🔍 User object created:', user);
+      } catch (createError) {
+        console.error('❌ Error creating user object:', createError);
+        throw createError;
+      }
     } else {
+      console.log('🔍 Updating existing user for OTP:', email);
       user.signupOTP = otp;
       user.signupOTPExpires = expiresAt;
       user.isSignupOTPVerified = false;
     }
 
-    await user.save();
+    try {
+      console.log('🔍 Saving user to database...');
+      await user.save();
+      console.log('✅ User saved successfully');
+    } catch (saveError) {
+      console.error('❌ Error saving user:', saveError);
+      console.error('❌ Save error details:', {
+        name: saveError.name,
+        message: saveError.message,
+        code: saveError.code
+      });
+      throw saveError;
+    }
 
     // Send OTP email
     if (transporter && emailTemplates) {
