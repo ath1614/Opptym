@@ -41,21 +41,31 @@ export const useAuthProvider = (): AuthContextType => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const decodeUser = (token: string): User => {
+  const decodeUser = (token: string): User | null => {
     try {
       // Validate token format
       if (!token || typeof token !== 'string' || !token.includes('.')) {
         console.error('Invalid token format');
-        return { id: '', username: '', email: '' };
+        localStorage.removeItem('token');
+        return null;
       }
       
       const parts = token.split('.');
       if (parts.length !== 3) {
         console.error('Invalid JWT token structure');
-        return { id: '', username: '', email: '' };
+        localStorage.removeItem('token');
+        return null;
       }
       
       const payload = JSON.parse(atob(parts[1]));
+      
+      // Validate payload has required fields
+      if (!payload.userId || !payload.email) {
+        console.error('Invalid token payload - missing required fields');
+        localStorage.removeItem('token');
+        return null;
+      }
+      
       return { 
         id: payload.userId, 
         username: payload.username,
@@ -69,7 +79,7 @@ export const useAuthProvider = (): AuthContextType => {
       console.error('Error decoding token:', error);
       // Clear invalid token
       localStorage.removeItem('token');
-      return { id: '', username: '', email: '' };
+      return null;
     }
   };
 
@@ -122,14 +132,16 @@ export const useAuthProvider = (): AuthContextType => {
               if (verifyResponse.data.success) {
                 localStorage.setItem('token', verifyResponse.data.token);
                 
-                // Set user from token
-                const userFromToken = decodeUser(verifyResponse.data.token);
-                setUser({
-                  ...userFromToken,
-                  isAdmin: verifyResponse.data.user.isAdmin,
-                  subscription: verifyResponse.data.user.subscription,
-                  email: verifyResponse.data.user.email,
-                });
+                                  // Set user from token
+                  const userFromToken = decodeUser(verifyResponse.data.token);
+                  if (userFromToken) {
+                    setUser({
+                      ...userFromToken,
+                      isAdmin: verifyResponse.data.user.isAdmin,
+                      subscription: verifyResponse.data.user.subscription,
+                      email: verifyResponse.data.user.email,
+                    } as User);
+                  }
 
                 // Refresh user data from server
                 await refreshUser();
@@ -330,7 +342,7 @@ export const useAuthProvider = (): AuthContextType => {
           console.log('🔍 User from token:', userFromToken);
           
           // Check if user data is valid
-          if (userFromToken.id && userFromToken.email) {
+          if (userFromToken && userFromToken.id && userFromToken.email) {
             setUser(userFromToken);
             
             // Try to refresh user data from server
