@@ -6,112 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Opptym - Smart Form Automation</title>
     
-    <!-- COMPREHENSIVE AUTHENTICATION CLEANUP -->
+    <!-- FORCE CACHE BUST AND CLEAR ALL DATA -->
     <script>
       (function() {
-        console.log('🚀 Opptym: Starting comprehensive authentication cleanup...');
+        console.log('🚨 FORCE CACHE BUST - CLEARING EVERYTHING');
         
-        // FORCE CLEAR ALL AUTHENTICATION DATA
-        function forceClearAuth() {
-          console.log('🧹 Force clearing all authentication data...');
-          
-          // Clear all storage
-          localStorage.clear();
-          sessionStorage.clear();
-          
-          // Clear specific items
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('activeTab');
-          
-          // Clear cookies
-          document.cookie.split(";").forEach(function(c) { 
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        // FORCE CLEAR ALL DATA IMMEDIATELY
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        // Clear all caches
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name);
+            });
           });
-          
-          console.log('✅ All authentication data cleared');
         }
         
-        // Check if we need to force clear
+        // Force reload if there's any token
         const token = localStorage.getItem('token');
         if (token) {
-          try {
-            // Basic validation
-            const parts = token.split('.');
-            if (parts.length !== 3) {
-              console.log('❌ Invalid token structure - forcing clear');
-              forceClearAuth();
-              return;
-            }
-            
-            // Try to decode
-            const payload = JSON.parse(atob(parts[1]));
-            if (!payload.userId || !payload.email) {
-              console.log('❌ Invalid token payload - forcing clear');
-              forceClearAuth();
-              return;
-            }
-            
-            // Check expiration
-            if (payload.exp && payload.exp * 1000 < Date.now()) {
-              console.log('❌ Token expired - forcing clear');
-              forceClearAuth();
-              return;
-            }
-            
-            console.log('✅ Token appears valid');
-          } catch (error) {
-            console.log('❌ Token validation failed - forcing clear');
-            forceClearAuth();
-          }
+          console.log('🚨 Token found - forcing complete reload');
+          window.location.href = '/?cache-bust=' + Date.now();
         }
         
-        // Add global functions for debugging
+        // Add global force functions
+        window.forceClearAll = function() {
+          console.log('🚨 Force clear all triggered');
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = '/?force-clear=' + Date.now();
+        };
+        
         window.forceLogout = function() {
-          console.log('🔍 Force logout triggered');
-          forceClearAuth();
-          window.location.href = '/';
+          console.log('🚨 Force logout triggered');
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = '/?logout=' + Date.now();
         };
         
-        window.clearAllData = function() {
-          console.log('🔍 Clear all data triggered');
-          forceClearAuth();
-          window.location.reload();
-        };
-        
-        window.checkAuth = function() {
-          const token = localStorage.getItem('token');
-          console.log('🔍 Current token:', token ? 'EXISTS' : 'NONE');
-          if (token) {
-            try {
-              const parts = token.split('.');
-              const payload = JSON.parse(atob(parts[1]));
-              console.log('🔍 Token payload:', payload);
-            } catch (e) {
-              console.log('🔍 Token decode error:', e);
-            }
-          }
-        };
-        
-        console.log('🔧 Debug functions available:');
-        console.log('  - window.forceLogout() - Force logout and redirect');
-        console.log('  - window.clearAllData() - Clear all data and reload');
-        console.log('  - window.checkAuth() - Check current auth status');
-        
-        // Auto-clear on any 401 error
-        const originalFetch = window.fetch;
-        window.fetch = function(...args) {
-          return originalFetch.apply(this, args).then(response => {
-            if (response.status === 401) {
-              console.log('🔍 401 detected in fetch - forcing logout');
-              forceClearAuth();
-              window.location.href = '/';
-            }
-            return response;
-          });
-        };
-        
-        console.log('🚀 Authentication cleanup complete');
+        console.log('🚨 Force functions available: window.forceClearAll() or window.forceLogout()');
       })();
     </script>
   </head>
