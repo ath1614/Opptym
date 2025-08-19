@@ -338,14 +338,7 @@ try {
   console.log('⚠️ Email verification will be disabled');
 }
 
-// Load OTP routes
-try {
-  app.use('/api/otp', require('./routes/otpRoutes'));
-  console.log('✅ OTP routes loaded successfully');
-} catch (error) {
-  console.error('❌ Error loading OTP routes:', error);
-  console.log('⚠️ OTP verification will be disabled');
-}
+
 
 console.log('✅ Payment routes mounted at /api/payment');
 

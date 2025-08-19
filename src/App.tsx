@@ -15,7 +15,7 @@ import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
-import VerifyEmail from './pages/VerifyEmail';
+
 import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
 import { showPopup } from './utils/popup';
 
@@ -499,7 +499,7 @@ function App() {
     <AuthContext.Provider value={authProvider}>
       <Routes>
         {/* Public routes */}
-        <Route path="/verify-email" element={<VerifyEmail />} />
+
         
         {/* Auth routes */}
         <Route path="/" element={

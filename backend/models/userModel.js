@@ -74,10 +74,9 @@ const userSchema = new mongoose.Schema({
   // Basic Info
   username: {
     type: String,
-    required: false, // Make optional for OTP generation
+    required: true,
     unique: true,
-    trim: true,
-    sparse: true // Allow multiple null values
+    trim: true
   },
   email: {
     type: String,
@@ -88,7 +87,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: false // Make optional for OTP generation
+    required: true
   },
   isAdmin: {
     type: Boolean,
@@ -110,43 +109,7 @@ const userSchema = new mongoose.Schema({
   // Email verification fields
   isEmailVerified: {
     type: Boolean,
-    default: false
-  },
-  emailVerificationToken: {
-    type: String
-  },
-  emailVerificationExpires: {
-    type: Date
-  },
-  emailVerifiedAt: {
-    type: Date
-  },
-  // OTP verification fields for signup
-  signupOTP: {
-    type: String
-  },
-  signupOTPExpires: {
-    type: Date
-  },
-  isSignupOTPVerified: {
-    type: Boolean,
-    default: false
-  },
-  // OTP verification fields for login
-  loginOTP: {
-    type: String
-  },
-  loginOTPExpires: {
-    type: Date
-  },
-  isLoginOTPVerified: {
-    type: Boolean,
-    default: false
-  },
-  // OTP settings
-  otpEnabled: {
-    type: Boolean,
-    default: true
+    default: true // Set to true by default, no verification needed
   },
   createdAt: {
     type: Date,
@@ -195,44 +158,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   }
 };
 
-// Method to generate OTP
-userSchema.methods.generateOTP = function(type = 'signup') {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-  
-  if (type === 'signup') {
-    this.signupOTP = otp;
-    this.signupOTPExpires = expiresAt;
-    this.isSignupOTPVerified = false;
-  } else if (type === 'login') {
-    this.loginOTP = otp;
-    this.loginOTPExpires = expiresAt;
-    this.isLoginOTPVerified = false;
-  }
-  
-  return otp;
-};
 
-// Method to verify OTP
-userSchema.methods.verifyOTP = function(otp, type = 'signup') {
-  const now = new Date();
-  
-  if (type === 'signup') {
-    if (this.signupOTP !== otp) return false;
-    if (this.signupOTPExpires < now) return false;
-    this.isSignupOTPVerified = true;
-    this.signupOTP = undefined;
-    this.signupOTPExpires = undefined;
-  } else if (type === 'login') {
-    if (this.loginOTP !== otp) return false;
-    if (this.loginOTPExpires < now) return false;
-    this.isLoginOTPVerified = true;
-    this.loginOTP = undefined;
-    this.loginOTPExpires = undefined;
-  }
-  
-  return true;
-};
 
 // Virtual for full name
 userSchema.virtual('fullName').get(function() {

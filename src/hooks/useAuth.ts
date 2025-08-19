@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
-import { showPopup, showOTPPopup } from '../utils/popup';
+import { showPopup } from '../utils/popup';
 
 // Use the same axios instance configured in main.tsx
 // The axios.defaults.baseURL is already set to the correct base URL
@@ -169,13 +169,12 @@ export const useAuthProvider = (): AuthContextType => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log('🔐 Direct login attempt:', { email });
+      console.log('🔐 Login attempt:', { email });
       
-      // Use direct login (bypass OTP for now)
-      const loginResponse = await axios.post('/api/auth/direct-login', { email, password });
+      const loginResponse = await axios.post('/api/auth/login', { email, password });
       
       if (loginResponse.data.success) {
-        console.log('✅ Direct login successful');
+        console.log('✅ Login successful');
         const token = loginResponse.data.token;
         
         // Validate token before storing
@@ -206,12 +205,7 @@ export const useAuthProvider = (): AuthContextType => {
       // Handle specific error types with user-friendly messages
       let errorMessage = 'Login failed. Please try again.';
       
-      if (error.response?.data?.error === 'OTP_REQUIRED') {
-        // Redirect to OTP flow
-        showPopup('🔄 Redirecting to OTP verification...', 'info');
-        // The OTP flow will be handled by the new login function
-        return;
-      } else if (error.response?.data?.message) {
+      if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.error) {
         switch (error.response.data.error) {
@@ -243,13 +237,12 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log('📝 Direct registration attempt:', { username, email });
+      console.log('📝 Registration attempt:', { username, email });
       
-      // Use direct signup (bypass OTP for now)
-      const signupResponse = await axios.post('/api/auth/direct-signup', { username, email, password });
+      const signupResponse = await axios.post('/api/auth/signup', { username, email, password });
       
       if (signupResponse.data.success) {
-        console.log('✅ Direct signup successful');
+        console.log('✅ Signup successful');
         const token = signupResponse.data.token;
         
         // Validate token before storing
