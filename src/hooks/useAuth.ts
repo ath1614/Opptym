@@ -10,7 +10,7 @@ interface User {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
+  email: string;
   phone?: string;
   company?: string;
   website?: string;
@@ -99,11 +99,10 @@ export const useAuthProvider = (): AuthContextType => {
       }
     } catch (error) {
       console.error('Error refreshing user data:', error);
-      // If refresh fails, try to decode from token
-      const token = localStorage.getItem('token');
-      if (token) {
-        setUser(decodeUser(token));
-      }
+      // If refresh fails, clear the token and user
+      console.error('Failed to refresh user data, clearing token');
+      localStorage.removeItem('token');
+      setUser(null);
     }
   };
 
@@ -244,12 +243,14 @@ export const useAuthProvider = (): AuthContextType => {
                   
                   // Set user from token
                   const userFromToken = decodeUser(verifyResponse.data.token);
-                  setUser({
-                    ...userFromToken,
-                    isAdmin: verifyResponse.data.user.isAdmin,
-                    subscription: verifyResponse.data.user.subscription,
-                    email: verifyResponse.data.user.email,
-                  });
+                  if (userFromToken) {
+                    setUser({
+                      ...userFromToken,
+                      isAdmin: verifyResponse.data.user.isAdmin,
+                      subscription: verifyResponse.data.user.subscription,
+                      email: verifyResponse.data.user.email,
+                    });
+                  }
 
                   // Refresh user data from server
                   await refreshUser();
