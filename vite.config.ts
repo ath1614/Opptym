@@ -25,11 +25,21 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 4173,
     allowedHosts: ['opptym.com', 'www.opptym.com', 'localhost'],
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   },
   server: {
     host: '0.0.0.0',
     port: 3000,
     allowedHosts: ['opptym.com', 'www.opptym.com', 'localhost'],
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   },
   define: {
     __APP_VERSION__: JSON.stringify(Date.now()), // Force cache busting

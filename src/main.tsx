@@ -34,12 +34,16 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      console.log('🔍 401 Unauthorized - Clearing token and redirecting to login');
+      console.log('🔍 401 Unauthorized - AGGRESSIVE CLEANUP');
       
-      // Clear invalid token and all auth data
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // AGGRESSIVE CLEAR - Clear everything
+      localStorage.clear();
       sessionStorage.clear();
+      
+      // Clear cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
       
       // Force clear any cached data
       if ('caches' in window) {
@@ -50,43 +54,9 @@ axios.interceptors.response.use(
         });
       }
       
-      // Show popup to user
-      if (typeof window !== 'undefined') {
-        // Create a simple popup to inform user
-        const popup = document.createElement('div');
-        popup.style.cssText = `
-          position: fixed; top: 20px; right: 20px; z-index: 10000;
-          background: #ef4444; color: white; padding: 16px; border-radius: 8px;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15); max-width: 300px;
-        `;
-        popup.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">⚠️</span>
-            <div>
-              <div style="font-weight: 600; margin-bottom: 4px;">Session Expired</div>
-              <div style="font-size: 14px; opacity: 0.9;">Please login again to continue.</div>
-            </div>
-            <button onclick="this.parentElement.parentElement.remove()" style="
-              background: none; border: none; color: white; cursor: pointer; 
-              font-size: 18px; margin-left: auto; padding: 0;
-            ">×</button>
-          </div>
-        `;
-        document.body.appendChild(popup);
-        
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-          if (popup.parentElement) {
-            popup.remove();
-          }
-        }, 5000);
-      }
-      
-      // Force reload page to clear all state
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+      // IMMEDIATE REDIRECT
+      window.location.href = '/';
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }
