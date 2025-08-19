@@ -349,6 +349,41 @@ try {
 
 console.log('✅ Payment routes mounted at /api/payment');
 
+// Test JWT configuration endpoint
+app.get('/api/test-jwt', (req, res) => {
+  try {
+    const jwt = require('jsonwebtoken');
+    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    
+    // Test token generation
+    const testToken = jwt.sign(
+      { userId: 'test', email: 'test@example.com' },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+    
+    // Test token verification
+    const decoded = jwt.verify(testToken, jwtSecret);
+    
+    res.status(200).json({
+      message: 'JWT configuration test',
+      jwtSecretExists: !!process.env.JWT_SECRET,
+      jwtSecretLength: jwtSecret.length,
+      testTokenGenerated: !!testToken,
+      testTokenLength: testToken.length,
+      testTokenVerified: !!decoded,
+      decodedPayload: decoded,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'JWT test failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Test package installation endpoint
 app.get('/api/test-packages', (req, res) => {
   try {
