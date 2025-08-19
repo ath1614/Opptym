@@ -94,12 +94,8 @@ console.log('🌍 Environment:', {
   apiUrl: import.meta.env.VITE_API_URL,
 });
 
-// 🔐 Auth
-export const signup = (userData: { username: string; email: string; password: string }) =>
-  apiRequest('/auth/signup', { method: 'POST', body: JSON.stringify(userData) });
-
-export const login = ({ email, password }: { email: string; password: string }) =>
-  apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+// 🔐 Auth - OTP-based authentication is handled in useAuth.ts
+// Legacy auth functions removed - use OTP endpoints instead
 
 // 📁 Projects
 export const createProject = (data: Record<string, any>) =>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { signup } from '../../lib/api';
+import { useAuth } from '../../hooks/useAuth';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
@@ -16,6 +16,8 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const { register } = useAuth();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -28,21 +30,14 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
 
     try {
       setIsLoading(true);
-      const response = await signup({ username: name, email, password });
-      
-      // Check if email verification is required
-      if (response.requiresVerification) {
-        setSuccess('Account created successfully! Please check your email to verify your account before logging in.');
-        // Don't switch to login immediately, show success message
-      } else {
-        setSuccess('Account created successfully! You can now login.');
-        setTimeout(() => {
-          onSwitchToLogin();
-        }, 2000);
-      }
+      await register(name, email, password);
+      setSuccess('Account created successfully! You can now login.');
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 2000);
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

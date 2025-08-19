@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext, useAuthProvider } from './hooks/useAuth';
 import LandingPage from './components/Landing/LandingPage';
