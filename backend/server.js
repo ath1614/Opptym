@@ -444,6 +444,42 @@ app.get('/api/test-simple', (req, res) => {
   });
 });
 
+// Direct User model test endpoint
+app.get('/api/test-user-direct', async (req, res) => {
+  try {
+    console.log('🔍 Testing User model directly...');
+    const User = require('./models/userModel');
+    console.log('✅ User model loaded');
+    
+    // Test creating a simple user
+    const testUser = new User({
+      email: 'test@example.com',
+      signupOTP: '123456',
+      signupOTPExpires: new Date(),
+      isSignupOTPVerified: false,
+      status: 'pending'
+    });
+    
+    console.log('✅ Test user object created');
+    console.log('🔍 User object:', testUser);
+    
+    res.status(200).json({
+      message: 'User model direct test',
+      success: true,
+      userCreated: true,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Direct User model test failed:', error);
+    res.status(500).json({
+      error: 'Direct User model test failed',
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Test User model endpoint
 app.get('/api/test-user-model', async (req, res) => {
   try {
