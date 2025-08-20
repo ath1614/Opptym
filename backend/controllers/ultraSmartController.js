@@ -60,14 +60,24 @@ const openAndUltraFill = async (req, res) => {
         description: project.description || ''
       };
 
-      // Fill form fields
-      console.log('🔄 Starting form field detection and filling...');
+      // Fill form fields and capture all form data
+      console.log('🔄 Starting comprehensive form field detection and filling...');
       const fillResult = await automationService.fillFormFields(projectData);
       
       console.log('✅ Form filling completed:', {
         totalFieldsFound: fillResult.totalFieldsFound,
         totalFieldsFilled: fillResult.totalFieldsFilled,
         filledFields: fillResult.filledFields
+      });
+
+      // Capture complete form state and HTML
+      console.log('🔄 Capturing complete form state...');
+      const formState = await automationService.captureCompleteFormState();
+      
+      console.log('✅ Form state captured:', {
+        totalForms: formState.totalForms,
+        totalFields: formState.totalFields,
+        formHTML: formState.formHTML ? 'Captured' : 'Not captured'
       });
 
       // Submit the form
@@ -101,12 +111,18 @@ const openAndUltraFill = async (req, res) => {
           automationType: 'backend',
           instructions: {
             type: 'backend_automation',
-            message: 'Form was filled automatically on the server. You can visit the website to review and submit the form manually.',
+            message: 'Form was filled automatically on the server. You can now view and interact with the filled form in your browser.',
             steps: [
-              'Visit the website to see the form',
-              'Use Universal automation if you need to fill it again',
-              'Or manually fill the form with your project data'
+              'Click "View Filled Form" to see the form with your data',
+              'Edit any fields if needed',
+              'Fill captchas and submit the form',
+              'Or use Universal automation for a different approach'
             ]
+          },
+          formData: {
+            filledFields: fillResult.filledFields || [],
+            formState: formState,
+            injectionScript: formState.injectionScript || null
           },
           debug: {
             projectData: projectData,

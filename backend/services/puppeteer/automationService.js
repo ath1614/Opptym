@@ -385,6 +385,110 @@ class AutomationService {
     }
   }
 
+  async captureCompleteFormState() {
+    try {
+      console.log('📸 Capturing complete form state...');
+      
+      if (!this.page) {
+        throw new Error('No page available for form state capture');
+      }
+
+      // Wait for page to be fully loaded
+      await this.delay(2000);
+
+      // Capture all form data and HTML
+      const formState = await this.page.evaluate(() => {
+        const forms = document.querySelectorAll('form');
+        const allInputs = document.querySelectorAll('input, textarea, select');
+        
+        console.log(`Found ${forms.length} forms and ${allInputs.length} input fields`);
+        
+        // Capture all form HTML
+        const formHTML = Array.from(forms).map(form => form.outerHTML).join('\n');
+        
+        // Capture all input field data
+        const inputData = Array.from(allInputs).map((input, index) => {
+          return {
+            index: index,
+            type: input.type || input.tagName.toLowerCase(),
+            name: input.name || '',
+            id: input.id || '',
+            placeholder: input.placeholder || '',
+            value: input.value || '',
+            required: input.required || false,
+            disabled: input.disabled || false,
+            readonly: input.readOnly || false,
+            visible: input.offsetParent !== null,
+            selector: this.generateSelector(input)
+          };
+        });
+
+        // Generate injection script
+        const injectionScript = `
+          (function() {
+            console.log('🚀 Injecting form data...');
+            const formData = ${JSON.stringify(inputData)};
+            
+            formData.forEach(field => {
+              try {
+                const element = document.querySelector(field.selector);
+                if (element && field.value && !field.disabled && !field.readonly) {
+                  element.value = field.value;
+                  element.dispatchEvent(new Event('input', { bubbles: true }));
+                  element.dispatchEvent(new Event('change', { bubbles: true }));
+                  console.log('✅ Filled field:', field.name || field.id, 'with:', field.value);
+                }
+              } catch (e) {
+                console.log('⚠️ Could not fill field:', field.name || field.id, e);
+              }
+            });
+            
+            console.log('✅ Form injection completed');
+          })();
+        `;
+
+        return {
+          totalForms: forms.length,
+          totalFields: allInputs.length,
+          formHTML: formHTML,
+          inputData: inputData,
+          injectionScript: injectionScript,
+          pageTitle: document.title,
+          pageUrl: window.location.href
+        };
+      });
+
+      console.log('✅ Form state captured successfully');
+      return formState;
+      
+    } catch (error) {
+      console.error('❌ Error capturing form state:', error);
+      return {
+        totalForms: 0,
+        totalFields: 0,
+        formHTML: '',
+        inputData: [],
+        injectionScript: null,
+        pageTitle: '',
+        pageUrl: ''
+      };
+    }
+  }
+
+  generateSelector(element) {
+    // Generate a unique selector for the element
+    if (element.id) {
+      return `#${element.id}`;
+    }
+    if (element.name) {
+      return `[name="${element.name}"]`;
+    }
+    if (element.className) {
+      return `.${element.className.split(' ')[0]}`;
+    }
+    return `${element.tagName.toLowerCase()}:nth-child(${Array.from(element.parentNode?.children || []).indexOf(element) + 1})`;
+  }
+
   async captureFilledForm() {
     try {
       console.log('📸 Capturing filled form...');

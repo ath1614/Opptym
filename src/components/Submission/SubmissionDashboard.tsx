@@ -1497,26 +1497,27 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <span style="font-size: 18px;">🌐</span>
-          <span style="font-weight: 600; color: #0c4a6e;">Next Steps:</span>
+          <span style="font-weight: 600; color: #0c4a6e;">View Filled Form:</span>
         </div>
         <p style="color: #0c4a6e; line-height: 1.6; font-size: 14px; margin: 0 0 12px 0;">
-          The form was filled automatically on our server. Click "Visit Website" to open the target site and review the form. You may need to fill it manually or use Universal automation.
+          The form was filled automatically on our server. Click "View Filled Form" to see the form with your data pre-filled. You can edit fields, fill captchas, and submit directly.
         </p>
-        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px; margin-top: 12px;">
+        <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 6px; padding: 12px; margin-top: 12px;">
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-            <span style="font-size: 14px;">💡</span>
-            <span style="font-weight: 600; color: #92400e; font-size: 12px;">Tip:</span>
+            <span style="font-size: 14px;">✅</span>
+            <span style="font-weight: 600; color: #065f46; font-size: 12px;">Ready:</span>
           </div>
-          <p style="color: #92400e; font-size: 12px; margin: 0; line-height: 1.4;">
-            If the form appears empty, try the "Universal" option which will install a bookmarklet to fill forms directly in your browser.
+          <p style="color: #065f46; font-size: 12px; margin: 0; line-height: 1.4;">
+            Form data captured: ${automationData.formData?.filledFields?.length || 0} fields filled. Click "View Filled Form" to see and interact with the form.
           </p>
         </div>
       </div>
       
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <button id="visitFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+        <button id="viewFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 View Filled Form</button>
         <button id="tryUniversal" style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔄 Try Universal</button>
         <button id="copyFormData" style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Form Data</button>
+        <button id="getInjectionBookmarklet" style="background: #06b6d4; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔧 Get Injection Bookmarklet</button>
         <button id="closeResults" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
       </div>
     `;
@@ -1525,11 +1526,37 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     document.body.appendChild(modal);
     
     // Add event listeners
-    document.getElementById('visitFilledForm')?.addEventListener('click', () => {
-      if (automationData.formUrl) {
-        window.open(automationData.formUrl, '_blank', 'width=1200,height=800');
-      } else {
-        window.open(originalUrl, '_blank', 'width=1200,height=800');
+    document.getElementById('viewFilledForm')?.addEventListener('click', () => {
+      // Open the website in a new tab
+      const targetUrl = automationData.formUrl || originalUrl;
+      const newWindow = window.open(targetUrl, '_blank', 'width=1200,height=800');
+      
+      if (newWindow && automationData.formData?.injectionScript) {
+        // Wait for the page to load, then inject the form data
+        setTimeout(() => {
+          try {
+            newWindow.postMessage({
+              type: 'INJECT_FORM_DATA',
+              script: automationData.formData.injectionScript,
+              formData: automationData.formData
+            }, '*');
+            
+            // Also try to inject directly if postMessage doesn't work
+            setTimeout(() => {
+              try {
+                // Use a different approach to inject the script
+                const scriptElement = newWindow.document.createElement('script');
+                scriptElement.textContent = automationData.formData.injectionScript;
+                newWindow.document.head.appendChild(scriptElement);
+              } catch (e) {
+                console.log('Direct injection failed, using fallback method');
+              }
+            }, 2000);
+            
+          } catch (e) {
+            console.error('Error injecting form data:', e);
+          }
+        }, 3000);
       }
     });
     
@@ -1562,6 +1589,28 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
           }, 2000);
         }
       });
+    });
+
+    document.getElementById('getInjectionBookmarklet')?.addEventListener('click', () => {
+      if (automationData.formData?.injectionScript) {
+        // Create a bookmarklet from the injection script
+        const bookmarklet = `javascript:${encodeURIComponent(automationData.formData.injectionScript)}`;
+        
+        navigator.clipboard.writeText(bookmarklet).then(() => {
+          const btn = document.getElementById('getInjectionBookmarklet');
+          if (btn) {
+            btn.textContent = '✅ Bookmarklet Copied!';
+            setTimeout(() => {
+              btn.textContent = '🔧 Get Injection Bookmarklet';
+            }, 2000);
+          }
+          
+          // Show instructions
+          showPopup('✅ Injection bookmarklet copied! Create a new bookmark and paste this code. Then visit the website and click the bookmarklet to fill the form.', 'success');
+        });
+      } else {
+        showPopup('❌ No injection script available. Try the Universal option instead.', 'error');
+      }
     });
     
     document.getElementById('closeResults')?.addEventListener('click', () => {
