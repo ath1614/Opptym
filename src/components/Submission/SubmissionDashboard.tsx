@@ -550,7 +550,7 @@ const SubmissionsDashboard = () => {
 
       if (result.success) {
         // Show success modal
-        showAutomationSuccessModal(result.data);
+        showAutomationSuccessModalOld(result.data);
       } else {
         throw new Error(result.message || 'Automation failed');
       }
@@ -567,8 +567,8 @@ const SubmissionsDashboard = () => {
     }
   };
 
-  // Show automation success modal
-  const showAutomationSuccessModal = (data: any) => {
+  // Show automation success modal (old version)
+  const showAutomationSuccessModalOld = (data: any) => {
     // Create modal container
     const modal = document.createElement('div');
     modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 10000;';
