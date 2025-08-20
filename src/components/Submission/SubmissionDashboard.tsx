@@ -1027,16 +1027,27 @@ const SubmissionsDashboard = () => {
         </ol>
       </div>
       
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🔧</span>
+          <span style="font-weight: 600; color: #92400e;">Bookmarklet Code:</span>
+        </div>
+        <div style="background: #1f2937; color: #10b981; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; overflow-x: auto; margin-bottom: 12px; text-align: left;">
+          javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();
+        </div>
+        <button id="copyBookmarklet" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px;">📋 Copy Bookmarklet</button>
+      </div>
+      
       <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
           <span style="font-size: 18px;">💡</span>
-          <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+          <span style="font-weight: 600; color: #0c4a6e;">How to Use:</span>
         </div>
-        <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
-          <div><strong>Name:</strong> ${projectData.name}</div>
-          <div><strong>Email:</strong> ${projectData.email}</div>
-          <div><strong>Company:</strong> ${projectData.companyName}</div>
-          <div><strong>Website:</strong> ${projectData.url}</div>
+        <div style="text-align: left; color: #0c4a6e; font-size: 14px; line-height: 1.6;">
+          <div><strong>1.</strong> Copy the bookmarklet code above</div>
+          <div><strong>2.</strong> Create a new bookmark in your browser</div>
+          <div><strong>3.</strong> Paste the code as the bookmark URL</div>
+          <div><strong>4.</strong> Visit the target website and click the bookmark</div>
         </div>
       </div>
       
@@ -1053,6 +1064,20 @@ const SubmissionsDashboard = () => {
     // Add event listeners
     document.getElementById('visitWebsite')?.addEventListener('click', () => {
       window.open(url, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('copyBookmarklet')?.addEventListener('click', () => {
+      const bookmarkletCode = `javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();`;
+      
+      navigator.clipboard.writeText(bookmarkletCode).then(() => {
+        const btn = document.getElementById('copyBookmarklet');
+        if (btn) {
+          btn.textContent = '✅ Copied!';
+          setTimeout(() => {
+            btn.textContent = '📋 Copy Bookmarklet';
+          }, 2000);
+        }
+      });
     });
     
     document.getElementById('copyProjectData')?.addEventListener('click', () => {
