@@ -3,9 +3,9 @@
 
 ## 🎯 QUICK START
 
-### Current Status: ✅ READY TO LAUNCH
-- **Backend**: ✅ Live on Render (https://opptym-backend.onrender.com/)
-- **Frontend**: ✅ Ready for deployment
+### Current Status: ✅ LIVE IN PRODUCTION
+- **Backend**: ✅ Live on api.opptym.com
+- **Frontend**: ✅ Live on opptym.com
 - **Database**: ✅ MongoDB Atlas connected
 - **Automation**: ✅ Fully functional
 
@@ -36,10 +36,10 @@ npm run build
 # - Render: Connect GitHub repo
 ```
 
-#### 2. Update Environment Variables
-Ensure your frontend has the correct API URL:
+#### 2. Environment Variables (Already Configured)
+The frontend is already configured with the correct API URL:
 ```
-VITE_API_URL=https://opptym-backend.onrender.com/api
+VITE_API_URL=https://api.opptym.com/api
 ```
 
 #### 3. Test Critical Flows
@@ -97,7 +97,7 @@ VITE_API_URL=https://opptym-backend.onrender.com/api
 ## 🔧 TECHNICAL SPECIFICATIONS
 
 ### Backend API Endpoints
-- **Base URL**: https://opptym-backend.onrender.com/api
+- **Base URL**: https://api.opptym.com/api
 - **Authentication**: POST /auth/login, POST /auth/signup
 - **Projects**: GET/POST/PUT/DELETE /projects
 - **Automation**: POST /ultra-smart/automate
@@ -209,7 +209,7 @@ No more manual data entry - let our system do the work for you!
 • Real-time progress tracking
 • Secure authentication
 
-Try it now: [Your Frontend URL]
+Try it now: https://opptym.com
 ```
 
 ### Social Media Posts

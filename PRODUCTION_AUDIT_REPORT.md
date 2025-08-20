@@ -17,14 +17,16 @@
 ## 🔧 TECHNICAL INFRASTRUCTURE
 
 ### Backend Status: ✅ OPERATIONAL
-- **URL**: https://opptym-backend.onrender.com/
+- **URL**: https://api.opptym.com/
 - **Status**: HTTP 200 - Running in production mode
 - **Environment**: Production
 - **Version**: 1.0.0
 - **Database**: MongoDB Atlas connected
 - **Dependencies**: All critical packages installed
 
-### Frontend Status: ✅ READY FOR DEPLOYMENT
+### Frontend Status: ✅ LIVE IN PRODUCTION
+- **URL**: https://opptym.com/
+- **Status**: HTTP 200 - Running in production mode
 - **Build Status**: ✅ Successful compilation
 - **Bundle Size**: 1.3MB (acceptable for production)
 - **Dependencies**: All packages resolved
