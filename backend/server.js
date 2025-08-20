@@ -332,6 +332,7 @@ try {
 // Load email verification routes after basic setup
 try {
   app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
+app.use('/api/pricing', require('./routes/pricingRoutes'));
   console.log('✅ Email verification routes loaded successfully');
 } catch (error) {
   console.error('❌ Error loading email verification routes:', error);

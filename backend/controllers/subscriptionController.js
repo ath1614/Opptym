@@ -101,34 +101,47 @@ exports.getTeamManagement = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if user can manage team
-    if (!user.hasPermission('canManageTeamMembers')) {
-      return res.status(403).json({ error: 'Insufficient permissions' });
+    // Check if user has team management permissions
+    if (!user.isAdmin && user.subscription === 'free') {
+      return res.status(403).json({ error: 'Team management requires a paid subscription' });
     }
 
-    const team = await Team.findOne({ ownerId: userId });
+    // Get or create team for user
+    let team = await Team.findOne({ ownerId: userId });
     if (!team) {
-      return res.status(404).json({ error: 'Team not found' });
+      // Create team for user
+      team = await Team.createForUser(userId, `${user.username || user.email}'s Team`);
     }
 
-    // Get team members
-    const teamMembers = await User.find({ teamId: team._id });
+    // Get team members with populated user data
+    const populatedTeam = await Team.findById(team._id).populate('members.userId', 'username email role status lastLogin');
     
     res.json({
-      team,
-      members: teamMembers.map(member => ({
-        id: member._id,
-        username: member.username,
-        email: member.email,
+      team: {
+        id: populatedTeam._id,
+        name: populatedTeam.name,
+        ownerId: populatedTeam.ownerId,
+        maxMembers: populatedTeam.maxMembers,
+        memberCount: populatedTeam.members.length,
+        subscription: populatedTeam.subscription,
+        settings: populatedTeam.settings,
+        usage: populatedTeam.getUsage()
+      },
+      members: populatedTeam.members.map(member => ({
+        id: member.userId._id,
+        username: member.userId.username,
+        email: member.userId.email,
         role: member.role,
-        status: member.status,
-        lastLogin: member.lastLogin,
-        permissions: member.customPermissions
+        status: member.userId.status,
+        lastLogin: member.userId.lastLogin,
+        permissions: member.permissions,
+        joinedAt: member.joinedAt
       })),
-      canAddMembers: team.canAddMember(),
-      usage: team.getUsage()
+      canAddMembers: populatedTeam.canAddMember(),
+      availableSlots: populatedTeam.availableSlots
     });
   } catch (error) {
+    console.error('Get team management error:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -140,13 +153,29 @@ exports.inviteTeamMember = async (req, res) => {
     const userId = req.userId;
     
     const user = await User.findById(userId);
-    if (!user || !user.hasPermission('canManageTeamMembers')) {
-      return res.status(403).json({ error: 'Insufficient permissions' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    const team = await Team.findOne({ ownerId: userId });
-    if (!team || !team.canAddMember()) {
-      return res.status(400).json({ error: 'Cannot add more team members' });
+    // Check if user has team management permissions
+    if (!user.isAdmin && user.subscription === 'free') {
+      return res.status(403).json({ error: 'Team management requires a paid subscription' });
+    }
+
+    // Get or create team for user
+    let team = await Team.findOne({ ownerId: userId });
+    if (!team) {
+      // Create team for user
+      team = await Team.createForUser(userId, `${user.username || user.email}'s Team`);
+    }
+
+    // Check if team can add more members
+    if (!team.canAddMember()) {
+      return res.status(400).json({ 
+        error: 'Cannot add more team members',
+        currentMembers: team.members.length,
+        maxMembers: team.maxMembers
+      });
     }
 
     // Check if user already exists
@@ -158,7 +187,7 @@ exports.inviteTeamMember = async (req, res) => {
       invitedUser = await User.create({
         email,
         username: email.split('@')[0],
-        password: tempPassword, // Will be hashed by pre-save middleware
+        password: tempPassword,
         isEmployee: true,
         role: role || 'employee',
         status: 'pending',
@@ -175,7 +204,8 @@ exports.inviteTeamMember = async (req, res) => {
       await invitedUser.save();
     }
 
-    // TODO: Send invitation email
+    // Add user to team
+    await team.addMember(invitedUser._id, role || 'employee', permissions || {});
     
     res.json({
       success: true,
@@ -184,9 +214,16 @@ exports.inviteTeamMember = async (req, res) => {
         id: invitedUser._id,
         email: invitedUser.email,
         role: invitedUser.role
+      },
+      team: {
+        id: team._id,
+        name: team.name,
+        memberCount: team.members.length,
+        maxMembers: team.maxMembers
       }
     });
   } catch (error) {
+    console.error('Team invitation error:', error);
     res.status(500).json({ error: error.message });
   }
 };

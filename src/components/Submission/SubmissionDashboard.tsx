@@ -925,11 +925,11 @@ const SubmissionsDashboard = () => {
     
     loadingContent.innerHTML = `
       <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Universal Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Preparing your project data and opening the target website...</p>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Universal Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Installing automation bookmarklet and opening target website...</p>
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
         <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #3b82f6; font-weight: 500;">Loading...</span>
+        <span style="color: #3b82f6; font-weight: 500;">Setting up automation...</span>
       </div>
       <style>
         @keyframes spin {
@@ -958,12 +958,16 @@ const SubmissionsDashboard = () => {
         pincode: (selectedProject as any).pincode || ''
       };
 
-      // Create and start client automation service (without showing instructions)
-      const automationService = new ClientAutomationService(projectData);
-      await automationService.startAutomation(url, false); // Don't show instructions, we'll show our own modal
+      // Automatically install bookmarklet
+      const bookmarkletInstalled = await installBookmarkletAutomatically(projectData);
       
-      // Show success modal with direct website access
-      showUniversalSuccessModal(url, projectData);
+      if (bookmarkletInstalled) {
+        // Show success modal with direct website access
+        showUniversalSuccessModal(url, projectData, true);
+      } else {
+        // Fallback to manual process
+        showUniversalSuccessModal(url, projectData, false);
+      }
       
     } catch (error) {
       console.error('Universal form automation error:', error);
@@ -977,8 +981,61 @@ const SubmissionsDashboard = () => {
     }
   };
 
-  // Show Universal automation success modal with direct website access
-  const showUniversalSuccessModal = (url: string, projectData: any) => {
+  // Automatically install bookmarklet in user's browser
+  const installBookmarkletAutomatically = async (projectData: any): Promise<boolean> => {
+    try {
+      const bookmarkletCode = `javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();`;
+
+      // Try using the browser's native bookmark creation
+      const success = await createBookmarkNative(bookmarkletCode);
+      return success;
+
+    } catch (error) {
+      console.error('Failed to install bookmarklet automatically:', error);
+      return false;
+    }
+  };
+
+  // Use browser's native bookmark creation
+  const createBookmarkNative = async (bookmarkletCode: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      try {
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.href = bookmarkletCode;
+        link.textContent = 'OPPTYM Auto-Fill';
+        link.style.display = 'none';
+        
+        // Add to page temporarily
+        document.body.appendChild(link);
+        
+        // Try to trigger bookmark creation
+        if (navigator.userAgent.includes('Chrome')) {
+          // Chrome-specific method
+          link.dispatchEvent(new MouseEvent('click', { ctrlKey: true }));
+        } else if (navigator.userAgent.includes('Firefox')) {
+          // Firefox-specific method
+          link.dispatchEvent(new MouseEvent('click', { ctrlKey: true, shiftKey: true }));
+        } else if (navigator.userAgent.includes('Safari')) {
+          // Safari-specific method
+          link.dispatchEvent(new MouseEvent('click', { ctrlKey: true }));
+        }
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link);
+          resolve(true);
+        }, 100);
+        
+      } catch (error) {
+        console.error('Native bookmark creation failed:', error);
+        resolve(false);
+      }
+    });
+  };
+
+  // Show Universal automation success modal with automatic installation
+  const showUniversalSuccessModal = (url: string, projectData: any, bookmarkletInstalled: boolean) => {
     const modal = document.createElement('div');
     modal.style.cssText = `
       position: fixed;
@@ -1006,57 +1063,91 @@ const SubmissionsDashboard = () => {
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     `;
     
-    content.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-        <div style="font-size: 32px;">✅</div>
-        <div>
-          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Universal Automation Ready!</h2>
-          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your bookmarklet is ready to fill forms automatically</p>
+    if (bookmarkletInstalled) {
+      // Success - bookmarklet was installed automatically
+      content.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+          <div style="font-size: 32px;">✅</div>
+          <div>
+            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Ready!</h2>
+            <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Bookmarklet installed automatically in your browser</p>
+          </div>
         </div>
-      </div>
-      
-      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="font-size: 18px;">🚀</span>
-          <span style="font-weight: 600; color: #065f46;">Next Steps:</span>
+        
+        <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 18px;">🚀</span>
+            <span style="font-weight: 600; color: #065f46;">Next Steps:</span>
+          </div>
+          <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
+            <li><strong>Click "Visit Website"</strong> to open the target site</li>
+            <li><strong>Click "OPPTYM Auto-Fill"</strong> in your bookmarks bar</li>
+            <li><strong>Form will auto-fill</strong> with your project data</li>
+            <li><strong>Review and submit</strong> the form</li>
+          </ol>
         </div>
-        <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
-          <li><strong>Click "Visit Website"</strong> to open the target site</li>
-          <li><strong>Click your bookmarklet</strong> to auto-fill forms</li>
-          <li><strong>Review and submit</strong> the filled form</li>
-        </ol>
-      </div>
-      
-      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="font-size: 18px;">🔧</span>
-          <span style="font-weight: 600; color: #92400e;">Bookmarklet Code:</span>
+        
+        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 18px;">💡</span>
+            <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+          </div>
+          <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
+            <div><strong>Name:</strong> ${projectData.name}</div>
+            <div><strong>Email:</strong> ${projectData.email}</div>
+            <div><strong>Company:</strong> ${projectData.companyName}</div>
+            <div><strong>Website:</strong> ${projectData.url}</div>
+          </div>
         </div>
-        <div style="background: #1f2937; color: #10b981; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; overflow-x: auto; margin-bottom: 12px; text-align: left;">
-          javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();
+        
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+          <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
+          <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
         </div>
-        <button id="copyBookmarklet" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px;">📋 Copy Bookmarklet</button>
-      </div>
-      
-      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <span style="font-size: 18px;">💡</span>
-          <span style="font-weight: 600; color: #0c4a6e;">How to Use:</span>
+      `;
+    } else {
+      // Fallback - manual bookmarklet process
+      content.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+          <div style="font-size: 32px;">🔧</div>
+          <div>
+            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Manual Setup Required</h2>
+            <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Please create the bookmarklet manually</p>
+          </div>
         </div>
-        <div style="text-align: left; color: #0c4a6e; font-size: 14px; line-height: 1.6;">
-          <div><strong>1.</strong> Copy the bookmarklet code above</div>
-          <div><strong>2.</strong> Create a new bookmark in your browser</div>
-          <div><strong>3.</strong> Paste the code as the bookmark URL</div>
-          <div><strong>4.</strong> Visit the target website and click the bookmark</div>
+        
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 18px;">🔧</span>
+            <span style="font-weight: 600; color: #92400e;">Bookmarklet Code:</span>
+          </div>
+          <div style="background: #1f2937; color: #10b981; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; overflow-x: auto; margin-bottom: 12px; text-align: left;">
+            javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();
+          </div>
+          <button id="copyBookmarklet" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px;">📋 Copy Bookmarklet</button>
         </div>
-      </div>
-      
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
-        <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
-        <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
-      </div>
-    `;
+        
+        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 18px;">💡</span>
+            <span style="font-weight: 600; color: #0c4a6e;">How to Use:</span>
+          </div>
+          <div style="text-align: left; color: #0c4a6e; font-size: 14px; line-height: 1.6;">
+            <div><strong>1.</strong> Copy the bookmarklet code above</div>
+            <div><strong>2.</strong> Create a new bookmark in your browser</div>
+            <div><strong>3.</strong> Paste the code as the bookmark URL</div>
+            <div><strong>4.</strong> Visit the target website and click the bookmark</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+          <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
+          <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+        </div>
+      `;
+    }
     
     modal.appendChild(content);
     document.body.appendChild(modal);
@@ -1066,19 +1157,21 @@ const SubmissionsDashboard = () => {
       window.open(url, '_blank', 'width=1200,height=800');
     });
     
-    document.getElementById('copyBookmarklet')?.addEventListener('click', () => {
-      const bookmarkletCode = `javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();`;
-      
-      navigator.clipboard.writeText(bookmarkletCode).then(() => {
-        const btn = document.getElementById('copyBookmarklet');
-        if (btn) {
-          btn.textContent = '✅ Copied!';
-          setTimeout(() => {
-            btn.textContent = '📋 Copy Bookmarklet';
-          }, 2000);
-        }
+    if (!bookmarkletInstalled) {
+      document.getElementById('copyBookmarklet')?.addEventListener('click', () => {
+        const bookmarkletCode = `javascript:(function(){var data=${JSON.stringify(projectData)};var fields=['input','textarea','select'];fields.forEach(function(tag){document.querySelectorAll(tag).forEach(function(field){var name=field.name||field.id||'';name=name.toLowerCase();if(name.includes('name')||name.includes('company'))field.value=data.name||data.companyName;else if(name.includes('email'))field.value=data.email;else if(name.includes('phone'))field.value=data.phone;else if(name.includes('url')||name.includes('website'))field.value=data.url;else if(name.includes('description'))field.value=data.description;else if(name.includes('address'))field.value=data.address;else if(name.includes('city'))field.value=data.city;else if(name.includes('state'))field.value=data.state;else if(name.includes('country'))field.value=data.country;else if(name.includes('zip')||name.includes('pincode'))field.value=data.pincode;});});alert('Form filled with OPPTYM data!');})();`;
+        
+        navigator.clipboard.writeText(bookmarkletCode).then(() => {
+          const btn = document.getElementById('copyBookmarklet');
+          if (btn) {
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+              btn.textContent = '📋 Copy Bookmarklet';
+            }, 2000);
+          }
+        });
       });
-    });
+    }
     
     document.getElementById('copyProjectData')?.addEventListener('click', () => {
       const projectDataText = `Name: ${projectData.name}
