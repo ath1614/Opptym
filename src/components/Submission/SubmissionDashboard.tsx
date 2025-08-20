@@ -958,12 +958,12 @@ const SubmissionsDashboard = () => {
         pincode: (selectedProject as any).pincode || ''
       };
 
-      // Create and start client automation service
+      // Create and start client automation service (without showing instructions)
       const automationService = new ClientAutomationService(projectData);
-      await automationService.startAutomation(url);
+      await automationService.startAutomation(url, false); // Don't show instructions, we'll show our own modal
       
-      // Show success modal with View Filled Form button
-      showClientAutomationSuccessModal(url, projectData);
+      // Show success modal with direct website access
+      showUniversalSuccessModal(url, projectData);
       
     } catch (error) {
       console.error('Universal form automation error:', error);
@@ -975,6 +975,115 @@ const SubmissionsDashboard = () => {
         loadingModal.parentNode.removeChild(loadingModal);
       }
     }
+  };
+
+  // Show Universal automation success modal with direct website access
+  const showUniversalSuccessModal = (url: string, projectData: any) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">✅</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Universal Automation Ready!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your bookmarklet is ready to fill forms automatically</p>
+        </div>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🚀</span>
+          <span style="font-weight: 600; color: #065f46;">Next Steps:</span>
+        </div>
+        <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
+          <li><strong>Click "Visit Website"</strong> to open the target site</li>
+          <li><strong>Click your bookmarklet</strong> to auto-fill forms</li>
+          <li><strong>Review and submit</strong> the filled form</li>
+        </ol>
+      </div>
+      
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 18px;">💡</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+        </div>
+        <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
+          <div><strong>Name:</strong> ${projectData.name}</div>
+          <div><strong>Email:</strong> ${projectData.email}</div>
+          <div><strong>Company:</strong> ${projectData.companyName}</div>
+          <div><strong>Website:</strong> ${projectData.url}</div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+        <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
+        <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('visitWebsite')?.addEventListener('click', () => {
+      window.open(url, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('copyProjectData')?.addEventListener('click', () => {
+      const projectDataText = `Name: ${projectData.name}
+Email: ${projectData.email}
+Phone: ${projectData.phone}
+Company: ${projectData.companyName}
+Website: ${projectData.url}
+Description: ${projectData.description}`;
+      
+      navigator.clipboard.writeText(projectDataText).then(() => {
+        const btn = document.getElementById('copyProjectData');
+        if (btn) {
+          btn.textContent = '✅ Copied!';
+          setTimeout(() => {
+            btn.textContent = '📋 Copy Project Data';
+          }, 2000);
+        }
+      });
+    });
+    
+    document.getElementById('closeUniversal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    });
   };
 
   // Generate auto-fill script

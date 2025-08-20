@@ -365,7 +365,7 @@ export class ClientAutomationService {
   }
 
   // Start automation by opening URL and providing instructions
-  async startAutomation(url: string): Promise<void> {
+  async startAutomation(url: string, showInstructions: boolean = true): Promise<void> {
     try {
       console.log('🚀 Starting client automation for URL:', url);
       console.log('📋 Project data:', this.projectData);
@@ -376,9 +376,11 @@ export class ClientAutomationService {
       console.log('✅ Bookmarklet created successfully');
       console.log('🔗 Bookmarklet length:', bookmarklet.length, 'characters');
       
-      // Show instructions in the current window (no cross-origin issues)
-      console.log('📋 Showing instructions modal...');
-      this.showFallbackInstructions(bookmarklet, url);
+      // Show instructions only if requested
+      if (showInstructions) {
+        console.log('📋 Showing instructions modal...');
+        this.showFallbackInstructions(bookmarklet, url);
+      }
       
       // Open the URL in a new tab without trying to access it
       console.log('🌐 Opening target website in new tab...');
