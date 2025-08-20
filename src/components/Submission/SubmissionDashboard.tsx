@@ -1353,8 +1353,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       });
       
       if (response.data.success) {
-        // Show success modal with filled form details
-        showFilledFormResults(response.data.data, url);
+        // Show success modal with website access
+        showAutomationSuccessModal(response.data.data, url);
       } else {
         throw new Error(response.data.message || 'Automation failed');
       }
@@ -1436,8 +1436,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     }
   };
 
-  // Show filled form results to user
-  const showFilledFormResults = (automationData: any, originalUrl: string) => {
+  // Show automation success modal with website access
+  const showAutomationSuccessModal = (automationData: any, originalUrl: string) => {
     const modal = document.createElement('div');
     modal.style.cssText = `
       position: fixed;
@@ -1470,8 +1470,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
         <div style="font-size: 32px;">✅</div>
         <div>
-          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Form Filled Successfully!</h2>
-          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your form has been automatically filled and is ready for submission</p>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Completed!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your form has been automatically filled and is ready for review</p>
         </div>
       </div>
       
@@ -1496,29 +1496,18 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         </div>
       </div>
       
-      ${automationData.filledFields && automationData.filledFields.length > 0 ? `
-        <div style="margin-bottom: 20px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #374151;">📝 Filled Fields:</h3>
-          <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;">
-            ${automationData.filledFields.map((field: any) => `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                <span style="font-weight: 500; color: #374151;">${field.name || field.id || 'Unknown Field'}</span>
-                <span style="color: #6b7280; font-size: 13px;">${field.value}</span>
-              </div>
-            `).join('')}
-          </div>
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🌐</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Visit Your Filled Form:</span>
         </div>
-      ` : ''}
-      
-      ${automationData.formScreenshot ? `
-        <div style="margin-bottom: 20px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #374151;">📸 Form Screenshot:</h3>
-          <img src="data:image/png;base64,${automationData.formScreenshot}" style="width: 100%; border-radius: 8px; border: 1px solid #e5e7eb;" alt="Filled form screenshot" />
-        </div>
-      ` : ''}
+        <p style="color: #0c4a6e; line-height: 1.6; font-size: 14px; margin: 0 0 12px 0;">
+          Click "Visit Website" to open the target site and see your filled form. You can review the data and submit it manually.
+        </p>
+      </div>
       
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <button id="visitFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Filled Form</button>
+        <button id="visitFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
         <button id="openOriginalSite" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔗 Open Original Site</button>
         <button id="copyFormData" style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Form Data</button>
         <button id="closeResults" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>

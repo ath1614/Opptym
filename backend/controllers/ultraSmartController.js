@@ -76,31 +76,24 @@ const openAndUltraFill = async (req, res) => {
       
       console.log('✅ Form submission result:', submitted);
 
-      // Capture the filled form before closing
-      console.log('📸 Capturing filled form for user...');
-      const formCapture = await automationService.captureFilledForm();
-
       // Close browser
+      console.log('✅ Form filling completed, closing browser...');
       await automationService.close();
       console.log('✅ Browser closed successfully');
 
-      // Extract filled fields from form capture
-      const filledFields = formCapture?.formData?.[0]?.filledFields || fillResult.filledFields || [];
-
-      // Return success response with form capture
+      // Return success response
       return res.status(200).json({
         success: true,
-        message: 'Ultra smart automation completed successfully!',
+        message: 'Form automation completed successfully!',
         data: {
           url: url,
           projectName: project.name,
           fieldsFilled: fillResult.totalFieldsFilled,
           totalFields: fillResult.totalFieldsFound,
-          filledFields: filledFields,
+          filledFields: fillResult.filledFields || [],
           formSubmitted: submitted,
-          formScreenshot: formCapture?.screenshot || null,
-          formUrl: formCapture?.url || url,
-          formData: formCapture?.formData || [],
+          formUrl: url,
+          automationCompleted: true,
           timestamp: new Date().toISOString()
         }
       });
@@ -108,33 +101,28 @@ const openAndUltraFill = async (req, res) => {
     } catch (automationError) {
       console.error('❌ Automation error:', automationError);
       
-      // Ensure browser is closed on error
+      // Try to close browser if it's still open
       try {
         await automationService.close();
       } catch (closeError) {
         console.error('❌ Error closing browser:', closeError);
       }
-
+      
       return res.status(500).json({
-        error: 'Automation failed',
-        message: automationError.message,
-        details: {
-          url: url,
-          projectName: project.name,
-          timestamp: new Date().toISOString()
-        }
+        success: false,
+        error: 'AUTOMATION_FAILED',
+        message: automationError.message || 'Automation failed. Please try again.'
       });
     }
 
   } catch (error) {
     console.error('❌ Controller error:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
-      message: error.message 
+    return res.status(500).json({
+      success: false,
+      error: 'CONTROLLER_ERROR',
+      message: 'Internal server error. Please try again.'
     });
   }
 };
 
-module.exports = {
-  openAndUltraFill
-}; 
+module.exports = { openAndUltraFill }; 
