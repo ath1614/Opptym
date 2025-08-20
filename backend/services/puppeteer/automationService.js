@@ -99,77 +99,38 @@ class AutomationService {
     try {
       console.log('🤖 Starting form field detection and filling...');
       
-      // Wait for forms to be present
-      await this.page.waitForSelector('form', { timeout: 10000 });
+      // Wait for page to load completely
+      await this.delay(3000);
       
-      // Get all forms on the page
-      const forms = await this.page.$$('form');
-      console.log(`📝 Found ${forms.length} forms on the page`);
+      // Try to find forms first, but don't fail if none found
+      let forms = [];
+      try {
+        await this.page.waitForSelector('form', { timeout: 5000 });
+        forms = await this.page.$$('form');
+        console.log(`📝 Found ${forms.length} forms on the page`);
+      } catch (formError) {
+        console.log('⚠️ No forms found, will search for input fields directly');
+      }
       
       let totalFieldsFilled = 0;
       let filledFields = [];
       
-      for (let formIndex = 0; formIndex < forms.length; formIndex++) {
-        const form = forms[formIndex];
-        console.log(`🔄 Processing form ${formIndex + 1}/${forms.length}`);
-        
-        // Get all input fields in this form
-        const inputs = await form.$$('input, textarea, select');
-        console.log(`📋 Form ${formIndex + 1} has ${inputs.length} fields`);
-        
-        for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
-          const input = inputs[inputIndex];
+      // If forms found, process them
+      if (forms.length > 0) {
+        for (let formIndex = 0; formIndex < forms.length; formIndex++) {
+          const form = forms[formIndex];
+          console.log(`🔄 Processing form ${formIndex + 1}/${forms.length}`);
           
-          try {
-            // Get input properties
-            const inputInfo = await this.page.evaluate(el => {
-              return {
-                type: el.type || el.tagName.toLowerCase(),
-                name: el.name || '',
-                id: el.id || '',
-                placeholder: el.placeholder || '',
-                value: el.value || '',
-                required: el.required || false,
-                disabled: el.disabled || false,
-                readonly: el.readOnly || false
-              };
-            }, input);
-            
-            // Skip if field is disabled, readonly, or already has a value
-            if (inputInfo.disabled || inputInfo.readonly || inputInfo.value) {
-              continue;
-            }
-            
-            // Determine what to fill based on field properties
-            const fieldValue = this.mapFieldToValue(inputInfo, projectData);
-            
-            if (fieldValue) {
-              // Fill the field
-              await input.type(fieldValue);
-              
-              // Trigger input event
-              await input.evaluate(el => {
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
-              });
-              
-              totalFieldsFilled++;
-              filledFields.push({
-                field: `${inputInfo.name || inputInfo.id || inputInfo.placeholder || `Field ${inputIndex + 1}`}`,
-                value: fieldValue,
-                type: inputInfo.type
-              });
-              
-              console.log(`✅ Filled field: ${inputInfo.name || inputInfo.id || inputInfo.placeholder} with: ${fieldValue}`);
-              
-              // Longer delay between fields so user can see the automation
-              await this.delay(1000);
-            }
-          } catch (fieldError) {
-            console.log(`⚠️ Skipping field ${inputIndex + 1}: ${fieldError.message}`);
-            continue;
-          }
+          const result = await this.processInputFields(form, projectData, `Form ${formIndex + 1}`);
+          totalFieldsFilled += result.filled;
+          filledFields.push(...result.fields);
         }
+      } else {
+        // If no forms, search for input fields on the entire page
+        console.log('🔄 Searching for input fields on entire page...');
+        const result = await this.processInputFields(this.page, projectData, 'Page');
+        totalFieldsFilled += result.filled;
+        filledFields.push(...result.fields);
       }
       
       console.log(`🎯 Total fields filled: ${totalFieldsFilled}`);
@@ -181,75 +142,204 @@ class AutomationService {
     }
   }
 
+  async processInputFields(container, projectData, context) {
+    let totalFieldsFilled = 0;
+    let filledFields = [];
+    
+    try {
+      // Get all input fields in the container
+      const inputs = await container.$$('input, textarea, select');
+      console.log(`📋 ${context} has ${inputs.length} input fields`);
+      
+      for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
+        const input = inputs[inputIndex];
+        
+        try {
+          // Get input properties
+          const inputInfo = await this.page.evaluate(el => {
+            return {
+              type: el.type || el.tagName.toLowerCase(),
+              name: el.name || '',
+              id: el.id || '',
+              placeholder: el.placeholder || '',
+              value: el.value || '',
+              required: el.required || false,
+              disabled: el.disabled || false,
+              readonly: el.readOnly || false,
+              visible: el.offsetParent !== null // Check if element is visible
+            };
+          }, input);
+          
+          // Skip if field is disabled, readonly, already has a value, or not visible
+          if (inputInfo.disabled || inputInfo.readonly || inputInfo.value || !inputInfo.visible) {
+            console.log(`⏭️ Skipping field: ${inputInfo.name || inputInfo.id || inputInfo.placeholder} (disabled: ${inputInfo.disabled}, readonly: ${inputInfo.readonly}, hasValue: ${!!inputInfo.value}, visible: ${inputInfo.visible})`);
+            continue;
+          }
+          
+          // Determine what to fill based on field properties
+          const fieldValue = this.mapFieldToValue(inputInfo, projectData);
+          
+          if (fieldValue) {
+            // Scroll to the field to ensure it's visible
+            await input.scrollIntoView();
+            await this.delay(500);
+            
+            // Click on the field first to focus it
+            await input.click();
+            await this.delay(200);
+            
+            // Clear the field first
+            await input.evaluate(el => el.value = '');
+            
+            // Fill the field
+            await input.type(fieldValue, { delay: 100 });
+            
+            // Trigger input events
+            await input.evaluate(el => {
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+              el.dispatchEvent(new Event('change', { bubbles: true }));
+              el.dispatchEvent(new Event('blur', { bubbles: true }));
+            });
+            
+            totalFieldsFilled++;
+            filledFields.push({
+              field: `${inputInfo.name || inputInfo.id || inputInfo.placeholder || `Field ${inputIndex + 1}`}`,
+              value: fieldValue,
+              type: inputInfo.type
+            });
+            
+            console.log(`✅ Filled field: ${inputInfo.name || inputInfo.id || inputInfo.placeholder} with: ${fieldValue}`);
+            
+            // Delay between fields so user can see the automation
+            await this.delay(800);
+          } else {
+            console.log(`❓ No mapping found for field: ${inputInfo.name || inputInfo.id || inputInfo.placeholder} (type: ${inputInfo.type})`);
+          }
+        } catch (fieldError) {
+          console.log(`⚠️ Error processing field ${inputIndex + 1}: ${fieldError.message}`);
+          continue;
+        }
+      }
+    } catch (error) {
+      console.error(`❌ Error processing ${context} fields:`, error);
+    }
+    
+    return { filled: totalFieldsFilled, fields: filledFields };
+  }
+
   mapFieldToValue(inputInfo, projectData) {
     const fieldName = (inputInfo.name || inputInfo.id || inputInfo.placeholder || '').toLowerCase();
     const fieldType = inputInfo.type.toLowerCase();
     
+    console.log(`🔍 Mapping field: ${fieldName} (type: ${fieldType})`);
+    
     // Email fields
-    if (fieldType === 'email' || fieldName.includes('email')) {
-      return projectData.email || projectData.contactEmail;
+    if (fieldType === 'email' || fieldName.includes('email') || fieldName.includes('e-mail')) {
+      const email = projectData.email || projectData.contactEmail;
+      console.log(`📧 Email field detected, using: ${email}`);
+      return email;
     }
     
     // Phone fields
-    if (fieldType === 'tel' || fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('telephone')) {
-      return projectData.phone || projectData.businessPhone || projectData.contactPhone;
+    if (fieldType === 'tel' || fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('telephone') || fieldName.includes('contact')) {
+      const phone = projectData.phone || projectData.businessPhone || projectData.contactPhone;
+      console.log(`📞 Phone field detected, using: ${phone}`);
+      return phone;
     }
     
-    // Name fields
-    if (fieldName.includes('name') && !fieldName.includes('company') && !fieldName.includes('business')) {
-      return projectData.name || projectData.contactName || projectData.contactPerson;
+    // Name fields (personal name)
+    if ((fieldName.includes('name') && !fieldName.includes('company') && !fieldName.includes('business') && !fieldName.includes('user')) || 
+        fieldName.includes('first') || fieldName.includes('last') || fieldName.includes('full')) {
+      const name = projectData.name || projectData.contactName || projectData.contactPerson;
+      console.log(`👤 Name field detected, using: ${name}`);
+      return name;
     }
     
     // Company/Business fields
-    if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization')) {
-      return projectData.companyName || projectData.businessName || projectData.company;
+    if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization') || fieldName.includes('firm') || fieldName.includes('enterprise')) {
+      const company = projectData.companyName || projectData.businessName || projectData.company;
+      console.log(`🏢 Company field detected, using: ${company}`);
+      return company;
     }
     
     // Website/URL fields
-    if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site')) {
-      return projectData.url || projectData.website || projectData.siteUrl;
+    if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site') || fieldName.includes('web') || fieldName.includes('link')) {
+      const url = projectData.url || projectData.website || projectData.siteUrl;
+      console.log(`🌐 Website field detected, using: ${url}`);
+      return url;
     }
     
     // Address fields
-    if (fieldName.includes('address') || fieldName.includes('street')) {
-      return projectData.address || projectData.streetAddress;
+    if (fieldName.includes('address') || fieldName.includes('street') || fieldName.includes('location')) {
+      const address = projectData.address || projectData.streetAddress;
+      console.log(`📍 Address field detected, using: ${address}`);
+      return address;
     }
     
     // City fields
-    if (fieldName.includes('city')) {
-      return projectData.city;
+    if (fieldName.includes('city') || fieldName.includes('town')) {
+      const city = projectData.city;
+      console.log(`🏙️ City field detected, using: ${city}`);
+      return city;
     }
     
     // State fields
-    if (fieldName.includes('state') || fieldName.includes('province')) {
-      return projectData.state;
+    if (fieldName.includes('state') || fieldName.includes('province') || fieldName.includes('region')) {
+      const state = projectData.state;
+      console.log(`🗺️ State field detected, using: ${state}`);
+      return state;
     }
     
     // Zip/Postal code fields
-    if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode')) {
-      return projectData.pincode || projectData.zipCode || projectData.postalCode;
+    if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode') || fieldName.includes('code')) {
+      const zip = projectData.pincode || projectData.zipCode || projectData.postalCode;
+      console.log(`📮 Zip field detected, using: ${zip}`);
+      return zip;
     }
     
     // Country fields
-    if (fieldName.includes('country')) {
-      return projectData.country;
+    if (fieldName.includes('country') || fieldName.includes('nation')) {
+      const country = projectData.country;
+      console.log(`🌍 Country field detected, using: ${country}`);
+      return country;
     }
     
     // Description fields
-    if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details')) {
-      return projectData.description || projectData.businessDescription;
+    if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('info') || fieldName.includes('summary')) {
+      const description = projectData.description || projectData.businessDescription;
+      console.log(`📝 Description field detected, using: ${description}`);
+      return description;
     }
     
     // Category fields
-    if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry')) {
-      return projectData.category || projectData.businessType;
+    if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry') || fieldName.includes('sector')) {
+      const category = projectData.category || projectData.businessType;
+      console.log(`🏷️ Category field detected, using: ${category}`);
+      return category;
     }
     
     // Title fields
-    if (fieldName.includes('title')) {
-      return projectData.title || projectData.businessTitle;
+    if (fieldName.includes('title') || fieldName.includes('job') || fieldName.includes('position')) {
+      const title = projectData.title || projectData.businessTitle;
+      console.log(`💼 Title field detected, using: ${title}`);
+      return title;
     }
     
+    // Username fields
+    if (fieldName.includes('username') || fieldName.includes('user') || fieldName.includes('login')) {
+      const username = projectData.name || projectData.companyName;
+      console.log(`👤 Username field detected, using: ${username}`);
+      return username;
+    }
+    
+    // Comments/Message fields
+    if (fieldName.includes('comment') || fieldName.includes('message') || fieldName.includes('note') || fieldName.includes('text')) {
+      const message = projectData.description || `Contact from ${projectData.companyName || projectData.name}`;
+      console.log(`💬 Message field detected, using: ${message}`);
+      return message;
+    }
+    
+    console.log(`❓ No mapping found for field: ${fieldName}`);
     return null;
   }
 

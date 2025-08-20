@@ -89,11 +89,15 @@ const openAndUltraFill = async (req, res) => {
           url: url,
           projectName: project.name,
           fieldsFilled: fillResult.totalFieldsFilled,
-          totalFields: fillResult.totalFieldsFound,
+          totalFields: fillResult.totalFieldsFound || 0,
           filledFields: fillResult.filledFields || [],
           formSubmitted: submitted,
           formUrl: url,
           automationCompleted: true,
+          debug: {
+            projectData: projectData,
+            fillResult: fillResult
+          },
           timestamp: new Date().toISOString()
         }
       });
