@@ -1183,6 +1183,283 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     });
   };
 
+  // Backend-powered automation with form capture
+  const executeBackendAutomation = async (url: string) => {
+    if (!selectedProject) {
+      showPopup('⚠️ Please select a project first!', 'warning');
+      return;
+    }
+
+    setLoading(true);
+    
+    // Show loading popup
+    const loadingModal = document.createElement('div');
+    loadingModal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    loadingContent.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Executing Smart Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Filling forms and capturing results...</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #10b981; font-weight: 500;">Processing...</span>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    loadingModal.appendChild(loadingContent);
+    document.body.appendChild(loadingModal);
+    
+    try {
+      // Call backend automation service
+      const response = await axios.post('/api/ultra-smart/automate', {
+        url: url,
+        projectId: selectedProject._id
+      });
+      
+      if (response.data.success) {
+        // Show success modal with filled form details
+        showFilledFormResults(response.data.data, url);
+      } else {
+        throw new Error(response.data.message || 'Automation failed');
+      }
+      
+    } catch (error) {
+      console.error('Backend automation error:', error);
+      
+      // Show fallback option
+      const fallbackModal = document.createElement('div');
+      fallbackModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        padding: 20px;
+      `;
+      
+      const fallbackContent = document.createElement('div');
+      fallbackContent.style.cssText = `
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      `;
+      
+      fallbackContent.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+        <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Backend Automation Failed</h2>
+        <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">
+          The server-side automation encountered an issue. Would you like to try the client-side approach instead?
+        </p>
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <p style="margin: 0; color: #92400e; font-size: 14px;">
+            <strong>Client-side approach:</strong> Opens the website and provides you with a bookmarklet to fill forms automatically.
+          </p>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button id="tryClientSide" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔄 Try Client-Side</button>
+          <button id="closeFallback" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+        </div>
+      `;
+      
+      fallbackModal.appendChild(fallbackContent);
+      document.body.appendChild(fallbackModal);
+      
+      // Add event listeners
+      document.getElementById('tryClientSide')?.addEventListener('click', () => {
+        document.body.removeChild(fallbackModal);
+        openTabAndUltraSmartFill(url);
+      });
+      
+      document.getElementById('closeFallback')?.addEventListener('click', () => {
+        document.body.removeChild(fallbackModal);
+      });
+      
+      // Close on backdrop click
+      fallbackModal.addEventListener('click', (e) => {
+        if (e.target === fallbackModal) {
+          document.body.removeChild(fallbackModal);
+        }
+      });
+      
+    } finally {
+      setLoading(false);
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
+    }
+  };
+
+  // Show filled form results to user
+  const showFilledFormResults = (automationData: any, originalUrl: string) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">✅</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Form Filled Successfully!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your form has been automatically filled and is ready for submission</p>
+        </div>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">📊</span>
+          <span style="font-weight: 600; color: #065f46;">Automation Summary:</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; color: #065f46; font-size: 14px;">
+          <div>
+            <strong>Fields Found:</strong> ${automationData.totalFields || 0}
+          </div>
+          <div>
+            <strong>Fields Filled:</strong> ${automationData.fieldsFilled || 0}
+          </div>
+          <div>
+            <strong>Success Rate:</strong> ${automationData.totalFields ? Math.round((automationData.fieldsFilled / automationData.totalFields) * 100) : 0}%
+          </div>
+          <div>
+            <strong>Form Submitted:</strong> ${automationData.formSubmitted ? '✅ Yes' : '❌ No'}
+          </div>
+        </div>
+      </div>
+      
+      ${automationData.filledFields && automationData.filledFields.length > 0 ? `
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #374151;">📝 Filled Fields:</h3>
+          <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;">
+            ${automationData.filledFields.map((field: any) => `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                <span style="font-weight: 500; color: #374151;">${field.name || field.id || 'Unknown Field'}</span>
+                <span style="color: #6b7280; font-size: 13px;">${field.value}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+      
+      ${automationData.formScreenshot ? `
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #374151;">📸 Form Screenshot:</h3>
+          <img src="data:image/png;base64,${automationData.formScreenshot}" style="width: 100%; border-radius: 8px; border: 1px solid #e5e7eb;" alt="Filled form screenshot" />
+        </div>
+      ` : ''}
+      
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="visitFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Filled Form</button>
+        <button id="openOriginalSite" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔗 Open Original Site</button>
+        <button id="copyFormData" style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Form Data</button>
+        <button id="closeResults" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('visitFilledForm')?.addEventListener('click', () => {
+      if (automationData.formUrl) {
+        window.open(automationData.formUrl, '_blank', 'width=1200,height=800');
+      } else {
+        window.open(originalUrl, '_blank', 'width=1200,height=800');
+      }
+    });
+    
+    document.getElementById('openOriginalSite')?.addEventListener('click', () => {
+      window.open(originalUrl, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('copyFormData')?.addEventListener('click', () => {
+      const formData = automationData.filledFields ? 
+        automationData.filledFields.map((field: any) => `${field.name || field.id}: ${field.value}`).join('\n') :
+        'No form data available';
+      
+      navigator.clipboard.writeText(formData).then(() => {
+        const btn = document.getElementById('copyFormData');
+        if (btn) {
+          btn.textContent = '✅ Copied!';
+          setTimeout(() => {
+            btn.textContent = '📋 Copy Form Data';
+          }, 2000);
+        }
+      });
+    });
+    
+    document.getElementById('closeResults')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -1377,13 +1654,13 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                       
                       <div className="flex flex-col space-y-2 ml-4">
                         <button
-                          onClick={() => openTabAndUltraSmartFill(site.url)}
+                          onClick={() => executeBackendAutomation(site.url)}
                           disabled={loading}
                           className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
-                          title="Watch Form Auto-Fill (Client-Side)"
+                          title="Smart Form Auto-Fill (Backend-Powered)"
                         >
                           <Bot className="w-3 h-3 mr-1" />
-                          Watch Auto-Fill
+                          Smart Auto-Fill
                         </button>
                         
                         <button
@@ -1402,7 +1679,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                           title="Open in New Tab"
                         >
                           <ExternalLink className="w-3 h-3 mr-1" />
-                          Open
+                          Quick Visit
                         </button>
                       </div>
                     </div>

@@ -84,6 +84,9 @@ const openAndUltraFill = async (req, res) => {
       await automationService.close();
       console.log('✅ Browser closed successfully');
 
+      // Extract filled fields from form capture
+      const filledFields = formCapture?.formData?.[0]?.filledFields || fillResult.filledFields || [];
+
       // Return success response with form capture
       return res.status(200).json({
         success: true,
@@ -93,7 +96,7 @@ const openAndUltraFill = async (req, res) => {
           projectName: project.name,
           fieldsFilled: fillResult.totalFieldsFilled,
           totalFields: fillResult.totalFieldsFound,
-          filledFields: fillResult.filledFields,
+          filledFields: filledFields,
           formSubmitted: submitted,
           formScreenshot: formCapture?.screenshot || null,
           formUrl: formCapture?.url || url,
