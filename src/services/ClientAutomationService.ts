@@ -23,12 +23,25 @@ export class ClientAutomationService {
 
   // Create a bookmarklet that can be used to fill forms
   createBookmarklet(): string {
-         const script = `
-       (function() {
-         console.log('🚀 Starting form automation...');
-         console.log('📋 Project data received:', ${JSON.stringify(this.projectData)});
-         console.log('🌐 Current URL:', window.location.href);
-         console.log('📄 Page title:', document.title);
+    const script = `
+      (function() {
+        console.log('🚀 Starting form automation...');
+        console.log('📋 Project data received:', ${JSON.stringify(this.projectData)});
+        console.log('🌐 Current URL:', window.location.href);
+        console.log('📄 Page title:', document.title);
+        
+        // Auto-delete this bookmarklet after 30 minutes
+        setTimeout(() => {
+          try {
+            const bookmarkletElement = document.querySelector('a[href*="OPPTYM Auto-Fill"]');
+            if (bookmarkletElement) {
+              bookmarkletElement.remove();
+              console.log('🗑️ Bookmarklet auto-deleted after 30 minutes');
+            }
+          } catch (e) {
+            console.log('⚠️ Could not auto-delete bookmarklet:', e);
+          }
+        }, 30 * 60 * 1000); // 30 minutes
          
          const projectData = ${JSON.stringify(this.projectData)};
         

@@ -804,8 +804,8 @@ const SubmissionsDashboard = () => {
     });
   };
 
-  // Ultra-Smart Client-Side Automation function
-  const openTabAndUltraSmartFill = async (url: string) => {
+  // Smart Auto-Fill (Backend Automation) function
+  const executeBackendAutomation = async (url: string) => {
     if (!selectedProject) {
       showPopup("⚠️ Please select a project first!", "warning");
       return;
@@ -838,11 +838,11 @@ const SubmissionsDashboard = () => {
     
     loadingContent.innerHTML = `
       <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Watch Auto-Fill</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Preparing your project data and opening the target website...</p>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Starting Smart Auto-Fill</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Automating form filling on the target website...</p>
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
         <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #10b981; font-weight: 500;">Loading...</span>
+        <span style="color: #10b981; font-weight: 500;">Processing...</span>
       </div>
       <style>
         @keyframes spin {
@@ -856,36 +856,38 @@ const SubmissionsDashboard = () => {
     document.body.appendChild(loadingModal);
 
     try {
-      // Prepare project data for client-side automation
-      const projectData = {
-        name: (selectedProject as any).name || '',
-        email: (selectedProject as any).email || '',
-        phone: (selectedProject as any).businessPhone || '',
-        companyName: (selectedProject as any).companyName || '',
-        url: selectedProject.url || '',
-        description: selectedProject.description || '',
-        address: (selectedProject as any).address1 || '',
-        city: (selectedProject as any).city || '',
-        state: (selectedProject as any).state || '',
-        country: (selectedProject as any).country || '',
-        pincode: (selectedProject as any).pincode || ''
-      };
+      // Call backend automation API
+      const response = await axios.post('/api/ultra-smart/automate', {
+        url: url,
+        projectId: selectedProject._id
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
 
-      // Create and start client automation service
-      const automationService = new ClientAutomationService(projectData);
-      await automationService.startAutomation(url);
-      
-      // Show success modal with View Filled Form button
-      showClientAutomationSuccessModal(url, projectData);
-      
-    } catch (error) {
-      console.error('Ultra-smart automation error:', error);
-      showPopup(`❌ Ultra-smart automation failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
-    } finally {
       // Remove loading modal
       if (loadingModal.parentNode) {
         loadingModal.parentNode.removeChild(loadingModal);
       }
+
+      if (response.data.success) {
+        // Show success modal with Visit Website button
+        showAutomationSuccessModal(response.data.data, url);
+      } else {
+        showPopup('❌ Automation failed. Please try again.', 'error');
+      }
+      
+    } catch (error) {
+      console.error('Backend automation error:', error);
+      
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
+      
+      // Show fallback option
+      showPopup('❌ Backend automation failed. Try Universal option instead.', 'error');
     }
   };
 
@@ -924,12 +926,12 @@ const SubmissionsDashboard = () => {
     `;
     
     loadingContent.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
+      <div style="font-size: 48px; margin-bottom: 20px;">🔧</div>
       <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Universal Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Installing automation bookmarklet and opening target website...</p>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Installing bookmarklet in your browser...</p>
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
         <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #3b82f6; font-weight: 500;">Setting up automation...</span>
+        <span style="color: #3b82f6; font-weight: 500;">Installing bookmarklet...</span>
       </div>
       <style>
         @keyframes spin {
@@ -961,8 +963,13 @@ const SubmissionsDashboard = () => {
       // Automatically install bookmarklet
       const bookmarkletInstalled = await installBookmarkletAutomatically(projectData);
       
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
+      
       if (bookmarkletInstalled) {
-        // Show success modal with direct website access
+        // Show success modal with Visit Website button
         showUniversalSuccessModal(url, projectData, true);
       } else {
         // Fallback to manual process
@@ -971,13 +978,15 @@ const SubmissionsDashboard = () => {
       
     } catch (error) {
       console.error('Universal form automation error:', error);
-      showPopup('❌ Universal form automation failed. Please try again.', 'error');
-    } finally {
-      setLoading(false);
+      
       // Remove loading modal
       if (loadingModal.parentNode) {
         loadingModal.parentNode.removeChild(loadingModal);
       }
+      
+      showPopup('❌ Universal form automation failed. Please try again.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1063,49 +1072,62 @@ const SubmissionsDashboard = () => {
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     `;
     
-    if (bookmarkletInstalled) {
-      // Success - bookmarklet was installed automatically
-      content.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-          <div style="font-size: 32px;">✅</div>
-          <div>
-            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Ready!</h2>
-            <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Bookmarklet installed automatically in your browser</p>
+          if (bookmarkletInstalled) {
+        // Success - bookmarklet was installed automatically
+        content.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+            <div style="font-size: 32px;">✅</div>
+            <div>
+              <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Bookmarklet Installed!</h2>
+              <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your automation bookmarklet is ready to use</p>
+            </div>
           </div>
-        </div>
-        
-        <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span style="font-size: 18px;">🚀</span>
-            <span style="font-weight: 600; color: #065f46;">Next Steps:</span>
+          
+          <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <span style="font-size: 18px;">🚀</span>
+              <span style="font-weight: 600; color: #065f46;">How to Use:</span>
+            </div>
+            <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
+              <li><strong>Click "Visit Website"</strong> to open the target site</li>
+              <li><strong>Wait for the page to load</strong> completely</li>
+              <li><strong>Click "OPPTYM Auto-Fill"</strong> in your bookmarks bar</li>
+              <li><strong>Form will auto-fill</strong> with your project data</li>
+              <li><strong>Review and submit</strong> the form</li>
+            </ol>
           </div>
-          <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
-            <li><strong>Click "Visit Website"</strong> to open the target site</li>
-            <li><strong>Click "OPPTYM Auto-Fill"</strong> in your bookmarks bar</li>
-            <li><strong>Form will auto-fill</strong> with your project data</li>
-            <li><strong>Review and submit</strong> the form</li>
-          </ol>
-        </div>
-        
-        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="font-size: 18px;">💡</span>
-            <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+          
+          <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 18px;">💡</span>
+              <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+            </div>
+            <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
+              <div><strong>Name:</strong> ${projectData.name}</div>
+              <div><strong>Email:</strong> ${projectData.email}</div>
+              <div><strong>Company:</strong> ${projectData.companyName}</div>
+              <div><strong>Website:</strong> ${projectData.url}</div>
+            </div>
           </div>
-          <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
-            <div><strong>Name:</strong> ${projectData.name}</div>
-            <div><strong>Email:</strong> ${projectData.email}</div>
-            <div><strong>Company:</strong> ${projectData.companyName}</div>
-            <div><strong>Website:</strong> ${projectData.url}</div>
+          
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 18px;">⚠️</span>
+              <span style="font-weight: 600; color: #92400e;">Important:</span>
+            </div>
+            <div style="text-align: left; color: #92400e; font-size: 14px;">
+              <div>• The bookmarklet will be automatically deleted after 30 minutes</div>
+              <div>• Make sure to submit the form before the bookmarklet expires</div>
+              <div>• You can always create a new bookmarklet if needed</div>
+            </div>
           </div>
-        </div>
-        
-        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-          <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
-          <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
-          <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
-        </div>
-      `;
+          
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+            <button id="copyProjectData" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Project Data</button>
+            <button id="closeUniversal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+          </div>
+        `;
     } else {
       // Fallback - manual bookmarklet process
       content.innerHTML = `
@@ -1410,149 +1432,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
     });
   };
 
-  // Backend-powered automation with form capture
-  const executeBackendAutomation = async (url: string) => {
-    if (!selectedProject) {
-      showPopup('⚠️ Please select a project first!', 'warning');
-      return;
-    }
-
-    setLoading(true);
-    
-    // Show loading popup
-    const loadingModal = document.createElement('div');
-    loadingModal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    `;
-    
-    const loadingContent = document.createElement('div');
-    loadingContent.style.cssText = `
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    `;
-    
-    loadingContent.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 20px;">🤖</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Executing Smart Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Filling forms and capturing results...</p>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #10b981; font-weight: 500;">Processing...</span>
-      </div>
-      <style>
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
-    `;
-    
-    loadingModal.appendChild(loadingContent);
-    document.body.appendChild(loadingModal);
-    
-    try {
-      // Call backend automation service
-      const response = await axios.post('/api/ultra-smart/automate', {
-        url: url,
-        projectId: selectedProject._id
-      });
-      
-      if (response.data.success) {
-        // Show success modal with website access
-        showAutomationSuccessModal(response.data.data, url);
-      } else {
-        throw new Error(response.data.message || 'Automation failed');
-      }
-      
-    } catch (error) {
-      console.error('Backend automation error:', error);
-      
-      // Show fallback option
-      const fallbackModal = document.createElement('div');
-      fallbackModal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        padding: 20px;
-      `;
-      
-      const fallbackContent = document.createElement('div');
-      fallbackContent.style.cssText = `
-        background: white;
-        border-radius: 16px;
-        padding: 30px;
-        max-width: 500px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      `;
-      
-      fallbackContent.innerHTML = `
-        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-        <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Backend Automation Failed</h2>
-        <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">
-          The server-side automation encountered an issue. Would you like to try the client-side approach instead?
-        </p>
-        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-          <p style="margin: 0; color: #92400e; font-size: 14px;">
-            <strong>Client-side approach:</strong> Opens the website and provides you with a bookmarklet to fill forms automatically.
-          </p>
-        </div>
-        <div style="display: flex; gap: 12px; justify-content: center;">
-          <button id="tryClientSide" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔄 Try Client-Side</button>
-          <button id="closeFallback" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
-        </div>
-      `;
-      
-      fallbackModal.appendChild(fallbackContent);
-      document.body.appendChild(fallbackModal);
-      
-      // Add event listeners
-      document.getElementById('tryClientSide')?.addEventListener('click', () => {
-        document.body.removeChild(fallbackModal);
-        openTabAndUltraSmartFill(url);
-      });
-      
-      document.getElementById('closeFallback')?.addEventListener('click', () => {
-        document.body.removeChild(fallbackModal);
-      });
-      
-      // Close on backdrop click
-      fallbackModal.addEventListener('click', (e) => {
-        if (e.target === fallbackModal) {
-          document.body.removeChild(fallbackModal);
-        }
-      });
-      
-    } finally {
-      setLoading(false);
-      // Remove loading modal
-      if (loadingModal.parentNode) {
-        loadingModal.parentNode.removeChild(loadingModal);
-      }
-    }
-  };
+  // Removed duplicate function - using the new executeBackendAutomation above
 
   // Show automation success modal with website access
   const showAutomationSuccessModal = (automationData: any, originalUrl: string) => {
