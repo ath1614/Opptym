@@ -371,6 +371,20 @@ class AutomationService {
     }
   }
 
+  async getCurrentUrl() {
+    try {
+      if (this.page) {
+        const url = await this.page.url();
+        console.log('📍 Current page URL:', url);
+        return url;
+      }
+      return null;
+    } catch (error) {
+      console.error('❌ Error getting current URL:', error);
+      return null;
+    }
+  }
+
   async captureFilledForm() {
     try {
       console.log('📸 Capturing filled form...');

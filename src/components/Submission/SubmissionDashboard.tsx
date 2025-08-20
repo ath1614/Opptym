@@ -1497,16 +1497,25 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
           <span style="font-size: 18px;">🌐</span>
-          <span style="font-weight: 600; color: #0c4a6e;">Visit Your Filled Form:</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Next Steps:</span>
         </div>
         <p style="color: #0c4a6e; line-height: 1.6; font-size: 14px; margin: 0 0 12px 0;">
-          Click "Visit Website" to open the target site and see your filled form. You can review the data and submit it manually.
+          The form was filled automatically on our server. Click "Visit Website" to open the target site and review the form. You may need to fill it manually or use Universal automation.
         </p>
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px; margin-top: 12px;">
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+            <span style="font-size: 14px;">💡</span>
+            <span style="font-weight: 600; color: #92400e; font-size: 12px;">Tip:</span>
+          </div>
+          <p style="color: #92400e; font-size: 12px; margin: 0; line-height: 1.4;">
+            If the form appears empty, try the "Universal" option which will install a bookmarklet to fill forms directly in your browser.
+          </p>
+        </div>
       </div>
       
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
         <button id="visitFilledForm" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
-        <button id="openOriginalSite" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔗 Open Original Site</button>
+        <button id="tryUniversal" style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🔄 Try Universal</button>
         <button id="copyFormData" style="background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Form Data</button>
         <button id="closeResults" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
       </div>
@@ -1524,8 +1533,19 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       }
     });
     
-    document.getElementById('openOriginalSite')?.addEventListener('click', () => {
-      window.open(originalUrl, '_blank', 'width=1200,height=800');
+    document.getElementById('tryUniversal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+      // Find the site in the current list and trigger Universal automation
+      const siteElement = document.querySelector(`[data-url="${originalUrl}"]`);
+      if (siteElement) {
+        const universalButton = siteElement.querySelector('[data-action="universal"]') as HTMLElement;
+        if (universalButton) {
+          universalButton.click();
+        }
+      } else {
+        // Fallback: directly call Universal automation
+        openTabAndUniversalFill(originalUrl);
+      }
     });
     
     document.getElementById('copyFormData')?.addEventListener('click', () => {

@@ -76,6 +76,10 @@ const openAndUltraFill = async (req, res) => {
       
       console.log('✅ Form submission result:', submitted);
 
+      // Get the current page URL after form filling
+      const currentUrl = await automationService.getCurrentUrl();
+      console.log('✅ Current URL after form filling:', currentUrl);
+
       // Close browser
       console.log('✅ Form filling completed, closing browser...');
       await automationService.close();
@@ -92,11 +96,23 @@ const openAndUltraFill = async (req, res) => {
           totalFields: fillResult.totalFieldsFound || 0,
           filledFields: fillResult.filledFields || [],
           formSubmitted: submitted,
-          formUrl: url,
+          formUrl: currentUrl || url, // Use current URL if different
           automationCompleted: true,
+          automationType: 'backend',
+          instructions: {
+            type: 'backend_automation',
+            message: 'Form was filled automatically on the server. You can visit the website to review and submit the form manually.',
+            steps: [
+              'Visit the website to see the form',
+              'Use Universal automation if you need to fill it again',
+              'Or manually fill the form with your project data'
+            ]
+          },
           debug: {
             projectData: projectData,
-            fillResult: fillResult
+            fillResult: fillResult,
+            originalUrl: url,
+            finalUrl: currentUrl
           },
           timestamp: new Date().toISOString()
         }
