@@ -1,3 +1,26 @@
+// Browser API declarations
+declare global {
+  interface Window {
+    chrome?: {
+      bookmarks?: {
+        create: (bookmark: { title: string; url: string }) => Promise<{ id: string }>;
+        remove: (id: string) => Promise<void>;
+        search: (query: { title: string }) => Promise<{ id: string }[]>;
+      };
+      permissions?: {
+        contains: (permissions: { permissions: string[] }) => Promise<boolean>;
+      };
+    };
+    browser?: {
+      bookmarks?: {
+        create: (bookmark: { title: string; url: string }) => Promise<{ id: string }>;
+        remove: (id: string) => Promise<void>;
+        search: (query: { title: string }) => Promise<{ id: string }[]>;
+      };
+    };
+  }
+}
+
 export interface ProjectData {
   name: string;
   email: string;
@@ -217,7 +240,7 @@ export class UniversalFormService {
       })();
     `;
     
-    return \`javascript:\${encodeURIComponent(script)}\`;
+    return `javascript:${encodeURIComponent(script)}`;
   }
 
   // Smart bookmarklet installation with user-friendly workflow
@@ -226,15 +249,15 @@ export class UniversalFormService {
     
     try {
       // Method 1: Try browser extension API (if available and user has granted permissions)
-      if (typeof chrome !== 'undefined' && chrome.bookmarks && chrome.permissions) {
+      if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks && window.chrome?.permissions) {
         try {
           // Check if we have bookmark permissions
-          const hasPermission = await chrome.permissions.contains({
+          const hasPermission = await window.chrome!.permissions!.contains({
             permissions: ['bookmarks']
           });
           
           if (hasPermission) {
-            const bookmark = await chrome.bookmarks.create({
+            const bookmark = await window.chrome!.bookmarks!.create({
               title: 'OPPTYM Auto-Fill',
               url: bookmarkletCode
             });
@@ -252,9 +275,9 @@ export class UniversalFormService {
       }
       
       // Method 2: Try Firefox bookmarks API (if available)
-      if (typeof browser !== 'undefined' && browser.bookmarks) {
+      if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
         try {
-          const bookmark = await browser.bookmarks.create({
+          const bookmark = await window.browser!.bookmarks!.create({
             title: 'OPPTYM Auto-Fill',
             url: bookmarkletCode
           });
@@ -288,13 +311,13 @@ export class UniversalFormService {
         fallbackInstructions: '📋 Copy the bookmarklet code and create a bookmark manually.'
       };
       
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error installing bookmarklet:', error);
       return {
         success: false,
         bookmarkletCode: bookmarkletCode,
         fallbackInstructions: '📋 Copy the bookmarklet code and create a bookmark manually.',
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       };
     }
   }
@@ -407,32 +430,32 @@ export class UniversalFormService {
   async deleteBookmarklet(bookmarkletId?: string): Promise<boolean> {
     try {
       if (bookmarkletId) {
-        if (typeof chrome !== 'undefined' && chrome.bookmarks) {
-          await chrome.bookmarks.remove(bookmarkletId);
+        if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+          await window.chrome.bookmarks.remove(bookmarkletId);
           return true;
-        } else if (typeof browser !== 'undefined' && browser.bookmarks) {
-          await browser.bookmarks.remove(bookmarkletId);
+        } else if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+          await window.browser.bookmarks.remove(bookmarkletId);
           return true;
         }
       }
       
       // Try to find and remove by title
-      if (typeof chrome !== 'undefined' && chrome.bookmarks) {
-        const bookmarks = await chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
+      if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+        const bookmarks = await window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
         for (const bookmark of bookmarks) {
-          await chrome.bookmarks.remove(bookmark.id);
+          await window.chrome.bookmarks.remove(bookmark.id);
         }
         return bookmarks.length > 0;
-      } else if (typeof browser !== 'undefined' && browser.bookmarks) {
-        const bookmarks = await browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
+      } else if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+        const bookmarks = await window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
         for (const bookmark of bookmarks) {
-          await browser.bookmarks.remove(bookmark.id);
+          await window.browser.bookmarks.remove(bookmark.id);
         }
         return bookmarks.length > 0;
       }
       
       return false;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error deleting bookmarklet:', error);
       return false;
     }
@@ -440,20 +463,20 @@ export class UniversalFormService {
 
   // Get project data for manual filling
   getProjectDataForManual(): string {
-    return \`
+    return `
 Project Data for Manual Filling:
 
-Name: \${this.projectData.name}
-Email: \${this.projectData.email}
-Phone: \${this.projectData.phone}
-Company: \${this.projectData.companyName}
-Website: \${this.projectData.url}
-Description: \${this.projectData.description}
-Address: \${this.projectData.address || ''}
-City: \${this.projectData.city || ''}
-State: \${this.projectData.state || ''}
-Country: \${this.projectData.country || ''}
-Pincode: \${this.projectData.pincode || ''}
-    \`.trim();
+Name: ${this.projectData.name}
+Email: ${this.projectData.email}
+Phone: ${this.projectData.phone}
+Company: ${this.projectData.companyName}
+Website: ${this.projectData.url}
+Description: ${this.projectData.description}
+Address: ${this.projectData.address || ''}
+City: ${this.projectData.city || ''}
+State: ${this.projectData.state || ''}
+Country: ${this.projectData.country || ''}
+Pincode: ${this.projectData.pincode || ''}
+    `.trim();
   }
 }
