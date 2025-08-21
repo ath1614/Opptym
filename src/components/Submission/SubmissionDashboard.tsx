@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // Use axios directly with relative paths like other components
 import axios from 'axios';
 import { ClientAutomationService } from '../../services/ClientAutomationService';
+import { UniversalFormService } from '../../services/UniversalFormService';
 import { 
   Download, 
   Globe, 
@@ -891,8 +892,8 @@ const SubmissionsDashboard = () => {
     }
   };
 
-  // Universal Form Client-Side Automation function
-  const openTabAndUniversalFill = async (url: string) => {
+  // One-Button "Fill Form" Function - Universal Automation
+  const handleFillForm = async (url: string) => {
     if (!selectedProject) {
       showPopup('⚠️ Please select a project first!', 'warning');
       return;
@@ -926,12 +927,12 @@ const SubmissionsDashboard = () => {
     `;
     
     loadingContent.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 20px;">🔧</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Universal Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Installing bookmarklet in your browser...</p>
+      <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Form Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Creating your personalized form filler...</p>
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #3b82f6; font-weight: 500;">Installing bookmarklet...</span>
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #10b981; font-weight: 500;">Preparing automation...</span>
       </div>
       <style>
         @keyframes spin {
@@ -945,7 +946,7 @@ const SubmissionsDashboard = () => {
     document.body.appendChild(loadingModal);
     
     try {
-      // Prepare project data for client-side automation
+      // Prepare project data
       const projectData = {
         name: (selectedProject as any).name || '',
         email: (selectedProject as any).email || '',
@@ -960,31 +961,29 @@ const SubmissionsDashboard = () => {
         pincode: (selectedProject as any).pincode || ''
       };
 
-      // Automatically install bookmarklet
-      const bookmarkletInstalled = await installBookmarkletAutomatically(projectData);
+      // Create Universal Form Service
+      const universalService = new UniversalFormService(projectData);
+      
+      // Install bookmarklet automatically
+      const result = await universalService.installBookmarkletAutomatically();
       
       // Remove loading modal
       if (loadingModal.parentNode) {
         loadingModal.parentNode.removeChild(loadingModal);
       }
       
-      if (bookmarkletInstalled) {
-        // Show success modal with Visit Website button
-        showUniversalSuccessModal(url, projectData, true);
-      } else {
-        // Fallback to manual process
-        showUniversalSuccessModal(url, projectData, false);
-      }
+      // Show success modal with instructions
+      showOneButtonSuccessModal(url, projectData, result);
       
     } catch (error) {
-      console.error('Universal form automation error:', error);
+      console.error('Fill form automation error:', error);
       
       // Remove loading modal
       if (loadingModal.parentNode) {
         loadingModal.parentNode.removeChild(loadingModal);
       }
       
-      showPopup('❌ Universal form automation failed. Please try again.', 'error');
+      showPopup('❌ Form automation setup failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -1434,6 +1433,145 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
 
   // Removed duplicate function - using the new executeBackendAutomation above
 
+  // Show one-button fill form success modal
+  const showOneButtonSuccessModal = (url: string, projectData: any, result: any) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="font-size: 32px;">✅</div>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;">Form Automation Ready!</h2>
+          <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">Your personalized form filler is ready to use</p>
+        </div>
+      </div>
+      
+      <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 18px;">🚀</span>
+          <span style="font-weight: 600; color: #065f46;">Next Steps:</span>
+        </div>
+        <ol style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.6; font-size: 14px; text-align: left;">
+          <li><strong>Click "Visit Website"</strong> to open the target site</li>
+          <li><strong>Click "OPPTYM Auto-Fill"</strong> bookmarklet (or drag it to bookmarks bar)</li>
+          <li><strong>Form will auto-fill</strong> with your project data</li>
+          <li><strong>Review and submit</strong> the form</li>
+          <li><strong>Return here</strong> to delete the bookmarklet</li>
+        </ol>
+      </div>
+      
+      <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 18px;">💡</span>
+          <span style="font-weight: 600; color: #0c4a6e;">Project Data Ready:</span>
+        </div>
+        <div style="text-align: left; color: #0c4a6e; font-size: 14px;">
+          <div><strong>Name:</strong> ${projectData.name}</div>
+          <div><strong>Email:</strong> ${projectData.email}</div>
+          <div><strong>Company:</strong> ${projectData.companyName}</div>
+          <div><strong>Website:</strong> ${projectData.url}</div>
+        </div>
+      </div>
+      
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 18px;">⚠️</span>
+          <span style="font-weight: 600; color: #92400e;">Important:</span>
+        </div>
+        <div style="text-align: left; color: #92400e; font-size: 14px;">
+          <div>• The bookmarklet will be automatically deleted after 30 minutes</div>
+          <div>• Make sure to submit the form before the bookmarklet expires</div>
+          <div>• You can always create a new bookmarklet if needed</div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button id="visitWebsite" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🌐 Visit Website</button>
+        <button id="copyBookmarklet" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">📋 Copy Bookmarklet</button>
+        <button id="deleteBookmarklet" style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">🗑️ Delete Bookmarklet</button>
+        <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('visitWebsite')?.addEventListener('click', () => {
+      window.open(url, '_blank', 'width=1200,height=800');
+    });
+    
+    document.getElementById('copyBookmarklet')?.addEventListener('click', () => {
+      if (result.bookmarkletCode) {
+        navigator.clipboard.writeText(result.bookmarkletCode).then(() => {
+          const btn = document.getElementById('copyBookmarklet');
+          if (btn) {
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+              btn.textContent = '📋 Copy Bookmarklet';
+            }, 2000);
+          }
+        });
+      }
+    });
+    
+    document.getElementById('deleteBookmarklet')?.addEventListener('click', async () => {
+      try {
+        const universalService = new UniversalFormService(projectData);
+        const deleted = await universalService.deleteBookmarklet(result.bookmarkletId);
+        
+        const btn = document.getElementById('deleteBookmarklet');
+        if (btn) {
+          btn.textContent = deleted ? '✅ Deleted!' : '❌ Not Found';
+          btn.style.background = deleted ? '#10b981' : '#ef4444';
+          setTimeout(() => {
+            btn.textContent = '🗑️ Delete Bookmarklet';
+            btn.style.background = '#ef4444';
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Error deleting bookmarklet:', error);
+      }
+    });
+    
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    });
+  };
+
   // Show automation success modal with website access
   const showAutomationSuccessModal = (automationData: any, originalUrl: string) => {
     const modal = document.createElement('div');
@@ -1570,8 +1708,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
           universalButton.click();
         }
       } else {
-        // Fallback: directly call Universal automation
-        openTabAndUniversalFill(originalUrl);
+        // Fallback: directly call Fill Form automation
+        handleFillForm(originalUrl);
       }
     });
     
@@ -1829,7 +1967,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                         </button>
                         
                         <button
-                          onClick={() => openTabAndUniversalFill(site.url)}
+                          onClick={() => handleFillForm(site.url)}
                           disabled={loading}
                           className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
                           title="Universal Form Fill"
