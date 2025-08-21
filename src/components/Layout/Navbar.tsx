@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Bell, User, LogOut, Search, Settings, HelpCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getUserDisplayName, getUserShortName, getUserInitials } from '../../utils/userUtils';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 interface NavbarProps {
   activeTab: string;
@@ -83,6 +84,9 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
           {/* Right Section - Actions & User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+            
             {/* Search Bar */}
             <div className="hidden md:flex relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />

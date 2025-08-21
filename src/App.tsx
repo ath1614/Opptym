@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
+import './i18n'; // Import i18n configuration
 import { AuthContext, useAuthProvider } from './hooks/useAuth';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';

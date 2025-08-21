@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 // Use axios directly with relative paths like other components
 import axios from 'axios';
 import { ClientAutomationService } from '../../services/ClientAutomationService';
@@ -436,6 +437,7 @@ const siteMap: Record<string, {
 };
 
 const SubmissionsDashboard = () => {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showAutoFillScript, setShowAutoFillScript] = useState(false);
@@ -894,10 +896,10 @@ const SubmissionsDashboard = () => {
 
   // One-Button "Fill Form" Function - Universal Automation
   const handleFillForm = async (url: string) => {
-    if (!selectedProject) {
-      showPopup('⚠️ Please select a project first!', 'warning');
-      return;
-    }
+          if (!selectedProject) {
+        showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
+        return;
+      }
 
     setLoading(true);
     
@@ -928,11 +930,11 @@ const SubmissionsDashboard = () => {
     
     loadingContent.innerHTML = `
       <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Form Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Creating your personalized form filler...</p>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">{t('submissions.automationSetup')}</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">{t('submissions.creatingBookmarklet')}</p>
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
         <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #10b981; font-weight: 500;">Preparing automation...</span>
+        <span style="color: #10b981; font-weight: 500;">{t('submissions.preparingAutomation')}</span>
       </div>
       <style>
         @keyframes spin {
@@ -983,7 +985,7 @@ const SubmissionsDashboard = () => {
         loadingModal.parentNode.removeChild(loadingModal);
       }
       
-      showPopup('❌ Form automation setup failed. Please try again.', 'error');
+      showPopup(`❌ ${t('errors.somethingWentWrong')} ${t('errors.tryAgain')}`, 'error');
     } finally {
       setLoading(false);
     }
@@ -1963,7 +1965,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                           title="One-Click Form Automation"
                         >
                           <Zap className="w-4 h-4 mr-2" />
-                          Fill Form
+                          {t('automation.fillForm')}
                         </button>
                         
                         <button
