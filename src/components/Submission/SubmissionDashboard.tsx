@@ -1957,23 +1957,13 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                       
                       <div className="flex flex-col space-y-2 ml-4">
                         <button
-                          onClick={() => executeBackendAutomation(site.url)}
-                          disabled={loading}
-                          className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
-                          title="Smart Form Auto-Fill (Backend-Powered)"
-                        >
-                          <Bot className="w-3 h-3 mr-1" />
-                          Smart Auto-Fill
-                        </button>
-                        
-                        <button
                           onClick={() => handleFillForm(site.url)}
                           disabled={loading}
-                          className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50"
-                          title="Universal Form Fill"
+                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 font-medium"
+                          title="One-Click Form Automation"
                         >
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          Universal
+                          <Zap className="w-4 h-4 mr-2" />
+                          Fill Form
                         </button>
                         
                         <button
@@ -2031,15 +2021,15 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Ultra-Smart System</span>
+                <span className="text-gray-700">One-Button Automation</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Universal Form System</span>
+                <span className="text-gray-700">Smart Bookmarklet System</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Chrome Integration</span>
+                <span className="text-gray-700">Auto-Cleanup Enabled</span>
               </div>
             </div>
           </div>
@@ -2062,11 +2052,15 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               </div>
               <div className="flex items-center space-x-2">
                 <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                <span>Choose automation type</span>
+                <span>Click "Fill Form" button</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                <span>Watch the magic happen!</span>
+                <span>Drag bookmarklet & visit site</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                <span>Click bookmarklet to fill forms!</span>
               </div>
             </div>
           </div>
