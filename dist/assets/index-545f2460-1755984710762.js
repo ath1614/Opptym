@@ -21685,14 +21685,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-771d0753-1755984513931.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-9d38eb84-1755984710762.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755984513931.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755984710762.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25197,7 +25197,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-03387a92-1755984513931.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-ce0ee04c-1755984710762.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49771,7 +49771,7 @@ function App() {
     }
   }, [activeTab]);
   if (!authProvider.user || !authProvider.user.id) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value: authProvider, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float", style: { animationDelay: "2s" } }),
@@ -49782,7 +49782,7 @@ function App() {
         authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
         authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
       ] })
-    ] });
+    ] }) });
   }
   const handleViewProjectReport = async (project) => {
     setReportLoading(true);
@@ -49918,7 +49918,7 @@ function App() {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {});
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value: authProvider, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
@@ -49939,7 +49939,7 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "p-6", children: renderContent() })
       ] })
     ] }) })
-  ] });
+  ] }) });
 }
 const index = "";
 axios$1.defaults.baseURL = "https://api.opptym.com";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
-import { useAuthProvider } from './hooks/useAuth';
+import { useAuthProvider, AuthContext } from './hooks/useAuth';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -178,23 +178,25 @@ function App() {
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{ animationDelay: '4s' }}></div>
+      <AuthContext.Provider value={authProvider}>
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{ animationDelay: '4s' }}></div>
+          </div>
+
+
+
+          
+          <div className="relative z-10">
+            {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
+            {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
+            {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
+          </div>
         </div>
-
-
-
-        
-        <div className="relative z-10">
-          {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
-          {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
-          {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
-        </div>
-      </div>
+      </AuthContext.Provider>
     );
   }
 
@@ -402,33 +404,35 @@ function App() {
 
   // If user is authenticated, show main app
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
-      </div>
+    <AuthContext.Provider value={authProvider}>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+          <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
+        </div>
 
 
-      
-      <div className="relative z-10 pt-20">
-        <div className="flex">
-          <Sidebar 
-            activeTab={activeTab} 
-            setActiveTab={updateActiveTab}
-            isCollapsed={sidebarCollapsed}
-            setIsCollapsed={setSidebarCollapsed}
-          />
-          <div className="flex-1">
-            <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-            <main className="p-6">
-              {renderContent()}
-            </main>
+        
+        <div className="relative z-10 pt-20">
+          <div className="flex">
+            <Sidebar 
+              activeTab={activeTab} 
+              setActiveTab={updateActiveTab}
+              isCollapsed={sidebarCollapsed}
+              setIsCollapsed={setSidebarCollapsed}
+            />
+            <div className="flex-1">
+              <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+              <main className="p-6">
+                {renderContent()}
+              </main>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </AuthContext.Provider>
   );
 }
 
