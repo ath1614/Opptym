@@ -1143,7 +1143,7 @@ const SubmissionsDashboard = () => {
     }
   };
 
-  // NEW: One-Click Full Automation Function
+  // NEW: One-Click Full Automation Function with Bookmarklet First
   const handleOneClickAutomation = async (url: string, siteName: string) => {
     if (!selectedProject) {
       showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
@@ -1151,50 +1151,6 @@ const SubmissionsDashboard = () => {
     }
 
     setLoading(true);
-    
-    // Show loading popup
-    const loadingModal = document.createElement('div');
-    loadingModal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    `;
-    
-    const loadingContent = document.createElement('div');
-    loadingContent.style.cssText = `
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    `;
-    
-    loadingContent.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Full Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Creating bookmarklet and preparing automation for ${siteName}</p>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #10b981; font-weight: 500;">Preparing automation...</span>
-      </div>
-      <style>
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
-    `;
-    
-    loadingModal.appendChild(loadingContent);
-    document.body.appendChild(loadingModal);
     
     try {
       // Prepare project data
@@ -1218,24 +1174,117 @@ const SubmissionsDashboard = () => {
       // Step 1: Install bookmarklet automatically
       const result = await universalService.installBookmarkletAutomatically();
       
-      // Step 2: Open target website in new tab
-      const newTab = window.open(url, '_blank');
-      
-      // Step 3: Show success modal with instructions
-      showFullAutomationSuccessModal(url, siteName, projectData, result, newTab);
+      // Step 2: Show bookmarklet instructions modal FIRST (don't open website yet)
+      showBookmarkletInstructionsModal(url, siteName, projectData, result);
       
     } catch (error) {
       console.error('One-click automation error:', error);
-      
-      // Remove loading modal
-      if (loadingModal.parentNode) {
-        loadingModal.parentNode.removeChild(loadingModal);
-      }
-      
       showPopup('❌ Automation setup failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
+  };
+
+  // NEW: Show bookmarklet instructions modal first
+  const showBookmarkletInstructionsModal = (url: string, siteName: string, projectData: any, result: any) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+      position: relative;
+    `;
+    
+    content.innerHTML = `
+      <div style="font-size: 64px; margin-bottom: 20px;">🎯</div>
+      <h2 style="margin: 0 0 15px 0; font-size: 28px; font-weight: 700; color: #1f2937;">Bookmarklet Ready!</h2>
+      <p style="margin: 0 0 25px 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
+        Your automation bookmarklet has been created. It will <strong>auto-delete after 30 minutes</strong> to keep your bookmarks clean.
+      </p>
+      
+      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: left;">
+        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">📋 Next Steps:</h3>
+        <ol style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 1.8;">
+          <li><strong>Click "Visit Website"</strong> to open ${siteName}</li>
+          <li><strong>Drag the bookmarklet</strong> from your bookmarks bar to the page</li>
+          <li><strong>Watch the magic happen!</strong> Forms will be filled automatically</li>
+          <li><strong>Bookmarklet auto-deletes</strong> after 30 minutes</li>
+        </ol>
+      </div>
+      
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 30px;">
+        <button id="visitWebsiteBtn" style="
+          background: linear-gradient(135deg, #10b981, #059669);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          🌐 Visit ${siteName}
+        </button>
+        <button id="closeModalBtn" style="
+          background: #f3f4f6;
+          color: #6b7280;
+          border: 2px solid #e5e7eb;
+          padding: 12px 24px;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        " onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+          ✕ Close
+        </button>
+      </div>
+      
+      <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 14px; color: #92400e;">
+        ⏰ <strong>Auto-cleanup:</strong> Bookmarklet will be automatically removed after 30 minutes
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('visitWebsiteBtn')?.addEventListener('click', () => {
+      window.open(url, '_blank');
+      modal.remove();
+    });
+    
+    document.getElementById('closeModalBtn')?.addEventListener('click', () => {
+      modal.remove();
+    });
+    
+    // Auto-close modal after 5 minutes if user doesn't interact
+    setTimeout(() => {
+      if (modal.parentNode) {
+        modal.remove();
+      }
+    }, 5 * 60 * 1000);
   };
 
   // NEW: Full Automation Success Modal

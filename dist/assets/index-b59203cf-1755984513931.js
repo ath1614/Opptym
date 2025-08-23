@@ -21685,14 +21685,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-b34b67ce-1755983996104.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-771d0753-1755984513931.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755983996104.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755984513931.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25197,7 +25197,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-85c01195-1755983996104.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-03387a92-1755984513931.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -44835,13 +44835,35 @@ class UniversalFormService {
         // Auto-delete this bookmarklet after 30 minutes
         setTimeout(() => {
           try {
+            // Try to remove from bookmarks bar
+            if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+              window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                bookmarks.forEach(bookmark => {
+                  window.chrome.bookmarks.remove(bookmark.id);
+                });
+              });
+            }
+            
+            // Also try to remove from DOM if present
             const bookmarkletElement = document.querySelector('a[href*="OPPTYM Auto-Fill"]');
             if (bookmarkletElement) {
               bookmarkletElement.remove();
-              console.log('🗑️ Bookmarklet auto-deleted after 30 minutes');
             }
+            
+            // Show notification that bookmarklet was auto-deleted
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+              if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+              }
+            }, 5000);
+            
           } catch (e) {
-            console.log('⚠️ Could not auto-delete bookmarklet:', e);
+            // Silent fail for auto-delete
           }
         }, 30 * 60 * 1000); // 30 minutes
         
@@ -45692,45 +45714,6 @@ const SubmissionsDashboard = () => {
       return;
     }
     setLoading(true);
-    const loadingModal = document.createElement("div");
-    loadingModal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    `;
-    const loadingContent = document.createElement("div");
-    loadingContent.style.cssText = `
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    `;
-    loadingContent.innerHTML = `
-      <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
-      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Full Automation</h2>
-      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Creating bookmarklet and preparing automation for ${siteName}</p>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <span style="color: #10b981; font-weight: 500;">Preparing automation...</span>
-      </div>
-      <style>
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
-    `;
-    loadingModal.appendChild(loadingContent);
-    document.body.appendChild(loadingModal);
     try {
       const projectData = {
         name: selectedProject.name || "",
@@ -45747,20 +45730,16 @@ const SubmissionsDashboard = () => {
       };
       const universalService = new UniversalFormService(projectData);
       const result = await universalService.installBookmarkletAutomatically();
-      const newTab = window.open(url, "_blank");
-      showFullAutomationSuccessModal(url, siteName, projectData, result, newTab);
+      showBookmarkletInstructionsModal(url, siteName, projectData, result);
     } catch (error) {
       console.error("One-click automation error:", error);
-      if (loadingModal.parentNode) {
-        loadingModal.parentNode.removeChild(loadingModal);
-      }
       showPopup2("❌ Automation setup failed. Please try again.", "error");
     } finally {
       setLoading(false);
     }
   };
-  const showFullAutomationSuccessModal = (url, siteName, projectData, result, newTab) => {
-    var _a2, _b2, _c;
+  const showBookmarkletInstructionsModal = (url, siteName, projectData, result) => {
+    var _a2, _b2;
     const modal = document.createElement("div");
     modal.style.cssText = `
       position: fixed;
@@ -45778,74 +45757,79 @@ const SubmissionsDashboard = () => {
     const content = document.createElement("div");
     content.style.cssText = `
       background: white;
-      border-radius: 16px;
-      padding: 30px;
-      max-width: 500px;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
       width: 90%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+      position: relative;
     `;
     content.innerHTML = `
-      <div style="text-align: center; margin-bottom: 20px;">
-        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
-        <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Ready!</h2>
-        <p style="margin: 0; color: #6b7280; font-size: 16px;">Bookmarklet created and website opened</p>
+      <div style="font-size: 64px; margin-bottom: 20px;">🎯</div>
+      <h2 style="margin: 0 0 15px 0; font-size: 28px; font-weight: 700; color: #1f2937;">Bookmarklet Ready!</h2>
+      <p style="margin: 0 0 25px 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
+        Your automation bookmarklet has been created. It will <strong>auto-delete after 30 minutes</strong> to keep your bookmarks clean.
+      </p>
+      
+      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: left;">
+        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">📋 Next Steps:</h3>
+        <ol style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 1.8;">
+          <li><strong>Click "Visit Website"</strong> to open ${siteName}</li>
+          <li><strong>Drag the bookmarklet</strong> from your bookmarks bar to the page</li>
+          <li><strong>Watch the magic happen!</strong> Forms will be filled automatically</li>
+          <li><strong>Bookmarklet auto-deletes</strong> after 30 minutes</li>
+        </ol>
       </div>
       
-      <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">Next Steps:</h3>
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">1</div>
-            <span style="color: #374151; font-size: 14px;">Go to the opened website tab</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">2</div>
-            <span style="color: #374151; font-size: 14px;">Click the "OPPTYM Auto-Fill" bookmarklet</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">3</div>
-            <span style="color: #374151; font-size: 14px;">Forms will be automatically filled</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">4</div>
-            <span style="color: #374151; font-size: 14px;">Return here to delete the bookmarklet</span>
-          </div>
-        </div>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 30px;">
+        <button id="visitWebsiteBtn" style="
+          background: linear-gradient(135deg, #10b981, #059669);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          🌐 Visit ${siteName}
+        </button>
+        <button id="closeModalBtn" style="
+          background: #f3f4f6;
+          color: #6b7280;
+          border: 2px solid #e5e7eb;
+          padding: 12px 24px;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        " onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+          ✕ Close
+        </button>
       </div>
       
-      <div style="display: flex; gap: 12px; justify-content: center;">
-        <button id="visitWebsite" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;">
-          <span>🌐</span>
-          Visit Website
-        </button>
-        <button id="deleteBookmark" style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;">
-          <span>🗑️</span>
-          Delete Bookmark
-        </button>
-        <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; font-size: 14px; color: #92400e;">
+        ⏰ <strong>Auto-cleanup:</strong> Bookmarklet will be automatically removed after 30 minutes
       </div>
     `;
     modal.appendChild(content);
     document.body.appendChild(modal);
-    (_a2 = document.getElementById("visitWebsite")) == null ? void 0 : _a2.addEventListener("click", () => {
-      if (newTab) {
-        newTab.focus();
-      } else {
-        window.open(url, "_blank");
+    (_a2 = document.getElementById("visitWebsiteBtn")) == null ? void 0 : _a2.addEventListener("click", () => {
+      window.open(url, "_blank");
+      modal.remove();
+    });
+    (_b2 = document.getElementById("closeModalBtn")) == null ? void 0 : _b2.addEventListener("click", () => {
+      modal.remove();
+    });
+    setTimeout(() => {
+      if (modal.parentNode) {
+        modal.remove();
       }
-    });
-    (_b2 = document.getElementById("deleteBookmark")) == null ? void 0 : _b2.addEventListener("click", async () => {
-      try {
-        const universalService = new UniversalFormService(projectData);
-        await universalService.deleteBookmarklet(result.bookmarkletId);
-        showPopup2("✅ Bookmarklet deleted successfully!", "success");
-      } catch (error) {
-        showPopup2("❌ Failed to delete bookmarklet", "error");
-      }
-    });
-    (_c = document.getElementById("closeModal")) == null ? void 0 : _c.addEventListener("click", () => {
-      document.body.removeChild(modal);
-    });
+    }, 5 * 60 * 1e3);
   };
   const generateAutoFillScript = () => {
     if (!selectedProject)

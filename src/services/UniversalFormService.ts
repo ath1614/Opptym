@@ -227,13 +227,35 @@ export class UniversalFormService {
         // Auto-delete this bookmarklet after 30 minutes
         setTimeout(() => {
           try {
+            // Try to remove from bookmarks bar
+            if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+              window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                bookmarks.forEach(bookmark => {
+                  window.chrome.bookmarks.remove(bookmark.id);
+                });
+              });
+            }
+            
+            // Also try to remove from DOM if present
             const bookmarkletElement = document.querySelector('a[href*="OPPTYM Auto-Fill"]');
             if (bookmarkletElement) {
               bookmarkletElement.remove();
-              console.log('🗑️ Bookmarklet auto-deleted after 30 minutes');
             }
+            
+            // Show notification that bookmarklet was auto-deleted
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+              if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+              }
+            }, 5000);
+            
           } catch (e) {
-            console.log('⚠️ Could not auto-delete bookmarklet:', e);
+            // Silent fail for auto-delete
           }
         }, 30 * 60 * 1000); // 30 minutes
         
