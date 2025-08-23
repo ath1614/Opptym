@@ -21,6 +21,8 @@ export default defineConfig({
     // Add cache busting headers
     assetsInlineLimit: 0,
     sourcemap: false,
+    // Disable minification to avoid terser dependency
+    minify: false,
   },
   // Force cache busting for development
   define: {
