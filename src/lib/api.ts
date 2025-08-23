@@ -34,7 +34,7 @@ export const getAuthHeaders = (): Record<string, string> => {
 };
 
 // API request wrapper
-export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
+export const apiRequest = async (endpoint: string, options: any = {}) => {
   // Ensure endpoint starts with / and base URL doesn't end with /
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const cleanBaseURL = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
-import { AuthContext, useAuthProvider } from './hooks/useAuth';
+import { useAuthProvider } from './hooks/useAuth';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -10,14 +9,13 @@ import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
 import SubmissionDashboard from './components/Submission/SubmissionDashboard';
-import ProjectDetails from './components/Reports/ProjectDetails';
 import PricingPlans from './components/Pricing/PricingPlans';
 import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 
-import { BookOpen, Settings, Eye, FileText, Plus, Shield, Sparkles } from 'lucide-react';
+import { BookOpen, Settings, Shield, Sparkles } from 'lucide-react';
 import { showPopup } from './utils/popup';
 
 interface Project {
