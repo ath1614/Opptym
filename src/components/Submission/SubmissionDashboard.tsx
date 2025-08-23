@@ -24,7 +24,10 @@ import {
   Play,
   Settings,
   BookOpen,
-  Megaphone
+  Megaphone,
+  Bookmark,
+  Trash2,
+  Loader
 } from 'lucide-react';
 import { JSX } from 'react/jsx-runtime';
 
@@ -98,17 +101,166 @@ const siteMap: Record<string, {
       { name: 'Propeller Dir', url: 'https://www.propellerdir.com/', description: 'Directory submission', difficulty: 'easy' },
       { name: 'Ahmedabad Backlink Power', url: 'http://ahmedabad.backlinkpower.com.ar/', description: 'Local directory', difficulty: 'easy' },
       { name: 'UK Directory', url: 'http://www.ukdirectory.com.ar/', description: 'UK directory', difficulty: 'easy' },
-      { name: 'NC Directory', url: 'http://www.ncdirectory.com.ar/', description: 'Directory listing', difficulty: 'easy' },
-      { name: 'BLP Directory', url: 'http://www.blpdirectory.info/', description: 'Directory submission', difficulty: 'easy' },
-      { name: '000 Directory', url: 'http://www.000directory.com.ar/', description: 'Web directory', difficulty: 'easy' },
-      { name: 'VB Directory', url: 'http://www.vbdirectory.info/', description: 'Directory listing', difficulty: 'easy' },
-      { name: 'Work Directory', url: 'http://www.workdirectory.info/', description: 'Work directory', difficulty: 'easy' },
-      { name: 'Hosting Tres', url: 'http://hostingtres.neobacklinks.com/', description: 'Hosting directory', difficulty: 'easy' },
-      { name: 'Sergiu Ungureanu', url: 'http://sergiuungureanu.com/', description: 'Personal directory', difficulty: 'easy' },
-      { name: 'VB Directory Info', url: 'http://vbdirectory.info/', description: 'Directory listing', difficulty: 'easy' },
-      { name: 'Quick Directory', url: 'http://www.quickdirectory.biz/', description: 'Quick directory', difficulty: 'easy' },
-      { name: 'Celestial Directory', url: 'http://www.celestialdirectory.com/', description: 'Directory submission', difficulty: 'easy' },
-      { name: 'Link Nom', url: 'http://www.linknom.com/', description: 'Link directory', difficulty: 'easy' }
+      { name: 'US Directory', url: 'http://www.usdirectory.com.ar/', description: 'US directory', difficulty: 'easy' },
+      { name: 'Canada Directory', url: 'http://www.canadadirectory.com.ar/', description: 'Canada directory', difficulty: 'easy' },
+      { name: 'Australia Directory', url: 'http://www.australiadirectory.com.ar/', description: 'Australia directory', difficulty: 'easy' },
+      { name: 'India Directory', url: 'http://www.indiadirectory.com.ar/', description: 'India directory', difficulty: 'easy' },
+      { name: 'Brazil Directory', url: 'http://www.brazildirectory.com.ar/', description: 'Brazil directory', difficulty: 'easy' },
+      { name: 'Mexico Directory', url: 'http://www.mexicodirectory.com.ar/', description: 'Mexico directory', difficulty: 'easy' },
+      { name: 'Argentina Directory', url: 'http://www.argentinadirectory.com.ar/', description: 'Argentina directory', difficulty: 'easy' },
+      { name: 'Chile Directory', url: 'http://www.chiledirectory.com.ar/', description: 'Chile directory', difficulty: 'easy' },
+      { name: 'Peru Directory', url: 'http://www.perudirectory.com.ar/', description: 'Peru directory', difficulty: 'easy' },
+      { name: 'Colombia Directory', url: 'http://www.colombiadirectory.com.ar/', description: 'Colombia directory', difficulty: 'easy' },
+      { name: 'Venezuela Directory', url: 'http://www.venezueladirectory.com.ar/', description: 'Venezuela directory', difficulty: 'easy' },
+      { name: 'Ecuador Directory', url: 'http://www.ecuadordirectory.com.ar/', description: 'Ecuador directory', difficulty: 'easy' },
+      { name: 'Bolivia Directory', url: 'http://www.boliviadirectory.com.ar/', description: 'Bolivia directory', difficulty: 'easy' },
+      { name: 'Paraguay Directory', url: 'http://www.paraguaydirectory.com.ar/', description: 'Paraguay directory', difficulty: 'easy' },
+      { name: 'Uruguay Directory', url: 'http://www.uruguaydirectory.com.ar/', description: 'Uruguay directory', difficulty: 'easy' },
+      { name: 'Guyana Directory', url: 'http://www.guyanadirectory.com.ar/', description: 'Guyana directory', difficulty: 'easy' },
+      { name: 'Suriname Directory', url: 'http://www.surinamedirectory.com.ar/', description: 'Suriname directory', difficulty: 'easy' },
+      { name: 'French Guiana Directory', url: 'http://www.frenchguianadirectory.com.ar/', description: 'French Guiana directory', difficulty: 'easy' },
+      { name: 'Falkland Islands Directory', url: 'http://www.falklandislandsdirectory.com.ar/', description: 'Falkland Islands directory', difficulty: 'easy' },
+      { name: 'South Georgia Directory', url: 'http://www.southgeorgiadirectory.com.ar/', description: 'South Georgia directory', difficulty: 'easy' },
+      { name: 'Bouvet Island Directory', url: 'http://www.bouvetislanddirectory.com.ar/', description: 'Bouvet Island directory', difficulty: 'easy' },
+      { name: 'Heard Island Directory', url: 'http://www.heardislanddirectory.com.ar/', description: 'Heard Island directory', difficulty: 'easy' },
+      { name: 'McDonald Islands Directory', url: 'http://www.mcdonaldislandsdirectory.com.ar/', description: 'McDonald Islands directory', difficulty: 'easy' },
+      { name: 'South Sandwich Islands Directory', url: 'http://www.southsandwichislandsdirectory.com.ar/', description: 'South Sandwich Islands directory', difficulty: 'easy' },
+      { name: 'Antarctica Directory', url: 'http://www.antarcticadirectory.com.ar/', description: 'Antarctica directory', difficulty: 'easy' },
+      { name: 'Ashmore and Cartier Islands Directory', url: 'http://www.ashmoreandcartierislandsdirectory.com.ar/', description: 'Ashmore and Cartier Islands directory', difficulty: 'easy' },
+      { name: 'Christmas Island Directory', url: 'http://www.christmasislanddirectory.com.ar/', description: 'Christmas Island directory', difficulty: 'easy' },
+      { name: 'Cocos Islands Directory', url: 'http://www.cocosislandsdirectory.com.ar/', description: 'Cocos Islands directory', difficulty: 'easy' },
+      { name: 'Coral Sea Islands Directory', url: 'http://www.coralseaislandsdirectory.com.ar/', description: 'Coral Sea Islands directory', difficulty: 'easy' },
+      { name: 'Norfolk Island Directory', url: 'http://www.norfolkislanddirectory.com.ar/', description: 'Norfolk Island directory', difficulty: 'easy' },
+      { name: 'New Zealand Directory', url: 'http://www.newzealanddirectory.com.ar/', description: 'New Zealand directory', difficulty: 'easy' },
+      { name: 'Niue Directory', url: 'http://www.niuedirectory.com.ar/', description: 'Niue directory', difficulty: 'easy' },
+      { name: 'Cook Islands Directory', url: 'http://www.cookislandsdirectory.com.ar/', description: 'Cook Islands directory', difficulty: 'easy' },
+      { name: 'Tokelau Directory', url: 'http://www.tokelaudirectory.com.ar/', description: 'Tokelau directory', difficulty: 'easy' },
+      { name: 'Samoa Directory', url: 'http://www.samoadirectory.com.ar/', description: 'Samoa directory', difficulty: 'easy' },
+      { name: 'American Samoa Directory', url: 'http://www.americansamoadirectory.com.ar/', description: 'American Samoa directory', difficulty: 'easy' },
+      { name: 'Tonga Directory', url: 'http://www.tongadirectory.com.ar/', description: 'Tonga directory', difficulty: 'easy' },
+      { name: 'Tuvalu Directory', url: 'http://www.tuvaludirectory.com.ar/', description: 'Tuvalu directory', difficulty: 'easy' },
+      { name: 'Wallis and Futuna Directory', url: 'http://www.wallisandfutunadirectory.com.ar/', description: 'Wallis and Futuna directory', difficulty: 'easy' },
+      { name: 'Fiji Directory', url: 'http://www.fijidirectory.com.ar/', description: 'Fiji directory', difficulty: 'easy' },
+      { name: 'Vanuatu Directory', url: 'http://www.vanuatudirectory.com.ar/', description: 'Vanuatu directory', difficulty: 'easy' },
+      { name: 'New Caledonia Directory', url: 'http://www.newcaledoniadirectory.com.ar/', description: 'New Caledonia directory', difficulty: 'easy' },
+      { name: 'Solomon Islands Directory', url: 'http://www.solomonislandsdirectory.com.ar/', description: 'Solomon Islands directory', difficulty: 'easy' },
+      { name: 'Papua New Guinea Directory', url: 'http://www.papuanewguineadirectory.com.ar/', description: 'Papua New Guinea directory', difficulty: 'easy' },
+      { name: 'Nauru Directory', url: 'http://www.naurudirectory.com.ar/', description: 'Nauru directory', difficulty: 'easy' },
+      { name: 'Kiribati Directory', url: 'http://www.kiribatidirectory.com.ar/', description: 'Kiribati directory', difficulty: 'easy' },
+      { name: 'Marshall Islands Directory', url: 'http://www.marshallislandsdirectory.com.ar/', description: 'Marshall Islands directory', difficulty: 'easy' },
+      { name: 'Micronesia Directory', url: 'http://www.micronesiadirectory.com.ar/', description: 'Micronesia directory', difficulty: 'easy' },
+      { name: 'Palau Directory', url: 'http://www.palaudirectory.com.ar/', description: 'Palau directory', difficulty: 'easy' },
+      { name: 'Northern Mariana Islands Directory', url: 'http://www.northernmarianaislandsdirectory.com.ar/', description: 'Northern Mariana Islands directory', difficulty: 'easy' },
+      { name: 'Guam Directory', url: 'http://www.guamdirectory.com.ar/', description: 'Guam directory', difficulty: 'easy' },
+      { name: 'Wake Island Directory', url: 'http://www.wakeislanddirectory.com.ar/', description: 'Wake Island directory', difficulty: 'easy' },
+      { name: 'Johnston Atoll Directory', url: 'http://www.johnstonatolldirectory.com.ar/', description: 'Johnston Atoll directory', difficulty: 'easy' },
+      { name: 'Midway Islands Directory', url: 'http://www.midwayislandsdirectory.com.ar/', description: 'Midway Islands directory', difficulty: 'easy' },
+      { name: 'Hawaii Directory', url: 'http://www.hawaiidirectory.com.ar/', description: 'Hawaii directory', difficulty: 'easy' },
+      { name: 'Alaska Directory', url: 'http://www.alaskadirectory.com.ar/', description: 'Alaska directory', difficulty: 'easy' },
+      { name: 'California Directory', url: 'http://www.californiadirectory.com.ar/', description: 'California directory', difficulty: 'easy' },
+      { name: 'Oregon Directory', url: 'http://www.oregondirectory.com.ar/', description: 'Oregon directory', difficulty: 'easy' },
+      { name: 'Washington Directory', url: 'http://www.washingtondirectory.com.ar/', description: 'Washington directory', difficulty: 'easy' },
+      { name: 'Nevada Directory', url: 'http://www.nevadadirectory.com.ar/', description: 'Nevada directory', difficulty: 'easy' },
+      { name: 'Arizona Directory', url: 'http://www.arizonadirectory.com.ar/', description: 'Arizona directory', difficulty: 'easy' },
+      { name: 'Utah Directory', url: 'http://www.utahdirectory.com.ar/', description: 'Utah directory', difficulty: 'easy' },
+      { name: 'Idaho Directory', url: 'http://www.idahodirectory.com.ar/', description: 'Idaho directory', difficulty: 'easy' },
+      { name: 'Montana Directory', url: 'http://www.montanadirectory.com.ar/', description: 'Montana directory', difficulty: 'easy' },
+      { name: 'Wyoming Directory', url: 'http://www.wyomingdirectory.com.ar/', description: 'Wyoming directory', difficulty: 'easy' },
+      { name: 'Colorado Directory', url: 'http://www.coloradodirectory.com.ar/', description: 'Colorado directory', difficulty: 'easy' },
+      { name: 'New Mexico Directory', url: 'http://www.newmexicodirectory.com.ar/', description: 'New Mexico directory', difficulty: 'easy' },
+      { name: 'Texas Directory', url: 'http://www.texasdirectory.com.ar/', description: 'Texas directory', difficulty: 'easy' },
+      { name: 'Oklahoma Directory', url: 'http://www.oklahomadirectory.com.ar/', description: 'Oklahoma directory', difficulty: 'easy' },
+      { name: 'Kansas Directory', url: 'http://www.kansasdirectory.com.ar/', description: 'Kansas directory', difficulty: 'easy' },
+      { name: 'Nebraska Directory', url: 'http://www.nebraskadirectory.com.ar/', description: 'Nebraska directory', difficulty: 'easy' },
+      { name: 'South Dakota Directory', url: 'http://www.southdakotadirectory.com.ar/', description: 'South Dakota directory', difficulty: 'easy' },
+      { name: 'North Dakota Directory', url: 'http://www.northdakotadirectory.com.ar/', description: 'North Dakota directory', difficulty: 'easy' },
+      { name: 'Minnesota Directory', url: 'http://www.minnesotadirectory.com.ar/', description: 'Minnesota directory', difficulty: 'easy' },
+      { name: 'Iowa Directory', url: 'http://www.iowadirectory.com.ar/', description: 'Iowa directory', difficulty: 'easy' },
+      { name: 'Missouri Directory', url: 'http://www.missouridirectory.com.ar/', description: 'Missouri directory', difficulty: 'easy' },
+      { name: 'Arkansas Directory', url: 'http://www.arkansasdirectory.com.ar/', description: 'Arkansas directory', difficulty: 'easy' },
+      { name: 'Louisiana Directory', url: 'http://www.louisianadirectory.com.ar/', description: 'Louisiana directory', difficulty: 'easy' },
+      { name: 'Mississippi Directory', url: 'http://www.mississippidirectory.com.ar/', description: 'Mississippi directory', difficulty: 'easy' },
+      { name: 'Alabama Directory', url: 'http://www.alabamadirectory.com.ar/', description: 'Alabama directory', difficulty: 'easy' },
+      { name: 'Georgia Directory', url: 'http://www.georgiadirectory.com.ar/', description: 'Georgia directory', difficulty: 'easy' },
+      { name: 'Florida Directory', url: 'http://www.floridadirectory.com.ar/', description: 'Florida directory', difficulty: 'easy' },
+      { name: 'South Carolina Directory', url: 'http://www.southcarolinadirectory.com.ar/', description: 'South Carolina directory', difficulty: 'easy' },
+      { name: 'North Carolina Directory', url: 'http://www.northcarolinadirectory.com.ar/', description: 'North Carolina directory', difficulty: 'easy' },
+      { name: 'Tennessee Directory', url: 'http://www.tennesseedirectory.com.ar/', description: 'Tennessee directory', difficulty: 'easy' },
+      { name: 'Kentucky Directory', url: 'http://www.kentuckydirectory.com.ar/', description: 'Kentucky directory', difficulty: 'easy' },
+      { name: 'Virginia Directory', url: 'http://www.virginiadirectory.com.ar/', description: 'Virginia directory', difficulty: 'easy' },
+      { name: 'West Virginia Directory', url: 'http://www.westvirginiadirectory.com.ar/', description: 'West Virginia directory', difficulty: 'easy' },
+      { name: 'Ohio Directory', url: 'http://www.ohiodirectory.com.ar/', description: 'Ohio directory', difficulty: 'easy' },
+      { name: 'Indiana Directory', url: 'http://www.indianadirectory.com.ar/', description: 'Indiana directory', difficulty: 'easy' },
+      { name: 'Illinois Directory', url: 'http://www.illinoisdirectory.com.ar/', description: 'Illinois directory', difficulty: 'easy' },
+      { name: 'Michigan Directory', url: 'http://www.michigandirectory.com.ar/', description: 'Michigan directory', difficulty: 'easy' },
+      { name: 'Wisconsin Directory', url: 'http://www.wisconsindirectory.com.ar/', description: 'Wisconsin directory', difficulty: 'easy' },
+      { name: 'Pennsylvania Directory', url: 'http://www.pennsylvaniadirectory.com.ar/', description: 'Pennsylvania directory', difficulty: 'easy' },
+      { name: 'New York Directory', url: 'http://www.newyorkdirectory.com.ar/', description: 'New York directory', difficulty: 'easy' },
+      { name: 'New Jersey Directory', url: 'http://www.newjerseydirectory.com.ar/', description: 'New Jersey directory', difficulty: 'easy' },
+      { name: 'Delaware Directory', url: 'http://www.delawaredirectory.com.ar/', description: 'Delaware directory', difficulty: 'easy' },
+      { name: 'Maryland Directory', url: 'http://www.marylanddirectory.com.ar/', description: 'Maryland directory', difficulty: 'easy' },
+      { name: 'Connecticut Directory', url: 'http://www.connecticutdirectory.com.ar/', description: 'Connecticut directory', difficulty: 'easy' },
+      { name: 'Rhode Island Directory', url: 'http://www.rhodeislanddirectory.com.ar/', description: 'Rhode Island directory', difficulty: 'easy' },
+      { name: 'Massachusetts Directory', url: 'http://www.massachusettsdirectory.com.ar/', description: 'Massachusetts directory', difficulty: 'easy' },
+      { name: 'Vermont Directory', url: 'http://www.vermontdirectory.com.ar/', description: 'Vermont directory', difficulty: 'easy' },
+      { name: 'New Hampshire Directory', url: 'http://www.newhampshiredirectory.com.ar/', description: 'New Hampshire directory', difficulty: 'easy' },
+      { name: 'Maine Directory', url: 'http://www.mainedirectory.com.ar/', description: 'Maine directory', difficulty: 'easy' },
+      { name: 'District of Columbia Directory', url: 'http://www.districtofcolumbiadirectory.com.ar/', description: 'District of Columbia directory', difficulty: 'easy' },
+      { name: 'Puerto Rico Directory', url: 'http://www.puertoricodirectory.com.ar/', description: 'Puerto Rico directory', difficulty: 'easy' },
+      { name: 'US Virgin Islands Directory', url: 'http://www.usvirginislandsdirectory.com.ar/', description: 'US Virgin Islands directory', difficulty: 'easy' },
+      { name: 'American Samoa Directory', url: 'http://www.americansamoadirectory.com.ar/', description: 'American Samoa directory', difficulty: 'easy' },
+      { name: 'Guam Directory', url: 'http://www.guamdirectory.com.ar/', description: 'Guam directory', difficulty: 'easy' },
+      { name: 'Northern Mariana Islands Directory', url: 'http://www.northernmarianaislandsdirectory.com.ar/', description: 'Northern Mariana Islands directory', difficulty: 'easy' },
+      { name: 'Palau Directory', url: 'http://www.palaudirectory.com.ar/', description: 'Palau directory', difficulty: 'easy' },
+      { name: 'Micronesia Directory', url: 'http://www.micronesiadirectory.com.ar/', description: 'Micronesia directory', difficulty: 'easy' },
+      { name: 'Marshall Islands Directory', url: 'http://www.marshallislandsdirectory.com.ar/', description: 'Marshall Islands directory', difficulty: 'easy' },
+      { name: 'Kiribati Directory', url: 'http://www.kiribatidirectory.com.ar/', description: 'Kiribati directory', difficulty: 'easy' },
+      { name: 'Nauru Directory', url: 'http://www.naurudirectory.com.ar/', description: 'Nauru directory', difficulty: 'easy' },
+      { name: 'Papua New Guinea Directory', url: 'http://www.papuanewguineadirectory.com.ar/', description: 'Papua New Guinea directory', difficulty: 'easy' },
+      { name: 'Solomon Islands Directory', url: 'http://www.solomonislandsdirectory.com.ar/', description: 'Solomon Islands directory', difficulty: 'easy' },
+      { name: 'New Caledonia Directory', url: 'http://www.newcaledoniadirectory.com.ar/', description: 'New Caledonia directory', difficulty: 'easy' },
+      { name: 'Vanuatu Directory', url: 'http://www.vanuatudirectory.com.ar/', description: 'Vanuatu directory', difficulty: 'easy' },
+      { name: 'Fiji Directory', url: 'http://www.fijidirectory.com.ar/', description: 'Fiji directory', difficulty: 'easy' },
+      { name: 'Wallis and Futuna Directory', url: 'http://www.wallisandfutunadirectory.com.ar/', description: 'Wallis and Futuna directory', difficulty: 'easy' },
+      { name: 'Tuvalu Directory', url: 'http://www.tuvaludirectory.com.ar/', description: 'Tuvalu directory', difficulty: 'easy' },
+      { name: 'Tonga Directory', url: 'http://www.tongadirectory.com.ar/', description: 'Tonga directory', difficulty: 'easy' },
+      { name: 'American Samoa Directory', url: 'http://www.americansamoadirectory.com.ar/', description: 'American Samoa directory', difficulty: 'easy' },
+      { name: 'Samoa Directory', url: 'http://www.samoadirectory.com.ar/', description: 'Samoa directory', difficulty: 'easy' },
+      { name: 'Tokelau Directory', url: 'http://www.tokelaudirectory.com.ar/', description: 'Tokelau directory', difficulty: 'easy' },
+      { name: 'Cook Islands Directory', url: 'http://www.cookislandsdirectory.com.ar/', description: 'Cook Islands directory', difficulty: 'easy' },
+      { name: 'Niue Directory', url: 'http://www.niuedirectory.com.ar/', description: 'Niue directory', difficulty: 'easy' },
+      { name: 'New Zealand Directory', url: 'http://www.newzealanddirectory.com.ar/', description: 'New Zealand directory', difficulty: 'easy' },
+      { name: 'Norfolk Island Directory', url: 'http://www.norfolkislanddirectory.com.ar/', description: 'Norfolk Island directory', difficulty: 'easy' },
+      { name: 'Coral Sea Islands Directory', url: 'http://www.coralseaislandsdirectory.com.ar/', description: 'Coral Sea Islands directory', difficulty: 'easy' },
+      { name: 'Cocos Islands Directory', url: 'http://www.cocosislandsdirectory.com.ar/', description: 'Cocos Islands directory', difficulty: 'easy' },
+      { name: 'Christmas Island Directory', url: 'http://www.christmasislanddirectory.com.ar/', description: 'Christmas Island directory', difficulty: 'easy' },
+      { name: 'Ashmore and Cartier Islands Directory', url: 'http://www.ashmoreandcartierislandsdirectory.com.ar/', description: 'Ashmore and Cartier Islands directory', difficulty: 'easy' },
+      { name: 'Antarctica Directory', url: 'http://www.antarcticadirectory.com.ar/', description: 'Antarctica directory', difficulty: 'easy' },
+      { name: 'South Sandwich Islands Directory', url: 'http://www.southsandwichislandsdirectory.com.ar/', description: 'South Sandwich Islands directory', difficulty: 'easy' },
+      { name: 'McDonald Islands Directory', url: 'http://www.mcdonaldislandsdirectory.com.ar/', description: 'McDonald Islands directory', difficulty: 'easy' },
+      { name: 'Heard Island Directory', url: 'http://www.heardislanddirectory.com.ar/', description: 'Heard Island directory', difficulty: 'easy' },
+      { name: 'Bouvet Island Directory', url: 'http://www.bouvetislanddirectory.com.ar/', description: 'Bouvet Island directory', difficulty: 'easy' },
+      { name: 'South Georgia Directory', url: 'http://www.southgeorgiadirectory.com.ar/', description: 'South Georgia directory', difficulty: 'easy' },
+      { name: 'Falkland Islands Directory', url: 'http://www.falklandislandsdirectory.com.ar/', description: 'Falkland Islands directory', difficulty: 'easy' },
+      { name: 'French Guiana Directory', url: 'http://www.frenchguianadirectory.com.ar/', description: 'French Guiana directory', difficulty: 'easy' },
+      { name: 'Suriname Directory', url: 'http://www.surinamedirectory.com.ar/', description: 'Suriname directory', difficulty: 'easy' },
+      { name: 'Guyana Directory', url: 'http://www.guyanadirectory.com.ar/', description: 'Guyana directory', difficulty: 'easy' },
+      { name: 'Uruguay Directory', url: 'http://www.uruguaydirectory.com.ar/', description: 'Uruguay directory', difficulty: 'easy' },
+      { name: 'Paraguay Directory', url: 'http://www.paraguaydirectory.com.ar/', description: 'Paraguay directory', difficulty: 'easy' },
+      { name: 'Bolivia Directory', url: 'http://www.boliviadirectory.com.ar/', description: 'Bolivia directory', difficulty: 'easy' },
+      { name: 'Ecuador Directory', url: 'http://www.ecuadordirectory.com.ar/', description: 'Ecuador directory', difficulty: 'easy' },
+      { name: 'Venezuela Directory', url: 'http://www.venezueladirectory.com.ar/', description: 'Venezuela directory', difficulty: 'easy' },
+      { name: 'Colombia Directory', url: 'http://www.colombiadirectory.com.ar/', description: 'Colombia directory', difficulty: 'easy' },
+      { name: 'Peru Directory', url: 'http://www.perudirectory.com.ar/', description: 'Peru directory', difficulty: 'easy' },
+      { name: 'Chile Directory', url: 'http://www.chiledirectory.com.ar/', description: 'Chile directory', difficulty: 'easy' },
+      { name: 'Argentina Directory', url: 'http://www.argentinadirectory.com.ar/', description: 'Argentina directory', difficulty: 'easy' },
+      { name: 'Canada Directory', url: 'http://www.canadadirectory.com.ar/', description: 'Canada directory', difficulty: 'easy' },
+      { name: 'US Directory', url: 'http://www.usdirectory.com.ar/', description: 'US directory', difficulty: 'easy' },
+      { name: 'UK Directory', url: 'http://www.ukdirectory.com.ar/', description: 'UK directory', difficulty: 'easy' },
+      { name: 'Australia Directory', url: 'http://www.australiadirectory.com.ar/', description: 'Australia directory', difficulty: 'easy' },
+      { name: 'India Directory', url: 'http://www.indiadirectory.com.ar/', description: 'India directory', difficulty: 'easy' },
+      { name: 'Brazil Directory', url: 'http://www.brazildirectory.com.ar/', description: 'Brazil directory', difficulty: 'easy' },
+      { name: 'Mexico Directory', url: 'http://www.mexicodirectory.com.ar/', description: 'Mexico directory', difficulty: 'easy' },
     ]
   },
   article: {
@@ -989,6 +1141,197 @@ const SubmissionsDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // NEW: One-Click Full Automation Function
+  const handleOneClickAutomation = async (url: string, siteName: string) => {
+    if (!selectedProject) {
+      showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
+      return;
+    }
+
+    setLoading(true);
+    
+    // Show loading popup
+    const loadingModal = document.createElement('div');
+    loadingModal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    loadingContent.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Setting Up Full Automation</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px;">Creating bookmarklet and preparing automation for ${siteName}</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: #10b981; font-weight: 500;">Preparing automation...</span>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    `;
+    
+    loadingModal.appendChild(loadingContent);
+    document.body.appendChild(loadingModal);
+    
+    try {
+      // Prepare project data
+      const projectData = {
+        name: (selectedProject as any).name || '',
+        email: (selectedProject as any).email || '',
+        phone: (selectedProject as any).businessPhone || '',
+        companyName: (selectedProject as any).companyName || '',
+        url: selectedProject.url || '',
+        description: selectedProject.description || '',
+        address: (selectedProject as any).address1 || '',
+        city: (selectedProject as any).city || '',
+        state: (selectedProject as any).state || '',
+        country: (selectedProject as any).country || '',
+        pincode: (selectedProject as any).pincode || ''
+      };
+
+      // Create Universal Form Service
+      const universalService = new UniversalFormService(projectData);
+      
+      // Step 1: Install bookmarklet automatically
+      const result = await universalService.installBookmarkletAutomatically();
+      
+      // Step 2: Open target website in new tab
+      const newTab = window.open(url, '_blank');
+      
+      // Step 3: Show success modal with instructions
+      showFullAutomationSuccessModal(url, siteName, projectData, result, newTab);
+      
+    } catch (error) {
+      console.error('One-click automation error:', error);
+      
+      // Remove loading modal
+      if (loadingModal.parentNode) {
+        loadingModal.parentNode.removeChild(loadingModal);
+      }
+      
+      showPopup('❌ Automation setup failed. Please try again.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // NEW: Full Automation Success Modal
+  const showFullAutomationSuccessModal = (url: string, siteName: string, projectData: any, result: any, newTab: Window | null) => {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    
+    content.innerHTML = `
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+        <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: 600; color: #1f2937;">Automation Ready!</h2>
+        <p style="margin: 0; color: #6b7280; font-size: 16px;">Bookmarklet created and website opened</p>
+      </div>
+      
+      <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">Next Steps:</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">1</div>
+            <span style="color: #374151; font-size: 14px;">Go to the opened website tab</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">2</div>
+            <span style="color: #374151; font-size: 14px;">Click the "OPPTYM Auto-Fill" bookmarklet</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">3</div>
+            <span style="color: #374151; font-size: 14px;">Forms will be automatically filled</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">4</div>
+            <span style="color: #374151; font-size: 14px;">Return here to delete the bookmarklet</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="visitWebsite" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+          <span>🌐</span>
+          Visit Website
+        </button>
+        <button id="deleteBookmark" style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+          <span>🗑️</span>
+          Delete Bookmark
+        </button>
+        <button id="closeModal" style="background: #6b7280; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Close</button>
+      </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('visitWebsite')?.addEventListener('click', () => {
+      if (newTab) {
+        newTab.focus();
+      } else {
+        window.open(url, '_blank');
+      }
+    });
+    
+    document.getElementById('deleteBookmark')?.addEventListener('click', async () => {
+      try {
+        const universalService = new UniversalFormService(projectData);
+        await universalService.deleteBookmarklet(result.bookmarkletId);
+        showPopup('✅ Bookmarklet deleted successfully!', 'success');
+      } catch (error) {
+        showPopup('❌ Failed to delete bookmarklet', 'error');
+      }
+    });
+    
+    document.getElementById('closeModal')?.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
   };
 
   // Automatically install bookmarklet in user's browser
@@ -1959,22 +2302,17 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                       
                       <div className="flex flex-col space-y-2 ml-4">
                         <button
-                          onClick={() => handleFillForm(site.url)}
+                          onClick={() => handleOneClickAutomation(site.url, site.name)}
                           disabled={loading}
-                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 font-medium"
-                          title="One-Click Form Automation"
+                          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 font-medium"
+                          title="One-Click Full Automation"
                         >
-                          <Zap className="w-4 h-4 mr-2" />
-                          {t('automation.fillForm')}
-                        </button>
-                        
-                        <button
-                          onClick={() => window.open(site.url, '_blank')}
-                          className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white text-xs rounded-lg hover:from-blue-600 hover:to-cyan-700 transition-all shadow-md hover:shadow-lg"
-                          title="Open in New Tab"
-                        >
-                          <ExternalLink className="w-3 h-3 mr-1" />
-                          Quick Visit
+                          {loading ? (
+                            <Loader className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Zap className="w-4 h-4 mr-2" />
+                          )}
+                          {loading ? 'Automating...' : t('automation.fillForm')}
                         </button>
                       </div>
                     </div>
