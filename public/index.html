@@ -4,55 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Opptym - Smart Form Automation</title>
+    <title>OPPTYM - Directory Submission Automation</title>
     
-    <!-- FORCE CACHE BUST AND CLEAR ALL DATA -->
+    <!-- Aggressive Cache Busting -->
     <script>
-      (function() {
-        console.log('🚨 FORCE CACHE BUST - CLEARING EVERYTHING');
-        
-        // FORCE CLEAR ALL DATA IMMEDIATELY
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Clear cookies
-        document.cookie.split(";").forEach(function(c) { 
-          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-        });
-        
-        // Clear all caches
-        if ('caches' in window) {
-          caches.keys().then(names => {
-            names.forEach(name => {
-              caches.delete(name);
-            });
+      // Force clear all storage and cache
+      localStorage.clear();
+      sessionStorage.clear();
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name);
           });
-        }
-        
-        // Force reload if there's any token
-        const token = localStorage.getItem('token');
-        if (token) {
-          console.log('🚨 Token found - forcing complete reload');
-          window.location.href = '/?cache-bust=' + Date.now();
-        }
-        
-        // Add global force functions
-        window.forceClearAll = function() {
-          console.log('🚨 Force clear all triggered');
-          localStorage.clear();
-          sessionStorage.clear();
-          window.location.href = '/?force-clear=' + Date.now();
-        };
-        
-        window.forceLogout = function() {
-          console.log('🚨 Force logout triggered');
-          localStorage.clear();
-          sessionStorage.clear();
-          window.location.href = '/?logout=' + Date.now();
-        };
-        
-        console.log('🚨 Force functions available: window.forceClearAll() or window.forceLogout()');
-      })();
+        });
+      }
+      // Clear cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
     </script>
   </head>
   <body>
