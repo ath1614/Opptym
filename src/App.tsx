@@ -148,6 +148,39 @@ function App() {
     console.log('🔍 Manual logout function available: window.manualLogout()');
   }, []);
 
+  // Fetch projects when activeTab changes to reports
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setProjectsLoading(true);
+      setProjectsError(null);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setProjectsError('No authentication token found. Please log in again.');
+          setProjectsLoading(false);
+          return;
+        }
+        
+        const res = await axios.get('/api/projects', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Projects fetched:', res.data);
+        setProjects(res.data);
+      } catch (err: any) {
+        console.error('Error loading projects:', err);
+        setProjectsError(err.response?.data?.error || err.message || 'Failed to load projects');
+      } finally {
+        setProjectsLoading(false);
+      }
+    };
+
+    if (activeTab === 'reports') {
+      fetchProjects();
+    }
+  }, [activeTab]);
+
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
     return (
@@ -195,38 +228,6 @@ function App() {
   //     setAuthMode('register');
   //   }
   // };
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setProjectsLoading(true);
-      setProjectsError(null);
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setProjectsError('No authentication token found. Please log in again.');
-          setProjectsLoading(false);
-          return;
-        }
-        
-        const res = await axios.get('/api/projects', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log('Projects fetched:', res.data);
-        setProjects(res.data);
-      } catch (err: any) {
-        console.error('Error loading projects:', err);
-        setProjectsError(err.response?.data?.error || err.message || 'Failed to load projects');
-      } finally {
-        setProjectsLoading(false);
-      }
-    };
-
-    if (activeTab === 'reports') {
-      fetchProjects();
-    }
-  }, [activeTab]);
 
   const navigateToTab = (tab: string) => {
     updateActiveTab(tab);

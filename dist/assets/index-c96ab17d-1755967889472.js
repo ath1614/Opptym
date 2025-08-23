@@ -21632,14 +21632,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-223c9a0e-1755967668250.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-02e221b4-1755967889472.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755967668250.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755967889472.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25144,7 +25144,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-4d755da4-1755967668250.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-dd455916-1755967889472.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49539,33 +49539,6 @@ function App() {
     window.manualLogout = handleManualLogout;
     console.log("🔍 Manual logout function available: window.manualLogout()");
   }, []);
-  if (!authProvider.user || !authProvider.user.id) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        background: "linear-gradient(90deg, #ff0000, #ff6600, #ffff00, #00ff00, #0066ff, #6600ff)",
-        color: "white",
-        padding: "10px",
-        textAlign: "center",
-        fontSize: "18px",
-        fontWeight: "bold",
-        zIndex: 1e4,
-        animation: "rainbow 2s linear infinite"
-      }, children: "🌈 DEPLOYMENT TEST - IF YOU SEE THIS, DEPLOYMENT IS WORKING! 🌈" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-          @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-          }
-        ` }),
-      authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
-      authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
-      authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
-    ] });
-  }
   reactExports.useEffect(() => {
     const fetchProjects = async () => {
       var _a2, _b2;
@@ -49596,6 +49569,33 @@ function App() {
       fetchProjects();
     }
   }, [activeTab]);
+  if (!authProvider.user || !authProvider.user.id) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        background: "linear-gradient(90deg, #ff0000, #ff6600, #ffff00, #00ff00, #0066ff, #6600ff)",
+        color: "white",
+        padding: "10px",
+        textAlign: "center",
+        fontSize: "18px",
+        fontWeight: "bold",
+        zIndex: 1e4,
+        animation: "rainbow 2s linear infinite"
+      }, children: "🌈 DEPLOYMENT TEST - IF YOU SEE THIS, DEPLOYMENT IS WORKING! 🌈" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
+          @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+          }
+        ` }),
+      authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
+      authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
+      authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
+    ] });
+  }
   const navigateToTab = (tab) => {
     updateActiveTab(tab);
   };
