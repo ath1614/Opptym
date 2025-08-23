@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Bell, User, LogOut, Search, Settings, HelpCircle } from 'lucide-react';
+import { Bell, User, LogOut, Search, Settings, HelpCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getUserDisplayName, getUserShortName, getUserInitials } from '../../utils/userUtils';
 import LanguageSwitcher from '../LanguageSwitcher';
@@ -73,144 +73,110 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   };
 
   return (
-    <header className="glass border-b border-white/20 shadow-soft sticky top-0 z-50">
+    <header className="bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-glass sticky top-0 z-50 animate-fade-in-down">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Left Section - Page Title & Breadcrumb */}
           <div className="flex items-center space-x-6">
-            <div className="space-y-1">
-              <h1 className="text-2xl font-bold text-gray-900 gradient-text">
-                {getPageTitle(activeTab)}
-              </h1>
-              <p className="text-sm text-gray-600 font-medium">
-                Welcome back, <span className="text-blue-600 font-semibold">{getUserDisplayName(user)}</span>
-              </p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                    {getPageTitle(activeTab)}
+                  </h1>
+                  <p className="text-sm text-primary-600 font-medium">
+                    Welcome back, <span className="text-accent-600 font-semibold">{getUserDisplayName(user)}</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right Section - Actions & User Menu */}
           <div className="flex items-center space-x-4">
-            {/* Test Indicator - Remove after verification */}
-            <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
-              NEW UI
+            {/* Modern Test Indicator */}
+            <div className="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-glow animate-pulse">
+              ✨ NEW UI
             </div>
             
             {/* Language Switcher */}
             <LanguageSwitcher />
             
             {/* Search Bar */}
-            <div className="hidden md:flex relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-primary-400" />
+              </div>
               <input
                 type="text"
                 placeholder="Search..."
-                className="pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+                className="block w-64 pl-10 pr-3 py-2 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm text-primary-900 placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
               />
             </div>
 
             {/* Notifications */}
-            <button className="relative p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 group">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-              <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-strong border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">Notifications</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-xl">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">New submission completed</p>
-                        <p className="text-xs text-gray-600">Your project was submitted to 5 directories</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-xl">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">SEO score improved</p>
-                        <p className="text-xs text-gray-600">Your project score increased by 15 points</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
-
-            {/* Help */}
-            <button 
-              onClick={handleHelpClick}
-              className="p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300"
-            >
-              <HelpCircle className="w-5 h-5" />
+            <button className="relative p-2 text-primary-600 hover:text-accent-600 transition-colors duration-200">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-accent-500 ring-2 ring-white"></span>
             </button>
 
             {/* User Menu */}
             <div className="relative" ref={menuRef}>
-              <button 
+              <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300"
+                className="flex items-center space-x-3 p-2 rounded-xl hover:bg-white/50 transition-all duration-200 group"
               >
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-soft">
-                  <span className="text-white font-bold text-sm">{getUserInitials(user)}</span>
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-glow group-hover:shadow-glow-lg transition-all">
+                  {getUserInitials(user)}
                 </div>
-                <div className="hidden lg:block text-left">
-                  <p className="text-sm font-semibold text-gray-900">{getUserShortName(user)}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
-                </div>
-                <div className="w-4 h-4 text-gray-400 transition-colors">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-primary-900">{getUserShortName(user)}</p>
+                  <p className="text-xs text-primary-600">{formatSubscriptionName(user?.subscription)}</p>
                 </div>
               </button>
 
-              {/* Enhanced Dropdown Menu */}
+              {/* Dropdown Menu */}
               {showUserMenu && (
-                <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-strong border border-gray-100 z-50 transform origin-top-right">
-                  {/* User Info Header */}
-                  <div className="p-6 border-b border-gray-100">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-soft">
-                        <span className="text-white font-bold">{getUserInitials(user)}</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">{getUserDisplayName(user)}</p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
-                        <div className="flex items-center space-x-1 mt-1">
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            user?.subscription === 'pro' ? 'bg-purple-100 text-purple-800' :
-                            user?.subscription === 'business' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {formatSubscriptionName(user?.subscription)} Plan
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                <div className="absolute right-0 mt-2 w-56 bg-white/90 backdrop-blur-lg rounded-2xl shadow-glass border border-white/20 py-2 animate-fade-in-up">
+                  <div className="px-4 py-3 border-b border-primary-100">
+                    <p className="text-sm font-medium text-primary-900">{getUserDisplayName(user)}</p>
+                    <p className="text-xs text-primary-600">{user?.email}</p>
                   </div>
-
-                  {/* Menu Items */}
-                  <div className="p-2">
-                    <button 
+                  
+                  <div className="py-1">
+                    <button
                       onClick={handleProfileClick}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                      className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
                     >
-                      <User className="w-4 h-4" />
-                      <span>View Profile</span>
+                      <User className="mr-3 h-4 w-4" />
+                      Profile
                     </button>
-                    <button 
+                    <button
                       onClick={handleSettingsClick}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                      className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
                     >
-                      <Settings className="w-4 h-4" />
-                      <span>Settings</span>
+                      <Settings className="mr-3 h-4 w-4" />
+                      Settings
                     </button>
-                    <div className="border-t border-gray-100 my-2"></div>
+                    <button
+                      onClick={handleHelpClick}
+                      className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
+                    >
+                      <HelpCircle className="mr-3 h-4 w-4" />
+                      Help & Support
+                    </button>
+                  </div>
+                  
+                  <div className="border-t border-primary-100 pt-1">
                     <button
                       onClick={logout}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                      className="flex items-center w-full px-4 py-2 text-sm text-error-600 hover:bg-error-50 transition-colors duration-200"
                     >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
+                      <LogOut className="mr-3 h-4 w-4" />
+                      Sign out
                     </button>
                   </div>
                 </div>

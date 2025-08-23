@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Globe, ChevronDown } from 'lucide-react';
+import { Globe, ChevronDown, Sparkles } from 'lucide-react';
 
 const languages = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिंदी' },
+  { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिंदी', flag: '🇮🇳' },
 ];
 
 const LanguageSwitcher: React.FC = () => {
@@ -22,35 +22,47 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group"
         aria-label="Select language"
       >
-        <Globe className="w-4 h-4 text-gray-600" />
-        <span className="text-sm font-medium text-gray-700">
-          {currentLanguage.nativeName}
+        <div className="w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
+          <Globe className="w-3 h-3 text-white" />
+        </div>
+        <span className="text-sm font-medium text-primary-700 group-hover:text-accent-700 transition-colors">
+          {currentLanguage.flag} {currentLanguage.nativeName}
         </span>
-        <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-primary-600 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
-          {languages.map((language) => (
-            <button
-              key={language.code}
-              onClick={() => handleLanguageChange(language.code)}
-              className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center justify-between ${
-                i18n.language === language.code ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
-              }`}
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{language.nativeName}</span>
-                <span className="text-xs text-gray-500">{language.name}</span>
-              </div>
-              {i18n.language === language.code && (
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-              )}
-            </button>
-          ))}
+        <div className="absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up">
+          <div className="p-2">
+            {languages.map((language, index) => (
+              <button
+                key={language.code}
+                onClick={() => handleLanguageChange(language.code)}
+                className={`w-full px-4 py-3 text-left rounded-xl transition-all duration-200 flex items-center justify-between group ${
+                  i18n.language === language.code 
+                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-glow' 
+                    : 'text-primary-700 hover:bg-accent-50 hover:text-accent-700'
+                }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">{language.flag}</span>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{language.nativeName}</span>
+                    <span className={`text-xs ${i18n.language === language.code ? 'text-white/80' : 'text-primary-500'}`}>
+                      {language.name}
+                    </span>
+                  </div>
+                </div>
+                {i18n.language === language.code && (
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

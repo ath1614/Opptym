@@ -17,7 +17,7 @@ import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 
-import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
+import { BookOpen, Settings, Eye, FileText, Plus, Shield, Sparkles } from 'lucide-react';
 import { showPopup } from './utils/popup';
 
 interface Project {
@@ -184,50 +184,35 @@ function App() {
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
     return (
-      <div className="min-h-screen">
-        {/* CRITICAL TEST BANNER - Should be visible if deployment works */}
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          background: 'linear-gradient(90deg, #ff0000, #ff6600, #ffff00, #00ff00, #0066ff, #6600ff)',
-          color: 'white',
-          padding: '10px',
-          textAlign: 'center',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          zIndex: 10000,
-          animation: 'rainbow 2s linear infinite'
-        }}>
-          🌈 DEPLOYMENT TEST - IF YOU SEE THIS, DEPLOYMENT IS WORKING! 🌈
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
-        <style>{`
-          @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-          }
-        `}</style>
+
+        {/* Modern Test Banner */}
+        <div className="relative z-10">
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <div className="bg-gradient-to-r from-accent-500 via-primary-500 to-accent-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer">
+              <div className="flex items-center justify-center space-x-2">
+                <Sparkles className="w-5 h-5 animate-pulse" />
+                <span className="text-lg">✨ OPPTYM - Modern UI Deployed Successfully! ✨</span>
+                <Sparkles className="w-5 h-5 animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
         
-        {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
-        {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
-        {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
+        <div className="relative z-10 pt-20">
+          {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
+          {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
+          {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
+        </div>
       </div>
     );
   }
-
-  // Development mode quick login helper - DISABLED FOR OTP SYSTEM
-  // const handleQuickLogin = async () => {
-  //   try {
-  //     console.log('🔍 Attempting quick login...');
-  //     await authProvider.login('test@example.com', 'password123');
-  //     console.log('✅ Quick login successful');
-  //   } catch (error) {
-  //     console.error('❌ Quick login failed:', error);
-  //     // If quick login fails, show registration form
-  //     setAuthMode('register');
-  //   }
-  // };
 
   const navigateToTab = (tab: string) => {
     updateActiveTab(tab);
@@ -294,38 +279,43 @@ function App() {
         return <SubmissionDashboard />;
       case 'reports':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-            <div className="max-w-7xl mx-auto space-y-8">
-              
-              {/* Header Section */}
-              <div className="text-center space-y-4">
-                <div className="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/20">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                    <BookOpen className="w-4 h-4 text-white" />
-                  </div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    SEO Project Reports
-                  </h1>
-                </div>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Comprehensive analytics and insights for your SEO projects. 
-                  Track performance, submissions, and optimization opportunities.
-                </p>
-              </div>
+          <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden">
+            {/* Animated Background */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float"></div>
+              <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+            </div>
 
-              {/* Project Selection Card */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-                    <Settings className="w-5 h-5 text-white" />
+            <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+              
+              {/* Modern Header Section */}
+              <div className="text-center space-y-6 animate-fade-in-up">
+                <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20">
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                    <BookOpen className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-800">Project Selection</h2>
-                    <p className="text-sm text-gray-600">Choose a project to view detailed reports</p>
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                      SEO Project Reports
+                    </h1>
+                    <p className="text-primary-600 text-sm">Comprehensive analytics and insights</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modern Project Selection Card */}
+              <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                    <Settings className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold text-primary-800">Project Selection</h2>
+                    <p className="text-primary-600">Choose a project to view detailed reports</p>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="flex items-center space-x-4">
                     <select
                       onChange={(e) => {
@@ -333,7 +323,7 @@ function App() {
                         const project = projects.find((p) => p._id === projectId);
                         setSelectedProject(project || null);
                       }}
-                      className="flex-1 border border-gray-200 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="flex-1 border border-primary-200 px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                       defaultValue=""
                       disabled={projectsLoading}
                     >
@@ -348,32 +338,32 @@ function App() {
                     </select>
                     
                     {selectedProject && (
-                      <div className="flex items-center space-x-2 text-sm text-gray-600">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Project Selected</span>
+                      <div className="flex items-center space-x-3 px-4 py-2 bg-success-50 border border-success-200 rounded-xl">
+                        <div className="w-3 h-3 bg-success-500 rounded-full animate-pulse"></div>
+                        <span className="text-success-700 font-medium">Project Selected</span>
                       </div>
                     )}
                   </div>
 
                   {/* Loading State */}
                   {projectsLoading && (
-                    <div className="flex items-center space-x-2 text-blue-600">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                      <span className="text-sm">Loading projects...</span>
+                    <div className="flex items-center space-x-3 text-accent-600 bg-accent-50 border border-accent-200 rounded-xl p-4">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent-600"></div>
+                      <span className="font-medium">Loading projects...</span>
                     </div>
                   )}
 
                   {/* Error State */}
                   {projectsError && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                        <span className="text-red-800 text-sm font-medium">Error loading projects:</span>
+                    <div className="bg-error-50 border border-error-200 rounded-2xl p-6">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-4 h-4 bg-error-500 rounded-full"></div>
+                        <span className="text-error-800 font-medium">Error loading projects:</span>
                       </div>
-                      <p className="text-red-700 text-sm mt-1">{projectsError}</p>
+                      <p className="text-error-700 mt-2">{projectsError}</p>
                       <button 
                         onClick={() => window.location.reload()}
-                        className="mt-2 text-red-600 hover:text-red-800 text-sm underline"
+                        className="mt-3 text-error-600 hover:text-error-800 font-medium underline transition-colors"
                       >
                         Try again
                       </button>
@@ -382,92 +372,32 @@ function App() {
 
                   {/* Project Details */}
                   {selectedProject && (
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">{selectedProject.title}</h3>
-                        <span className="text-sm text-gray-600">{selectedProject.url}</span>
+                    <div className="bg-gradient-to-r from-accent-50 to-primary-50 border border-accent-200 rounded-2xl p-8 animate-scale-in">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-2xl font-semibold text-primary-800">{selectedProject.title}</h3>
+                        <span className="text-primary-600 bg-white/50 px-4 py-2 rounded-xl">{selectedProject.url}</span>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <p className="text-sm text-gray-600">Category</p>
-                          <p className="font-medium">{selectedProject.category || 'General'}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4">
+                          <p className="text-sm text-primary-600 mb-1">Category</p>
+                          <p className="font-semibold text-primary-800">{selectedProject.category || 'General'}</p>
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Email</p>
-                          <p className="font-medium">{selectedProject.email || 'Not specified'}</p>
+                        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4">
+                          <p className="text-sm text-primary-600 mb-1">Email</p>
+                          <p className="font-semibold text-primary-800">{selectedProject.email || 'Not specified'}</p>
                         </div>
                       </div>
 
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() => handleViewProject(selectedProject._id)}
-                          className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all flex items-center space-x-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>View Details</span>
-                        </button>
+                      <div className="flex space-x-4">
                         <button
                           onClick={() => handleViewProjectReport(selectedProject)}
                           disabled={reportLoading}
-                          className="px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-6 py-3 rounded-xl font-medium shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {reportLoading ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-                              <span>Loading...</span>
-                            </>
-                          ) : (
-                            <>
-                              <FileText className="w-4 h-4" />
-                              <span>View Reports</span>
-                            </>
-                          )}
+                          {reportLoading ? 'Loading...' : 'View Full Report'}
                         </button>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Project Report Display */}
-                  {showProjectReport && selectedProject && (
-                    <div className="mt-8">
-                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-gray-800">Project Report: {selectedProject.title}</h2>
-                        <button
-                          onClick={() => setShowProjectReport(false)}
-                          className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all flex items-center space-x-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>Hide Report</span>
-                        </button>
-                      </div>
-                      <ProjectDetails project={selectedProject} />
-                    </div>
-                  )}
-
-                  {/* Empty State */}
-                  {!selectedProject && projects.length === 0 && !projectsLoading && !projectsError && (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FileText className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
-                      <p className="text-gray-600 mb-4">Create your first project to start generating reports</p>
-                      <button
-                        onClick={handleCreateFirstProject}
-                        className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all flex items-center space-x-2 mx-auto"
-                      >
-                        <Plus className="w-4 h-4" />
-                        <span>Create Your First Project</span>
-                      </button>
-                    </div>
-                  )}
-
-                  {projects.length > 0 && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                      <p className="text-blue-800 text-sm">
-                        <strong>{projects.length} project(s) available.</strong> Select one from the dropdown above to view its reports.
-                      </p>
                     </div>
                   )}
                 </div>
@@ -480,51 +410,7 @@ function App() {
       case 'profile':
         return <ProfileSettings />;
       case 'admin':
-        // Only allow admin access if user is admin
-        if (!isAdmin) {
-          return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-              <div className="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-red-500" />
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
-                <p className="text-gray-600 mb-4">
-                  You don't have permission to access the admin panel. Only administrators can view this section.
-                </p>
-                
-                {/* Debug Info */}
-                <div className="bg-gray-100 rounded-lg p-4 mb-4 text-left">
-                  <h4 className="font-semibold text-gray-800 mb-2">Debug Info:</h4>
-                  <p className="text-sm text-gray-600">User ID: {authProvider.user?.id}</p>
-                  <p className="text-sm text-gray-600">Email: {authProvider.user?.email}</p>
-                  <p className="text-sm text-gray-600">isAdmin: {authProvider.user?.isAdmin ? 'true' : 'false'}</p>
-                  <p className="text-sm text-gray-600">Role: {authProvider.user?.role}</p>
-                  <p className="text-sm text-gray-600">Subscription: {authProvider.user?.subscription}</p>
-                </div>
-                
-                <div className="space-y-3">
-                  <button
-                    onClick={() => updateActiveTab('dashboard')}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all"
-                  >
-                    Go to Dashboard
-                  </button>
-                  <button
-                    onClick={() => {
-                      authProvider.refreshUser();
-                      window.location.reload();
-                    }}
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all"
-                  >
-                    Refresh & Try Again
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-        return <AdminPanel />;
+        return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
       default:
         return <Dashboard />;
     }
@@ -532,43 +418,41 @@ function App() {
 
   // If user is authenticated, show main app
   return (
-    <div className="min-h-screen">
-      {/* CRITICAL TEST BANNER FOR AUTHENTICATED USERS */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        background: 'linear-gradient(90deg, #00ff00, #ffff00, #ff6600, #ff0000)',
-        color: 'black',
-        padding: '8px',
-        textAlign: 'center',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        zIndex: 10000,
-        animation: 'rainbow 3s linear infinite'
-      }}>
-        🚀 AUTHENTICATED USER TEST - DEPLOYMENT WORKING! 🚀
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
       </div>
-      <style>{`
-        @keyframes rainbow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
-        }
-      `}</style>
+
+      {/* Modern Test Banner for Authenticated Users */}
+      <div className="relative z-10">
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <div className="bg-gradient-to-r from-success-500 via-accent-500 to-primary-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer">
+            <div className="flex items-center justify-center space-x-2">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+              <span className="text-lg">🚀 OPPTYM - Authenticated User - Modern UI Active! 🚀</span>
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
       
-      <div className="flex">
-        <Sidebar 
-          activeTab={activeTab} 
-          setActiveTab={updateActiveTab}
-          isCollapsed={sidebarCollapsed}
-          setIsCollapsed={setSidebarCollapsed}
-        />
-        <div className="flex-1">
-          <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-          <main className="p-6">
-            {renderContent()}
-          </main>
+      <div className="relative z-10 pt-20">
+        <div className="flex">
+          <Sidebar 
+            activeTab={activeTab} 
+            setActiveTab={updateActiveTab}
+            isCollapsed={sidebarCollapsed}
+            setIsCollapsed={setSidebarCollapsed}
+          />
+          <div className="flex-1">
+            <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+            <main className="p-6">
+              {renderContent()}
+            </main>
+          </div>
         </div>
       </div>
     </div>

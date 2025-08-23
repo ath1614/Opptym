@@ -14860,6 +14860,19 @@ const Smartphone = createLucideIcon$1("Smartphone", [
   ],
   ["path", { d: "M12 18h.01", key: "mhygvu" }]
 ]);
+const Sparkles = createLucideIcon$1("Sparkles", [
+  [
+    "path",
+    {
+      d: "m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z",
+      key: "17u4zn"
+    }
+  ],
+  ["path", { d: "M5 3v4", key: "bklmnn" }],
+  ["path", { d: "M19 17v4", key: "iiml17" }],
+  ["path", { d: "M3 5h4", key: "nem4j1" }],
+  ["path", { d: "M17 19h4", key: "lbex7p" }]
+]);
 const Star = createLucideIcon$1("Star", [
   [
     "polygon",
@@ -21632,14 +21645,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-02e221b4-1755967889472.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-0d2c611d-1755968903844.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755967889472.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755968903844.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25144,7 +25157,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-dd455916-1755967889472.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-0433d673-1755968903844.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49106,43 +49119,43 @@ const menuItems = [
     id: "dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
-    color: "from-blue-500 to-indigo-600"
+    color: "from-accent-500 to-accent-600"
   },
   {
     id: "projects",
     label: "Projects",
     icon: FolderOpen,
-    color: "from-green-500 to-emerald-600"
+    color: "from-success-500 to-success-600"
   },
   {
     id: "tools",
     label: "SEO Tools",
     icon: Wrench,
-    color: "from-purple-500 to-pink-600"
+    color: "from-primary-500 to-primary-600"
   },
   {
     id: "directory",
     label: "Submissions",
     icon: Send,
-    color: "from-orange-500 to-red-600"
+    color: "from-warning-500 to-warning-600"
   },
   {
     id: "reports",
     label: "Reports",
     icon: FileText,
-    color: "from-indigo-500 to-purple-600"
+    color: "from-accent-500 to-primary-600"
   },
   {
     id: "pricing",
     label: "Pricing",
     icon: CreditCard,
-    color: "from-teal-500 to-cyan-600"
+    color: "from-success-500 to-accent-600"
   },
   {
     id: "profile",
     label: "Profile",
     icon: Settings,
-    color: "from-gray-500 to-slate-600"
+    color: "from-primary-500 to-accent-600"
   }
 ];
 const adminItems = [
@@ -49150,7 +49163,7 @@ const adminItems = [
     id: "admin",
     label: "Admin",
     icon: Shield,
-    color: "from-red-500 to-pink-600"
+    color: "from-error-500 to-error-600"
   }
 ];
 function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
@@ -49173,75 +49186,82 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
       "button",
       {
         onClick: () => setIsMobileOpen(!isMobileOpen),
-        className: "p-3 bg-white rounded-xl shadow-soft border border-gray-200 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300",
+        className: "p-2 bg-white/80 backdrop-blur-lg rounded-xl shadow-glass border border-white/20 text-primary-600 hover:text-accent-600 transition-all duration-200",
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(Menu, { className: "w-5 h-5" })
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        className: `sidebar fixed md:static z-40 top-0 left-0 h-full bg-white/95 backdrop-blur-sm shadow-strong border-r border-gray-100 transition-all duration-300 flex flex-col
-        ${isCollapsed ? "w-16" : "w-64"} 
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} 
-        md:translate-x-0 md:flex
-        `,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 transition-all duration-300", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-            !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center cursor-pointer", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Logo, { size: "lg", showText: true }) }),
-            isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center w-full cursor-pointer", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Logo, { size: "md", showText: false }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: () => setIsCollapsed(!isCollapsed),
-                className: `p-2 rounded-lg hover:bg-white/50 transition-all duration-300 text-gray-600 hover:text-gray-900 ${isCollapsed ? "absolute -right-2 top-6" : ""}`,
-                title: isCollapsed ? "Expand sidebar" : "Collapse sidebar",
-                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
-              }
-            )
-          ] }) }),
-          !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 p-4 border-b border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-bold text-sm", children: getUserInitials(user) }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900 truncate", children: getUserDisplayName(user) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 truncate", children: user == null ? void 0 : user.email })
-            ] })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 overflow-y-auto p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: allMenuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "button",
-              {
-                onClick: () => {
-                  setActiveTab(item.id);
-                  setIsMobileOpen(false);
-                },
-                className: `w-full group relative transition-all duration-300 ${isActive ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg" : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"} rounded-lg flex items-center ${isCollapsed ? "justify-center p-2" : "p-3 space-x-3"}`,
-                title: isCollapsed ? item.label : void 0,
-                children: [
-                  isActive && !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-r-full" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `bg-gradient-to-r ${item.color} rounded-lg flex items-center justify-center ${isCollapsed ? "w-8 h-8" : "w-6 h-6"}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: `text-white ${isCollapsed ? "w-4 h-4" : "w-3 h-3"}` }) }),
-                  !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-sm", children: item.label })
-                ]
-              },
-              item.id
-            );
-          }) }) })
-        ]
-      }
-    ),
-    isMobileOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
-      {
-        className: "fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden",
-        onClick: () => setIsMobileOpen(false)
-      }
-    )
+    isMobileOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("aside", { className: `
+        sidebar fixed md:static inset-y-0 left-0 z-50
+        transform transition-transform duration-300 ease-in-out
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        ${isCollapsed ? "w-16" : "w-64"}
+        bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass
+      `, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col h-full", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 border-b border-white/20", children: [
+        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-4 h-4 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-lg font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: "Opptym" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600", children: "SEO Platform" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => setIsCollapsed(!isCollapsed),
+            className: "hidden md:flex p-2 text-primary-600 hover:text-accent-600 hover:bg-white/50 rounded-lg transition-all duration-200",
+            children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
+          }
+        )
+      ] }),
+      !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-b border-white/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-semibold text-sm", children: getUserInitials(user) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-primary-900 truncate", children: getUserDisplayName(user) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 truncate", children: user == null ? void 0 : user.email })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-4 space-y-2", children: allMenuItems.map((item, index2) => {
+        const Icon = item.icon;
+        const isActive = activeTab === item.id;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            onClick: () => {
+              setActiveTab(item.id);
+              setIsMobileOpen(false);
+            },
+            className: `
+                    w-full flex items-center space-x-3 px-3 py-3 rounded-xl transition-all duration-200 group
+                    ${isActive ? "bg-gradient-to-r " + item.color + " text-white shadow-glow" : "text-primary-600 hover:text-accent-600 hover:bg-white/50"}
+                    animate-fade-in-up
+                  `,
+            style: { animationDelay: `${index2 * 0.1}s` },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `
+                    w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+                    ${isActive ? "bg-white/20" : "bg-gradient-to-r " + item.color + " group-hover:shadow-glow"}
+                  `, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "w-4 h-4" }) }),
+              !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: item.label })
+            ]
+          },
+          item.id
+        );
+      }) }),
+      !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-t border-white/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-accent-50 to-primary-50 rounded-xl p-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-success-500 rounded-full animate-pulse" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-primary-600 font-medium", children: "System Online" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-500 mt-1", children: "All services running smoothly" })
+      ] }) })
+    ] }) })
   ] });
 }
 const languages = [
-  { code: "en", name: "English", nativeName: "English" },
-  { code: "hi", name: "Hindi", nativeName: "हिंदी" }
+  { code: "en", name: "English", nativeName: "English", flag: "🇺🇸" },
+  { code: "hi", name: "Hindi", nativeName: "हिंदी", flag: "🇮🇳" }
 ];
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -49256,30 +49276,38 @@ const LanguageSwitcher = () => {
       "button",
       {
         onClick: () => setIsOpen(!isOpen),
-        className: "flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+        className: "flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
         "aria-label": "Select language",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-4 h-4 text-gray-600" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-700", children: currentLanguage.nativeName }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { className: `w-4 h-4 text-gray-600 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}` })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-3 h-3 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm font-medium text-primary-700 group-hover:text-accent-700 transition-colors", children: [
+            currentLanguage.flag,
+            " ",
+            currentLanguage.nativeName
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { className: `w-4 h-4 text-primary-600 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}` })
         ]
       }
     ),
-    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto", children: languages.map((language) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: languages.map((language, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
         onClick: () => handleLanguageChange(language.code),
-        className: `w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center justify-between ${i18n.language === language.code ? "bg-blue-50 text-blue-700" : "text-gray-700"}`,
+        className: `w-full px-4 py-3 text-left rounded-xl transition-all duration-200 flex items-center justify-between group ${i18n.language === language.code ? "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-glow" : "text-primary-700 hover:bg-accent-50 hover:text-accent-700"}`,
+        style: { animationDelay: `${index2 * 0.1}s` },
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: language.nativeName }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500", children: language.name })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: language.flag }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: language.nativeName }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs ${i18n.language === language.code ? "text-white/80" : "text-primary-500"}`, children: language.name })
+            ] })
           ] }),
-          i18n.language === language.code && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-600 rounded-full" })
+          i18n.language === language.code && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-white rounded-full animate-pulse" })
         ]
       },
       language.code
-    )) }),
+    )) }) }),
     isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
@@ -49340,96 +49368,64 @@ function Navbar({ activeTab, setActiveTab }) {
       return "Free";
     return subscription.charAt(0).toUpperCase() + subscription.slice(1);
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "glass border-b border-white/20 shadow-soft sticky top-0 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-7xl mx-auto px-6 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold text-gray-900 gradient-text", children: getPageTitle(activeTab) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 font-medium", children: [
-        "Welcome back, ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-600 font-semibold", children: getUserDisplayName(user) })
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-glass sticky top-0 z-50 animate-fade-in-down", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-7xl mx-auto px-6 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 text-white" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: getPageTitle(activeTab) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-primary-600 font-medium", children: [
+          "Welcome back, ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-accent-600 font-semibold", children: getUserDisplayName(user) })
+        ] })
       ] })
-    ] }) }),
+    ] }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-500 text-white px-2 py-1 rounded text-xs font-bold", children: "NEW UI" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-glow animate-pulse", children: "✨ NEW UI" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(LanguageSwitcher, {}),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hidden md:flex relative", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "h-4 w-4 text-primary-400" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             type: "text",
             placeholder: "Search...",
-            className: "pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+            className: "block w-64 pl-10 pr-3 py-2 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm text-primary-900 placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "relative p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 group", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { className: "w-5 h-5" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-strong border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-gray-900 mb-3", children: "Notifications" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start space-x-3 p-3 bg-blue-50 rounded-xl", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-500 rounded-full mt-2" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900", children: "New submission completed" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-600", children: "Your project was submitted to 5 directories" })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start space-x-3 p-3 bg-green-50 rounded-xl", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-green-500 rounded-full mt-2" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900", children: "SEO score improved" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-600", children: "Your project score increased by 15 points" })
-              ] })
-            ] })
-          ] })
-        ] }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "relative p-2 text-primary-600 hover:text-accent-600 transition-colors duration-200", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { className: "h-5 w-5" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute top-0 right-0 block h-2 w-2 rounded-full bg-accent-500 ring-2 ring-white" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          onClick: handleHelpClick,
-          className: "p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(HelpCircle, { className: "w-5 h-5" })
-        }
-      ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", ref: menuRef, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "button",
           {
             onClick: () => setShowUserMenu(!showUserMenu),
-            className: "flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300",
+            className: "flex items-center space-x-3 p-2 rounded-xl hover:bg-white/50 transition-all duration-200 group",
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-soft", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-bold text-sm", children: getUserInitials(user) }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hidden lg:block text-left", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-gray-900", children: getUserShortName(user) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500", children: user == null ? void 0 : user.email })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 text-gray-400 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" }) }) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-glow group-hover:shadow-glow-lg transition-all", children: getUserInitials(user) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hidden md:block text-left", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-primary-900", children: getUserShortName(user) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600", children: formatSubscriptionName(user == null ? void 0 : user.subscription) })
+              ] })
             ]
           }
         ),
-        showUserMenu && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-strong border border-gray-100 z-50 transform origin-top-right", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 border-b border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-soft", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-bold", children: getUserInitials(user) }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-gray-900", children: getUserDisplayName(user) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: user == null ? void 0 : user.email }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-1 mt-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${(user == null ? void 0 : user.subscription) === "pro" ? "bg-purple-100 text-purple-800" : (user == null ? void 0 : user.subscription) === "business" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}`, children: [
-                formatSubscriptionName(user == null ? void 0 : user.subscription),
-                " Plan"
-              ] }) })
-            ] })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-2", children: [
+        showUserMenu && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 mt-2 w-56 bg-white/90 backdrop-blur-lg rounded-2xl shadow-glass border border-white/20 py-2 animate-fade-in-up", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-4 py-3 border-b border-primary-100", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-primary-900", children: getUserDisplayName(user) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600", children: user == null ? void 0 : user.email })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-1", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "button",
               {
                 onClick: handleProfileClick,
-                className: "w-full flex items-center space-x-3 px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors",
+                className: "flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200",
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(User, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View Profile" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(User, { className: "mr-3 h-4 w-4" }),
+                  "Profile"
                 ]
               }
             ),
@@ -49437,26 +49433,36 @@ function Navbar({ activeTab, setActiveTab }) {
               "button",
               {
                 onClick: handleSettingsClick,
-                className: "w-full flex items-center space-x-3 px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors",
+                className: "flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200",
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Settings" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "mr-3 h-4 w-4" }),
+                  "Settings"
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-gray-100 my-2" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "button",
               {
-                onClick: logout,
-                className: "w-full flex items-center space-x-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-colors",
+                onClick: handleHelpClick,
+                className: "flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200",
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Sign Out" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(HelpCircle, { className: "mr-3 h-4 w-4" }),
+                  "Help & Support"
                 ]
               }
             )
-          ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-primary-100 pt-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "button",
+            {
+              onClick: logout,
+              className: "flex items-center w-full px-4 py-2 text-sm text-error-600 hover:bg-error-50 transition-colors duration-200",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { className: "mr-3 h-4 w-4" }),
+                "Sign out"
+              ]
+            }
+          ) })
         ] })
       ] })
     ] })
@@ -49570,35 +49576,24 @@ function App() {
     }
   }, [activeTab]);
   if (!authProvider.user || !authProvider.user.id) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        background: "linear-gradient(90deg, #ff0000, #ff6600, #ffff00, #00ff00, #0066ff, #6600ff)",
-        color: "white",
-        padding: "10px",
-        textAlign: "center",
-        fontSize: "18px",
-        fontWeight: "bold",
-        zIndex: 1e4,
-        animation: "rainbow 2s linear infinite"
-      }, children: "🌈 DEPLOYMENT TEST - IF YOU SEE THIS, DEPLOYMENT IS WORKING! 🌈" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-          @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-          }
-        ` }),
-      authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
-      authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
-      authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float", style: { animationDelay: "2s" } }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float", style: { animationDelay: "4s" } })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed top-0 left-0 right-0 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-500 via-primary-500 to-accent-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: "✨ OPPTYM - Modern UI Deployed Successfully! ✨" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" })
+      ] }) }) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 pt-20", children: [
+        authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
+        authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
+        authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
+      ] })
     ] });
   }
-  const navigateToTab = (tab) => {
-    updateActiveTab(tab);
-  };
   const handleViewProjectReport = async (project) => {
     setReportLoading(true);
     try {
@@ -49612,14 +49607,8 @@ function App() {
       setReportLoading(false);
     }
   };
-  const handleViewProject = (projectId) => {
-    navigateToTab("projects");
-  };
-  const handleCreateFirstProject = () => {
-    navigateToTab("projects");
-  };
   const renderContent = () => {
-    var _a2, _b2, _c, _d, _e, _f;
+    var _a2;
     const isAdmin = (_a2 = authProvider.user) == null ? void 0 : _a2.isAdmin;
     switch (activeTab) {
       case "dashboard":
@@ -49631,243 +49620,126 @@ function App() {
       case "directory":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(SubmissionsDashboard, {});
       case "reports":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center space-y-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/20", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "w-4 h-4 text-white" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent", children: "SEO Project Reports" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 max-w-2xl mx-auto", children: "Comprehensive analytics and insights for your SEO projects. Track performance, submissions, and optimization opportunities." })
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float", style: { animationDelay: "2s" } })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-5 h-5 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8 relative z-10", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center space-y-6 animate-fade-in-up", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-4 bg-white/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "w-6 h-6 text-white" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800", children: "Project Selection" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Choose a project to view detailed reports" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: "SEO Project Reports" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 text-sm", children: "Comprehensive analytics and insights" })
               ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "select",
-                  {
-                    onChange: (e2) => {
-                      const projectId = e2.target.value;
-                      const project = projects2.find((p2) => p2._id === projectId);
-                      setSelectedProject(project || null);
-                    },
-                    className: "flex-1 border border-gray-200 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                    defaultValue: "",
-                    disabled: projectsLoading,
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: projectsLoading ? "Loading projects..." : "-- Select your project --" }),
-                      projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: p2._id, children: [
-                        p2.title,
-                        " (",
-                        p2.url,
-                        ")"
-                      ] }, p2._id))
-                    ]
-                  }
-                ),
-                selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm text-gray-600", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-green-500 rounded-full" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Project Selected" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up", style: { animationDelay: "0.2s" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4 mb-6", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-6 h-6 text-white" }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-semibold text-primary-800", children: "Project Selection" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600", children: "Choose a project to view detailed reports" })
                 ] })
               ] }),
-              projectsLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-blue-600", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm", children: "Loading projects..." })
-              ] }),
-              projectsError && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 border border-red-200 rounded-lg p-4", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 bg-red-500 rounded-full" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-red-800 text-sm font-medium", children: "Error loading projects:" })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-700 text-sm mt-1", children: projectsError }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
-                  {
-                    onClick: () => window.location.reload(),
-                    className: "mt-2 text-red-600 hover:text-red-800 text-sm underline",
-                    children: "Try again"
-                  }
-                )
-              ] }),
-              selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-800", children: selectedProject.title }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: selectedProject.url })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Category" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: selectedProject.category || "General" })
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Email" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: selectedProject.email || "Not specified" })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex space-x-3", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
+                    "select",
                     {
-                      onClick: () => handleViewProject(selectedProject._id),
-                      className: "px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all flex items-center space-x-2",
+                      onChange: (e2) => {
+                        const projectId = e2.target.value;
+                        const project = projects2.find((p2) => p2._id === projectId);
+                        setSelectedProject(project || null);
+                      },
+                      className: "flex-1 border border-primary-200 px-6 py-4 rounded-2xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium",
+                      defaultValue: "",
+                      disabled: projectsLoading,
                       children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-4 h-4" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View Details" })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: projectsLoading ? "Loading projects..." : "-- Select your project --" }),
+                        projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: p2._id, children: [
+                          p2.title,
+                          " (",
+                          p2.url,
+                          ")"
+                        ] }, p2._id))
                       ]
                     }
                   ),
+                  selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 px-4 py-2 bg-success-50 border border-success-200 rounded-xl", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 bg-success-500 rounded-full animate-pulse" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-success-700 font-medium", children: "Project Selected" })
+                  ] })
+                ] }),
+                projectsLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 text-accent-600 bg-accent-50 border border-accent-200 rounded-xl p-4", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-5 w-5 border-b-2 border-accent-600" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Loading projects..." })
+                ] }),
+                projectsError && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-error-50 border border-error-200 rounded-2xl p-6", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 bg-error-500 rounded-full" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-error-800 font-medium", children: "Error loading projects:" })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-error-700 mt-2", children: projectsError }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      onClick: () => window.location.reload(),
+                      className: "mt-3 text-error-600 hover:text-error-800 font-medium underline transition-colors",
+                      children: "Try again"
+                    }
+                  )
+                ] }),
+                selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-accent-50 to-primary-50 border border-accent-200 rounded-2xl p-8 animate-scale-in", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-2xl font-semibold text-primary-800", children: selectedProject.title }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-600 bg-white/50 px-4 py-2 rounded-xl", children: selectedProject.url })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6 mb-6", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/50 backdrop-blur-sm rounded-xl p-4", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 mb-1", children: "Category" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-primary-800", children: selectedProject.category || "General" })
+                    ] }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/50 backdrop-blur-sm rounded-xl p-4", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 mb-1", children: "Email" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-primary-800", children: selectedProject.email || "Not specified" })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex space-x-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "button",
                     {
                       onClick: () => handleViewProjectReport(selectedProject),
                       disabled: reportLoading,
-                      className: "px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed",
-                      children: reportLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Loading..." })
-                      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-4 h-4" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View Reports" })
-                      ] })
+                      className: "flex-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-6 py-3 rounded-xl font-medium shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed",
+                      children: reportLoading ? "Loading..." : "View Full Report"
                     }
-                  )
+                  ) })
                 ] })
-              ] }),
-              showProjectReport && selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-8", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-2xl font-bold text-gray-800", children: [
-                    "Project Report: ",
-                    selectedProject.title
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      onClick: () => setShowProjectReport(false),
-                      className: "px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all flex items-center space-x-2",
-                      children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-4 h-4" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Hide Report" })
-                      ]
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ProjectDetails, { project: selectedProject })
-              ] }),
-              !selectedProject && projects2.length === 0 && !projectsLoading && !projectsError && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-8 h-8 text-gray-400" }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-medium text-gray-900 mb-2", children: "No projects found" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 mb-4", children: "Create your first project to start generating reports" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "button",
-                  {
-                    onClick: handleCreateFirstProject,
-                    className: "bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all flex items-center space-x-2 mx-auto",
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Create Your First Project" })
-                    ]
-                  }
-                )
-              ] }),
-              projects2.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-blue-800 text-sm", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { children: [
-                  projects2.length,
-                  " project(s) available."
-                ] }),
-                " Select one from the dropdown above to view its reports."
-              ] }) })
+              ] })
             ] })
           ] })
-        ] }) });
+        ] });
       case "pricing":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(PricingPlans, {});
       case "profile":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(ProfileSettings, {});
       case "admin":
-        if (!isAdmin) {
-          return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-gray-50 flex items-center justify-center p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-xl shadow-lg p-8 max-w-md text-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-8 h-8 text-red-500" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 mb-2", children: "Access Denied" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 mb-4", children: "You don't have permission to access the admin panel. Only administrators can view this section." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-100 rounded-lg p-4 mb-4 text-left", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-gray-800 mb-2", children: "Debug Info:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
-                "User ID: ",
-                (_b2 = authProvider.user) == null ? void 0 : _b2.id
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
-                "Email: ",
-                (_c = authProvider.user) == null ? void 0 : _c.email
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
-                "isAdmin: ",
-                ((_d = authProvider.user) == null ? void 0 : _d.isAdmin) ? "true" : "false"
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
-                "Role: ",
-                (_e = authProvider.user) == null ? void 0 : _e.role
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
-                "Subscription: ",
-                (_f = authProvider.user) == null ? void 0 : _f.subscription
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
-                {
-                  onClick: () => updateActiveTab("dashboard"),
-                  className: "bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all",
-                  children: "Go to Dashboard"
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
-                {
-                  onClick: () => {
-                    authProvider.refreshUser();
-                    window.location.reload();
-                  },
-                  className: "bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all",
-                  children: "Refresh & Try Again"
-                }
-              )
-            ] })
-          ] }) });
-        }
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(AdminPanel, {});
+        return isAdmin ? /* @__PURE__ */ jsxRuntimeExports.jsx(AdminPanel, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Access Denied" });
       default:
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {});
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      background: "linear-gradient(90deg, #00ff00, #ffff00, #ff6600, #ff0000)",
-      color: "black",
-      padding: "8px",
-      textAlign: "center",
-      fontSize: "14px",
-      fontWeight: "bold",
-      zIndex: 1e4,
-      animation: "rainbow 3s linear infinite"
-    }, children: "🚀 AUTHENTICATED USER TEST - DEPLOYMENT WORKING! 🚀" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-        @keyframes rainbow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
-        }
-      ` }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float", style: { animationDelay: "4s" } })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed top-0 left-0 right-0 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-success-500 via-accent-500 to-primary-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: "🚀 OPPTYM - Authenticated User - Modern UI Active! 🚀" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" })
+    ] }) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10 pt-20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar,
         {
@@ -49881,7 +49753,7 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { activeTab, setActiveTab: updateActiveTab }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "p-6", children: renderContent() })
       ] })
-    ] })
+    ] }) })
   ] });
 }
 const index = "";
