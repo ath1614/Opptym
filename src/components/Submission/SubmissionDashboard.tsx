@@ -2109,7 +2109,12 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      {/* Test Indicator - Remove after verification */}
+      <div className="bg-green-500 text-white px-4 py-2 rounded-lg text-center font-bold mb-4">
+        ✅ NEW SUBMISSION DASHBOARD LOADED - Single Button Automation Active
+      </div>
+      
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}

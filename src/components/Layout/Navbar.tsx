@@ -15,6 +15,11 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging
+  console.log('🔍 Navbar component mounted - LanguageSwitcher should be visible');
+  console.log('🔍 Current activeTab:', activeTab);
+  console.log('🔍 User data:', user);
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,6 +90,11 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
           {/* Right Section - Actions & User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Test Indicator - Remove after verification */}
+            <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+              NEW UI
+            </div>
+            
             {/* Language Switcher */}
             <LanguageSwitcher />
             
