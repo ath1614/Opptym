@@ -3,6 +3,7 @@ import { Bell, User, LogOut, Search, Settings, HelpCircle, Sparkles } from 'luci
 import { useAuth } from '../../hooks/useAuth';
 import { getUserDisplayName, getUserShortName, getUserInitials } from '../../utils/userUtils';
 import LanguageSwitcher from '../LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
 
 // Force rebuild - Language switcher should be visible in navbar
 interface NavbarProps {
@@ -102,10 +103,13 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
               ✨ NEW UI
             </div>
             
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-            
-            {/* Search Bar */}
+                                    {/* Language Switcher */}
+                        <LanguageSwitcher />
+                        
+                        {/* Theme Toggle */}
+                        <ThemeToggle />
+                        
+                        {/* Search Bar */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-4 w-4 text-primary-400" />

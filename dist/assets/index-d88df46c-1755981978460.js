@@ -14719,6 +14719,9 @@ const Monitor = createLucideIcon$1("Monitor", [
   ["line", { x1: "8", x2: "16", y1: "21", y2: "21", key: "1svkeh" }],
   ["line", { x1: "12", x2: "12", y1: "17", y2: "21", key: "vw1qmm" }]
 ]);
+const Moon = createLucideIcon$1("Moon", [
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+]);
 const MoreVertical = createLucideIcon$1("MoreVertical", [
   ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
   ["circle", { cx: "12", cy: "5", r: "1", key: "gxeob9" }],
@@ -14881,6 +14884,17 @@ const Star = createLucideIcon$1("Star", [
       key: "8f66p6"
     }
   ]
+]);
+const Sun = createLucideIcon$1("Sun", [
+  ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "m4.93 4.93 1.41 1.41", key: "149t6j" }],
+  ["path", { d: "m17.66 17.66 1.41 1.41", key: "ptbguv" }],
+  ["path", { d: "M2 12h2", key: "1t8f8n" }],
+  ["path", { d: "M20 12h2", key: "1q8mjw" }],
+  ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
+  ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
 ]);
 const Target = createLucideIcon$1("Target", [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
@@ -21688,14 +21702,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-1054db8b-1755980422784.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-9f19d602-1755981978460.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755980422784.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755981978460.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25200,7 +25214,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-86c753b0-1755980422784.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-620a7378-1755981978460.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49245,17 +49259,18 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
         sidebar fixed md:static inset-y-0 left-0 z-50
         transform transition-transform duration-300 ease-in-out
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-        ${isCollapsed ? "w-16" : "w-64"}
-        bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass
+        ${isCollapsed ? "w-20" : "w-72"}
+        bg-white/90 backdrop-blur-xl border-r border-white/30 shadow-glass-lg
+        overflow-hidden
       `, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col h-full", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 border-b border-white/20", children: [
-        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-4 h-4 text-white" }) }),
+        !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-lg font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: "Opptym" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: "Opptym" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600", children: "SEO Platform" })
           ] })
-        ] }),
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center w-full", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 text-white" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -49265,14 +49280,14 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
           }
         )
       ] }),
-      !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-b border-white/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-b border-white/20", children: !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-semibold text-sm", children: getUserInitials(user) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-primary-900 truncate", children: getUserDisplayName(user) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 truncate", children: user == null ? void 0 : user.email })
         ] })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-4 space-y-2", children: allMenuItems.map((item, index2) => {
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-semibold text-sm", children: getUserInitials(user) }) }) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-4 space-y-3", children: allMenuItems.map((item, index2) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -49283,16 +49298,17 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
               setIsMobileOpen(false);
             },
             className: `
-                    w-full flex items-center space-x-3 px-3 py-3 rounded-xl transition-all duration-200 group
+                    w-full flex items-center ${!isCollapsed ? "space-x-3" : "justify-center"} px-3 py-3 rounded-xl transition-all duration-200 group
                     ${isActive ? "bg-gradient-to-r " + item.color + " text-white shadow-glow" : "text-primary-600 hover:text-accent-600 hover:bg-white/50"}
                     animate-fade-in-up
                   `,
             style: { animationDelay: `${index2 * 0.1}s` },
+            title: isCollapsed ? item.label : void 0,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `
-                    w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+                    ${isCollapsed ? "w-10 h-10" : "w-8 h-8"} rounded-lg flex items-center justify-center transition-all duration-200
                     ${isActive ? "bg-white/20" : "bg-gradient-to-r " + item.color + " group-hover:shadow-glow"}
-                  `, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "w-4 h-4" }) }),
+                  `, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: `${isCollapsed ? "w-5 h-5" : "w-4 h-4"}` }) }),
               !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: item.label })
             ]
           },
@@ -49311,7 +49327,106 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
 }
 const languages = [
   { code: "en", name: "English", nativeName: "English", flag: "🇺🇸" },
-  { code: "hi", name: "Hindi", nativeName: "हिंदी", flag: "🇮🇳" }
+  { code: "hi", name: "Hindi", nativeName: "हिंदी", flag: "🇮🇳" },
+  { code: "es", name: "Spanish", nativeName: "Español", flag: "🇪🇸" },
+  { code: "fr", name: "French", nativeName: "Français", flag: "🇫🇷" },
+  { code: "de", name: "German", nativeName: "Deutsch", flag: "🇩🇪" },
+  { code: "it", name: "Italian", nativeName: "Italiano", flag: "🇮🇹" },
+  { code: "pt", name: "Portuguese", nativeName: "Português", flag: "🇵🇹" },
+  { code: "ru", name: "Russian", nativeName: "Русский", flag: "🇷🇺" },
+  { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
+  { code: "ko", name: "Korean", nativeName: "한국어", flag: "🇰🇷" },
+  { code: "zh", name: "Chinese", nativeName: "中文", flag: "🇨🇳" },
+  { code: "ar", name: "Arabic", nativeName: "العربية", flag: "🇸🇦" },
+  { code: "tr", name: "Turkish", nativeName: "Türkçe", flag: "🇹🇷" },
+  { code: "nl", name: "Dutch", nativeName: "Nederlands", flag: "🇳🇱" },
+  { code: "pl", name: "Polish", nativeName: "Polski", flag: "🇵🇱" },
+  { code: "sv", name: "Swedish", nativeName: "Svenska", flag: "🇸🇪" },
+  { code: "da", name: "Danish", nativeName: "Dansk", flag: "🇩🇰" },
+  { code: "no", name: "Norwegian", nativeName: "Norsk", flag: "🇳🇴" },
+  { code: "fi", name: "Finnish", nativeName: "Suomi", flag: "🇫🇮" },
+  { code: "cs", name: "Czech", nativeName: "Čeština", flag: "🇨🇿" },
+  { code: "hu", name: "Hungarian", nativeName: "Magyar", flag: "🇭🇺" },
+  { code: "ro", name: "Romanian", nativeName: "Română", flag: "🇷🇴" },
+  { code: "bg", name: "Bulgarian", nativeName: "Български", flag: "🇧🇬" },
+  { code: "hr", name: "Croatian", nativeName: "Hrvatski", flag: "🇭🇷" },
+  { code: "sk", name: "Slovak", nativeName: "Slovenčina", flag: "🇸🇰" },
+  { code: "sl", name: "Slovenian", nativeName: "Slovenščina", flag: "🇸🇮" },
+  { code: "et", name: "Estonian", nativeName: "Eesti", flag: "🇪🇪" },
+  { code: "lv", name: "Latvian", nativeName: "Latviešu", flag: "🇱🇻" },
+  { code: "lt", name: "Lithuanian", nativeName: "Lietuvių", flag: "🇱🇹" },
+  { code: "mt", name: "Maltese", nativeName: "Malti", flag: "🇲🇹" },
+  { code: "el", name: "Greek", nativeName: "Ελληνικά", flag: "🇬🇷" },
+  { code: "he", name: "Hebrew", nativeName: "עברית", flag: "🇮🇱" },
+  { code: "th", name: "Thai", nativeName: "ไทย", flag: "🇹🇭" },
+  { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt", flag: "🇻🇳" },
+  { code: "id", name: "Indonesian", nativeName: "Bahasa Indonesia", flag: "🇮🇩" },
+  { code: "ms", name: "Malay", nativeName: "Bahasa Melayu", flag: "🇲🇾" },
+  { code: "tl", name: "Filipino", nativeName: "Filipino", flag: "🇵🇭" },
+  { code: "bn", name: "Bengali", nativeName: "বাংলা", flag: "🇧🇩" },
+  { code: "ta", name: "Tamil", nativeName: "தமிழ்", flag: "🇮🇳" },
+  { code: "te", name: "Telugu", nativeName: "తెలుగు", flag: "🇮🇳" },
+  { code: "ml", name: "Malayalam", nativeName: "മലയാളം", flag: "🇮🇳" },
+  { code: "kn", name: "Kannada", nativeName: "ಕನ್ನಡ", flag: "🇮🇳" },
+  { code: "gu", name: "Gujarati", nativeName: "ગુજરાતી", flag: "🇮🇳" },
+  { code: "pa", name: "Punjabi", nativeName: "ਪੰਜਾਬੀ", flag: "🇮🇳" },
+  { code: "mr", name: "Marathi", nativeName: "मराठी", flag: "🇮🇳" },
+  { code: "or", name: "Odia", nativeName: "ଓଡ଼ିଆ", flag: "🇮🇳" },
+  { code: "as", name: "Assamese", nativeName: "অসমীয়া", flag: "🇮🇳" },
+  { code: "ne", name: "Nepali", nativeName: "नेपाली", flag: "🇳🇵" },
+  { code: "si", name: "Sinhala", nativeName: "සිංහල", flag: "🇱🇰" },
+  { code: "my", name: "Burmese", nativeName: "မြန်မာ", flag: "🇲🇲" },
+  { code: "km", name: "Khmer", nativeName: "ខ្មែរ", flag: "🇰🇭" },
+  { code: "lo", name: "Lao", nativeName: "ລາວ", flag: "🇱🇦" },
+  { code: "mn", name: "Mongolian", nativeName: "Монгол", flag: "🇲🇳" },
+  { code: "ka", name: "Georgian", nativeName: "ქართული", flag: "🇬🇪" },
+  { code: "am", name: "Amharic", nativeName: "አማርኛ", flag: "🇪🇹" },
+  { code: "sw", name: "Swahili", nativeName: "Kiswahili", flag: "🇹🇿" },
+  { code: "yo", name: "Yoruba", nativeName: "Yorùbá", flag: "🇳🇬" },
+  { code: "ig", name: "Igbo", nativeName: "Igbo", flag: "🇳🇬" },
+  { code: "ha", name: "Hausa", nativeName: "Hausa", flag: "🇳🇬" },
+  { code: "zu", name: "Zulu", nativeName: "isiZulu", flag: "🇿🇦" },
+  { code: "af", name: "Afrikaans", nativeName: "Afrikaans", flag: "🇿🇦" },
+  { code: "xh", name: "Xhosa", nativeName: "isiXhosa", flag: "🇿🇦" },
+  { code: "st", name: "Sotho", nativeName: "Sesotho", flag: "🇿🇦" },
+  { code: "tn", name: "Tswana", nativeName: "Setswana", flag: "🇿🇦" },
+  { code: "ss", name: "Swati", nativeName: "siSwati", flag: "🇸🇿" },
+  { code: "ve", name: "Venda", nativeName: "Tshivenda", flag: "🇿🇦" },
+  { code: "ts", name: "Tsonga", nativeName: "Xitsonga", flag: "🇿🇦" },
+  { code: "nd", name: "Ndebele", nativeName: "isiNdebele", flag: "🇿🇦" },
+  { code: "sn", name: "Shona", nativeName: "chiShona", flag: "🇿🇼" },
+  { code: "rw", name: "Kinyarwanda", nativeName: "Ikinyarwanda", flag: "🇷🇼" },
+  { code: "lg", name: "Ganda", nativeName: "Luganda", flag: "🇺🇬" },
+  { code: "ak", name: "Akan", nativeName: "Akan", flag: "🇬🇭" },
+  { code: "tw", name: "Twi", nativeName: "Twi", flag: "🇬🇭" },
+  { code: "ee", name: "Ewe", nativeName: "Eʋegbe", flag: "🇹🇬" },
+  { code: "fon", name: "Fon", nativeName: "Fɔngbè", flag: "🇧🇯" },
+  { code: "dyo", name: "Jola", nativeName: "Joola", flag: "🇸🇳" },
+  { code: "wo", name: "Wolof", nativeName: "Wolof", flag: "🇸🇳" },
+  { code: "ff", name: "Fula", nativeName: "Fulfulde", flag: "🇨🇲" },
+  { code: "bm", name: "Bambara", nativeName: "Bamanankan", flag: "🇲🇱" },
+  { code: "sg", name: "Sango", nativeName: "Sängö", flag: "🇨🇫" },
+  { code: "ln", name: "Lingala", nativeName: "Lingála", flag: "🇨🇬" },
+  { code: "kg", name: "Kongo", nativeName: "Kikongo", flag: "🇨🇬" },
+  { code: "lu", name: "Luba", nativeName: "Tshiluba", flag: "🇨🇩" },
+  { code: "rn", name: "Kirundi", nativeName: "Ikirundi", flag: "🇧🇮" },
+  { code: "so", name: "Somali", nativeName: "Soomaali", flag: "🇸🇴" },
+  { code: "om", name: "Oromo", nativeName: "Afaan Oromoo", flag: "🇪🇹" },
+  { code: "ti", name: "Tigrinya", nativeName: "ትግርኛ", flag: "🇪🇷" },
+  { code: "fa", name: "Persian", nativeName: "فارسی", flag: "🇮🇷" },
+  { code: "ur", name: "Urdu", nativeName: "اردو", flag: "🇵🇰" },
+  { code: "ps", name: "Pashto", nativeName: "پښتو", flag: "🇦🇫" },
+  { code: "sd", name: "Sindhi", nativeName: "سنڌي", flag: "🇵🇰" },
+  { code: "ku", name: "Kurdish", nativeName: "کوردی", flag: "🇮🇶" },
+  { code: "az", name: "Azerbaijani", nativeName: "Azərbaycan", flag: "🇦🇿" },
+  { code: "kk", name: "Kazakh", nativeName: "Қазақ", flag: "🇰🇿" },
+  { code: "ky", name: "Kyrgyz", nativeName: "Кыргыз", flag: "🇰🇬" },
+  { code: "uz", name: "Uzbek", nativeName: "O'zbek", flag: "🇺🇿" },
+  { code: "tk", name: "Turkmen", nativeName: "Türkmen", flag: "🇹🇲" },
+  { code: "tg", name: "Tajik", nativeName: "Тоҷикӣ", flag: "🇹🇯" },
+  { code: "bo", name: "Tibetan", nativeName: "བོད་ཡིག", flag: "🇨🇳" },
+  { code: "ug", name: "Uyghur", nativeName: "ئۇيغۇر", flag: "🇨🇳" },
+  { code: "dz", name: "Dzongkha", nativeName: "རྫོང་ཁ", flag: "🇧🇹" }
 ];
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -49326,7 +49441,7 @@ const LanguageSwitcher = () => {
       "button",
       {
         onClick: () => setIsOpen(!isOpen),
-        className: "flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
+        className: "flex items-center space-x-2 px-3 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
         "aria-label": "Select language",
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-3 h-3 text-white" }) }),
@@ -49339,12 +49454,12 @@ const LanguageSwitcher = () => {
         ]
       }
     ),
-    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: languages.map((language, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up max-h-96 overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: languages.map((language, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
         onClick: () => handleLanguageChange(language.code),
         className: `w-full px-4 py-3 text-left rounded-xl transition-all duration-200 flex items-center justify-between group ${i18n.language === language.code ? "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-glow" : "text-primary-700 hover:bg-accent-50 hover:text-accent-700"}`,
-        style: { animationDelay: `${index2 * 0.1}s` },
+        style: { animationDelay: `${index2 * 0.05}s` },
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: language.flag }),
@@ -49357,6 +49472,80 @@ const LanguageSwitcher = () => {
         ]
       },
       language.code
+    )) }) }),
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        className: "fixed inset-0 z-40",
+        onClick: () => setIsOpen(false)
+      }
+    )
+  ] });
+};
+const ThemeToggle = () => {
+  const [theme, setTheme] = reactExports.useState("light");
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    setTheme(savedTheme);
+    applyTheme(savedTheme);
+  }, []);
+  const applyTheme = (newTheme) => {
+    const root = document.documentElement;
+    if (newTheme === "dark" || newTheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    localStorage.setItem("theme", newTheme);
+  };
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    applyTheme(newTheme);
+    setIsOpen(false);
+  };
+  const getCurrentIcon = () => {
+    switch (theme) {
+      case "dark":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-4 h-4" });
+      case "system":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-4 h-4" });
+      default:
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-4 h-4" });
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        onClick: () => setIsOpen(!isOpen),
+        className: "flex items-center space-x-2 px-3 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
+        "aria-label": "Toggle theme",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all", children: getCurrentIcon() }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-primary-700 group-hover:text-accent-700 transition-colors", children: theme.charAt(0).toUpperCase() + theme.slice(1) })
+        ]
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-48 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: [
+      { value: "light", label: "Light", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-4 h-4" }) },
+      { value: "dark", label: "Dark", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-4 h-4" }) },
+      { value: "system", label: "System", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-4 h-4" }) }
+    ].map((option, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        onClick: () => handleThemeChange(option.value),
+        className: `w-full px-4 py-3 text-left rounded-xl transition-all duration-200 flex items-center justify-between group ${theme === option.value ? "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-glow" : "text-primary-700 hover:bg-accent-50 hover:text-accent-700"}`,
+        style: { animationDelay: `${index2 * 0.1}s` },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-5 h-5 rounded-lg flex items-center justify-center ${theme === option.value ? "bg-white/20" : "bg-gradient-to-r from-accent-500 to-accent-600 group-hover:shadow-glow"}`, children: option.icon }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: option.label })
+          ] }),
+          theme === option.value && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-white rounded-full animate-pulse" })
+        ]
+      },
+      option.value
     )) }) }),
     isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
@@ -49432,6 +49621,7 @@ function Navbar({ activeTab, setActiveTab }) {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-glow animate-pulse", children: "✨ NEW UI" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(LanguageSwitcher, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "h-4 w-4 text-primary-400" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -49637,7 +49827,7 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: "✨ OPPTYM - Modern UI Deployed Successfully! ✨" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" })
       ] }) }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 pt-20", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
         authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
         authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
         authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
@@ -49784,11 +49974,6 @@ function App() {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float", style: { animationDelay: "4s" } })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed top-0 left-0 right-0 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-success-500 via-accent-500 to-primary-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: "🚀 OPPTYM - Authenticated User - Modern UI Active! 🚀" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" })
-    ] }) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10 pt-20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar,

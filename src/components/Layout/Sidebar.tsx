@@ -116,22 +116,29 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
         sidebar fixed md:static inset-y-0 left-0 z-50
         transform transition-transform duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        ${isCollapsed ? 'w-16' : 'w-64'}
-        bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass
+        ${isCollapsed ? 'w-20' : 'w-72'}
+        bg-white/90 backdrop-blur-xl border-r border-white/30 shadow-glass-lg
+        overflow-hidden
       `}>
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-white/20">
-            {!isCollapsed && (
+            {!isCollapsed ? (
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                  <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
                     Opptym
                   </h1>
                   <p className="text-xs text-primary-600">SEO Platform</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center w-full">
+                <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                  <Sparkles className="w-5 h-5 text-white" />
                 </div>
               </div>
             )}
@@ -145,8 +152,8 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
           </div>
 
           {/* User Info */}
-          {!isCollapsed && (
-            <div className="p-4 border-b border-white/20">
+          <div className="p-4 border-b border-white/20">
+            {!isCollapsed ? (
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
                   <span className="text-white font-semibold text-sm">{getUserInitials(user)}</span>
@@ -156,11 +163,17 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                   <p className="text-xs text-primary-600 truncate">{user?.email}</p>
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex justify-center">
+                <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+                  <span className="text-white font-semibold text-sm">{getUserInitials(user)}</span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-3">
             {allMenuItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -173,7 +186,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                     setIsMobileOpen(false);
                   }}
                   className={`
-                    w-full flex items-center space-x-3 px-3 py-3 rounded-xl transition-all duration-200 group
+                    w-full flex items-center ${!isCollapsed ? 'space-x-3' : 'justify-center'} px-3 py-3 rounded-xl transition-all duration-200 group
                     ${isActive 
                       ? 'bg-gradient-to-r ' + item.color + ' text-white shadow-glow' 
                       : 'text-primary-600 hover:text-accent-600 hover:bg-white/50'
@@ -181,15 +194,16 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                     animate-fade-in-up
                   `}
                   style={{ animationDelay: `${index * 0.1}s` }}
+                  title={isCollapsed ? item.label : undefined}
                 >
                   <div className={`
-                    w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+                    ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-lg flex items-center justify-center transition-all duration-200
                     ${isActive 
                       ? 'bg-white/20' 
                       : 'bg-gradient-to-r ' + item.color + ' group-hover:shadow-glow'
                     }
                   `}>
-                    <Icon className="w-4 h-4" />
+                    <Icon className={`${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
                   </div>
                   {!isCollapsed && (
                     <span className="font-medium">{item.label}</span>

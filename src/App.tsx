@@ -205,7 +205,7 @@ function App() {
           </div>
         </div>
         
-        <div className="relative z-10 pt-20">
+        <div className="relative z-10">
           {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
           {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
           {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
@@ -426,18 +426,7 @@ function App() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      {/* Modern Test Banner for Authenticated Users */}
-      <div className="relative z-10">
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <div className="bg-gradient-to-r from-success-500 via-accent-500 to-primary-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer">
-            <div className="flex items-center justify-center space-x-2">
-              <Sparkles className="w-5 h-5 animate-pulse" />
-              <span className="text-lg">🚀 OPPTYM - Authenticated User - Modern UI Active! 🚀</span>
-              <Sparkles className="w-5 h-5 animate-pulse" />
-            </div>
-          </div>
-        </div>
-      </div>
+
       
       <div className="relative z-10 pt-20">
         <div className="flex">
