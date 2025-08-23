@@ -98,28 +98,60 @@ function App() {
           return;
         }
       } catch (error) {
-        console.log('🔍 Token decoding failed, clearing...');
+        console.log('🔍 Error validating token, clearing...');
         localStorage.removeItem('token');
       }
     }
   }, []);
 
-  // Manual logout function for debugging
+  // Handle manual logout for debugging
   const handleManualLogout = () => {
     console.log('🔍 Manual logout triggered');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear();
     sessionStorage.clear();
-    window.location.reload();
+    window.location.href = '/';
   };
 
-  // Add manual logout to window for debugging
+  // Add global function for debugging
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      (window as any).manualLogout = handleManualLogout;
-      console.log('🔍 Manual logout available: window.manualLogout()');
-    }
+    (window as any).manualLogout = handleManualLogout;
+    console.log('🔍 Manual logout function available: window.manualLogout()');
   }, []);
+
+  // If user is not authenticated, show landing/login/register
+  if (!authProvider.user || !authProvider.user.id) {
+    return (
+      <div className="min-h-screen">
+        {/* CRITICAL TEST BANNER - Should be visible if deployment works */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          background: 'linear-gradient(90deg, #ff0000, #ff6600, #ffff00, #00ff00, #0066ff, #6600ff)',
+          color: 'white',
+          padding: '10px',
+          textAlign: 'center',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          zIndex: 10000,
+          animation: 'rainbow 2s linear infinite'
+        }}>
+          🌈 DEPLOYMENT TEST - IF YOU SEE THIS, DEPLOYMENT IS WORKING! 🌈
+        </div>
+        <style>{`
+          @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+          }
+        `}</style>
+        
+        {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
+        {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
+        {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
+      </div>
+    );
+  }
 
   // Development mode quick login helper - DISABLED FOR OTP SYSTEM
   // const handleQuickLogin = async () => {
