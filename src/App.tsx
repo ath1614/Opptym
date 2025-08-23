@@ -528,48 +528,48 @@ function App() {
     }
   };
 
+  // If user is authenticated, show main app
   return (
-    <AuthContext.Provider value={authProvider}>
-      <Routes>
-        {/* Public routes */}
-
-        
-        {/* Auth routes */}
-        <Route path="/" element={
-          <div className="min-h-screen bg-gray-50">
-            {!authProvider.user || !authProvider.user.id || !authProvider.user.email ? (
-              <div>
-                {authMode === 'landing' ? (
-                  <LandingPage
-                    onLoginClick={() => setAuthMode('login')}
-                    onRegisterClick={() => setAuthMode('register')}
-                  />
-                ) : authMode === 'login' ? (
-                  <Login onSwitchToRegister={() => setAuthMode('register')} />
-                ) : (
-                  <Register onSwitchToLogin={() => setAuthMode('login')} />
-                )}
-              </div>
-            ) : (
-              <div className="flex h-screen overflow-hidden">
-                <Sidebar
-                  activeTab={activeTab}
-                  setActiveTab={updateActiveTab}
-                  isCollapsed={sidebarCollapsed}
-                  setIsCollapsed={setSidebarCollapsed}
-                />
-                <div className="flex-1 flex flex-col overflow-hidden">
-                  <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-                  <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-                    {renderContent()}
-                  </main>
-                </div>
-              </div>
-            )}
-          </div>
-        } />
-      </Routes>
-    </AuthContext.Provider>
+    <div className="min-h-screen">
+      {/* CRITICAL TEST BANNER FOR AUTHENTICATED USERS */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        background: 'linear-gradient(90deg, #00ff00, #ffff00, #ff6600, #ff0000)',
+        color: 'black',
+        padding: '8px',
+        textAlign: 'center',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        zIndex: 10000,
+        animation: 'rainbow 3s linear infinite'
+      }}>
+        🚀 AUTHENTICATED USER TEST - DEPLOYMENT WORKING! 🚀
+      </div>
+      <style>{`
+        @keyframes rainbow {
+          0% { filter: hue-rotate(0deg); }
+          100% { filter: hue-rotate(360deg); }
+        }
+      `}</style>
+      
+      <div className="flex">
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={updateActiveTab}
+          isCollapsed={sidebarCollapsed}
+          setIsCollapsed={setSidebarCollapsed}
+        />
+        <div className="flex-1">
+          <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+          <main className="p-6">
+            {renderContent()}
+          </main>
+        </div>
+      </div>
+    </div>
   );
 }
 
