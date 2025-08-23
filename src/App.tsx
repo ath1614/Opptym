@@ -20,6 +20,28 @@ import Navbar from './components/Layout/Navbar';
 import { BookOpen, Settings, Eye, FileText, Plus, Shield } from 'lucide-react';
 import { showPopup } from './utils/popup';
 
+interface Project {
+  _id: string;
+  title: string;
+  url: string;
+  email?: string;
+  category?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
+  targetKeywords?: string[];
+  sitemapUrl?: string;
+  robotsTxtUrl?: string;
+  metaTagReport?: object;
+  keywordDensityReport?: object;
+  backlinkReport?: object;
+  brokenLinksReport?: object;
+  sitemapReport?: object;
+  robotsReport?: object;
+  keywordTrackerReport?: object;
+  submissions?: any[];
+}
+
 function App() {
   const authProvider = useAuthProvider();
 
@@ -41,6 +63,14 @@ function App() {
   
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Move all project-related state to the top
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(false);
+  const [projectsError, setProjectsError] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [showProjectReport, setShowProjectReport] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
 
   // Update localStorage and URL hash when activeTab changes
   const updateActiveTab = (tab: string) => {
@@ -165,35 +195,6 @@ function App() {
   //     setAuthMode('register');
   //   }
   // };
-
-  interface Project {
-    _id: string;
-    title: string;
-    url: string;
-    email?: string;
-    category?: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    targetKeywords?: string[];
-    sitemapUrl?: string;
-    robotsTxtUrl?: string;
-    metaTagReport?: object;
-    keywordDensityReport?: object;
-    backlinkReport?: object;
-    brokenLinksReport?: object;
-    sitemapReport?: object;
-    robotsReport?: object;
-    keywordTrackerReport?: object;
-    submissions?: any[];
-  }
-
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [projectsLoading, setProjectsLoading] = useState(false);
-  const [projectsError, setProjectsError] = useState<string | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [showProjectReport, setShowProjectReport] = useState(false);
-  const [reportLoading, setReportLoading] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {

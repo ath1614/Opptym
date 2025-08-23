@@ -21632,14 +21632,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-83474f2e-1755967382188.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-223c9a0e-1755967668250.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755967382188.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755967668250.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25144,7 +25144,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-13dc3a94-1755967382188.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-4d755da4-1755967668250.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49476,6 +49476,12 @@ function App() {
   };
   const [activeTab, setActiveTab] = reactExports.useState(getInitialTab);
   const [sidebarCollapsed, setSidebarCollapsed] = reactExports.useState(false);
+  const [projects2, setProjects] = reactExports.useState([]);
+  const [projectsLoading, setProjectsLoading] = reactExports.useState(false);
+  const [projectsError, setProjectsError] = reactExports.useState(null);
+  const [selectedProject, setSelectedProject] = reactExports.useState(null);
+  const [showProjectReport, setShowProjectReport] = reactExports.useState(false);
+  const [reportLoading, setReportLoading] = reactExports.useState(false);
   const updateActiveTab = (tab) => {
     setActiveTab(tab);
     localStorage.setItem("activeTab", tab);
@@ -49560,12 +49566,6 @@ function App() {
       authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
     ] });
   }
-  const [projects2, setProjects] = reactExports.useState([]);
-  const [projectsLoading, setProjectsLoading] = reactExports.useState(false);
-  const [projectsError, setProjectsError] = reactExports.useState(null);
-  const [selectedProject, setSelectedProject] = reactExports.useState(null);
-  const [showProjectReport, setShowProjectReport] = reactExports.useState(false);
-  const [reportLoading, setReportLoading] = reactExports.useState(false);
   reactExports.useEffect(() => {
     const fetchProjects = async () => {
       var _a2, _b2;
