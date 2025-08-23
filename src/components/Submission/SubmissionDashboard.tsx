@@ -2109,39 +2109,44 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
-      {/* Test Indicator - Remove after verification */}
-      <div className="bg-green-500 text-white px-4 py-2 rounded-lg text-center font-bold mb-4">
-        ✅ NEW SUBMISSION DASHBOARD LOADED - Single Button Automation Active
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
       </div>
       
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8 relative z-10">
         
         {/* Header Section */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/20">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+        <div className="text-center space-y-6 animate-fade-in-up">
+          <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20">
+            <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+              <Zap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              SEO Submissions Hub
-            </h1>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                SEO Submissions Hub
+              </h1>
+              <p className="text-primary-600 text-sm">Intelligent automation for your SEO success</p>
+            </div>
           </div>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-primary-600 max-w-2xl mx-auto text-lg">
             Streamline your SEO submissions with our intelligent automation tools. 
             Choose your project and let our AI-powered systems handle the rest.
           </p>
         </div>
 
         {/* Project Selection Card */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
-              <Settings className="w-5 h-5 text-white" />
+        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
+              <Settings className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-gray-800">Project Configuration</h2>
-              <p className="text-sm text-gray-600">Select the project you want to submit</p>
+              <h2 className="text-2xl font-semibold text-primary-800">Project Configuration</h2>
+              <p className="text-primary-600">Select the project you want to submit</p>
             </div>
             
             <button
@@ -2151,20 +2156,20 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 fetchProjects();
               }}
               disabled={projectsLoading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-xl hover:shadow-glow transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               {projectsLoading ? 'Loading...' : 'Refresh'}
             </button>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Project Selection Dropdown */}
             <div className="flex items-center space-x-4">
               <select
                 value={selectedProject?._id || ''}
                 onChange={(e) => handleProjectSelect(e.target.value)}
                 disabled={projectsLoading}
-                className="flex-1 border border-gray-200 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 border border-primary-200 px-6 py-4 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">
                   {projectsLoading ? 'Loading projects...' : '-- Select your project --'}
@@ -2177,32 +2182,32 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               </select>
               
               {selectedProject && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span>Project Selected</span>
+                <div className="flex items-center space-x-3 px-4 py-2 bg-success-50 border border-success-200 rounded-xl">
+                  <div className="w-3 h-3 bg-success-500 rounded-full animate-pulse"></div>
+                  <span className="text-success-700 font-medium">Project Selected</span>
                 </div>
               )}
             </div>
 
             {/* Loading and Error States */}
             {projectsLoading && (
-              <div className="flex items-center space-x-2 text-sm text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span>Loading projects...</span>
+              <div className="flex items-center space-x-3 text-accent-600 bg-accent-50 border border-accent-200 rounded-xl p-4">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent-600"></div>
+                <span className="font-medium">Loading projects...</span>
               </div>
             )}
             
             {projectsError && (
-              <div className="flex items-center space-x-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                <span>Error: {projectsError}</span>
+              <div className="flex items-center space-x-3 text-error-700 bg-error-50 border border-error-200 rounded-xl p-4">
+                <div className="w-4 h-4 bg-error-500 rounded-full"></div>
+                <span className="font-medium">Error: {projectsError}</span>
               </div>
             )}
             
             {!projectsLoading && !projectsError && projects.length === 0 && (
-              <div className="flex items-center space-x-2 text-sm text-yellow-600 bg-yellow-50 px-3 py-2 rounded-lg">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <span>No projects found. Create a project first to use submission tools.</span>
+              <div className="flex items-center space-x-3 text-warning-700 bg-warning-50 border border-warning-200 rounded-xl p-4">
+                <div className="w-4 h-4 bg-warning-500 rounded-full"></div>
+                <span className="font-medium">No projects found. Create a project first to use submission tools.</span>
               </div>
             )}
             
@@ -2309,7 +2314,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                         <button
                           onClick={() => handleOneClickAutomation(site.url, site.name)}
                           disabled={loading}
-                          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 font-medium"
+                          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium shadow-glow"
                           title="One-Click Full Automation"
                         >
                           {loading ? (
@@ -2353,86 +2358,86 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         {/* Information Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Automation Status */}
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl shadow-xl border border-green-200/50 p-6">
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-success-500 to-success-600 rounded-xl flex items-center justify-center shadow-glow">
                 <Check className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Automation Ready</h3>
-                <p className="text-sm text-gray-600">All systems operational</p>
+                <h3 className="text-lg font-semibold text-primary-800">Automation Ready</h3>
+                <p className="text-sm text-primary-600">All systems operational</p>
               </div>
             </div>
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">One-Button Automation</span>
+                <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+                <span className="text-primary-700">One-Button Automation</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Smart Bookmarklet System</span>
+                <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+                <span className="text-primary-700">Smart Bookmarklet System</span>
               </div>
               <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Auto-Cleanup Enabled</span>
+                <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+                <span className="text-primary-700">Auto-Cleanup Enabled</span>
               </div>
             </div>
           </div>
 
           {/* Quick Guide */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-xl border border-blue-200/50 p-6">
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Quick Guide</h3>
-                <p className="text-sm text-gray-600">How to use automation</p>
+                <h3 className="text-lg font-semibold text-primary-800">Quick Guide</h3>
+                <p className="text-sm text-primary-600">How to use automation</p>
               </div>
             </div>
-            <div className="space-y-2 text-sm text-gray-700">
+            <div className="space-y-2 text-sm text-primary-700">
               <div className="flex items-center space-x-2">
-                <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                <span className="w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
                 <span>Select your project</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                <span className="w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
                 <span>Click "Fill Form" button</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                <span className="w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
                 <span>Drag bookmarklet & visit site</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                <span className="w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
                 <span>Click bookmarklet to fill forms!</span>
               </div>
             </div>
           </div>
 
           {/* Statistics */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl shadow-xl border border-purple-200/50 p-6">
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-glow">
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Platform Stats</h3>
-                <p className="text-sm text-gray-600">Available platforms</p>
+                <h3 className="text-lg font-semibold text-primary-800">Platform Stats</h3>
+                <p className="text-sm text-primary-600">Available platforms</p>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Total Platforms</span>
-                <span className="text-lg font-bold text-purple-600">25</span>
+                <span className="text-sm text-primary-600">Total Platforms</span>
+                <span className="text-lg font-bold text-primary-600">25</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Categories</span>
-                <span className="text-lg font-bold text-purple-600">5</span>
+                <span className="text-sm text-primary-600">Categories</span>
+                <span className="text-lg font-bold text-primary-600">5</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Success Rate</span>
-                <span className="text-lg font-bold text-green-600">95%</span>
+                <span className="text-sm text-primary-600">Success Rate</span>
+                <span className="text-lg font-bold text-success-600">95%</span>
               </div>
             </div>
           </div>

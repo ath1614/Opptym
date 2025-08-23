@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, Loader2, Sparkles, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 interface RegisterProps {
@@ -44,41 +44,59 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '4s' }}></div>
+      </div>
+
+      <div className="max-w-md w-full relative z-10">
+        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up">
+          {/* Header */}
           <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-40 h-35 rounded-2xl overflow-hidden mb-4">
-  <img src="/opptym.png" alt="Opptym Logo" className="w-full h-full object-contain" />
-</div>
-            <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
-            <p className="text-gray-600 mt-2">Register your self in Opptym</p>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow">
+              <Sparkles className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent mb-2">
+              Create Account
+            </h1>
+            <p className="text-primary-600">Join Opptym and boost your SEO</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                {error}
+              <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-error-500 rounded-full"></div>
+                  <span>{error}</span>
+                </div>
               </div>
             )}
             
             {success && (
-              <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg text-sm">
-                {success}
+              <div className="bg-success-50 border border-success-200 text-success-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+                  <span>{success}</span>
+                </div>
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Full Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-primary-700">Full Name</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
+                    <User className="w-3 h-3 text-white" />
+                  </div>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your full name"
                     required
                   />
@@ -86,15 +104,17 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               </div>
 
               {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-primary-700">Email Address</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
+                    <Mail className="w-3 h-3 text-white" />
+                  </div>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your email"
                     required
                   />
@@ -102,22 +122,24 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               </div>
 
               {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-primary-700">Password</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
+                    <Lock className="w-3 h-3 text-white" />
+                  </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-14 pr-14 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Create a password"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-accent-600 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -125,15 +147,17 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               </div>
 
               {/* Confirm Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-primary-700">Confirm Password</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
+                    <Lock className="w-3 h-3 text-white" />
+                  </div>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Confirm your password"
                     required
                   />
@@ -141,20 +165,31 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               </div>
             </div>
 
-            {/* Submit */}
-<button
-  type="submit"
-  disabled={isLoading}
-  className="w-full bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white py-3 px-4 rounded-lg font-medium hover:from-sky-500 hover:via-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-sky-400 flex items-center justify-center disabled:opacity-50"
->
-  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
-</button>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-accent-500 to-accent-600 text-white py-4 px-6 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2 group"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <span>Create Account</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
           </form>
 
+          {/* Footer */}
           <div className="mt-8 text-center">
-            <p className="text-gray-600">
+            <p className="text-primary-600">
               Already have an account?{' '}
-              <button onClick={onSwitchToLogin} className="text-blue-600 hover:text-blue-700 font-medium">
+              <button 
+                onClick={onSwitchToLogin} 
+                className="text-accent-600 hover:text-accent-700 font-semibold transition-colors hover:underline"
+              >
                 Sign in
               </button>
             </p>
