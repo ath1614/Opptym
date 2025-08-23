@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getUserDisplayName, getUserShortName, getUserInitials } from '../../utils/userUtils';
 import LanguageSwitcher from '../LanguageSwitcher';
 
+// Force rebuild - Language switcher should be visible in navbar
 interface NavbarProps {
   activeTab: string;
   setActiveTab?: (tab: string) => void;
