@@ -47,15 +47,7 @@ export const apiRequest = async (endpoint: string, options: any = {}) => {
     ...options.headers,
   };
 
-  console.log('🌐 API Request:', {
-    url,
-    method: options.method || 'GET',
-    endpoint: cleanEndpoint,
-    baseURL: cleanBaseURL,
-    isProduction,
-    viteApiUrl: import.meta.env.VITE_API_URL,
-    body: options.body
-  });
+
 
   const response = await fetch(url, {
     ...options,
@@ -86,13 +78,7 @@ export const apiRequest = async (endpoint: string, options: any = {}) => {
   return response.json();
 };
 
-// Environment info for debugging
-console.log('🌍 Environment:', {
-  isDevelopment,
-  isProduction,
-  baseURL: BASE_URL,
-  apiUrl: import.meta.env.VITE_API_URL,
-});
+
 
 // 🔐 Auth - OTP-based authentication is handled in useAuth.ts
 // Legacy auth functions removed - use OTP endpoints instead

@@ -1422,21 +1422,6 @@ select{
   animation: scaleIn 0.3s ease-out;
 }
 
-@keyframes shimmer{
-
-  0%{
-    background-position: -200% 0;
-  }
-
-  100%{
-    background-position: 200% 0;
-  }
-}
-
-.animate-shimmer{
-  animation: shimmer 2s linear infinite;
-}
-
 @keyframes spin{
 
   to{
@@ -2345,11 +2330,6 @@ select{
 .via-blue-500{
   --tw-gradient-to: rgb(59 130 246 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), #3b82f6 var(--tw-gradient-via-position), var(--tw-gradient-to);
-}
-
-.via-primary-500{
-  --tw-gradient-to: rgb(100 116 139 / 0)  var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), #64748b var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 
 .to-accent-300{

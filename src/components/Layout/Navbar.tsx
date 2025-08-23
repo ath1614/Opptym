@@ -16,10 +16,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Debug logging
-  console.log('🔍 Navbar component mounted - LanguageSwitcher should be visible');
-  console.log('🔍 Current activeTab:', activeTab);
-  console.log('🔍 User data:', user);
+
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -98,10 +95,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
           {/* Right Section - Actions & User Menu */}
           <div className="flex items-center space-x-4">
-            {/* Modern Test Indicator */}
-            <div className="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-glow animate-pulse">
-              ✨ NEW UI
-            </div>
+
             
                                     {/* Language Switcher */}
                         <LanguageSwitcher />

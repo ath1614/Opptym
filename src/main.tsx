@@ -8,10 +8,7 @@ import axios from 'axios'
 // Set base URL for axios
 axios.defaults.baseURL = 'https://api.opptym.com';
 
-// Force cache busting for development
-if (import.meta.env.DEV) {
-  console.log('🔄 Development mode - Cache busting enabled');
-}
+
 
 // Add request interceptor to include token
 axios.interceptors.request.use(
@@ -21,13 +18,9 @@ axios.interceptors.request.use(
       // Validate token format before sending
       if (token.includes('.') && token.split('.').length === 3) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log('🔍 Request with valid token:', config.url);
       } else {
-        console.log('🔍 Invalid token format, removing from request');
         localStorage.removeItem('token');
       }
-    } else {
-      console.log('🔍 No token found for request:', config.url);
     }
     return config;
   },
@@ -40,14 +33,10 @@ axios.interceptors.request.use(
 // Add response interceptor to handle 401 errors
 axios.interceptors.response.use(
   (response) => {
-    console.log('✅ Response success:', response.config.url);
     return response;
   },
   (error) => {
-    console.error('❌ Response error:', error.config?.url, error.response?.status, error.response?.data);
-    
     if (error.response?.status === 401) {
-      console.log('🔍 401 Unauthorized - Clearing authentication data');
       
       // Clear authentication data
       localStorage.removeItem('token');
@@ -69,7 +58,6 @@ axios.interceptors.response.use(
       
       // Only redirect if not already on login page
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
-        console.log('🔍 Redirecting to login page');
         window.location.href = '/';
       }
     }
@@ -84,14 +72,12 @@ const checkAndClearInvalidToken = () => {
     try {
       // Basic token validation
       if (!token.includes('.') || token.split('.').length !== 3) {
-        console.log('🔍 Invalid token format detected on startup - clearing');
         localStorage.removeItem('token');
         return;
       }
       
       const parts = token.split('.');
       if (!parts[0] || !parts[1] || !parts[2]) {
-        console.log('🔍 Invalid token structure detected on startup - clearing');
         localStorage.removeItem('token');
         return;
       }
@@ -108,25 +94,18 @@ const checkAndClearInvalidToken = () => {
       const payload = JSON.parse(jsonPayload);
       
       if (!payload.userId || !payload.email) {
-        console.log('🔍 Invalid token payload detected on startup - clearing');
         localStorage.removeItem('token');
         return;
       }
       
       // Check if token is expired
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        console.log('🔍 Expired token detected on startup - clearing');
         localStorage.removeItem('token');
         return;
       }
-      
-      console.log('✅ Valid token found on startup');
     } catch (error) {
-      console.log('🔍 Error validating token on startup - clearing');
       localStorage.removeItem('token');
     }
-  } else {
-    console.log('🔍 No token found on startup');
   }
 };
 

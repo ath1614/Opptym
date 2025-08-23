@@ -43,8 +43,7 @@ interface Project {
 function App() {
   const authProvider = useAuthProvider();
 
-  console.log('🔍 App render - authProvider.user:', authProvider.user);
-  console.log('🔍 App render - localStorage token:', !!localStorage.getItem('token'));
+
 
   const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register'>('landing');
   
@@ -106,7 +105,6 @@ function App() {
         // Basic token validation
         const parts = token.split('.');
         if (parts.length !== 3) {
-          console.log('🔍 Invalid token structure, clearing...');
           localStorage.removeItem('token');
           return;
         }
@@ -121,12 +119,10 @@ function App() {
         
         const payload = JSON.parse(atob(base64));
         if (!payload.userId || !payload.email) {
-          console.log('🔍 Invalid token payload, clearing...');
           localStorage.removeItem('token');
           return;
         }
       } catch (error) {
-        console.log('🔍 Error validating token, clearing...');
         localStorage.removeItem('token');
       }
     }
@@ -134,7 +130,7 @@ function App() {
 
   // Handle manual logout for debugging
   const handleManualLogout = () => {
-    console.log('🔍 Manual logout triggered');
+
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/';
@@ -143,7 +139,7 @@ function App() {
   // Add global function for debugging
   useEffect(() => {
     (window as any).manualLogout = handleManualLogout;
-    console.log('🔍 Manual logout function available: window.manualLogout()');
+
   }, []);
 
   // Fetch projects when activeTab changes to reports
@@ -164,7 +160,7 @@ function App() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Projects fetched:', res.data);
+
         setProjects(res.data);
       } catch (err: any) {
         console.error('Error loading projects:', err);
@@ -190,18 +186,8 @@ function App() {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
 
-        {/* Modern Test Banner */}
-        <div className="relative z-10">
-          <div className="fixed top-0 left-0 right-0 z-50">
-            <div className="bg-gradient-to-r from-accent-500 via-primary-500 to-accent-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer">
-              <div className="flex items-center justify-center space-x-2">
-                <Sparkles className="w-5 h-5 animate-pulse" />
-                <span className="text-lg">✨ OPPTYM - Modern UI Deployed Successfully! ✨</span>
-                <Sparkles className="w-5 h-5 animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </div>
+
+
         
         <div className="relative z-10">
           {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}

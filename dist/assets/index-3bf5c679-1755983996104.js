@@ -16441,8 +16441,6 @@ function Dashboard() {
     ] })
   ] }) });
 }
-const isDevelopment = false;
-const isProduction = true;
 const getBaseURL = () => {
   {
     const apiUrl = {}.VITE_API_URL || "https://api.opptym.com";
@@ -16473,15 +16471,6 @@ const apiRequest = async (endpoint, options2 = {}) => {
     ...authHeaders,
     ...options2.headers
   };
-  console.log("🌐 API Request:", {
-    url,
-    method: options2.method || "GET",
-    endpoint: cleanEndpoint,
-    baseURL: cleanBaseURL,
-    isProduction,
-    viteApiUrl: {}.VITE_API_URL,
-    body: options2.body
-  });
   const response = await fetch(url, {
     ...options2,
     headers
@@ -16505,12 +16494,6 @@ const apiRequest = async (endpoint, options2 = {}) => {
   }
   return response.json();
 };
-console.log("🌍 Environment:", {
-  isDevelopment,
-  isProduction,
-  baseURL: BASE_URL,
-  apiUrl: {}.VITE_API_URL
-});
 const createProject = (data) => apiRequest("/projects", { method: "POST", body: JSON.stringify(data) });
 const getProjects = () => apiRequest("/projects");
 const getProjectById = (id2) => apiRequest(`/projects/${id2}`);
@@ -21702,14 +21685,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-a96f7b46-1755982528627.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-b34b67ce-1755983996104.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755982528627.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1755983996104.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -25214,7 +25197,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-03e3a273-1755982528627.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-85c01195-1755983996104.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -49560,9 +49543,6 @@ function Navbar({ activeTab, setActiveTab }) {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const menuRef = reactExports.useRef(null);
-  console.log("🔍 Navbar component mounted - LanguageSwitcher should be visible");
-  console.log("🔍 Current activeTab:", activeTab);
-  console.log("🔍 User data:", user);
   reactExports.useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -49619,7 +49599,6 @@ function Navbar({ activeTab, setActiveTab }) {
       ] })
     ] }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-glow animate-pulse", children: "✨ NEW UI" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(LanguageSwitcher, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
@@ -49710,8 +49689,6 @@ function Navbar({ activeTab, setActiveTab }) {
 }
 function App() {
   const authProvider = useAuthProvider();
-  console.log("🔍 App render - authProvider.user:", authProvider.user);
-  console.log("🔍 App render - localStorage token:", !!localStorage.getItem("token"));
   const [authMode, setAuthMode] = reactExports.useState("landing");
   const getInitialTab = () => {
     const hash2 = window.location.hash.replace("#", "");
@@ -49755,7 +49732,6 @@ function App() {
       try {
         const parts = token.split(".");
         if (parts.length !== 3) {
-          console.log("🔍 Invalid token structure, clearing...");
           localStorage.removeItem("token");
           return;
         }
@@ -49765,25 +49741,21 @@ function App() {
         }
         const payload = JSON.parse(atob(base64));
         if (!payload.userId || !payload.email) {
-          console.log("🔍 Invalid token payload, clearing...");
           localStorage.removeItem("token");
           return;
         }
       } catch (error) {
-        console.log("🔍 Error validating token, clearing...");
         localStorage.removeItem("token");
       }
     }
   }, []);
   const handleManualLogout = () => {
-    console.log("🔍 Manual logout triggered");
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = "/";
   };
   reactExports.useEffect(() => {
     window.manualLogout = handleManualLogout;
-    console.log("🔍 Manual logout function available: window.manualLogout()");
   }, []);
   reactExports.useEffect(() => {
     const fetchProjects = async () => {
@@ -49802,7 +49774,6 @@ function App() {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log("Projects fetched:", res.data);
         setProjects(res.data);
       } catch (err2) {
         console.error("Error loading projects:", err2);
@@ -49822,11 +49793,6 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float", style: { animationDelay: "2s" } }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float", style: { animationDelay: "4s" } })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed top-0 left-0 right-0 z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-500 via-primary-500 to-accent-600 text-white px-6 py-3 text-center font-medium shadow-lg animate-shimmer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg", children: "✨ OPPTYM - Modern UI Deployed Successfully! ✨" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 animate-pulse" })
-      ] }) }) }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
         authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
         authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
@@ -49999,13 +49965,9 @@ axios$1.interceptors.request.use(
     if (token) {
       if (token.includes(".") && token.split(".").length === 3) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log("🔍 Request with valid token:", config.url);
       } else {
-        console.log("🔍 Invalid token format, removing from request");
         localStorage.removeItem("token");
       }
-    } else {
-      console.log("🔍 No token found for request:", config.url);
     }
     return config;
   },
@@ -50016,14 +49978,11 @@ axios$1.interceptors.request.use(
 );
 axios$1.interceptors.response.use(
   (response) => {
-    console.log("✅ Response success:", response.config.url);
     return response;
   },
   (error) => {
-    var _a2, _b2, _c, _d;
-    console.error("❌ Response error:", (_a2 = error.config) == null ? void 0 : _a2.url, (_b2 = error.response) == null ? void 0 : _b2.status, (_c = error.response) == null ? void 0 : _c.data);
-    if (((_d = error.response) == null ? void 0 : _d.status) === 401) {
-      console.log("🔍 401 Unauthorized - Clearing authentication data");
+    var _a2;
+    if (((_a2 = error.response) == null ? void 0 : _a2.status) === 401) {
       localStorage.removeItem("token");
       sessionStorage.clear();
       document.cookie.split(";").forEach(function(c2) {
@@ -50037,7 +49996,6 @@ axios$1.interceptors.response.use(
         });
       }
       if (!window.location.pathname.includes("/login") && !window.location.pathname.includes("/register")) {
-        console.log("🔍 Redirecting to login page");
         window.location.href = "/";
       }
     }
@@ -50049,13 +50007,11 @@ const checkAndClearInvalidToken = () => {
   if (token) {
     try {
       if (!token.includes(".") || token.split(".").length !== 3) {
-        console.log("🔍 Invalid token format detected on startup - clearing");
         localStorage.removeItem("token");
         return;
       }
       const parts = token.split(".");
       if (!parts[0] || !parts[1] || !parts[2]) {
-        console.log("🔍 Invalid token structure detected on startup - clearing");
         localStorage.removeItem("token");
         return;
       }
@@ -50066,22 +50022,16 @@ const checkAndClearInvalidToken = () => {
       const jsonPayload = atob(base64);
       const payload = JSON.parse(jsonPayload);
       if (!payload.userId || !payload.email) {
-        console.log("🔍 Invalid token payload detected on startup - clearing");
         localStorage.removeItem("token");
         return;
       }
       if (payload.exp && payload.exp * 1e3 < Date.now()) {
-        console.log("🔍 Expired token detected on startup - clearing");
         localStorage.removeItem("token");
         return;
       }
-      console.log("✅ Valid token found on startup");
     } catch (error) {
-      console.log("🔍 Error validating token on startup - clearing");
       localStorage.removeItem("token");
     }
-  } else {
-    console.log("🔍 No token found on startup");
   }
 };
 checkAndClearInvalidToken();
