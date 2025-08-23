@@ -21,12 +21,6 @@ export default defineConfig({
     // Add cache busting headers
     assetsInlineLimit: 0,
     sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: false,
-      },
-    },
   },
   // Force cache busting for development
   define: {
