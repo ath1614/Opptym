@@ -34,6 +34,7 @@ import { JSX } from 'react/jsx-runtime';
 interface Project {
   _id: string;
   title: string;
+  name?: string;
   url: string;
   email?: string;
   businessPhone?: string;
@@ -625,6 +626,8 @@ const SubmissionsDashboard = () => {
       console.log('First project title field:', response.data[0]?.title);
       console.log('First project name field:', response.data[0]?.name);
       console.log('All project titles:', response.data.map((p: any) => p.title || p.name));
+      console.log('All project names:', response.data.map((p: any) => p.name));
+      console.log('All project company names:', response.data.map((p: any) => p.companyName));
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       console.error('Error fetching projects:', err);
@@ -1162,10 +1165,10 @@ const SubmissionsDashboard = () => {
 
     try {
       const projectData = {
-        name: selectedProject.title || '',
+        name: selectedProject.name || selectedProject.companyName || selectedProject.title || '',
         email: selectedProject.email || '',
         phone: selectedProject.businessPhone || '',
-        companyName: selectedProject.companyName || '',
+        companyName: selectedProject.companyName || selectedProject.title || '',
         url: selectedProject.url || '',
         description: selectedProject.description || '',
         address: selectedProject.address1 || '',
@@ -1628,7 +1631,7 @@ Description: ${projectData.description}`;
 // Copy and paste this in browser console (F12)
 
 const projectData = {
-  name: "${selectedProject.title || ''}",
+  name: "${selectedProject.name || selectedProject.companyName || selectedProject.title || ''}",
   email: "${selectedProject.email || ''}",
   companyName: "${selectedProject.companyName || ''}",
   phone: "${selectedProject.businessPhone || ''}",
@@ -2226,7 +2229,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 </option>
                 {projects.map((p) => (
                   <option key={p._id} value={p._id}>
-                    {p.title || 'Untitled Project'}
+                    {p.companyName || p.title || p.name || 'Untitled Project'}
                   </option>
                 ))}
               </select>
