@@ -2155,7 +2155,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
@@ -2167,32 +2167,32 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         
         {/* Header Section */}
         <div className="text-center space-y-6 animate-fade-in-up">
-          <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20">
+          <div className="inline-flex items-center space-x-4 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20 dark:border-primary-700/20">
             <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
-                SEO Submissions Hub
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-200 dark:to-accent-400 bg-clip-text text-transparent">
+                Directory Submissions
               </h1>
-              <p className="text-primary-600 text-sm">Intelligent automation for your SEO success</p>
+              <p className="text-primary-600 dark:text-primary-400 text-sm">AI-powered automation for your SEO success</p>
             </div>
           </div>
-          <p className="text-primary-600 max-w-2xl mx-auto text-lg">
-            Streamline your SEO submissions with our intelligent automation tools. 
+          <p className="text-primary-600 dark:text-primary-400 max-w-2xl mx-auto text-lg">
+            Streamline your directory submissions with our intelligent automation tools. 
             Choose your project and let our AI-powered systems handle the rest.
           </p>
         </div>
 
         {/* Project Selection Card */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-center space-x-4 mb-6">
             <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
               <Settings className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-2xl font-semibold text-primary-800">Project Configuration</h2>
-              <p className="text-primary-600">Select the project you want to submit</p>
+              <h2 className="text-2xl font-semibold text-primary-800 dark:text-primary-200">Project Configuration</h2>
+              <p className="text-primary-600 dark:text-primary-400">Select the project you want to submit</p>
             </div>
             
             <button
@@ -2215,7 +2215,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 value={selectedProject?._id || ''}
                 onChange={(e) => handleProjectSelect(e.target.value)}
                 disabled={projectsLoading}
-                className="flex-1 border border-primary-200 px-6 py-4 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 border border-primary-200 dark:border-primary-700 px-6 py-4 rounded-xl bg-white/50 dark:bg-primary-900/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed text-primary-700 dark:text-primary-300"
               >
                 <option value="">
                   {projectsLoading ? 'Loading projects...' : '-- Select your project --'}
@@ -2228,23 +2228,23 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               </select>
               
               {selectedProject && (
-                <div className="flex items-center space-x-3 px-4 py-2 bg-success-50 border border-success-200 rounded-xl">
+                <div className="flex items-center space-x-3 px-4 py-2 bg-success-50 dark:bg-success-900/30 border border-success-200 dark:border-success-700/30 rounded-xl">
                   <div className="w-3 h-3 bg-success-500 rounded-full animate-pulse"></div>
-                  <span className="text-success-700 font-medium">Project Selected</span>
+                  <span className="text-success-700 dark:text-success-400 font-medium">Project Selected</span>
                 </div>
               )}
             </div>
 
             {/* Loading and Error States */}
             {projectsLoading && (
-              <div className="flex items-center space-x-3 text-accent-600 bg-accent-50 border border-accent-200 rounded-xl p-4">
+              <div className="flex items-center space-x-3 text-accent-600 dark:text-accent-400 bg-accent-50 dark:bg-accent-900/30 border border-accent-200 dark:border-accent-700/30 rounded-xl p-4">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent-600"></div>
                 <span className="font-medium">Loading projects...</span>
               </div>
             )}
             
             {projectsError && (
-              <div className="flex items-center space-x-3 text-error-700 bg-error-50 border border-error-200 rounded-xl p-4">
+              <div className="flex items-center space-x-3 text-error-700 dark:text-error-400 bg-error-50 dark:bg-error-900/30 border border-error-200 dark:border-error-700/30 rounded-xl p-4">
                 <div className="w-4 h-4 bg-error-500 rounded-full"></div>
                 <span className="font-medium">Error: {projectsError}</span>
               </div>
@@ -2282,14 +2282,14 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
 
         {/* Auto-Fill Script Section */}
         {showAutoFillScript && selectedProject && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-xl border border-blue-200/50 p-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-3xl shadow-glass border border-blue-200/50 dark:border-blue-700/30 p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-glow">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-800">🤖 Auto-Fill Script</h3>
-                <p className="text-sm text-gray-600">Copy and paste this script in the browser console</p>
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-primary-200">🤖 Auto-Fill Script</h3>
+                <p className="text-sm text-gray-600 dark:text-primary-400">Copy and paste this script in the browser console</p>
               </div>
             </div>
             
@@ -2306,8 +2306,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 {copied ? 'Copied!' : 'Copy Script'}
               </button>
               
-              <div className="text-xs text-gray-600 bg-white/50 px-3 py-2 rounded-lg">
-                <strong>How to use:</strong> Open form page → Press <kbd className="bg-gray-200 px-2 py-1 rounded text-xs mx-1">F12</kbd> → Paste script → Press Enter
+              <div className="text-xs text-gray-600 dark:text-primary-400 bg-white/50 dark:bg-primary-900/50 px-3 py-2 rounded-lg">
+                <strong>How to use:</strong> Open form page → Press <kbd className="bg-gray-200 dark:bg-primary-700 px-2 py-1 rounded text-xs mx-1">F12</kbd> → Paste script → Press Enter
               </div>
             </div>
           </div>
@@ -2316,11 +2316,11 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         {/* Platform Categories */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {Object.entries(siteMap).map(([category, { icon, sites, color, gradient, description }]) => (
-            <div key={category} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+            <div key={category} className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 overflow-hidden animate-fade-in-up" style={{ animationDelay: `${Object.keys(siteMap).indexOf(category) * 0.1}s` }}>
               {/* Category Header */}
               <div className={`bg-gradient-to-r ${gradient} p-6 text-white`}>
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-glow">
                     {icon}
                   </div>
                   <div>
@@ -2333,23 +2333,23 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               {/* Platform List */}
               <div className="p-6 space-y-3">
                 {(expandedCategories.has(category) ? sites : sites.slice(0, 5)).map((site) => (
-                  <div key={site.name} className="bg-gray-50/50 rounded-xl p-4 hover:bg-gray-100/50 transition-all border border-gray-100">
+                  <div key={site.name} className="bg-gray-50/50 dark:bg-primary-900/50 rounded-xl p-4 hover:bg-gray-100/50 dark:hover:bg-primary-800/50 transition-all border border-gray-100 dark:border-primary-700/30 group">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h4 className="font-semibold text-gray-800">{site.name}</h4>
+                          <h4 className="font-semibold text-gray-800 dark:text-primary-200 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors">{site.name}</h4>
                           {site.difficulty && (
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(site.difficulty)}`}>
                               {site.difficulty}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{site.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-primary-400 mb-2">{site.description}</p>
                         <a 
                           href={site.url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 text-xs inline-flex items-center space-x-1"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-xs inline-flex items-center space-x-1 transition-colors"
                         >
                           <span>{site.url}</span>
                           <ExternalLink className="w-3 h-3" />
@@ -2380,7 +2380,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                   <div className="flex justify-center pt-4">
                     <button
                       onClick={() => toggleCategoryExpansion(category)}
-                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white text-sm rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all shadow-md hover:shadow-lg"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-primary-600 dark:to-primary-700 text-white text-sm rounded-lg hover:from-gray-600 hover:to-gray-700 dark:hover:from-primary-700 dark:hover:to-primary-800 transition-all shadow-md hover:shadow-lg"
                     >
                       {expandedCategories.has(category) ? (
                         <>
