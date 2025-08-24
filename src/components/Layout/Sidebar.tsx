@@ -166,7 +166,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
 
       {/* Sidebar */}
       <div className={`
-        fixed md:sticky top-0 left-0 z-50
+        fixed top-0 left-0 z-50
         h-screen
         transform transition-all duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
@@ -233,12 +233,19 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
             )}
           </div>
           
-          {!isCollapsed && (
+          {!isCollapsed ? (
             <button
               onClick={() => setIsCollapsed(true)}
               className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsCollapsed(false)}
+              className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
             </button>
           )}
         </div>

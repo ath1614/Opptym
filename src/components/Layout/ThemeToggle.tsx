@@ -8,8 +8,8 @@ const ThemeToggle: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Get theme from localStorage or default to light
-    const savedTheme = localStorage.getItem('theme') as Theme || 'light';
+    // Get theme from localStorage or default to system
+    const savedTheme = localStorage.getItem('theme') as Theme || 'system';
     setTheme(savedTheme);
     applyTheme(savedTheme);
   }, []);

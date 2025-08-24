@@ -39,6 +39,7 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [subscription, setSubscription] = useState<any>(null);
 
   useEffect(() => {
     fetchDashboardData();
@@ -59,6 +60,26 @@ export default function Dashboard() {
 
       const projects = projectsResponse.data || [];
       const submissions = submissionsResponse.data || [];
+
+      // Fetch subscription details
+      try {
+        const subscriptionResponse = await axios.get('/api/subscription/details', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSubscription(subscriptionResponse.data);
+      } catch (error) {
+        console.log('No subscription details available, using default');
+        setSubscription({
+          plan: user?.subscription || 'free',
+          status: 'active',
+          nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          usage: {
+            submissions: submissions.length,
+            projects: projects.length,
+            limit: user?.subscription === 'business' ? 1000 : user?.subscription === 'pro' ? 500 : 100
+          }
+        });
+      }
 
       const calculatedStats: DashboardStats = {
         totalProjects: projects.length,
@@ -222,6 +243,106 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
+        {/* Subscription Status */}
+        {subscription && (
+          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-glow">
+                  <Crown className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-200">Subscription Status</h3>
+                  <p className="text-sm text-primary-600 dark:text-primary-400">Your current plan and usage</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-primary-800 dark:text-primary-200 capitalize">
+                  {subscription.plan}
+                </div>
+                <div className="text-sm text-success-600 dark:text-success-400 font-medium">
+                  {subscription.status}
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-primary-600 dark:text-primary-400">Submissions Used</span>
+                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
+                    {subscription.usage?.submissions || 0} / {subscription.usage?.limit || 100}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.usage?.submissions || 0) / (subscription.usage?.limit || 100) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-primary-600 dark:text-primary-400">Projects Used</span>
+                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
+                    {subscription.usage?.projects || 0} / {subscription.plan === 'business' ? 'Unlimited' : '50'}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.usage?.projects || 0) / 50 * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-primary-600 dark:text-primary-400">Next Billing</span>
+                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
+                    {new Date(subscription.nextBilling).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.max(0, 100 - ((new Date(subscription.nextBilling).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1000)) * 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 pt-6 border-t border-primary-200 dark:border-primary-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl p-4">
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Plan Features</h4>
+                  <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                    <li>• {subscription.plan === 'business' ? 'Unlimited' : subscription.plan === 'pro' ? '500' : '100'} submissions per month</li>
+                    <li>• {subscription.plan === 'business' ? 'Unlimited' : '50'} projects</li>
+                    <li>• Advanced analytics</li>
+                    <li>• Priority support</li>
+                  </ul>
+                </div>
+                <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl p-4">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Quick Actions</h4>
+                  <div className="space-y-2">
+                    <button className="w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors">
+                      • Upgrade Plan
+                    </button>
+                    <button className="w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors">
+                      • View Billing History
+                    </button>
+                    <button className="w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors">
+                      • Download Invoice
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

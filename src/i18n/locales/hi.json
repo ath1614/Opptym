@@ -140,5 +140,14 @@
     "notFound": "पृष्ठ नहीं मिला",
     "unauthorized": "अनधिकृत पहुंच",
     "forbidden": "पहुंच निषिद्ध"
+  },
+  "sidebar": {
+    "dashboard": "डैशबोर्ड",
+    "projects": "प्रोजेक्ट्स",
+    "tools": "एसईओ टूल्स",
+    "directory": "सबमिशन",
+    "reports": "रिपोर्ट्स",
+    "pricing": "मूल्य निर्धारण",
+    "profile": "प्रोफ़ाइल"
   }
 }
