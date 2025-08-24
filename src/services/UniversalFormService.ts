@@ -227,20 +227,34 @@ export class UniversalFormService {
         // Auto-delete this bookmarklet after 30 minutes
         setTimeout(() => {
           try {
-            // Try to remove from bookmarks bar
+            console.log('🕐 Auto-deletion timer triggered (30 minutes)');
+            
+            // Try to remove from Chrome bookmarks bar
             if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
               window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
                 bookmarks.forEach(bookmark => {
                   window.chrome.bookmarks.remove(bookmark.id);
+                  console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
                 });
-              });
+              }).catch(e => console.log('Chrome bookmark removal failed:', e));
+            }
+            
+            // Try to remove from Firefox bookmarks bar
+            if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+              window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                bookmarks.forEach(bookmark => {
+                  window.browser.bookmarks.remove(bookmark.id);
+                  console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
+                });
+              }).catch(e => console.log('Firefox bookmark removal failed:', e));
             }
             
             // Also try to remove from DOM if present
-            const bookmarkletElement = document.querySelector('a[href*="OPPTYM Auto-Fill"]');
-            if (bookmarkletElement) {
-              bookmarkletElement.remove();
-            }
+            const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
+            bookmarkletElements.forEach(element => {
+              element.remove();
+              console.log('🗑️ Removed bookmarklet from DOM');
+            });
             
             // Show notification that bookmarklet was auto-deleted
             const notification = document.createElement('div');
@@ -254,8 +268,10 @@ export class UniversalFormService {
               }
             }, 5000);
             
+            console.log('✅ Auto-deletion completed successfully');
+            
           } catch (e) {
-            // Silent fail for auto-delete
+            console.log('❌ Auto-deletion failed:', e);
           }
         }, 30 * 60 * 1000); // 30 minutes
         

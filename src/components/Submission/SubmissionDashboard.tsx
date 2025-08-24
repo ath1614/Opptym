@@ -1193,7 +1193,12 @@ const SubmissionsDashboard = () => {
   };
 
   const showDraggableBookmarkModal = (url: string, siteName: string, projectData: any, result: any) => {
+    // Remove any existing modals first
+    const existingModals = document.querySelectorAll('[data-opptym-modal="draggable-bookmark"]');
+    existingModals.forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
+    modal.setAttribute('data-opptym-modal', 'draggable-bookmark');
     modal.style.cssText = `
       position: fixed;
       top: 0;
@@ -1284,16 +1289,29 @@ const SubmissionsDashboard = () => {
       modal.remove();
     });
 
+    // Auto-close after 5 minutes
     setTimeout(() => {
       if (modal.parentNode) {
         modal.remove();
       }
     }, 5 * 60 * 1000);
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
   };
 
   // NEW: Full Automation Success Modal
   const showFullAutomationSuccessModal = (url: string, siteName: string, projectData: any, result: any, newTab: Window | null) => {
+    // Remove any existing modals first
+    const existingModals = document.querySelectorAll('[data-opptym-modal="success"]');
+    existingModals.forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
+    modal.setAttribute('data-opptym-modal', 'success');
     modal.style.cssText = `
       position: fixed;
       top: 0;
@@ -1680,6 +1698,53 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy script:', err);
+    }
+  };
+
+  // Manual bookmarklet deletion function
+  const deleteBookmarklet = async () => {
+    try {
+      console.log('🗑️ Manual bookmarklet deletion triggered');
+      
+      // Try to remove from Chrome bookmarks bar
+      if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+        try {
+          const bookmarks = await window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
+          for (const bookmark of bookmarks) {
+            await window.chrome.bookmarks.remove(bookmark.id);
+            console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
+          }
+        } catch (e) {
+          console.log('Chrome bookmark removal failed:', e);
+        }
+      }
+      
+      // Try to remove from Firefox bookmarks bar
+      if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+        try {
+          const bookmarks = await window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
+          for (const bookmark of bookmarks) {
+            await window.browser.bookmarks.remove(bookmark.id);
+            console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
+          }
+        } catch (e) {
+          console.log('Firefox bookmark removal failed:', e);
+        }
+      }
+      
+      // Also try to remove from DOM if present
+      const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
+      bookmarkletElements.forEach(element => {
+        element.remove();
+        console.log('🗑️ Removed bookmarklet from DOM');
+      });
+      
+      // Show success message
+      showPopup('✅ Bookmarklet deleted successfully!', 'success');
+      
+    } catch (error) {
+      console.error('Failed to delete bookmarklet:', error);
+      showPopup('❌ Failed to delete bookmarklet. Please remove manually from bookmarks bar.', 'error');
     }
   };
 
@@ -2305,13 +2370,23 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             </div>
             
             <div className="flex items-center justify-between mt-4">
-              <button
-                onClick={copyScript}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
-              >
-                {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                {copied ? 'Copied!' : 'Copy Script'}
-              </button>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={copyScript}
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                  {copied ? 'Copied!' : 'Copy Script'}
+                </button>
+                
+                <button
+                  onClick={deleteBookmarklet}
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Bookmarklet
+                </button>
+              </div>
               
               <div className="text-xs text-gray-600 dark:text-primary-400 bg-white/50 dark:bg-primary-900/50 px-3 py-2 rounded-lg">
                 <strong>How to use:</strong> Open form page → Press <kbd className="bg-gray-200 dark:bg-primary-700 px-2 py-1 rounded text-xs mx-1">F12</kbd> → Paste script → Press Enter
@@ -2376,6 +2451,15 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                             <Zap className="w-4 h-4 mr-2" />
                           )}
                           {loading ? 'Automating...' : t('automation.fillForm')}
+                        </button>
+                        
+                        <button
+                          onClick={deleteBookmarklet}
+                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 font-medium shadow-glow"
+                          title="Delete Bookmarklet"
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          Delete Bookmarklet
                         </button>
                       </div>
                     </div>
