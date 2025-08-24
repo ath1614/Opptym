@@ -176,33 +176,71 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
       `}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/20 dark:border-primary-700/20">
-          {!isCollapsed ? (
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <Sparkles className="w-6 h-6 text-white" />
+        <div className="flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700">
+          <div className="flex items-center space-x-3">
+            {/* Opptym Logo */}
+            <div className="relative">
+              <div className="w-10 h-10 relative">
+                {/* Circular dashed outline */}
+                <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="18"
+                    fill="none"
+                    stroke="url(#blueGradient)"
+                    strokeWidth="2"
+                    strokeDasharray="4,4"
+                    strokeLinecap="round"
+                  />
+                  {/* Bright blue circle and curve */}
+                  <circle cx="26" cy="14" r="3" fill="#3B82F6" />
+                  <path
+                    d="M 26 14 A 18 18 0 0 1 20 2"
+                    fill="none"
+                    stroke="#3B82F6"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  {/* Dark blue circle and curve */}
+                  <circle cx="14" cy="26" r="3" fill="#1E40AF" />
+                  <path
+                    d="M 14 26 A 18 18 0 0 1 20 38"
+                    fill="none"
+                    stroke="#1E40AF"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#1E40AF" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent">
-                  Opptym
+            </div>
+            
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight">
+                  OPPTYM
                 </h1>
-                <p className="text-xs text-primary-600 dark:text-primary-400">SEO Platform</p>
+                <p className="text-xs text-primary-600 dark:text-primary-400 leading-tight">
+                  AI ENABLED INTELLIGENCE
+                </p>
               </div>
-            </div>
-          ) : (
-            <div className="flex justify-center w-full">
-              <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          )}
+            )}
+          </div>
           
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-white/50 dark:bg-primary-800/50 backdrop-blur-sm border border-white/20 dark:border-primary-700/20 text-primary-600 dark:text-primary-400 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-200"
-          >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+          {!isCollapsed && (
+            <button
+              onClick={() => setIsCollapsed(true)}
+              className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* User Info */}
