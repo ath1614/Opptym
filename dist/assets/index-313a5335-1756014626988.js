@@ -13651,7 +13651,7 @@ const sidebar = {
   dashboard: "Dashboard",
   projects: "Projects",
   tools: "SEO Tools",
-  directory: "Directory",
+  directory: "Submissions",
   reports: "Reports",
   pricing: "Pricing",
   profile: "Profile"
@@ -14299,6 +14299,16 @@ const BookOpen = createLucideIcon$1("BookOpen", [
   ["path", { d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z", key: "vv98re" }],
   ["path", { d: "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z", key: "1cyq3y" }]
 ]);
+const Bot = createLucideIcon$1("Bot", [
+  [
+    "rect",
+    { width: "18", height: "10", x: "3", y: "11", rx: "2", key: "1ofdy3" }
+  ],
+  ["circle", { cx: "12", cy: "5", r: "2", key: "f1ur92" }],
+  ["path", { d: "M12 7v4", key: "xawao1" }],
+  ["line", { x1: "8", x2: "8", y1: "16", y2: "16", key: "h6x27f" }],
+  ["line", { x1: "16", x2: "16", y1: "16", y2: "16", key: "5lty7f" }]
+]);
 const Briefcase = createLucideIcon$1("Briefcase", [
   [
     "rect",
@@ -14395,6 +14405,9 @@ const ChevronLeft = createLucideIcon$1("ChevronLeft", [
 const ChevronRight = createLucideIcon$1("ChevronRight", [
   ["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]
 ]);
+const ChevronUp = createLucideIcon$1("ChevronUp", [
+  ["path", { d: "m18 15-6-6-6 6", key: "153udz" }]
+]);
 const Clock = createLucideIcon$1("Clock", [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
@@ -14402,6 +14415,27 @@ const Clock = createLucideIcon$1("Clock", [
 const Code = createLucideIcon$1("Code", [
   ["polyline", { points: "16 18 22 12 16 6", key: "z7tu5w" }],
   ["polyline", { points: "8 6 2 12 8 18", key: "1eg1df" }]
+]);
+const Copy = createLucideIcon$1("Copy", [
+  [
+    "rect",
+    {
+      width: "14",
+      height: "14",
+      x: "8",
+      y: "8",
+      rx: "2",
+      ry: "2",
+      key: "17jyea"
+    }
+  ],
+  [
+    "path",
+    {
+      d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",
+      key: "zix9uf"
+    }
+  ]
 ]);
 const CreditCard = createLucideIcon$1("CreditCard", [
   [
@@ -14620,6 +14654,19 @@ const Link = createLucideIcon$1("Link", [
 const Loader2 = createLucideIcon$1("Loader2", [
   ["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]
 ]);
+const Loader = createLucideIcon$1("Loader", [
+  ["line", { x1: "12", x2: "12", y1: "2", y2: "6", key: "gza1u7" }],
+  ["line", { x1: "12", x2: "12", y1: "18", y2: "22", key: "1qhbu9" }],
+  ["line", { x1: "4.93", x2: "7.76", y1: "4.93", y2: "7.76", key: "xae44r" }],
+  [
+    "line",
+    { x1: "16.24", x2: "19.07", y1: "16.24", y2: "19.07", key: "bxnmvf" }
+  ],
+  ["line", { x1: "2", x2: "6", y1: "12", y2: "12", key: "89khin" }],
+  ["line", { x1: "18", x2: "22", y1: "12", y2: "12", key: "pb8tfm" }],
+  ["line", { x1: "4.93", x2: "7.76", y1: "19.07", y2: "16.24", key: "1uxjnu" }],
+  ["line", { x1: "16.24", x2: "19.07", y1: "7.76", y2: "4.93", key: "6duxfx" }]
+]);
 const Lock = createLucideIcon$1("Lock", [
   [
     "rect",
@@ -14653,6 +14700,10 @@ const MapPin = createLucideIcon$1("MapPin", [
     { d: "M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z", key: "2oe9fu" }
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
+]);
+const Megaphone = createLucideIcon$1("Megaphone", [
+  ["path", { d: "m3 11 18-5v12L3 14v-3z", key: "n962bs" }],
+  ["path", { d: "M11.6 16.8a3 3 0 1 1-5.8-1.6", key: "1yl0tm" }]
 ]);
 const Monitor = createLucideIcon$1("Monitor", [
   [
@@ -14693,6 +14744,12 @@ const PenSquare = createLucideIcon$1("PenSquare", [
     "path",
     { d: "M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z", key: "w2jsv5" }
   ]
+]);
+const PenTool = createLucideIcon$1("PenTool", [
+  ["path", { d: "m12 19 7-7 3 3-7 7-3-3z", key: "rklqx2" }],
+  ["path", { d: "m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z", key: "1et58u" }],
+  ["path", { d: "m2 2 7.586 7.586", key: "etlp93" }],
+  ["circle", { cx: "11", cy: "11", r: "2", key: "xmgehs" }]
 ]);
 const Play = createLucideIcon$1("Play", [
   ["polygon", { points: "5 3 19 12 5 21 5 3", key: "191637" }]
@@ -14755,6 +14812,16 @@ const Settings = createLucideIcon$1("Settings", [
     }
   ],
   ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+]);
+const Share2 = createLucideIcon$1("Share2", [
+  ["circle", { cx: "18", cy: "5", r: "3", key: "gq8acd" }],
+  ["circle", { cx: "6", cy: "12", r: "3", key: "w7nqdw" }],
+  ["circle", { cx: "18", cy: "19", r: "3", key: "1xt0gg" }],
+  [
+    "line",
+    { x1: "8.59", x2: "15.42", y1: "13.51", y2: "17.49", key: "47mynk" }
+  ],
+  ["line", { x1: "15.41", x2: "8.59", y1: "6.51", y2: "10.49", key: "1n3mei" }]
 ]);
 const Shield = createLucideIcon$1("Shield", [
   ["path", { d: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", key: "3xmgem" }]
@@ -20859,14 +20926,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-3d6b082d-1756011234525.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-30b02de9-1756014626988.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756011234525.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756014626988.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -24371,7 +24438,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-a6be1288-1756011234525.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-be756028-1756014626988.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -44250,81 +44317,637 @@ Pincode: ${this.projectData.pincode || ""}
     `.trim();
   }
 }
-function SubmissionDashboard() {
+const siteMap = {
+  directory: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(MapPin, { className: "w-5 h-5" }),
+    color: "text-indigo-600",
+    gradient: "from-indigo-500 to-purple-600",
+    description: "Business directories and local listings",
+    sites: [
+      { name: "Blahoo", url: "https://www.blahoo.net/", description: "Web directory", difficulty: "easy" },
+      { name: "Caida", url: "https://caida.eu/submit.php", description: "European directory", difficulty: "easy" },
+      { name: "Pink Linker", url: "http://www.pinklinker.com/", description: "Directory submission", difficulty: "easy" },
+      { name: "Grey Linker", url: "http://www.greylinker.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "SEO Deep Links", url: "https://www.seodeeplinks.net/", description: "SEO directory", difficulty: "medium" },
+      { name: "SEO Range", url: "https://www.seorange.com/", description: "SEO directory", difficulty: "medium" },
+      { name: "Leading Link Directory", url: "https://www.leadinglinkdirectory.com/", description: "Link directory", difficulty: "medium" },
+      { name: "Red Linker", url: "http://www.redlinker.com/", description: "Directory submission", difficulty: "easy" },
+      { name: "Webo World", url: "https://www.weboworld.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Yellow Linker", url: "http://www.yellowlinker.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "Link Dir 4U", url: "http://www.linkdir4u.com/", description: "Link directory", difficulty: "easy" },
+      { name: "World Web Directory", url: "https://worldweb-directory.com/", description: "Global web directory", difficulty: "easy" },
+      { name: "WLD Directory", url: "http://www.wlddirectory.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Taurus Directory", url: "http://www.taurusdirectory.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "Canopus Directory", url: "http://www.canopusdirectory.com/", description: "Directory submission", difficulty: "easy" },
+      { name: "Vie Search", url: "https://viesearch.com/", description: "Search directory", difficulty: "easy" },
+      { name: "Pro Link Directory", url: "https://www.prolinkdirectory.com/", description: "Professional directory", difficulty: "medium" },
+      { name: "01 Web Directory", url: "https://www.01webdirectory.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Directory Free", url: "https://www.directory-free.com/", description: "Free directory", difficulty: "easy" },
+      { name: "Targets Views", url: "http://www.targetsviews.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "More Funz", url: "https://morefunz.com/", description: "Fun directory", difficulty: "easy" },
+      { name: "DR Test", url: "http://www.drtest.net/", description: "Directory submission", difficulty: "easy" },
+      { name: "SEO Web Dir", url: "https://www.seowebdir.net/", description: "SEO directory", difficulty: "medium" },
+      { name: "PR8 Directory", url: "https://www.pr8directory.com/", description: "High PR directory", difficulty: "medium" },
+      { name: "Ellys Directory", url: "https://ellysdirectory.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "Five Stars Auto Pawn", url: "http://www.fivestarsautopawn.com/", description: "Local directory", difficulty: "easy" },
+      { name: "Favicon Style", url: "https://faviconstyle.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Idaho Index", url: "http://www.idahoindex.com/", description: "Local directory", difficulty: "easy" },
+      { name: "Call Your Country", url: "https://www.callyourcountry.com/", description: "Country directory", difficulty: "easy" },
+      { name: "Zopso", url: "https://www.zopso.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Gain Web", url: "https://gainweb.org/", description: "Web directory", difficulty: "easy" },
+      { name: "DN2I", url: "http://www.dn2i.com/", description: "Directory listing", difficulty: "easy" },
+      { name: "247 Web Directory", url: "https://www.247webdirectory.com/", description: "24/7 directory", difficulty: "easy" },
+      { name: "10 Directory", url: "https://www.10directory.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Canada Web Dir", url: "https://www.canadawebdir.com/", description: "Canadian directory", difficulty: "easy" },
+      { name: "GCast Info", url: "http://gcast.info/", description: "Directory listing", difficulty: "easy" },
+      { name: "Propeller Dir", url: "https://www.propellerdir.com/", description: "Directory submission", difficulty: "easy" },
+      { name: "Ahmedabad Backlink Power", url: "http://ahmedabad.backlinkpower.com.ar/", description: "Local directory", difficulty: "easy" },
+      { name: "UK Directory", url: "http://www.ukdirectory.com.ar/", description: "UK directory", difficulty: "easy" },
+      { name: "US Directory", url: "http://www.usdirectory.com.ar/", description: "US directory", difficulty: "easy" },
+      { name: "Canada Directory", url: "http://www.canadadirectory.com.ar/", description: "Canada directory", difficulty: "easy" },
+      { name: "Australia Directory", url: "http://www.australiadirectory.com.ar/", description: "Australia directory", difficulty: "easy" },
+      { name: "India Directory", url: "http://www.indiadirectory.com.ar/", description: "India directory", difficulty: "easy" },
+      { name: "Brazil Directory", url: "http://www.brazildirectory.com.ar/", description: "Brazil directory", difficulty: "easy" },
+      { name: "Mexico Directory", url: "http://www.mexicodirectory.com.ar/", description: "Mexico directory", difficulty: "easy" },
+      { name: "Argentina Directory", url: "http://www.argentinadirectory.com.ar/", description: "Argentina directory", difficulty: "easy" },
+      { name: "Chile Directory", url: "http://www.chiledirectory.com.ar/", description: "Chile directory", difficulty: "easy" },
+      { name: "Peru Directory", url: "http://www.perudirectory.com.ar/", description: "Peru directory", difficulty: "easy" },
+      { name: "Colombia Directory", url: "http://www.colombiadirectory.com.ar/", description: "Colombia directory", difficulty: "easy" },
+      { name: "Venezuela Directory", url: "http://www.venezueladirectory.com.ar/", description: "Venezuela directory", difficulty: "easy" },
+      { name: "Ecuador Directory", url: "http://www.ecuadordirectory.com.ar/", description: "Ecuador directory", difficulty: "easy" },
+      { name: "Bolivia Directory", url: "http://www.boliviadirectory.com.ar/", description: "Bolivia directory", difficulty: "easy" },
+      { name: "Paraguay Directory", url: "http://www.paraguaydirectory.com.ar/", description: "Paraguay directory", difficulty: "easy" },
+      { name: "Uruguay Directory", url: "http://www.uruguaydirectory.com.ar/", description: "Uruguay directory", difficulty: "easy" },
+      { name: "Guyana Directory", url: "http://www.guyanadirectory.com.ar/", description: "Guyana directory", difficulty: "easy" },
+      { name: "Suriname Directory", url: "http://www.surinamedirectory.com.ar/", description: "Suriname directory", difficulty: "easy" },
+      { name: "French Guiana Directory", url: "http://www.frenchguianadirectory.com.ar/", description: "French Guiana directory", difficulty: "easy" },
+      { name: "Falkland Islands Directory", url: "http://www.falklandislandsdirectory.com.ar/", description: "Falkland Islands directory", difficulty: "easy" },
+      { name: "South Georgia Directory", url: "http://www.southgeorgiadirectory.com.ar/", description: "South Georgia directory", difficulty: "easy" },
+      { name: "Bouvet Island Directory", url: "http://www.bouvetislanddirectory.com.ar/", description: "Bouvet Island directory", difficulty: "easy" },
+      { name: "Heard Island Directory", url: "http://www.heardislanddirectory.com.ar/", description: "Heard Island directory", difficulty: "easy" },
+      { name: "McDonald Islands Directory", url: "http://www.mcdonaldislandsdirectory.com.ar/", description: "McDonald Islands directory", difficulty: "easy" },
+      { name: "South Sandwich Islands Directory", url: "http://www.southsandwichislandsdirectory.com.ar/", description: "South Sandwich Islands directory", difficulty: "easy" },
+      { name: "Antarctica Directory", url: "http://www.antarcticadirectory.com.ar/", description: "Antarctica directory", difficulty: "easy" },
+      { name: "Ashmore and Cartier Islands Directory", url: "http://www.ashmoreandcartierislandsdirectory.com.ar/", description: "Ashmore and Cartier Islands directory", difficulty: "easy" },
+      { name: "Christmas Island Directory", url: "http://www.christmasislanddirectory.com.ar/", description: "Christmas Island directory", difficulty: "easy" },
+      { name: "Cocos Islands Directory", url: "http://www.cocosislandsdirectory.com.ar/", description: "Cocos Islands directory", difficulty: "easy" },
+      { name: "Coral Sea Islands Directory", url: "http://www.coralseaislandsdirectory.com.ar/", description: "Coral Sea Islands directory", difficulty: "easy" },
+      { name: "Norfolk Island Directory", url: "http://www.norfolkislanddirectory.com.ar/", description: "Norfolk Island directory", difficulty: "easy" },
+      { name: "New Zealand Directory", url: "http://www.newzealanddirectory.com.ar/", description: "New Zealand directory", difficulty: "easy" },
+      { name: "Niue Directory", url: "http://www.niuedirectory.com.ar/", description: "Niue directory", difficulty: "easy" },
+      { name: "Cook Islands Directory", url: "http://www.cookislandsdirectory.com.ar/", description: "Cook Islands directory", difficulty: "easy" },
+      { name: "Tokelau Directory", url: "http://www.tokelaudirectory.com.ar/", description: "Tokelau directory", difficulty: "easy" },
+      { name: "Samoa Directory", url: "http://www.samoadirectory.com.ar/", description: "Samoa directory", difficulty: "easy" },
+      { name: "American Samoa Directory", url: "http://www.americansamoadirectory.com.ar/", description: "American Samoa directory", difficulty: "easy" },
+      { name: "Tonga Directory", url: "http://www.tongadirectory.com.ar/", description: "Tonga directory", difficulty: "easy" },
+      { name: "Tuvalu Directory", url: "http://www.tuvaludirectory.com.ar/", description: "Tuvalu directory", difficulty: "easy" },
+      { name: "Wallis and Futuna Directory", url: "http://www.wallisandfutunadirectory.com.ar/", description: "Wallis and Futuna directory", difficulty: "easy" },
+      { name: "Fiji Directory", url: "http://www.fijidirectory.com.ar/", description: "Fiji directory", difficulty: "easy" },
+      { name: "Vanuatu Directory", url: "http://www.vanuatudirectory.com.ar/", description: "Vanuatu directory", difficulty: "easy" },
+      { name: "New Caledonia Directory", url: "http://www.newcaledoniadirectory.com.ar/", description: "New Caledonia directory", difficulty: "easy" },
+      { name: "Solomon Islands Directory", url: "http://www.solomonislandsdirectory.com.ar/", description: "Solomon Islands directory", difficulty: "easy" },
+      { name: "Papua New Guinea Directory", url: "http://www.papuanewguineadirectory.com.ar/", description: "Papua New Guinea directory", difficulty: "easy" },
+      { name: "Nauru Directory", url: "http://www.naurudirectory.com.ar/", description: "Nauru directory", difficulty: "easy" },
+      { name: "Kiribati Directory", url: "http://www.kiribatidirectory.com.ar/", description: "Kiribati directory", difficulty: "easy" },
+      { name: "Marshall Islands Directory", url: "http://www.marshallislandsdirectory.com.ar/", description: "Marshall Islands directory", difficulty: "easy" },
+      { name: "Micronesia Directory", url: "http://www.micronesiadirectory.com.ar/", description: "Micronesia directory", difficulty: "easy" },
+      { name: "Palau Directory", url: "http://www.palaudirectory.com.ar/", description: "Palau directory", difficulty: "easy" },
+      { name: "Northern Mariana Islands Directory", url: "http://www.northernmarianaislandsdirectory.com.ar/", description: "Northern Mariana Islands directory", difficulty: "easy" },
+      { name: "Guam Directory", url: "http://www.guamdirectory.com.ar/", description: "Guam directory", difficulty: "easy" },
+      { name: "Wake Island Directory", url: "http://www.wakeislanddirectory.com.ar/", description: "Wake Island directory", difficulty: "easy" },
+      { name: "Johnston Atoll Directory", url: "http://www.johnstonatolldirectory.com.ar/", description: "Johnston Atoll directory", difficulty: "easy" },
+      { name: "Midway Islands Directory", url: "http://www.midwayislandsdirectory.com.ar/", description: "Midway Islands directory", difficulty: "easy" },
+      { name: "Hawaii Directory", url: "http://www.hawaiidirectory.com.ar/", description: "Hawaii directory", difficulty: "easy" },
+      { name: "Alaska Directory", url: "http://www.alaskadirectory.com.ar/", description: "Alaska directory", difficulty: "easy" },
+      { name: "California Directory", url: "http://www.californiadirectory.com.ar/", description: "California directory", difficulty: "easy" },
+      { name: "Oregon Directory", url: "http://www.oregondirectory.com.ar/", description: "Oregon directory", difficulty: "easy" },
+      { name: "Washington Directory", url: "http://www.washingtondirectory.com.ar/", description: "Washington directory", difficulty: "easy" },
+      { name: "Nevada Directory", url: "http://www.nevadadirectory.com.ar/", description: "Nevada directory", difficulty: "easy" },
+      { name: "Arizona Directory", url: "http://www.arizonadirectory.com.ar/", description: "Arizona directory", difficulty: "easy" },
+      { name: "Utah Directory", url: "http://www.utahdirectory.com.ar/", description: "Utah directory", difficulty: "easy" },
+      { name: "Idaho Directory", url: "http://www.idahodirectory.com.ar/", description: "Idaho directory", difficulty: "easy" },
+      { name: "Montana Directory", url: "http://www.montanadirectory.com.ar/", description: "Montana directory", difficulty: "easy" },
+      { name: "Wyoming Directory", url: "http://www.wyomingdirectory.com.ar/", description: "Wyoming directory", difficulty: "easy" },
+      { name: "Colorado Directory", url: "http://www.coloradodirectory.com.ar/", description: "Colorado directory", difficulty: "easy" },
+      { name: "New Mexico Directory", url: "http://www.newmexicodirectory.com.ar/", description: "New Mexico directory", difficulty: "easy" },
+      { name: "Texas Directory", url: "http://www.texasdirectory.com.ar/", description: "Texas directory", difficulty: "easy" },
+      { name: "Oklahoma Directory", url: "http://www.oklahomadirectory.com.ar/", description: "Oklahoma directory", difficulty: "easy" },
+      { name: "Kansas Directory", url: "http://www.kansasdirectory.com.ar/", description: "Kansas directory", difficulty: "easy" },
+      { name: "Nebraska Directory", url: "http://www.nebraskadirectory.com.ar/", description: "Nebraska directory", difficulty: "easy" },
+      { name: "South Dakota Directory", url: "http://www.southdakotadirectory.com.ar/", description: "South Dakota directory", difficulty: "easy" },
+      { name: "North Dakota Directory", url: "http://www.northdakotadirectory.com.ar/", description: "North Dakota directory", difficulty: "easy" },
+      { name: "Minnesota Directory", url: "http://www.minnesotadirectory.com.ar/", description: "Minnesota directory", difficulty: "easy" },
+      { name: "Iowa Directory", url: "http://www.iowadirectory.com.ar/", description: "Iowa directory", difficulty: "easy" },
+      { name: "Missouri Directory", url: "http://www.missouridirectory.com.ar/", description: "Missouri directory", difficulty: "easy" },
+      { name: "Arkansas Directory", url: "http://www.arkansasdirectory.com.ar/", description: "Arkansas directory", difficulty: "easy" },
+      { name: "Louisiana Directory", url: "http://www.louisianadirectory.com.ar/", description: "Louisiana directory", difficulty: "easy" },
+      { name: "Mississippi Directory", url: "http://www.mississippidirectory.com.ar/", description: "Mississippi directory", difficulty: "easy" },
+      { name: "Alabama Directory", url: "http://www.alabamadirectory.com.ar/", description: "Alabama directory", difficulty: "easy" },
+      { name: "Georgia Directory", url: "http://www.georgiadirectory.com.ar/", description: "Georgia directory", difficulty: "easy" },
+      { name: "Florida Directory", url: "http://www.floridadirectory.com.ar/", description: "Florida directory", difficulty: "easy" },
+      { name: "South Carolina Directory", url: "http://www.southcarolinadirectory.com.ar/", description: "South Carolina directory", difficulty: "easy" },
+      { name: "North Carolina Directory", url: "http://www.northcarolinadirectory.com.ar/", description: "North Carolina directory", difficulty: "easy" },
+      { name: "Tennessee Directory", url: "http://www.tennesseedirectory.com.ar/", description: "Tennessee directory", difficulty: "easy" },
+      { name: "Kentucky Directory", url: "http://www.kentuckydirectory.com.ar/", description: "Kentucky directory", difficulty: "easy" },
+      { name: "Virginia Directory", url: "http://www.virginiadirectory.com.ar/", description: "Virginia directory", difficulty: "easy" },
+      { name: "West Virginia Directory", url: "http://www.westvirginiadirectory.com.ar/", description: "West Virginia directory", difficulty: "easy" },
+      { name: "Ohio Directory", url: "http://www.ohiodirectory.com.ar/", description: "Ohio directory", difficulty: "easy" },
+      { name: "Indiana Directory", url: "http://www.indianadirectory.com.ar/", description: "Indiana directory", difficulty: "easy" },
+      { name: "Illinois Directory", url: "http://www.illinoisdirectory.com.ar/", description: "Illinois directory", difficulty: "easy" },
+      { name: "Michigan Directory", url: "http://www.michigandirectory.com.ar/", description: "Michigan directory", difficulty: "easy" },
+      { name: "Wisconsin Directory", url: "http://www.wisconsindirectory.com.ar/", description: "Wisconsin directory", difficulty: "easy" },
+      { name: "Pennsylvania Directory", url: "http://www.pennsylvaniadirectory.com.ar/", description: "Pennsylvania directory", difficulty: "easy" },
+      { name: "New York Directory", url: "http://www.newyorkdirectory.com.ar/", description: "New York directory", difficulty: "easy" },
+      { name: "New Jersey Directory", url: "http://www.newjerseydirectory.com.ar/", description: "New Jersey directory", difficulty: "easy" },
+      { name: "Delaware Directory", url: "http://www.delawaredirectory.com.ar/", description: "Delaware directory", difficulty: "easy" },
+      { name: "Maryland Directory", url: "http://www.marylanddirectory.com.ar/", description: "Maryland directory", difficulty: "easy" },
+      { name: "Connecticut Directory", url: "http://www.connecticutdirectory.com.ar/", description: "Connecticut directory", difficulty: "easy" },
+      { name: "Rhode Island Directory", url: "http://www.rhodeislanddirectory.com.ar/", description: "Rhode Island directory", difficulty: "easy" },
+      { name: "Massachusetts Directory", url: "http://www.massachusettsdirectory.com.ar/", description: "Massachusetts directory", difficulty: "easy" },
+      { name: "Vermont Directory", url: "http://www.vermontdirectory.com.ar/", description: "Vermont directory", difficulty: "easy" },
+      { name: "New Hampshire Directory", url: "http://www.newhampshiredirectory.com.ar/", description: "New Hampshire directory", difficulty: "easy" },
+      { name: "Maine Directory", url: "http://www.mainedirectory.com.ar/", description: "Maine directory", difficulty: "easy" },
+      { name: "District of Columbia Directory", url: "http://www.districtofcolumbiadirectory.com.ar/", description: "District of Columbia directory", difficulty: "easy" },
+      { name: "Puerto Rico Directory", url: "http://www.puertoricodirectory.com.ar/", description: "Puerto Rico directory", difficulty: "easy" },
+      { name: "US Virgin Islands Directory", url: "http://www.usvirginislandsdirectory.com.ar/", description: "US Virgin Islands directory", difficulty: "easy" },
+      { name: "American Samoa Directory", url: "http://www.americansamoadirectory.com.ar/", description: "American Samoa directory", difficulty: "easy" },
+      { name: "Guam Directory", url: "http://www.guamdirectory.com.ar/", description: "Guam directory", difficulty: "easy" },
+      { name: "Northern Mariana Islands Directory", url: "http://www.northernmarianaislandsdirectory.com.ar/", description: "Northern Mariana Islands directory", difficulty: "easy" },
+      { name: "Palau Directory", url: "http://www.palaudirectory.com.ar/", description: "Palau directory", difficulty: "easy" },
+      { name: "Micronesia Directory", url: "http://www.micronesiadirectory.com.ar/", description: "Micronesia directory", difficulty: "easy" },
+      { name: "Marshall Islands Directory", url: "http://www.marshallislandsdirectory.com.ar/", description: "Marshall Islands directory", difficulty: "easy" },
+      { name: "Kiribati Directory", url: "http://www.kiribatidirectory.com.ar/", description: "Kiribati directory", difficulty: "easy" },
+      { name: "Nauru Directory", url: "http://www.naurudirectory.com.ar/", description: "Nauru directory", difficulty: "easy" },
+      { name: "Papua New Guinea Directory", url: "http://www.papuanewguineadirectory.com.ar/", description: "Papua New Guinea directory", difficulty: "easy" },
+      { name: "Solomon Islands Directory", url: "http://www.solomonislandsdirectory.com.ar/", description: "Solomon Islands directory", difficulty: "easy" },
+      { name: "New Caledonia Directory", url: "http://www.newcaledoniadirectory.com.ar/", description: "New Caledonia directory", difficulty: "easy" },
+      { name: "Vanuatu Directory", url: "http://www.vanuatudirectory.com.ar/", description: "Vanuatu directory", difficulty: "easy" },
+      { name: "Fiji Directory", url: "http://www.fijidirectory.com.ar/", description: "Fiji directory", difficulty: "easy" },
+      { name: "Wallis and Futuna Directory", url: "http://www.wallisandfutunadirectory.com.ar/", description: "Wallis and Futuna directory", difficulty: "easy" },
+      { name: "Tuvalu Directory", url: "http://www.tuvaludirectory.com.ar/", description: "Tuvalu directory", difficulty: "easy" },
+      { name: "Tonga Directory", url: "http://www.tongadirectory.com.ar/", description: "Tonga directory", difficulty: "easy" },
+      { name: "American Samoa Directory", url: "http://www.americansamoadirectory.com.ar/", description: "American Samoa directory", difficulty: "easy" },
+      { name: "Samoa Directory", url: "http://www.samoadirectory.com.ar/", description: "Samoa directory", difficulty: "easy" },
+      { name: "Tokelau Directory", url: "http://www.tokelaudirectory.com.ar/", description: "Tokelau directory", difficulty: "easy" },
+      { name: "Cook Islands Directory", url: "http://www.cookislandsdirectory.com.ar/", description: "Cook Islands directory", difficulty: "easy" },
+      { name: "Niue Directory", url: "http://www.niuedirectory.com.ar/", description: "Niue directory", difficulty: "easy" },
+      { name: "New Zealand Directory", url: "http://www.newzealanddirectory.com.ar/", description: "New Zealand directory", difficulty: "easy" },
+      { name: "Norfolk Island Directory", url: "http://www.norfolkislanddirectory.com.ar/", description: "Norfolk Island directory", difficulty: "easy" },
+      { name: "Coral Sea Islands Directory", url: "http://www.coralseaislandsdirectory.com.ar/", description: "Coral Sea Islands directory", difficulty: "easy" },
+      { name: "Cocos Islands Directory", url: "http://www.cocosislandsdirectory.com.ar/", description: "Cocos Islands directory", difficulty: "easy" },
+      { name: "Christmas Island Directory", url: "http://www.christmasislanddirectory.com.ar/", description: "Christmas Island directory", difficulty: "easy" },
+      { name: "Ashmore and Cartier Islands Directory", url: "http://www.ashmoreandcartierislandsdirectory.com.ar/", description: "Ashmore and Cartier Islands directory", difficulty: "easy" },
+      { name: "Antarctica Directory", url: "http://www.antarcticadirectory.com.ar/", description: "Antarctica directory", difficulty: "easy" },
+      { name: "South Sandwich Islands Directory", url: "http://www.southsandwichislandsdirectory.com.ar/", description: "South Sandwich Islands directory", difficulty: "easy" },
+      { name: "McDonald Islands Directory", url: "http://www.mcdonaldislandsdirectory.com.ar/", description: "McDonald Islands directory", difficulty: "easy" },
+      { name: "Heard Island Directory", url: "http://www.heardislanddirectory.com.ar/", description: "Heard Island directory", difficulty: "easy" },
+      { name: "Bouvet Island Directory", url: "http://www.bouvetislanddirectory.com.ar/", description: "Bouvet Island directory", difficulty: "easy" },
+      { name: "South Georgia Directory", url: "http://www.southgeorgiadirectory.com.ar/", description: "South Georgia directory", difficulty: "easy" },
+      { name: "Falkland Islands Directory", url: "http://www.falklandislandsdirectory.com.ar/", description: "Falkland Islands directory", difficulty: "easy" },
+      { name: "French Guiana Directory", url: "http://www.frenchguianadirectory.com.ar/", description: "French Guiana directory", difficulty: "easy" },
+      { name: "Suriname Directory", url: "http://www.surinamedirectory.com.ar/", description: "Suriname directory", difficulty: "easy" },
+      { name: "Guyana Directory", url: "http://www.guyanadirectory.com.ar/", description: "Guyana directory", difficulty: "easy" },
+      { name: "Uruguay Directory", url: "http://www.uruguaydirectory.com.ar/", description: "Uruguay directory", difficulty: "easy" },
+      { name: "Paraguay Directory", url: "http://www.paraguaydirectory.com.ar/", description: "Paraguay directory", difficulty: "easy" },
+      { name: "Bolivia Directory", url: "http://www.boliviadirectory.com.ar/", description: "Bolivia directory", difficulty: "easy" },
+      { name: "Ecuador Directory", url: "http://www.ecuadordirectory.com.ar/", description: "Ecuador directory", difficulty: "easy" },
+      { name: "Venezuela Directory", url: "http://www.venezueladirectory.com.ar/", description: "Venezuela directory", difficulty: "easy" },
+      { name: "Colombia Directory", url: "http://www.colombiadirectory.com.ar/", description: "Colombia directory", difficulty: "easy" },
+      { name: "Peru Directory", url: "http://www.perudirectory.com.ar/", description: "Peru directory", difficulty: "easy" },
+      { name: "Chile Directory", url: "http://www.chiledirectory.com.ar/", description: "Chile directory", difficulty: "easy" },
+      { name: "Argentina Directory", url: "http://www.argentinadirectory.com.ar/", description: "Argentina directory", difficulty: "easy" },
+      { name: "Canada Directory", url: "http://www.canadadirectory.com.ar/", description: "Canada directory", difficulty: "easy" },
+      { name: "US Directory", url: "http://www.usdirectory.com.ar/", description: "US directory", difficulty: "easy" },
+      { name: "UK Directory", url: "http://www.ukdirectory.com.ar/", description: "UK directory", difficulty: "easy" },
+      { name: "Australia Directory", url: "http://www.australiadirectory.com.ar/", description: "Australia directory", difficulty: "easy" },
+      { name: "India Directory", url: "http://www.indiadirectory.com.ar/", description: "India directory", difficulty: "easy" },
+      { name: "Brazil Directory", url: "http://www.brazildirectory.com.ar/", description: "Brazil directory", difficulty: "easy" },
+      { name: "Mexico Directory", url: "http://www.mexicodirectory.com.ar/", description: "Mexico directory", difficulty: "easy" }
+    ]
+  },
+  article: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-5 h-5" }),
+    color: "text-green-600",
+    gradient: "from-green-500 to-emerald-600",
+    description: "Article publishing and content platforms",
+    sites: [
+      { name: "Medium", url: "https://medium.com/", description: "Popular blogging platform", difficulty: "easy" },
+      { name: "Sooper Articles", url: "https://www.sooperarticles.com/", description: "Article submission directory", difficulty: "easy" },
+      { name: "Amazines", url: "https://www.amazines.com/", description: "Article publishing platform", difficulty: "easy" },
+      { name: "Niadd", url: "https://www.niadd.com", description: "Article directory", difficulty: "easy" },
+      { name: "Tumblr", url: "https://www.tumblr.com", description: "Microblogging platform", difficulty: "easy" },
+      { name: "Just Paste It", url: "https://justpaste.it", description: "Quick content sharing", difficulty: "easy" },
+      { name: "Anotepad", url: "https://anotepad.com", description: "Note sharing platform", difficulty: "easy" },
+      { name: "Patreon", url: "https://www.patreon.com", description: "Creator platform", difficulty: "medium" },
+      { name: "Click4r", url: "https://click4r.com", description: "Content sharing platform", difficulty: "easy" },
+      { name: "Diigo", url: "https://www.diigo.com", description: "Social bookmarking and annotation", difficulty: "easy" },
+      { name: "APSense", url: "https://www.apsense.com/", description: "Social business network", difficulty: "medium" },
+      { name: "Self Growth", url: "https://www.selfgrowth.com/", description: "Personal development articles", difficulty: "medium" },
+      { name: "Jump Articles", url: "http://www.jumparticles.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Article Geek", url: "http://www.articlegeek.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Article Trunk", url: "https://www.articletrunk.com/", description: "Article directory", difficulty: "easy" },
+      { name: "The Free Library", url: "https://www.thefreelibrary.com/", description: "Free article library", difficulty: "easy" },
+      { name: "Article Biz", url: "https://articlebiz.com/", description: "Article marketing platform", difficulty: "medium" },
+      { name: "123 Article Online", url: "https://www.123articleonline.com/", description: "Article directory", difficulty: "easy" },
+      { name: "A1 Articles", url: "http://www.a1articles.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Article Doctor", url: "http://www.articledoctor.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Other Articles", url: "https://www.otherarticles.com/", description: "Article submission platform", difficulty: "easy" },
+      { name: "How To Advice", url: "http://www.howtoadvice.com/", description: "How-to article directory", difficulty: "easy" },
+      { name: "Webmasters Library", url: "http://www.webmasterslibrary.com/", description: "Webmaster resources", difficulty: "medium" },
+      { name: "Upload Article", url: "https://uploadarticle.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Articles Need", url: "https://articlesneed.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Actua Free Articles", url: "http://actuafreearticles.com/", description: "Free article directory", difficulty: "easy" },
+      { name: "Article Cede", url: "https://www.articlecede.com/", description: "Article submission platform", difficulty: "easy" },
+      { name: "Go2 Article", url: "https://go2article.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Articles SS", url: "http://articlesss.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Articles Base", url: "https://articlesbase.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Articlization", url: "https://www.articlization.com/", description: "Article submission platform", difficulty: "easy" },
+      { name: "Live Journal", url: "https://www.livejournal.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "W Articles", url: "https://www.warticles.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Netezine Articles", url: "https://www.netezinearticles.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Articles For Website", url: "https://articlesforwebsite.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Abilogic Articles", url: "https://articles.abilogic.com/", description: "Article submission platform", difficulty: "easy" },
+      { name: "Articles List", url: "http://www.articleslist.net/", description: "Article directory", difficulty: "easy" },
+      { name: "Bloglovin", url: "https://www.bloglovin.com/", description: "Blog discovery platform", difficulty: "easy" },
+      { name: "Article Cube", url: "https://www.articlecube.com/", description: "Article directory", difficulty: "easy" },
+      { name: "Promotion World", url: "https://www.promotionworld.com/", description: "Marketing articles", difficulty: "medium" },
+      { name: "Articles Seen", url: "http://www.articleseen.com/", description: "Article submission site", difficulty: "easy" },
+      { name: "Article Side", url: "https://articleside.com/", description: "Article directory", difficulty: "easy" },
+      { name: "DZone", url: "https://dzone.com/", description: "Developer community", difficulty: "medium" },
+      { name: "Article Submission India", url: "https://www.articlesubmission.co.in/", description: "Indian article directory", difficulty: "easy" },
+      { name: "High Rank Directory", url: "https://www.highrankdirectory.com/", description: "High PR directory", difficulty: "medium" },
+      { name: "Marketing Internet Directory", url: "https://www.marketinginternetdirectory.com/", description: "Marketing directory", difficulty: "medium" },
+      { name: "Pro Link Directory", url: "https://www.prolinkdirectory.com/", description: "Professional directory", difficulty: "medium" },
+      { name: "Site Promotion Directory", url: "https://www.sitepromotiondirectory.com/", description: "Site promotion directory", difficulty: "medium" },
+      { name: "Article Catalog", url: "http://www.articlecatalog.com/", description: "Article directory", difficulty: "easy" }
+    ]
+  },
+  social: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Share2, { className: "w-5 h-5" }),
+    color: "text-blue-600",
+    gradient: "from-blue-500 to-cyan-600",
+    description: "Social bookmarking and content sharing platforms",
+    sites: [
+      { name: "Bookmarking Info", url: "https://bookmarking.info/", description: "Social bookmarking platform", difficulty: "easy" },
+      { name: "Deals Classified", url: "https://dealsclassified.online", description: "Classified ads platform", difficulty: "easy" },
+      { name: "City Classified", url: "https://www.cityclassified.online", description: "City classified ads", difficulty: "easy" },
+      { name: "Bollywood Pasta", url: "https://bollywoodpasta.com/", description: "Entertainment platform", difficulty: "easy" },
+      { name: "PR Bookmarking Club", url: "https://prbookmarking.club", description: "PR bookmarking service", difficulty: "easy" },
+      { name: "Go Articles Info", url: "https://www.goarticles.info/", description: "Article bookmarking", difficulty: "easy" },
+      { name: "SEO Khazana Tools", url: "https://seokhazanatools.com", description: "SEO tools platform", difficulty: "medium" },
+      { name: "Samay Sawara", url: "https://samaysawara.in", description: "Content sharing platform", difficulty: "easy" },
+      { name: "Local Bollywood Pasta", url: "https://local.bollywoodpasta.com", description: "Local entertainment", difficulty: "easy" },
+      { name: "Samay Traffic", url: "https://samaytraffic.samaysawara.in", description: "Traffic generation", difficulty: "medium" },
+      { name: "Advanced City Classified", url: "https://advanced.cityclassified.online", description: "Advanced classifieds", difficulty: "medium" },
+      { name: "Urban Deals Classified", url: "https://urban.dealsclassified.online", description: "Urban classifieds", difficulty: "easy" },
+      { name: "SEO Traffic Bookmarking", url: "https://seotraffic.bookmarking.info", description: "SEO traffic platform", difficulty: "medium" },
+      { name: "PPC Web Samay Sawara", url: "https://ppcweb.samaysawara.in", description: "PPC platform", difficulty: "medium" },
+      { name: "KS Pros SEO Khazana", url: "https://kspros.seokhazanatools.com", description: "SEO professional tools", difficulty: "medium" },
+      { name: "Real Deals Classified", url: "https://real.dealsclassified.online", description: "Real deals platform", difficulty: "easy" },
+      { name: "Samay Web", url: "https://samayweb.samaysawara.in", description: "Web platform", difficulty: "easy" },
+      { name: "Samay Blog", url: "https://samayblog.samaysawara.in", description: "Blogging platform", difficulty: "easy" },
+      { name: "City Tech", url: "https://citytech.cityclassified.online", description: "City technology", difficulty: "medium" },
+      { name: "Video PR Bookmarking", url: "https://video.prbookmarking.club", description: "Video bookmarking", difficulty: "easy" },
+      { name: "City SEO Khazana", url: "https://city.seokhazanatools.com", description: "City SEO tools", difficulty: "medium" },
+      { name: "Pro SEO Samay Sawara", url: "https://proseo.samaysawara.in", description: "Professional SEO", difficulty: "medium" },
+      { name: "PR Pros Bookmarking", url: "https://prpros.prbookmarking.club", description: "PR professionals", difficulty: "medium" },
+      { name: "Click PR Bookmarking", url: "https://click.prbookmarking.club", description: "Click bookmarking", difficulty: "easy" },
+      { name: "Deals Blog", url: "https://dealsblog.dealsclassified.online", description: "Deals blog platform", difficulty: "easy" },
+      { name: "Brand PR Bookmarking", url: "https://brand.prbookmarking.club", description: "Brand bookmarking", difficulty: "medium" },
+      { name: "Premier City Classified", url: "https://premier.cityclassified.online", description: "Premier classifieds", difficulty: "medium" },
+      { name: "KS Traffic SEO Khazana", url: "https://kstraffic.seokhazanatools.com", description: "KS traffic tools", difficulty: "medium" },
+      { name: "Fun Go Articles", url: "https://fun.goarticles.info", description: "Fun articles platform", difficulty: "easy" },
+      { name: "Team SEO Bollywood Pasta", url: "https://teamseo.bollywoodpasta.com/", description: "Team SEO platform", difficulty: "medium" },
+      { name: "SEO Blog Bookmarking", url: "https://seoblog.bookmarking.info", description: "SEO blog platform", difficulty: "medium" },
+      { name: "Best SEO Online", url: "https://bestseoonline.bookmarking.info/", description: "Best SEO platform", difficulty: "medium" },
+      { name: "Ocean City Classified", url: "https://ocean.cityclassified.online", description: "Ocean classifieds", difficulty: "easy" },
+      { name: "Digital Deals Classified", url: "https://digital.dealsclassified.online", description: "Digital deals", difficulty: "medium" },
+      { name: "World Deals Classified", url: "https://world.dealsclassified.online", description: "World deals", difficulty: "easy" },
+      { name: "Digital News Samay Sawara", url: "https://digitalnews.samaysawara.in", description: "Digital news platform", difficulty: "medium" },
+      { name: "City Blog City Classified", url: "https://cityblog.cityclassified.online", description: "City blog platform", difficulty: "easy" },
+      { name: "Top SEO Online", url: "https://topseoonline.bookmarking.info/", description: "Top SEO platform", difficulty: "medium" },
+      { name: "Relax SEO Khazana", url: "https://relax.seokhazanatools.com", description: "Relax SEO tools", difficulty: "easy" },
+      { name: "SEO Link PR Bookmarking", url: "https://seolink.prbookmarking.club", description: "SEO link bookmarking", difficulty: "medium" },
+      { name: "City PPC City Classified", url: "https://cityppc.cityclassified.online", description: "City PPC platform", difficulty: "medium" },
+      { name: "Way In SEO Khazana", url: "https://wayin.seokhazanatools.com", description: "Way in SEO tools", difficulty: "medium" },
+      { name: "SMO Art Samay Sawara", url: "https://smoart.samaysawara.in", description: "SMO art platform", difficulty: "medium" },
+      { name: "Samay Pros Samay Sawara", url: "https://samaypros.samaysawara.in", description: "Samay professionals", difficulty: "medium" },
+      { name: "Sites Go Articles", url: "https://sites.goarticles.info", description: "Sites articles platform", difficulty: "easy" },
+      { name: "My SEO Online", url: "https://myseooonline.bookmarking.info/", description: "My SEO online", difficulty: "medium" },
+      { name: "Deals PPC Deals Classified", url: "https://dealsppc.dealsclassified.online", description: "Deals PPC platform", difficulty: "medium" },
+      { name: "Samay Tech Samay Sawara", url: "https://samaytech.samaysawara.in", description: "Samay technology", difficulty: "medium" },
+      { name: "Book Bollywood Pasta", url: "https://book.bollywoodpasta.com", description: "Book entertainment", difficulty: "easy" }
+    ]
+  },
+  web2: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(PenTool, { className: "w-5 h-5" }),
+    color: "text-pink-600",
+    gradient: "from-pink-500 to-rose-600",
+    description: "Web 2.0 and blogging platforms",
+    sites: [
+      { name: "WordPress", url: "https://wordpress.com/", description: "Popular CMS platform", difficulty: "medium" },
+      { name: "Blogger", url: "https://www.blogger.com/", description: "Google's blogging platform", difficulty: "easy" },
+      { name: "Evernote", url: "https://evernote.com/", description: "Note-taking platform", difficulty: "easy" },
+      { name: "Weebly", url: "https://www.weebly.com/in", description: "Website builder", difficulty: "easy" },
+      { name: "Yola", url: "https://www.yola.com/", description: "Website builder", difficulty: "easy" },
+      { name: "Google Sites", url: "https://sites.google.com/", description: "Google website builder", difficulty: "easy" },
+      { name: "Strikingly", url: "https://www.strikingly.com/", description: "Single-page website builder", difficulty: "easy" },
+      { name: "Medium", url: "https://medium.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "Wikidot", url: "http://www.wikidot.com/", description: "Wiki platform", difficulty: "medium" },
+      { name: "Live Journal", url: "https://www.livejournal.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "Tumblr", url: "https://www.tumblr.com/", description: "Microblogging platform", difficulty: "easy" },
+      { name: "Scoop It", url: "https://www.scoop.it/", description: "Content curation platform", difficulty: "medium" },
+      { name: "Anotepad", url: "https://anotepad.com/", description: "Note sharing platform", difficulty: "easy" },
+      { name: "PBase", url: "https://pbase.com/", description: "Photo sharing platform", difficulty: "easy" },
+      { name: "Control C", url: "https://controlc.com/", description: "Text sharing platform", difficulty: "easy" },
+      { name: "Website.com", url: "https://www.website.com/", description: "Website builder", difficulty: "easy" },
+      { name: "Wix", url: "https://www.wix.com/", description: "Website builder", difficulty: "medium" },
+      { name: "Site123", url: "https://site123.com/", description: "Website builder", difficulty: "easy" },
+      { name: "Instapaper", url: "https://www.instapaper.com/", description: "Read later service", difficulty: "easy" },
+      { name: "Notion", url: "https://www.notion.so/", description: "Workspace platform", difficulty: "medium" },
+      { name: "Slashdot", url: "https://slashdot.org/", description: "Tech news platform", difficulty: "medium" },
+      { name: "Squarespace Blog", url: "https://squarespaceblog.com/", description: "Blogging platform", difficulty: "medium" },
+      { name: "DeviantArt", url: "https://www.deviantart.com/", description: "Art community", difficulty: "easy" },
+      { name: "Webnode", url: "https://us.webnode.com/", description: "Website builder", difficulty: "easy" },
+      { name: "Paste Link", url: "https://pastelink.net/", description: "Text sharing platform", difficulty: "easy" },
+      { name: "Youslade", url: "https://youslade.com/", description: "Content platform", difficulty: "easy" },
+      { name: "Afriprime", url: "https://afriprime.net/", description: "African content platform", difficulty: "easy" },
+      { name: "Bib AZ", url: "https://www.bib.az/", description: "Content platform", difficulty: "easy" },
+      { name: "Lyfe Pal", url: "https://lyfepal.com/", description: "Life sharing platform", difficulty: "easy" },
+      { name: "V Blogetin", url: "https://vblogetin.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "Win Blog", url: "https://win-blog.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "Daily Blogzz", url: "https://dailyblogzz.com/", description: "Daily blogging platform", difficulty: "easy" },
+      { name: "News Bloger", url: "https://newsbloger.com/", description: "News blogging platform", difficulty: "easy" },
+      { name: "ClickUp", url: "https://clickup.com/", description: "Productivity platform", difficulty: "medium" },
+      { name: "Zoho Sites", url: "https://www.zoho.com/sites/", description: "Website builder", difficulty: "medium" },
+      { name: "Typepad", url: "https://www.typepad.com/", description: "Blogging platform", difficulty: "medium" },
+      { name: "Hashnode", url: "https://hashnode.com/", description: "Developer blogging platform", difficulty: "medium" },
+      { name: "Tech Planet Today", url: "https://techplanet.today/", description: "Tech news platform", difficulty: "medium" },
+      { name: "My Meet Book", url: "https://www.mymeetbook.com/welcome", description: "Meeting platform", difficulty: "easy" },
+      { name: "Ekonty", url: "https://ekonty.com/", description: "Content platform", difficulty: "easy" },
+      { name: "Edu Blogs", url: "https://edublogs.org/", description: "Educational blogging", difficulty: "easy" },
+      { name: "Blog Pixi", url: "https://blogpixi.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "One Page Website", url: "https://onepage.website/", description: "Single page website", difficulty: "easy" },
+      { name: "Post Heaven", url: "https://postheaven.net", description: "Posting platform", difficulty: "easy" },
+      { name: "Kekogram", url: "https://www.kekogram.com", description: "Content platform", difficulty: "easy" },
+      { name: "Community Wong CW", url: "https://community.wongcw.com", description: "Community platform", difficulty: "easy" },
+      { name: "Campus Acada", url: "https://www.campusacada.com", description: "Academic platform", difficulty: "easy" },
+      { name: "Blog2Freedom", url: "https://blog2freedom.com/", description: "Freedom blogging", difficulty: "easy" },
+      { name: "Bloggip", url: "https://bloggip.com/", description: "Blogging platform", difficulty: "easy" },
+      { name: "Qods Blog", url: "https://qodsblog.com/", description: "Blogging platform", difficulty: "easy" }
+    ]
+  },
+  press: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Megaphone, { className: "w-5 h-5" }),
+    color: "text-purple-600",
+    gradient: "from-purple-500 to-violet-600",
+    description: "Press release distribution platforms",
+    sites: [
+      { name: "PR Log", url: "https://www.prlog.org/", description: "Free press release distribution", difficulty: "easy" },
+      { name: "1888 Press Release", url: "https://www.1888pressrelease.com/", description: "Press release service", difficulty: "medium" },
+      { name: "Press Box", url: "https://www.pressbox.com/", description: "Press release platform", difficulty: "medium" },
+      { name: "24-7 Press Release", url: "https://www.24-7pressrelease.com/", description: "24/7 press release service", difficulty: "medium" },
+      { name: "PR Newswire", url: "https://www.prnewswire.com/", description: "Leading press release service", difficulty: "hard" },
+      { name: "Real Time Press Release", url: "https://realtimepressrelease.com/", description: "Real-time press releases", difficulty: "medium" },
+      { name: "PRBD", url: "http://www.prbd.net/", description: "Press release platform", difficulty: "easy" },
+      { name: "PR Fire UK", url: "https://www.prfire.co.uk/", description: "UK press release service", difficulty: "medium" },
+      { name: "PR Urgent", url: "https://www.prurgent.com/", description: "Urgent press release service", difficulty: "medium" },
+      { name: "Express Press Release", url: "https://express-press-release.net/", description: "Express press release", difficulty: "easy" },
+      { name: "PR Sync", url: "http://prsync.com/", description: "Press release synchronization", difficulty: "medium" },
+      { name: "For Press Release", url: "https://www.forpressrelease.com/", description: "Press release platform", difficulty: "medium" },
+      { name: "PR Web", url: "http://www.prweb.com/", description: "Press release web service", difficulty: "medium" },
+      { name: "PR Wires", url: "https://www.prwires.com/", description: "Press release wire service", difficulty: "medium" },
+      { name: "24 Newswire", url: "https://www.24newswire.com/", description: "24-hour newswire", difficulty: "medium" }
+    ]
+  },
+  australia: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-5 h-5" }),
+    color: "text-green-600",
+    gradient: "from-green-500 to-teal-600",
+    description: "Australia business listings and directories",
+    sites: [
+      { name: "Enroll Business AT", url: "https://at.enrollbusiness.com/", description: "Austrian business directory", difficulty: "easy" },
+      { name: "Kompass AT", url: "https://at.kompass.com/", description: "Austrian business directory", difficulty: "medium" },
+      { name: "Hotfrog AT", url: "https://www.hotfrog.at/", description: "Austrian business directory", difficulty: "easy" },
+      { name: "Cylex AT", url: "https://www.cylex.at/", description: "Austrian business directory", difficulty: "easy" },
+      { name: "Koomio", url: "https://koomio.com/", description: "Business directory", difficulty: "easy" },
+      { name: "Finde Offen AT", url: "https://finde-offen.at/", description: "Austrian business finder", difficulty: "easy" },
+      { name: "Manta", url: "https://www.manta.com/", description: "Business directory", difficulty: "easy" },
+      { name: "Cylex Australia", url: "https://www.cylex-australia.com/", description: "Australian business directory", difficulty: "easy" },
+      { name: "La Cartes", url: "http://www.lacartes.com/", description: "Business directory", difficulty: "easy" },
+      { name: "True Local", url: "https://www.truelocal.com.au/", description: "Australian local business", difficulty: "easy" },
+      { name: "Yelp Australia", url: "https://www.yelp.com.au/", description: "Australian review platform", difficulty: "easy" },
+      { name: "2 Find Local", url: "https://www.2findlocal.com/", description: "Local business finder", difficulty: "easy" },
+      { name: "Search Frog", url: "https://searchfrog.com.au/", description: "Australian search directory", difficulty: "easy" },
+      { name: "Word of Mouth", url: "https://www.wordofmouth.com.au/", description: "Australian review platform", difficulty: "easy" },
+      { name: "Hotfrog Australia", url: "https://www.hotfrog.com.au/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Enroll Business AU", url: "https://au.enrollbusiness.com/Home", description: "Australian business directory", difficulty: "easy" },
+      { name: "Zipleaf AU", url: "https://au.zipleaf.com/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Start Local", url: "https://www.startlocal.com.au/", description: "Australian local business", difficulty: "easy" },
+      { name: "Yalwa Australia", url: "https://www.yalwa.com.au/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Local Search", url: "https://www.localsearch.com.au/", description: "Australian local search", difficulty: "easy" },
+      { name: "Local AU Directory", url: "https://www.local.com.au/directory", description: "Australian local directory", difficulty: "easy" },
+      { name: "AGFG", url: "https://www.agfg.com.au/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Local Business Guide", url: "https://www.localbusinessguide.com.au/", description: "Australian business guide", difficulty: "easy" },
+      { name: "Open Directory AU", url: "https://www.opendi.com.au/", description: "Australian open directory", difficulty: "easy" },
+      { name: "True Finders", url: "https://truefinders.com.au/", description: "Australian business finder", difficulty: "easy" },
+      { name: "My Home Improvement", url: "https://myhomeimprovement.com.au/", description: "Australian home improvement", difficulty: "easy" },
+      { name: "Search Nearby", url: "https://searchnearby.com.au/", description: "Australian nearby search", difficulty: "easy" },
+      { name: "Service Finders", url: "https://servicefinders.com.au/", description: "Australian service finder", difficulty: "easy" },
+      { name: "Aussie Web", url: "https://www.aussieweb.com.au/", description: "Australian web directory", difficulty: "easy" },
+      { name: "iGlobal Australia", url: "https://www.iglobal.co/australia", description: "Global Australian directory", difficulty: "easy" },
+      { name: "Super Pages AU", url: "https://www.superpages.com.au/", description: "Australian super pages", difficulty: "easy" },
+      { name: "Fyple", url: "https://www.fyple.biz/", description: "Business directory", difficulty: "easy" },
+      { name: "Brown Book", url: "https://www.brownbook.net/", description: "Business directory", difficulty: "easy" },
+      { name: "Pink Pages", url: "https://pinkpages.com.au/", description: "Australian pink pages", difficulty: "easy" },
+      { name: "Cybo", url: "https://www.cybo.com/", description: "Business directory", difficulty: "easy" },
+      { name: "National Directory", url: "https://nationaldirectory.com.au/", description: "Australian national directory", difficulty: "easy" },
+      { name: "Look Local", url: "https://www.looklocal.net.au/", description: "Australian local directory", difficulty: "easy" },
+      { name: "Directory AU", url: "https://directory.com.au/", description: "Australian directory", difficulty: "easy" },
+      { name: "Business Directory AU", url: "https://www.business.directoryofaustralia.com.au/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Yellow Pages AU", url: "https://www.yellowpages.com.au/", description: "Australian yellow pages", difficulty: "easy" },
+      { name: "Business Listings AU", url: "https://www.businesslistings.net.au/", description: "Australian business listings", difficulty: "easy" },
+      { name: "Where Is", url: "https://www.whereis.com/", description: "Australian location finder", difficulty: "easy" },
+      { name: "Australia Biz Dir", url: "https://www.australiabizdir.com/", description: "Australian business directory", difficulty: "easy" },
+      { name: "A to Z Pages", url: "https://www.atozpages.com.au/", description: "Australian A-Z directory", difficulty: "easy" },
+      { name: "Acompio Australia", url: "https://australia.acompio.com", description: "Australian business directory", difficulty: "easy" },
+      { name: "Place 123", url: "http://www.place123.net", description: "Place directory", difficulty: "easy" },
+      { name: "Ausi Archive", url: "https://www.ausiarchive.biz/", description: "Australian archive", difficulty: "easy" },
+      { name: "Ausi Biz", url: "https://www.ausibiz.com/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Oztrov", url: "https://oztrov.com.au/", description: "Australian business finder", difficulty: "easy" },
+      { name: "Ausi Listings", url: "https://www.auslistings.org/", description: "Australian listings", difficulty: "easy" }
+    ]
+  },
+  classified: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-5 h-5" }),
+    color: "text-orange-600",
+    gradient: "from-orange-500 to-red-600",
+    description: "Australian classified ads platforms",
+    sites: [
+      { name: "The West Classifieds", url: "https://www.thewestclassifieds.com.au/", description: "Western Australian classifieds", difficulty: "easy" },
+      { name: "AU Free Ads", url: "http://www.aufreeads.com/", description: "Australian free ads", difficulty: "easy" },
+      { name: "Locanto Australia", url: "https://www.locanto.com.au/", description: "Australian classifieds", difficulty: "easy" },
+      { name: "Gumtree Australia", url: "https://www.gumtree.com.au/", description: "Australian classifieds", difficulty: "easy" },
+      { name: "Hotfrog Australia", url: "https://www.hotfrog.com.au/", description: "Australian business directory", difficulty: "easy" },
+      { name: "Just Landed Classifieds", url: "https://classifieds.justlanded.com/", description: "International classifieds", difficulty: "easy" },
+      { name: "Post My Ads", url: "https://www.postmyads.com.au/", description: "Australian ad posting", difficulty: "easy" },
+      { name: "Global Free Classified Ads", url: "https://au.global-free-classified-ads.com/", description: "Global free classifieds", difficulty: "easy" },
+      { name: "AU Classifieds", url: "https://www.auclassifieds.com.au/", description: "Australian classifieds", difficulty: "easy" },
+      { name: "Chaos Ads", url: "https://www.chaosads.com/", description: "Classified ads platform", difficulty: "easy" },
+      { name: "Cavalletti", url: "https://www.cavalletti.com.au/", description: "Australian classifieds", difficulty: "easy" },
+      { name: "Buy Search Sell", url: "https://www.buysearchsell.com.au/", description: "Australian marketplace", difficulty: "easy" },
+      { name: "Go Post", url: "http://gopost.com.au/", description: "Australian posting platform", difficulty: "easy" },
+      { name: "Classified Ads", url: "https://www.classifiedads.com/", description: "General classifieds", difficulty: "easy" },
+      { name: "Uy Cart", url: "http://uycart.com/", description: "Classified ads platform", difficulty: "easy" },
+      { name: "Pixolinks", url: "http://pixolinks.com/", description: "Classified ads platform", difficulty: "easy" },
+      { name: "FDL Classifieds", url: "https://fdlclassifieds.com/", description: "Classified ads platform", difficulty: "easy" },
+      { name: "Postez Ads", url: "https://postezads.com/", description: "Ad posting platform", difficulty: "easy" },
+      { name: "Instant Adz", url: "https://instantadz.com/", description: "Instant ad platform", difficulty: "easy" },
+      { name: "Post Quick Ads", url: "https://postquickads.com/", description: "Quick ad posting", difficulty: "easy" },
+      { name: "Classifieds 4 Free", url: "https://classifieds4free.com/", description: "Free classifieds", difficulty: "easy" },
+      { name: "Post Smart Ads", url: "https://postsmartads.com/", description: "Smart ad posting", difficulty: "easy" },
+      { name: "Tot Ads", url: "https://totads.com/", description: "Total ads platform", difficulty: "easy" },
+      { name: "P Classified", url: "https://pclassified.com/", description: "Classified ads platform", difficulty: "easy" },
+      { name: "Classifieds Home", url: "https://classifiedshome.com/", description: "Classifieds home", difficulty: "easy" },
+      { name: "Classifieds Link", url: "https://classifiedslink.com/", description: "Classifieds link", difficulty: "easy" },
+      { name: "Total Classified", url: "https://totalclassified.com/", description: "Total classifieds", difficulty: "easy" },
+      { name: "One Buy Sales", url: "https://onebuysales.com/", description: "Buy and sell platform", difficulty: "easy" },
+      { name: "Total Classifieds", url: "https://totalclassifieds.com/", description: "Total classifieds", difficulty: "easy" },
+      { name: "Com Adz", url: "https://comadz.com/", description: "Commercial ads platform", difficulty: "easy" },
+      { name: "Pro Free Ads", url: "https://profreeads.com/", description: "Professional free ads", difficulty: "easy" },
+      { name: "Postez Ad", url: "http://postezad.com/", description: "Ad posting platform", difficulty: "easy" },
+      { name: "Ads Lov", url: "http://www.adslov.com/", description: "Ads love platform", difficulty: "easy" },
+      { name: "Pet Ads Hub", url: "http://www.petadshub.com/", description: "Pet ads platform", difficulty: "easy" },
+      { name: "F Web Directory", url: "https://fwebdirectory.com/", description: "Web directory", difficulty: "easy" },
+      { name: "Ads Hoo", url: "https://adshoo.com/", description: "Ads platform", difficulty: "easy" },
+      { name: "Urs Ads", url: "http://ursads.com/", description: "Your ads platform", difficulty: "easy" },
+      { name: "Ad Post Australia", url: "https://www.adpost.com/au/", description: "Australian ad posting", difficulty: "easy" },
+      { name: "Tokyo Craigslist", url: "https://tokyo.craigslist.org/", description: "Tokyo classifieds", difficulty: "easy" },
+      { name: "Uno List Australia", url: "http://unolist.com.au/", description: "Australian uno list", difficulty: "easy" },
+      { name: "Business Listings AU", url: "https://www.businesslistings.net.au/", description: "Australian business listings", difficulty: "easy" },
+      { name: "True Finders", url: "https://truefinders.com.au/", description: "Australian business finder", difficulty: "easy" },
+      { name: "VK Classifieds AU", url: "http://www.vkclassifieds.net.au/", description: "Australian VK classifieds", difficulty: "easy" },
+      { name: "Top Free Classifieds", url: "https://www.topfreeclassifieds.com/", description: "Top free classifieds", difficulty: "easy" },
+      { name: "Adeex Australia", url: "https://www.adeexaustralia.com/", description: "Australian ad platform", difficulty: "easy" },
+      { name: "Fold Ads", url: "https://foldads.com/", description: "Fold ads platform", difficulty: "easy" },
+      { name: "Next Free Ads", url: "http://nextfreeads.com/", description: "Next free ads", difficulty: "easy" },
+      { name: "Free Best Ads", url: "http://freebestads.com/", description: "Free best ads", difficulty: "easy" },
+      { name: "Get Ads Online", url: "http://getadsonline.com/", description: "Get ads online", difficulty: "easy" }
+    ]
+  },
+  qa: {
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(HelpCircle, { className: "w-5 h-5" }),
+    color: "text-red-600",
+    gradient: "from-red-500 to-orange-600",
+    description: "Q&A and community platforms",
+    sites: [
+      { name: "Quora", url: "https://www.quora.com/", description: "Question and answer platform", difficulty: "medium" },
+      { name: "Stack Overflow", url: "https://stackoverflow.com/questions/ask", description: "Developer Q&A platform", difficulty: "hard" },
+      { name: "Reddit Ask", url: "https://www.reddit.com/r/AskReddit/", description: "Community discussion platform", difficulty: "medium" },
+      { name: "SuperUser", url: "https://superuser.com/questions/ask", description: "Tech support Q&A", difficulty: "hard" },
+      { name: "Answerbag", url: "https://www.answerbag.com/", description: "General Q&A platform", difficulty: "easy" }
+    ]
+  }
+};
+const SubmissionsDashboard = () => {
   const { t: t3 } = useTranslation();
-  useAuth();
   const [projects2, setProjects] = reactExports.useState([]);
   const [selectedProject, setSelectedProject] = reactExports.useState(null);
-  const [directories, setDirectories] = reactExports.useState([]);
+  const [showAutoFillScript, setShowAutoFillScript] = reactExports.useState(false);
+  const [copied, setCopied] = reactExports.useState(false);
   const [loading, setLoading] = reactExports.useState(false);
-  const [searchTerm, setSearchTerm] = reactExports.useState("");
-  const [filterCategory, setFilterCategory] = reactExports.useState("all");
-  const [showInstructions, setShowInstructions] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    fetchProjects();
-    fetchDirectories();
-  }, []);
+  const [projectsLoading, setProjectsLoading] = reactExports.useState(true);
+  const [projectsError, setProjectsError] = reactExports.useState(null);
+  const [expandedCategories, setExpandedCategories] = reactExports.useState(/* @__PURE__ */ new Set());
   const fetchProjects = async () => {
+    var _a2, _b2;
     try {
+      setProjectsLoading(true);
+      setProjectsError(null);
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/projects", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
-      setProjects(data);
-      if (data.length > 0) {
-        setSelectedProject(data[0]);
+      if (!token) {
+        throw new Error("No authentication token found");
       }
-    } catch (error) {
-      console.error("Error fetching projects:", error);
+      const response = await axios$1.get("/api/projects", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Projects fetched:", response.data);
+      setProjects(Array.isArray(response.data) ? response.data : []);
+    } catch (err2) {
+      console.error("Error fetching projects:", err2);
+      setProjectsError(((_b2 = (_a2 = err2.response) == null ? void 0 : _a2.data) == null ? void 0 : _b2.error) || err2.message || "Failed to load projects");
+      setProjects([]);
+    } finally {
+      setProjectsLoading(false);
     }
   };
-  const fetchDirectories = async () => {
-    const mockDirectories = [
-      {
-        id: "1",
-        name: "TechDirectory",
-        url: "https://techdirectory.com",
-        category: "Technology",
-        description: "Leading technology business directory",
-        status: "pending"
-      },
-      {
-        id: "2",
-        name: "BusinessHub",
-        url: "https://businesshub.com",
-        category: "Business",
-        description: "Comprehensive business directory",
-        status: "completed",
-        submittedAt: "2024-01-15T10:30:00Z"
-      },
-      {
-        id: "3",
-        name: "LocalSearch",
-        url: "https://localsearch.com",
-        category: "Local",
-        description: "Local business directory and search",
-        status: "failed"
-      },
-      {
-        id: "4",
-        name: "IndustryList",
-        url: "https://industrylist.com",
-        category: "Industry",
-        description: "Industry-specific business listings",
-        status: "pending"
-      },
-      {
-        id: "5",
-        name: "StartupDirectory",
-        url: "https://startupdirectory.com",
-        category: "Startup",
-        description: "Startup and innovation directory",
-        status: "completed",
-        submittedAt: "2024-01-14T15:45:00Z"
+  reactExports.useEffect(() => {
+    fetchProjects();
+  }, []);
+  const handleProjectSelect = (id2) => {
+    const found = (projects2 || []).find((p2) => p2._id === id2) || null;
+    setSelectedProject(found);
+    if (found) {
+      localStorage.setItem("selectedProject", found._id);
+    }
+  };
+  const showPopup2 = (message, type = "info") => {
+    var _a2;
+    const modal = document.createElement("div");
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+    const content = document.createElement("div");
+    content.style.cssText = `
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    `;
+    const getIconAndColor = () => {
+      switch (type) {
+        case "success":
+          return { icon: "✅", color: "#10b981" };
+        case "error":
+          return { icon: "❌", color: "#ef4444" };
+        case "warning":
+          return { icon: "⚠️", color: "#f59e0b" };
+        default:
+          return { icon: "ℹ️", color: "#3b82f6" };
       }
-    ];
-    setDirectories(mockDirectories);
+    };
+    const { icon, color } = getIconAndColor();
+    content.innerHTML = `
+      <div style="font-size: 48px; margin-bottom: 20px;">${icon}</div>
+      <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;">${type.charAt(0).toUpperCase() + type.slice(1)}</h2>
+      <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">${message}</p>
+      <button id="closePopup" style="background: ${color}; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;">OK</button>
+    `;
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    (_a2 = document.getElementById("closePopup")) == null ? void 0 : _a2.addEventListener("click", () => {
+      document.body.removeChild(modal);
+    });
+    setTimeout(() => {
+      if (modal.parentNode) {
+        document.body.removeChild(modal);
+      }
+    }, 5e3);
   };
   const handleOneClickAutomation = async (url, siteName) => {
     if (!selectedProject) {
@@ -44348,7 +44971,7 @@ function SubmissionDashboard() {
       };
       const universalService = new UniversalFormService(projectData);
       const result = await universalService.installBookmarkletAutomatically();
-      showBookmarkletInstructionsModal(url, siteName, projectData, result);
+      showDraggableBookmarkModal(url, siteName, projectData, result);
     } catch (error) {
       console.error("One-click automation error:", error);
       showPopup2("❌ Automation setup failed. Please try again.", "error");
@@ -44356,7 +44979,7 @@ function SubmissionDashboard() {
       setLoading(false);
     }
   };
-  const showBookmarkletInstructionsModal = (url, siteName, projectData, result) => {
+  const showDraggableBookmarkModal = (url, siteName, projectData, result) => {
     var _a2, _b2;
     const modal = document.createElement("div");
     modal.style.cssText = `
@@ -44377,7 +45000,7 @@ function SubmissionDashboard() {
       background: white;
       border-radius: 20px;
       padding: 40px;
-      max-width: 600px;
+      max-width: 500px;
       width: 90%;
       text-align: center;
       box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
@@ -44385,18 +45008,18 @@ function SubmissionDashboard() {
     `;
     content.innerHTML = `
       <div style="font-size: 64px; margin-bottom: 20px;">🎯</div>
-      <h2 style="margin: 0 0 15px 0; font-size: 28px; font-weight: 700; color: #1f2937;">Bookmarklet Ready!</h2>
+      <h2 style="margin: 0 0 15px 0; font-size: 28px; font-weight: 700; color: #1f2937;">Drag & Drop Bookmarklet</h2>
       <p style="margin: 0 0 25px 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
-        Your automation bookmarklet has been created. It will <strong>auto-delete after 30 minutes</strong> to keep your bookmarks clean.
+        Your automation bookmarklet has been created. <strong>Drag it to your bookmarks bar</strong> first, then we'll visit the website.
       </p>
 
       <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: left;">
-        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">📋 Next Steps:</h3>
+        <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #1f2937;">📋 Instructions:</h3>
         <ol style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 1.8;">
+          <li><strong>Drag the bookmarklet below</strong> to your browser's bookmarks bar</li>
           <li><strong>Click "Visit Website"</strong> to open ${siteName}</li>
-          <li><strong>Drag the bookmarklet</strong> from your bookmarks bar to the page</li>
-          <li><strong>Watch the magic happen!</strong> Forms will be filled automatically</li>
-          <li><strong>Bookmarklet auto-deletes</strong> after 30 minutes</li>
+          <li><strong>Click the bookmarklet</strong> on the target website</li>
+          <li><strong>Watch forms auto-fill!</strong> 🚀</li>
         </ol>
       </div>
 
@@ -44449,240 +45072,367 @@ function SubmissionDashboard() {
       }
     }, 5 * 60 * 1e3);
   };
-  const showPopup2 = (message, type = "success") => {
-    const popup = document.createElement("div");
-    popup.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#f59e0b"};
-      color: white;
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 10000;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-    `;
-    popup.textContent = message;
-    document.body.appendChild(popup);
-    setTimeout(() => {
-      popup.style.transform = "translateX(0)";
-    }, 100);
-    setTimeout(() => {
-      popup.style.transform = "translateX(100%)";
-      setTimeout(() => {
-        if (popup.parentNode) {
-          popup.parentNode.removeChild(popup);
-        }
-      }, 300);
-    }, 4e3);
+  const generateAutoFillScript = () => {
+    if (!selectedProject)
+      return "";
+    return `// Auto-Fill Script for ${selectedProject.name}
+// Copy and paste this in browser console (F12)
+
+const projectData = {
+  name: "${selectedProject.name || ""}",
+  email: "${selectedProject.email || ""}",
+  companyName: "${selectedProject.companyName || ""}",
+  phone: "${selectedProject.businessPhone || ""}",
+  description: "${selectedProject.description || ""}",
+  url: "${selectedProject.url || ""}"
+};
+
+// Fill common form fields
+document.querySelectorAll('input, textarea, select').forEach(field => {
+  const fieldName = field.name || field.id || field.placeholder || '';
+  const fieldValue = field.value || '';
+  
+  if (fieldName.toLowerCase().includes('name') && !fieldValue) {
+    field.value = projectData.name;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (fieldName.toLowerCase().includes('email') && !fieldValue) {
+    field.value = projectData.email;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (fieldName.toLowerCase().includes('company') && !fieldValue) {
+    field.value = projectData.companyName;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (fieldName.toLowerCase().includes('phone') && !fieldValue) {
+    field.value = projectData.phone;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (fieldName.toLowerCase().includes('url') && !fieldValue) {
+    field.value = projectData.url;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (fieldName.toLowerCase().includes('description') && !fieldValue) {
+    field.value = projectData.description;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+});
+
+console.log('✅ Auto-fill script executed for:', projectData.companyName || projectData.name);`;
   };
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "completed":
-        return "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400";
-      case "failed":
-        return "bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-400";
-      default:
-        return "bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-400";
+  const copyScript = async () => {
+    try {
+      await navigator.clipboard.writeText(generateAutoFillScript());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2e3);
+    } catch (err2) {
+      console.error("Failed to copy script:", err2);
     }
   };
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "completed":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4" });
-      case "failed":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertCircle, { className: "w-4 h-4" });
+  const getDifficultyColor = (difficulty) => {
+    switch (difficulty) {
+      case "easy":
+        return "bg-green-100 text-green-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "hard":
+        return "bg-red-100 text-red-800";
       default:
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "w-4 h-4" });
+        return "bg-gray-100 text-gray-800";
     }
   };
-  const filteredDirectories = directories.filter((dir) => {
-    const matchesSearch = dir.name.toLowerCase().includes(searchTerm.toLowerCase()) || dir.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === "all" || dir.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
-  const categories2 = ["all", ...Array.from(new Set(directories.map((d2) => d2.category)))];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-800 to-accent-600 dark:from-primary-200 dark:to-accent-400 bg-clip-text text-transparent", children: "Directory Submissions" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400 mt-2", children: "Automate your directory submissions with AI-powered form filling" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            onClick: () => setShowInstructions(!showInstructions),
-            className: "flex items-center space-x-2 px-4 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 rounded-xl text-primary-700 dark:text-primary-300 hover:bg-white dark:hover:bg-primary-800 transition-all duration-300",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "w-4 h-4" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Instructions" })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            onClick: fetchDirectories,
-            className: "flex items-center space-x-2 px-4 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 rounded-xl text-primary-700 dark:text-primary-300 hover:bg-white dark:hover:bg-primary-800 transition-all duration-300",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "w-4 h-4" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Refresh" })
-            ]
-          }
-        )
-      ] })
+  const toggleCategoryExpansion = (category) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category);
+    } else {
+      newExpanded.add(category);
+    }
+    setExpandedCategories(newExpanded);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6 relative overflow-hidden", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float", style: { animationDelay: "4s" } })
     ] }),
-    showInstructions && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-br from-accent-50 to-primary-50 dark:from-accent-900/30 dark:to-primary-900/30 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700/30 p-6 animate-fade-in-up", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "How It Works" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-glow mx-auto mb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold", children: "1" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-primary-800 dark:text-primary-200 mb-2", children: "Select Project" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Choose the project you want to submit to directories" })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8 relative z-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center space-y-6 animate-fade-in-up", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-4 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20 dark:border-primary-700/20", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-6 h-6 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-200 dark:to-accent-400 bg-clip-text text-transparent", children: "Directory Submissions" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400 text-sm", children: "AI-powered automation for your SEO success" })
+          ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-glow mx-auto mb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold", children: "2" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-primary-800 dark:text-primary-200 mb-2", children: "Click Fill Form" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Our AI will create a bookmarklet for automatic form filling" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-glow mx-auto mb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold", children: "3" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-primary-800 dark:text-primary-200 mb-2", children: "Visit & Submit" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Visit the directory and use the bookmarklet to auto-fill forms" })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200 mb-4", children: "Select Project" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: projects2.map((project) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        "button",
-        {
-          onClick: () => setSelectedProject(project),
-          className: `p-4 rounded-2xl border-2 transition-all duration-300 text-left ${(selectedProject == null ? void 0 : selectedProject._id) === project._id ? "border-accent-500 bg-accent-50 dark:bg-accent-900/30 shadow-glow" : "border-primary-200 dark:border-primary-700 bg-white/50 dark:bg-primary-900/50 hover:border-accent-300 dark:hover:border-accent-600"}`,
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "w-4 h-4" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-primary-800 dark:text-primary-200 truncate", children: project.name })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400 truncate", children: project.url }),
-            (selectedProject == null ? void 0 : selectedProject._id) === project._id && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-1 mt-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-success-600 dark:text-success-400 font-medium", children: "Selected" })
-            ] })
-          ]
-        },
-        project._id
-      )) })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary-400" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400 max-w-2xl mx-auto text-lg", children: "Streamline your directory submissions with our intelligent automation tools. Choose your project and let our AI-powered systems handle the rest." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8 animate-fade-in-up", style: { animationDelay: "0.2s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4 mb-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-6 h-6 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-semibold text-primary-800 dark:text-primary-200", children: "Project Configuration" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400", children: "Select the project you want to submit" })
+          ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
+            "button",
             {
-              type: "text",
-              placeholder: "Search directories...",
-              value: searchTerm,
-              onChange: (e2) => setSearchTerm(e2.target.value),
-              className: "pl-10 pr-4 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 rounded-xl text-primary-700 dark:text-primary-300 placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+              onClick: () => {
+                setProjectsLoading(true);
+                setProjectsError(null);
+                fetchProjects();
+              },
+              disabled: projectsLoading,
+              className: "px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-xl hover:shadow-glow transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium",
+              children: projectsLoading ? "Loading..." : "Refresh"
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "select",
-          {
-            value: filterCategory,
-            onChange: (e2) => setFilterCategory(e2.target.value),
-            className: "px-4 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 rounded-xl text-primary-700 dark:text-primary-300 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all",
-            children: categories2.map((category) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: category, children: category === "all" ? "All Categories" : category }, category))
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm text-primary-600 dark:text-primary-400", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-          filteredDirectories.length,
-          " directories"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-          filteredDirectories.filter((d2) => d2.status === "completed").length,
-          " completed"
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: filteredDirectories.map((directory, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
-      {
-        className: "group bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 hover:shadow-glass-lg transition-all duration-300 transform hover:-translate-y-1 animate-fade-in-up",
-        style: { animationDelay: `${index2 * 0.1}s` },
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between mb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-5 h-5" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-primary-800 dark:text-primary-200", children: directory.name }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-500 dark:text-primary-400", children: directory.category })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(directory.status)}`, children: [
-              getStatusIcon(directory.status),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: directory.status })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400 mb-4 line-clamp-2", children: directory.description }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "button",
+              "select",
               {
-                onClick: () => window.open(directory.url, "_blank"),
-                className: "flex items-center space-x-2 text-sm text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 font-medium transition-colors",
+                value: (selectedProject == null ? void 0 : selectedProject._id) || "",
+                onChange: (e2) => handleProjectSelect(e2.target.value),
+                disabled: projectsLoading,
+                className: "flex-1 border border-primary-200 dark:border-primary-700 px-6 py-4 rounded-xl bg-white/50 dark:bg-primary-900/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed text-primary-700 dark:text-primary-300",
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Visit Site" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: projectsLoading ? "Loading projects..." : "-- Select your project --" }),
+                  projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: p2._id, children: p2.name }, p2._id))
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 px-4 py-2 bg-success-50 dark:bg-success-900/30 border border-success-200 dark:border-success-700/30 rounded-xl", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 bg-success-500 rounded-full animate-pulse" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-success-700 dark:text-success-400 font-medium", children: "Project Selected" })
+            ] })
+          ] }),
+          projectsLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 text-accent-600 dark:text-accent-400 bg-accent-50 dark:bg-accent-900/30 border border-accent-200 dark:border-accent-700/30 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-5 w-5 border-b-2 border-accent-600" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Loading projects..." })
+          ] }),
+          projectsError && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 text-error-700 dark:text-error-400 bg-error-50 dark:bg-error-900/30 border border-error-200 dark:border-error-700/30 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 bg-error-500 rounded-full" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-medium", children: [
+              "Error: ",
+              projectsError
+            ] })
+          ] }),
+          !projectsLoading && !projectsError && projects2.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 text-warning-700 bg-warning-50 border border-warning-200 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 bg-warning-500 rounded-full" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "No projects found. Create a project first to use submission tools." })
+          ] }),
+          !projectsLoading && !projectsError && projects2.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-green-500 rounded-full" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                projects2.length,
+                " project",
+                projects2.length !== 1 ? "s" : "",
+                " available"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { className: "cursor-pointer hover:text-gray-700", children: "Debug: Show project details" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2 space-y-1", children: projects2.map((p2, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-mono", children: [
+                "[",
+                index2,
+                "] ID: ",
+                p2._id,
+                ", Name: ",
+                p2.name
+              ] }, p2._id)) })
+            ] })
+          ] })
+        ] })
+      ] }),
+      showAutoFillScript && selectedProject && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-3xl shadow-glass border border-blue-200/50 dark:border-blue-700/30 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { className: "w-5 h-5 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-gray-800 dark:text-primary-200", children: "🤖 Auto-Fill Script" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-primary-400", children: "Copy and paste this script in the browser console" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-900 text-green-400 p-6 rounded-xl text-sm font-mono overflow-x-auto border border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap", children: generateAutoFillScript() }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "button",
+            {
+              onClick: copyScript,
+              className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl",
+              children: [
+                copied ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "w-4 h-4 mr-2" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "w-4 h-4 mr-2" }),
+                copied ? "Copied!" : "Copy Script"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-primary-400 bg-white/50 dark:bg-primary-900/50 px-3 py-2 rounded-lg", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "How to use:" }),
+            " Open form page → Press ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("kbd", { className: "bg-gray-200 dark:bg-primary-700 px-2 py-1 rounded text-xs mx-1", children: "F12" }),
+            " → Paste script → Press Enter"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: Object.entries(siteMap).map(([category, { icon, sites, color, gradient, description }]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 overflow-hidden animate-fade-in-up", style: { animationDelay: `${Object.keys(siteMap).indexOf(category) * 0.1}s` }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `bg-gradient-to-r ${gradient} p-6 text-white`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-glow", children: icon }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-xl font-bold capitalize", children: [
+              category,
+              " Platforms"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/80 text-sm", children: description })
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 space-y-3", children: [
+          (expandedCategories.has(category) ? sites : sites.slice(0, 5)).map((site) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50/50 dark:bg-primary-900/50 rounded-xl p-4 hover:bg-gray-100/50 dark:hover:bg-primary-800/50 transition-all border border-gray-100 dark:border-primary-700/30 group", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-gray-800 dark:text-primary-200 group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors", children: site.name }),
+                site.difficulty && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(site.difficulty)}`, children: site.difficulty })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-primary-400 mb-2", children: site.description }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "a",
+                {
+                  href: site.url,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-xs inline-flex items-center space-x-1 transition-colors",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: site.url }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { className: "w-3 h-3" })
+                  ]
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-col space-y-2 ml-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "button",
               {
-                onClick: () => handleOneClickAutomation(directory.url, directory.name),
-                disabled: loading || !selectedProject,
-                className: "flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-xl font-medium shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+                onClick: () => handleOneClickAutomation(site.url, site.name),
+                disabled: loading,
+                className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium shadow-glow",
+                title: "One-Click Full Automation",
                 children: [
-                  loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "w-4 h-4 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-4 h-4" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Fill Form" })
+                  loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Loader, { className: "w-4 h-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-4 h-4 mr-2" }),
+                  loading ? "Automating..." : t3("automation.fillForm")
                 ]
               }
-            )
-          ] }),
-          directory.submittedAt && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3 pt-3 border-t border-primary-200 dark:border-primary-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-xs text-primary-500 dark:text-primary-400", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "w-3 h-3" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-              "Submitted ",
-              new Date(directory.submittedAt).toLocaleDateString()
-            ] })
-          ] }) })
+            ) })
+          ] }) }, site.name)),
+          sites.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center pt-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: () => toggleCategoryExpansion(category),
+              className: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-500 to-gray-600 dark:from-primary-600 dark:to-primary-700 text-white text-sm rounded-lg hover:from-gray-600 hover:to-gray-700 dark:hover:from-primary-700 dark:hover:to-primary-800 transition-all shadow-md hover:shadow-lg",
+              children: expandedCategories.has(category) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronUp, { className: "w-4 h-4 mr-2" }),
+                "Show Less (",
+                sites.length - 5,
+                " hidden)"
+              ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { className: "w-4 h-4 mr-2" }),
+                "Show More (",
+                sites.length - 5,
+                " more)"
+              ] })
+            }
+          ) })
         ] })
-      },
-      directory.id
-    )) }),
-    filteredDirectories.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-3xl flex items-center justify-center text-white shadow-glow mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-8 h-8" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200 mb-2", children: "No directories found" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400", children: "Try adjusting your search or filter criteria" })
+      ] }, category)) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.4s" }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-success-500 to-success-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "w-5 h-5 text-white" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-primary-800", children: "Automation Ready" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600", children: "All systems operational" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-success-500 rounded-full" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-700", children: "One-Button Automation" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-success-500 rounded-full" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-700", children: "Smart Bookmarklet System" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-success-500 rounded-full" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-700", children: "Auto-Cleanup Enabled" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "w-5 h-5 text-white" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-primary-800", children: "Quick Guide" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600", children: "How to use automation" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 text-sm text-primary-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold", children: "1" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Select your project" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold", children: "2" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: 'Click "Fill Form" button' })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold", children: "3" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Drag bookmarklet & visit site" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-5 h-5 bg-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold", children: "4" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Click bookmarklet to fill forms!" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-5 h-5 text-white" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-primary-800", children: "Platform Stats" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600", children: "Available platforms" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600", children: "Total Platforms" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold text-primary-600", children: "25" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600", children: "Categories" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold text-primary-600", children: "5" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600", children: "Success Rate" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-bold text-success-600", children: "95%" })
+            ] })
+          ] })
+        ] })
+      ] }),
+      selectedProject && !showAutoFillScript && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          onClick: () => setShowAutoFillScript(true),
+          className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { className: "w-4 h-4 mr-2" }),
+            "Show Auto-Fill Script",
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4 ml-2" })
+          ]
+        }
+      ) })
     ] })
-  ] }) });
-}
+  ] });
+};
 const plans = [
   {
     id: "free",
@@ -47811,20 +48561,60 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
         bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
         overflow-hidden
       `, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 border-b border-white/20 dark:border-primary-700/20", children: [
-        !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-6 h-6 text-white" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent", children: "Opptym" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 dark:text-primary-400", children: "SEO Platform" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 relative", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-10 h-10 absolute inset-0", viewBox: "0 0 40 40", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "circle",
+              {
+                cx: "20",
+                cy: "20",
+                r: "18",
+                fill: "none",
+                stroke: "url(#blueGradient)",
+                strokeWidth: "2",
+                strokeDasharray: "4,4",
+                strokeLinecap: "round"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "#3B82F6" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "path",
+              {
+                d: "M 26 14 A 18 18 0 0 1 20 2",
+                fill: "none",
+                stroke: "#3B82F6",
+                strokeWidth: "2",
+                strokeLinecap: "round"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "#1E40AF" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "path",
+              {
+                d: "M 14 26 A 18 18 0 0 1 20 38",
+                fill: "none",
+                stroke: "#1E40AF",
+                strokeWidth: "2",
+                strokeLinecap: "round"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("defs", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "blueGradient", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", stopColor: "#3B82F6" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#1E40AF" })
+            ] }) })
+          ] }) }) }),
+          !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight", children: "OPPTYM" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 dark:text-primary-400 leading-tight", children: "AI ENABLED INTELLIGENCE" })
           ] })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center w-full", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-6 h-6 text-white" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ] }),
+        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
-            onClick: () => setIsCollapsed(!isCollapsed),
-            className: "hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-white/50 dark:bg-primary-800/50 backdrop-blur-sm border border-white/20 dark:border-primary-700/20 text-primary-600 dark:text-primary-400 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-200",
-            children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
+            onClick: () => setIsCollapsed(true),
+            className: "ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
           }
         )
       ] }),
@@ -48165,7 +48955,7 @@ function Navbar({ activeTab, setActiveTab }) {
       dashboard: "Dashboard",
       projects: "My Projects",
       tools: "SEO Tools",
-      directory: "Directory Submission",
+      directory: "Submissions",
       reports: "Submission Reports",
       pricing: "Pricing Plans",
       profile: "Profile Settings",
@@ -48180,7 +48970,47 @@ function Navbar({ activeTab, setActiveTab }) {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-glass sticky top-0 z-50 animate-fade-in-down", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-7xl mx-auto px-6 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5 text-white" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 relative", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-10 h-10 absolute inset-0", viewBox: "0 0 40 40", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "circle",
+          {
+            cx: "20",
+            cy: "20",
+            r: "18",
+            fill: "none",
+            stroke: "url(#blueGradient)",
+            strokeWidth: "2",
+            strokeDasharray: "4,4",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "#3B82F6" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M 26 14 A 18 18 0 0 1 20 2",
+            fill: "none",
+            stroke: "#3B82F6",
+            strokeWidth: "2",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "#1E40AF" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M 14 26 A 18 18 0 0 1 20 38",
+            fill: "none",
+            stroke: "#1E40AF",
+            strokeWidth: "2",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("defs", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "blueGradient", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", stopColor: "#3B82F6" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#1E40AF" })
+        ] }) })
+      ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent", children: getPageTitle(activeTab) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-primary-600 font-medium", children: [
@@ -48415,7 +49245,7 @@ function App() {
       case "tools":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(SEOToolsDashboard, {});
       case "directory":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(SubmissionDashboard, {});
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(SubmissionsDashboard, {});
       case "reports":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
