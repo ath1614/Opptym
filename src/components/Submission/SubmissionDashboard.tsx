@@ -622,6 +622,9 @@ const SubmissionsDashboard = () => {
       
       console.log('Projects fetched:', response.data);
       console.log('First project structure:', response.data[0]);
+      console.log('First project title field:', response.data[0]?.title);
+      console.log('First project name field:', response.data[0]?.name);
+      console.log('All project titles:', response.data.map((p: any) => p.title || p.name));
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       console.error('Error fetching projects:', err);
@@ -2223,7 +2226,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 </option>
                 {projects.map((p) => (
                   <option key={p._id} value={p._id}>
-                    {p.title}
+                    {p.title || 'Untitled Project'}
                   </option>
                 ))}
               </select>
