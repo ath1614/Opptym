@@ -415,7 +415,7 @@ function App() {
 
 
         
-        <div className="relative z-10 pt-20">
+        <div className="relative z-10">
           <div className="flex">
             <Sidebar 
               activeTab={activeTab} 

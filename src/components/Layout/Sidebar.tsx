@@ -166,8 +166,8 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
 
       {/* Sidebar */}
       <div className={`
-        fixed md:relative z-50
-        h-full
+        fixed md:sticky top-0 left-0 z-50
+        h-screen
         transform transition-all duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${isCollapsed ? 'w-20' : 'w-72'}
@@ -180,7 +180,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
           {!isCollapsed ? (
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent">
@@ -192,7 +192,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
           ) : (
             <div className="flex justify-center w-full">
               <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
             </div>
           )}

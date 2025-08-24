@@ -120,6 +120,15 @@
     "help": "Help",
     "support": "Support"
   },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "tools": "SEO Tools",
+    "directory": "Directory",
+    "reports": "Reports",
+    "pricing": "Pricing",
+    "profile": "Profile"
+  },
   "settings": {
     "title": "Settings",
     "profile": "Profile",
