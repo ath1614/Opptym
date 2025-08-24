@@ -33,17 +33,17 @@ import { JSX } from 'react/jsx-runtime';
 
 interface Project {
   _id: string;
-  name: string;
+  title: string;
   url: string;
-  email: string;
-  businessPhone: string;
-  companyName: string;
-  description: string;
-  address1: string;
-  city: string;
-  state: string;
-  country: string;
-  pincode: string;
+  email?: string;
+  businessPhone?: string;
+  companyName?: string;
+  description?: string;
+  address1?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
 }
 
 type SiteEntry = {
@@ -1158,7 +1158,7 @@ const SubmissionsDashboard = () => {
 
     try {
       const projectData = {
-        name: selectedProject.name || '',
+        name: selectedProject.title || '',
         email: selectedProject.email || '',
         phone: selectedProject.businessPhone || '',
         companyName: selectedProject.companyName || '',
@@ -1620,11 +1620,11 @@ Description: ${projectData.description}`;
   const generateAutoFillScript = () => {
     if (!selectedProject) return '';
     
-    return `// Auto-Fill Script for ${selectedProject.name}
+    return `// Auto-Fill Script for ${selectedProject.title}
 // Copy and paste this in browser console (F12)
 
 const projectData = {
-  name: "${selectedProject.name || ''}",
+  name: "${selectedProject.title || ''}",
   email: "${selectedProject.email || ''}",
   companyName: "${selectedProject.companyName || ''}",
   phone: "${selectedProject.businessPhone || ''}",
@@ -2222,7 +2222,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 </option>
                 {projects.map((p) => (
                   <option key={p._id} value={p._id}>
-                    {p.name}
+                    {p.title}
                   </option>
                 ))}
               </select>
@@ -2270,7 +2270,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                   <div className="mt-2 space-y-1">
                     {projects.map((p, index) => (
                       <div key={p._id} className="font-mono">
-                        [{index}] ID: {p._id}, Name: {p.name}
+                        [{index}] ID: {p._id}, Title: {p.title}
                       </div>
                     ))}
                   </div>
