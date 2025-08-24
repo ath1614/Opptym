@@ -56,7 +56,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       dashboard: 'Dashboard',
       projects: 'My Projects',
       tools: 'SEO Tools',
-      directory: 'Directory Submission',
+      directory: 'Submissions',
       reports: 'Submission Reports',
       pricing: 'Pricing Plans',
       profile: 'Profile Settings',
@@ -78,8 +78,44 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
           <div className="flex items-center space-x-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 relative">
+                  {/* Opptym Logo */}
+                  <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
+                    <circle
+                      cx="20"
+                      cy="20"
+                      r="18"
+                      fill="none"
+                      stroke="url(#blueGradient)"
+                      strokeWidth="2"
+                      strokeDasharray="4,4"
+                      strokeLinecap="round"
+                    />
+                    {/* Bright blue circle and curve */}
+                    <circle cx="26" cy="14" r="3" fill="#3B82F6" />
+                    <path
+                      d="M 26 14 A 18 18 0 0 1 20 2"
+                      fill="none"
+                      stroke="#3B82F6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    {/* Dark blue circle and curve */}
+                    <circle cx="14" cy="26" r="3" fill="#1E40AF" />
+                    <path
+                      d="M 14 26 A 18 18 0 0 1 20 38"
+                      fill="none"
+                      stroke="#1E40AF"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <defs>
+                      <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#3B82F6" />
+                        <stop offset="100%" stopColor="#1E40AF" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
