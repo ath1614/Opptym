@@ -94,7 +94,37 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-              <Sparkles className="w-6 h-6 text-white" />
+              {/* Opptym Logo */}
+              <svg className="w-6 h-6" viewBox="0 0 40 40">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="18"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeDasharray="4,4"
+                  strokeLinecap="round"
+                />
+                {/* Bright blue circle and curve */}
+                <circle cx="26" cy="14" r="3" fill="white" />
+                <path
+                  d="M 26 14 A 18 18 0 0 1 20 2"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                {/* Dark blue circle and curve */}
+                <circle cx="14" cy="26" r="3" fill="white" />
+                <path
+                  d="M 14 26 A 18 18 0 0 1 20 38"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent">
               OPPTYM

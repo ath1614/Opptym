@@ -621,6 +621,7 @@ const SubmissionsDashboard = () => {
       });
       
       console.log('Projects fetched:', response.data);
+      console.log('First project structure:', response.data[0]);
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       console.error('Error fetching projects:', err);

@@ -57,7 +57,37 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow">
-              <Sparkles className="w-8 h-8 text-white" />
+              {/* Opptym Logo */}
+              <svg className="w-8 h-8" viewBox="0 0 40 40">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="18"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeDasharray="4,4"
+                  strokeLinecap="round"
+                />
+                {/* Bright blue circle and curve */}
+                <circle cx="26" cy="14" r="3" fill="white" />
+                <path
+                  d="M 26 14 A 18 18 0 0 1 20 2"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                {/* Dark blue circle and curve */}
+                <circle cx="14" cy="26" r="3" fill="white" />
+                <path
+                  d="M 14 26 A 18 18 0 0 1 20 38"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent mb-2">
               Create Account

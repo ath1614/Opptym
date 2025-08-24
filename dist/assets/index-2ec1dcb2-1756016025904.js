@@ -15007,7 +15007,43 @@ function LandingPage({ onLoginClick, onRegisterClick }) {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "relative z-10 px-6 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto flex items-center justify-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-6 h-6 text-white" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-6 h-6", viewBox: "0 0 40 40", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "circle",
+            {
+              cx: "20",
+              cy: "20",
+              r: "18",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeDasharray: "4,4",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 26 14 A 18 18 0 0 1 20 2",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 14 26 A 18 18 0 0 1 20 38",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          )
+        ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent", children: "OPPTYM" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
@@ -15223,7 +15259,43 @@ function Login({ onSwitchToRegister }) {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-md w-full relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-8 h-8 text-white" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-8 h-8", viewBox: "0 0 40 40", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "circle",
+            {
+              cx: "20",
+              cy: "20",
+              r: "18",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeDasharray: "4,4",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 26 14 A 18 18 0 0 1 20 2",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 14 26 A 18 18 0 0 1 20 38",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          )
+        ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent mb-2", children: "Welcome Back" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600", children: "Login to your Opptym Account" })
       ] }),
@@ -15345,7 +15417,43 @@ function Register({ onSwitchToLogin }) {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-md w-full relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-8 h-8 text-white" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-8 h-8", viewBox: "0 0 40 40", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "circle",
+            {
+              cx: "20",
+              cy: "20",
+              r: "18",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeDasharray: "4,4",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 26 14 A 18 18 0 0 1 20 2",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 14 26 A 18 18 0 0 1 20 38",
+              fill: "none",
+              stroke: "white",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          )
+        ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent mb-2", children: "Create Account" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600", children: "Join Opptym and boost your SEO" })
       ] }),
@@ -20926,14 +21034,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-30b02de9-1756014626988.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-5317cb9b-1756016025904.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756014626988.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756016025904.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -24438,7 +24546,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-be756028-1756014626988.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-6299fb24-1756016025904.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -44874,6 +44982,7 @@ const SubmissionsDashboard = () => {
         }
       });
       console.log("Projects fetched:", response.data);
+      console.log("First project structure:", response.data[0]);
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err2) {
       console.error("Error fetching projects:", err2);
@@ -44957,7 +45066,7 @@ const SubmissionsDashboard = () => {
     setLoading(true);
     try {
       const projectData = {
-        name: selectedProject.name || "",
+        name: selectedProject.title || "",
         email: selectedProject.email || "",
         phone: selectedProject.businessPhone || "",
         companyName: selectedProject.companyName || "",
@@ -45075,11 +45184,11 @@ const SubmissionsDashboard = () => {
   const generateAutoFillScript = () => {
     if (!selectedProject)
       return "";
-    return `// Auto-Fill Script for ${selectedProject.name}
+    return `// Auto-Fill Script for ${selectedProject.title}
 // Copy and paste this in browser console (F12)
 
 const projectData = {
-  name: "${selectedProject.name || ""}",
+  name: "${selectedProject.title || ""}",
   email: "${selectedProject.email || ""}",
   companyName: "${selectedProject.companyName || ""}",
   phone: "${selectedProject.businessPhone || ""}",
@@ -45199,7 +45308,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 className: "flex-1 border border-primary-200 dark:border-primary-700 px-6 py-4 rounded-xl bg-white/50 dark:bg-primary-900/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed text-primary-700 dark:text-primary-300",
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: projectsLoading ? "Loading projects..." : "-- Select your project --" }),
-                  projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: p2._id, children: p2.name }, p2._id))
+                  projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: p2._id, children: p2.title }, p2._id))
                 ]
               }
             ),
@@ -45240,8 +45349,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 index2,
                 "] ID: ",
                 p2._id,
-                ", Name: ",
-                p2.name
+                ", Title: ",
+                p2.title
               ] }, p2._id)) })
             ] })
           ] })
