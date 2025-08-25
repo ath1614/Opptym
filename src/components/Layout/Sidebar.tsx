@@ -352,7 +352,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                 title={isCollapsed ? item.label : undefined}
               >
                 <div className={`
-                  ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-lg flex items-center justify-center transition-all duration-200
+                  ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-xl flex items-center justify-center transition-all duration-200
                   ${isActive 
                     ? 'bg-white/20' 
                     : 'bg-gradient-to-r ' + item.color + ' group-hover:shadow-glow'
@@ -387,7 +387,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
             title={isCollapsed ? 'Logout' : undefined}
           >
             <div className={`
-              ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-lg flex items-center justify-center transition-all duration-200
+              ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-xl flex items-center justify-center transition-all duration-200
               bg-gradient-to-r from-red-500 to-red-600 group-hover:shadow-glow
             `}>
               <LogOut className={`${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
