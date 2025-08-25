@@ -448,30 +448,26 @@ function App() {
   // If user is authenticated, show main app
   return (
     <AuthContext.Provider value={authProvider}>
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
-          <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-900 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+          <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-700 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
 
-
-        
-        <div className="relative z-10">
-          <div className="flex">
-            <Sidebar 
-              activeTab={activeTab} 
-              setActiveTab={updateActiveTab}
-              isCollapsed={sidebarCollapsed}
-              setIsCollapsed={setSidebarCollapsed}
-            />
-            <div className="flex-1">
-              <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-              <main className="p-6">
-                {renderContent()}
-              </main>
-            </div>
+        <div className="relative z-10 flex h-screen">
+          <Sidebar 
+            activeTab={activeTab} 
+            setActiveTab={updateActiveTab}
+            isCollapsed={sidebarCollapsed}
+            setIsCollapsed={setSidebarCollapsed}
+          />
+          <div className="flex-1 flex flex-col min-w-0">
+            <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+            <main className="flex-1 p-6 overflow-auto">
+              {renderContent()}
+            </main>
           </div>
         </div>
       </div>

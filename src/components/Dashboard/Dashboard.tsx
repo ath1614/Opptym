@@ -101,54 +101,63 @@ export default function Dashboard() {
         });
       }
 
+      // Calculate real stats from actual data
+      const successfulSubmissions = submissions.filter((s: any) => s.status === 'success' || s.status === 'completed');
+      const pendingSubmissions = submissions.filter((s: any) => s.status === 'pending' || s.status === 'processing');
+      const failedSubmissions = submissions.filter((s: any) => s.status === 'failed' || s.status === 'error');
+      
       const calculatedStats: DashboardStats = {
         totalProjects: projects.length,
         totalSubmissions: submissions.length,
-        successRate: submissions.length > 0 ? Math.round((submissions.filter((s: any) => s.status === 'success').length / submissions.length) * 100) : 0,
-        averageRanking: Math.round(Math.random() * 50) + 10,
-        backlinksGained: Math.round(Math.random() * 100) + 50,
-        directoriesSubmitted: Math.round(Math.random() * 500) + 200
+        successRate: submissions.length > 0 ? Math.round((successfulSubmissions.length / submissions.length) * 100) : 0,
+        averageRanking: successfulSubmissions.length > 0 ? Math.round(successfulSubmissions.reduce((acc: number, s: any) => acc + (s.ranking || 0), 0) / successfulSubmissions.length) : 0,
+        backlinksGained: successfulSubmissions.length,
+        directoriesSubmitted: submissions.length
       };
 
       setStats(calculatedStats);
       
-      setRecentActivity([
-        {
-          id: 1,
+      // Generate real recent activity from actual data
+      const realActivity = [];
+      
+      // Add recent submissions
+      submissions.slice(0, 3).forEach((submission: any, index: number) => {
+        const timeAgo = submission.createdAt ? 
+          new Date(submission.createdAt).toLocaleDateString() : 
+          `${index + 1} day${index > 0 ? 's' : ''} ago`;
+        
+        realActivity.push({
+          id: `submission-${submission._id || index}`,
           type: 'submission',
-          message: 'Successfully submitted to TechDirectory',
-          time: '2 minutes ago',
-          status: 'success'
-        },
-        {
-          id: 2,
+          message: `Submission to ${submission.directoryName || 'Directory'} ${submission.status === 'success' ? 'completed' : submission.status === 'failed' ? 'failed' : 'is processing'}`,
+          time: timeAgo,
+          status: submission.status === 'success' ? 'success' : submission.status === 'failed' ? 'error' : 'pending'
+        });
+      });
+      
+      // Add recent projects
+      projects.slice(0, 2).forEach((project: any, index: number) => {
+        realActivity.push({
+          id: `project-${project._id || index}`,
           type: 'project',
-          message: 'Created new project: E-commerce Store',
-          time: '1 hour ago',
+          message: `Project: ${project.title || project.companyName || 'Untitled Project'}`,
+          time: project.createdAt ? new Date(project.createdAt).toLocaleDateString() : `${index + 1} day${index > 0 ? 's' : ''} ago`,
           status: 'success'
-        },
-        {
-          id: 3,
-          type: 'submission',
-          message: 'Submission to LocalBusiness failed',
-          time: '3 hours ago',
-          status: 'error'
-        },
-        {
-          id: 4,
-          type: 'tool',
-          message: 'SEO Analysis completed for TechBlog',
-          time: '5 hours ago',
+        });
+      });
+      
+      // If no real activity, show default message
+      if (realActivity.length === 0) {
+        realActivity.push({
+          id: 'welcome',
+          type: 'project',
+          message: 'Welcome to Opptym! Create your first project to get started.',
+          time: 'Just now',
           status: 'success'
-        },
-        {
-          id: 5,
-          type: 'subscription',
-          message: 'Upgraded to Pro plan',
-          time: '1 day ago',
-          status: 'success'
-        }
-      ]);
+        });
+      }
+      
+      setRecentActivity(realActivity);
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -378,98 +387,59 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Pricing Plans Section */}
-        <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center text-white shadow-glow">
-                <Crown className="w-6 h-6" />
+        {/* Upgrade Section */}
+        <div className="bg-gradient-to-r from-accent-50 to-primary-50 dark:from-accent-900/30 dark:to-primary-900/30 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700/30 p-8 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-glow">
+                  <Crown className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-primary-800 dark:text-primary-200">Upgrade Your Plan</h3>
+                  <p className="text-primary-600 dark:text-primary-400">Unlock unlimited submissions, advanced analytics, and priority support</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-200">Available Plans</h3>
-                <p className="text-sm text-primary-600 dark:text-primary-400">Choose the perfect plan for your needs</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-success-600 dark:text-success-400" />
+                  </div>
+                  <span className="text-sm text-primary-700 dark:text-primary-300">Unlimited Submissions</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-success-600 dark:text-success-400" />
+                  </div>
+                  <span className="text-sm text-primary-700 dark:text-primary-300">Advanced Analytics</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-success-600 dark:text-success-400" />
+                  </div>
+                  <span className="text-sm text-primary-700 dark:text-primary-300">Priority Support</span>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                name: 'Free',
-                price: '$0',
-                period: 'forever',
-                features: ['1 Project', '10 Submissions/month', 'Basic Analytics', 'Email Support'],
-                current: subscription?.plan === 'free',
-                popular: false,
-                color: 'from-gray-500 to-gray-600'
-              },
-              {
-                name: 'Starter',
-                price: '$9.99',
-                period: 'month',
-                features: ['1 Project', '100 Submissions/month', 'Advanced Analytics', 'Priority Support'],
-                current: subscription?.plan === 'starter',
-                popular: true,
-                color: 'from-blue-500 to-blue-600'
-              },
-              {
-                name: 'Pro',
-                price: '$39.99',
-                period: 'month',
-                features: ['5 Projects', '500 Submissions/month', 'All Analytics', '24/7 Support'],
-                current: subscription?.plan === 'pro',
-                popular: false,
-                color: 'from-purple-500 to-purple-600'
-              },
-              {
-                name: 'Business',
-                price: '$89.99',
-                period: 'month',
-                features: ['Unlimited Projects', 'Unlimited Submissions', 'White-label Reports', 'Dedicated Support'],
-                current: subscription?.plan === 'business',
-                popular: false,
-                color: 'from-green-500 to-green-600'
-              }
-            ].map((plan, index) => (
-              <div key={index} className={`relative p-4 rounded-2xl border-2 transition-all duration-300 ${
-                plan.current 
-                  ? 'border-accent-500 bg-accent-50 dark:bg-accent-900/30' 
-                  : 'border-primary-200 dark:border-primary-700 hover:border-accent-300 dark:hover:border-accent-600'
-              }`}>
-                {plan.popular && (
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                      POPULAR
-                    </span>
-                  </div>
-                )}
-                
-                <div className="text-center mb-4">
-                  <h4 className="text-lg font-bold text-primary-800 dark:text-primary-200">{plan.name}</h4>
-                  <div className="flex items-baseline justify-center space-x-1 mt-2">
-                    <span className="text-2xl font-bold text-primary-800 dark:text-primary-200">{plan.price}</span>
-                    <span className="text-sm text-primary-600 dark:text-primary-400">/{plan.period}</span>
-                  </div>
+            
+            <div className="flex flex-col items-center space-y-4">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary-800 dark:text-primary-200">
+                  {subscription?.plan === 'free' ? 'Free' : 
+                   subscription?.plan === 'starter' ? 'Starter' :
+                   subscription?.plan === 'pro' ? 'Pro' : 'Business'}
                 </div>
-                
-                <ul className="space-y-2 mb-4">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center space-x-2 text-sm text-primary-600 dark:text-primary-400">
-                      <CheckCircle className="w-4 h-4 text-success-500 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <button className={`w-full py-2 px-4 rounded-xl font-medium transition-all duration-300 ${
-                  plan.current
-                    ? 'bg-accent-500 text-white cursor-default'
-                    : `bg-gradient-to-r ${plan.color} text-white hover:shadow-lg transform hover:scale-105`
-                }`}>
-                  {plan.current ? 'Current Plan' : 'Upgrade'}
-                </button>
+                <div className="text-sm text-primary-600 dark:text-primary-400">Current Plan</div>
               </div>
-            ))}
+              
+              <button 
+                onClick={() => window.location.hash = 'pricing'}
+                className="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-8 py-3 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105"
+              >
+                View All Plans
+              </button>
+            </div>
           </div>
         </div>
 
@@ -519,13 +489,14 @@ export default function Dashboard() {
               
               <div className="space-y-3">
                 {[
-                  { label: 'Create New Project', icon: <Plus className="w-4 h-4" />, color: 'from-blue-500 to-blue-600' },
-                  { label: 'Start Submission', icon: <Globe className="w-4 h-4" />, color: 'from-green-500 to-green-600' },
-                  { label: 'Run SEO Analysis', icon: <BarChart3 className="w-4 h-4" />, color: 'from-purple-500 to-purple-600' },
-                  { label: 'View Reports', icon: <FileText className="w-4 h-4" />, color: 'from-orange-500 to-orange-600' }
+                  { label: 'Create New Project', icon: <Plus className="w-4 h-4" />, color: 'from-blue-500 to-blue-600', action: () => window.location.hash = 'projects' },
+                  { label: 'Start Submission', icon: <Globe className="w-4 h-4" />, color: 'from-green-500 to-green-600', action: () => window.location.hash = 'directory' },
+                  { label: 'Run SEO Analysis', icon: <BarChart3 className="w-4 h-4" />, color: 'from-purple-500 to-purple-600', action: () => window.location.hash = 'tools' },
+                  { label: 'View Reports', icon: <FileText className="w-4 h-4" />, color: 'from-orange-500 to-orange-600', action: () => window.location.hash = 'reports' }
                 ].map((action, index) => (
                   <button
                     key={index}
+                    onClick={action.action}
                     className="w-full flex items-center space-x-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/50 hover:bg-primary-100 dark:hover:bg-primary-900 transition-all duration-200 group"
                   >
                     <div className={`w-8 h-8 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all duration-300`}>
