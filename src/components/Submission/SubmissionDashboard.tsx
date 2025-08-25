@@ -2331,14 +2331,14 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             
             {!projectsLoading && !projectsError && projects.length > 0 && (
               <div className="space-y-2">
-                <div className="flex items-center space-x-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg">
+                <div className="flex items-center space-x-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>{projects.length} project{projects.length !== 1 ? 's' : ''} available</span>
                 </div>
                 
                 {/* Debug info - remove in production */}
-                <details className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
-                  <summary className="cursor-pointer hover:text-gray-700">Debug: Show project details</summary>
+                <details className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-lg">
+                  <summary className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300">Debug: Show project details</summary>
                   <div className="mt-2 space-y-1">
                     {projects.map((p, index) => (
                       <div key={p._id} className="font-mono">

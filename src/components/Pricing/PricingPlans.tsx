@@ -239,19 +239,19 @@ export default function PricingPlans() {
     <div className="p-6 space-y-8">
       {/* Current Plan Indicator */}
       {user && (
-        <div className="max-w-2xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-2xl p-6 text-center">
+        <div className="max-w-2xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 text-center">
           <div className="flex items-center justify-center space-x-3 mb-3">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-sm">✓</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">Current Plan</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Current Plan</h3>
           </div>
-          <p className="text-gray-700 mb-2">
-            You are currently on the <span className="font-semibold text-blue-600">
+          <p className="text-gray-700 dark:text-gray-300 mb-2">
+            You are currently on the <span className="font-semibold text-blue-600 dark:text-blue-400">
               {plans.find(p => p.id === user.subscription)?.name || user.subscription}
             </span> plan
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {user.subscription === 'free' ? 'Free forever plan with basic features' :
              user.subscription === 'starter' ? '1 project, 100 submissions per month' :
              user.subscription === 'pro' ? '5 projects, 500 submissions per month' :
@@ -263,15 +263,15 @@ export default function PricingPlans() {
 
       {/* Header Section */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full">
+        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-4 py-2 rounded-full">
           <Zap className="w-5 h-5 text-blue-600" />
-          <span className="text-sm font-medium text-blue-700">Choose Your Perfect Plan</span>
+          <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Choose Your Perfect Plan</span>
         </div>
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
           Pricing that scales with your
           <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> success</span>
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Start free and upgrade as you grow. All plans include our core SEO tools and directory submission features.
         </p>
       </div>

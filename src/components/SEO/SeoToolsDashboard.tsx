@@ -131,8 +131,8 @@ const SEOToolsDashboard = () => {
               <Grid className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">SEO Tools</h2>
-              <p className="text-gray-600">Run diagnostics or view saved reports</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">SEO Tools</h2>
+              <p className="text-gray-600 dark:text-gray-300">Run diagnostics or view saved reports</p>
             </div>
           </div>
           
@@ -155,7 +155,7 @@ const SEOToolsDashboard = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-gray-700 font-medium shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 text-gray-700 dark:text-gray-300 font-medium shadow-sm"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Tools
@@ -167,8 +167,8 @@ const SEOToolsDashboard = () => {
                     {React.cloneElement(selectedToolInfo.icon, { className: "w-4 h-4 text-white" })}
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">{selectedToolInfo.name}</h2>
-                    <p className="text-sm text-gray-600">{selectedToolInfo.description}</p>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{selectedToolInfo.name}</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{selectedToolInfo.description}</p>
                   </div>
                 </div>
               )}
@@ -176,7 +176,7 @@ const SEOToolsDashboard = () => {
           </div>
 
           {/* Tool Content */}
-          <div className="bg-gray-50 rounded-xl p-6">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
             {selectedTool === 'meta' && <MetaAnalyzer />}
             {selectedTool === 'keyword-density' && <KeywordDensityTool />}
             {selectedTool === 'keyword-research' && <KeywordResearcherTool />}

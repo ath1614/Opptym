@@ -222,8 +222,8 @@ const MyProjects = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">My Projects</h2>
-          <p className="text-gray-600">Manage your SEO projects and track their performance</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Projects</h2>
+          <p className="text-gray-600 dark:text-gray-300">Manage your SEO projects and track their performance</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -235,24 +235,24 @@ const MyProjects = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
             <input
               type="text"
               placeholder="Search projects..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 appearance-none bg-white"
+              className="pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -266,11 +266,11 @@ const MyProjects = () => {
       {/* Empty State */}
       {filteredProjects.length === 0 && (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Globe className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Globe className="w-8 h-8 text-gray-400 dark:text-gray-500" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
-          <p className="text-gray-600 mb-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No projects found</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             {projects.length === 0 
               ? "You haven't created any projects yet. Create your first project to get started."
               : "No projects match your current filters. Try adjusting your search or filters."
@@ -292,7 +292,7 @@ const MyProjects = () => {
       {filteredProjects.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
-            <div key={project._id} className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <div key={project._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -300,8 +300,8 @@ const MyProjects = () => {
                       <Globe className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{project.title || 'Untitled Project'}</h3>
-                      <p className="text-sm text-gray-500">{project.url || 'No URL'}</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{project.title || 'Untitled Project'}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{project.url || 'No URL'}</p>
                       {project.status && (
                         <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${getStatusColor(project.status)}`}>
                           {project.status}
@@ -320,7 +320,7 @@ const MyProjects = () => {
                           setOpenDropdown(openDropdown === project._id ? null : project._id);
                         }
                       }}
-                      className="p-1 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       aria-label="Project options"
                       aria-expanded={openDropdown === project._id}
                       aria-haspopup="true"
@@ -328,7 +328,7 @@ const MyProjects = () => {
                       <MoreVertical className="w-4 h-4 text-gray-400" />
                     </button>
                     {openDropdown === project._id && (
-                      <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg w-32 z-10" role="menu">
+                      <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 z-10" role="menu">
                         <button
                           onClick={async () => {
                             try {
@@ -340,7 +340,7 @@ const MyProjects = () => {
                               alert('Failed to load project details. Please try again.');
                             }
                           }}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2"
                         >
                           <Eye className="w-3 h-3" />
                           <span>View</span>
@@ -350,7 +350,7 @@ const MyProjects = () => {
                             setEditProject(project);
                             setOpenDropdown(null);
                           }}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2"
                         >
                           <Edit3 className="w-3 h-3" />
                           <span>Edit</span>
@@ -363,7 +363,7 @@ const MyProjects = () => {
                             }
                           }}
                           disabled={deleting === project._id}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 text-red-600 flex items-center space-x-2 disabled:opacity-50"
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2 disabled:opacity-50"
                         >
                           {deleting === project._id ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -377,7 +377,7 @@ const MyProjects = () => {
                   </div>
                 </div>
 
-                <p className="text-sm text-gray-600">Category: {project.category || 'General'}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Category: {project.category || 'General'}</p>
               </div>
             </div>
           ))}

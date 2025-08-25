@@ -184,12 +184,74 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
       `}>
         
         {/* Header */}
-        <div className="flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700">
-          <div className="flex items-center space-x-3">
-            {/* Opptym Logo */}
-            <div className="relative">
+        <div className={`flex items-center ${!isCollapsed ? 'space-x-3' : 'justify-center'} p-4 border-b border-primary-200 dark:border-primary-700 relative`}>
+          {!isCollapsed ? (
+            <>
+              <div className="flex items-center space-x-3">
+                {/* Opptym Logo */}
+                <div className="relative">
+                  <div className="w-10 h-10 relative">
+                    {/* Circular dashed outline */}
+                    <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="18"
+                        fill="none"
+                        stroke="url(#blueGradient)"
+                        strokeWidth="2"
+                        strokeDasharray="4,4"
+                        strokeLinecap="round"
+                      />
+                      {/* Bright blue circle and curve */}
+                      <circle cx="26" cy="14" r="3" fill="#3B82F6" />
+                      <path
+                        d="M 26 14 A 18 18 0 0 1 20 2"
+                        fill="none"
+                        stroke="#3B82F6"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      {/* Dark blue circle and curve */}
+                      <circle cx="14" cy="26" r="3" fill="#1E40AF" />
+                      <path
+                        d="M 14 26 A 18 18 0 0 1 20 38"
+                        fill="none"
+                        stroke="#1E40AF"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <defs>
+                        <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#3B82F6" />
+                          <stop offset="100%" stopColor="#1E40AF" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col">
+                  <h1 className="text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight">
+                    OPPTYM
+                  </h1>
+                  <p className="text-xs text-primary-600 dark:text-primary-400 leading-tight">
+                    AI ENABLED INTELLIGENCE
+                  </p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setIsCollapsed(true)}
+                className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Collapsed Logo */}
               <div className="w-10 h-10 relative">
-                {/* Circular dashed outline */}
                 <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
                   <circle
                     cx="20"
@@ -201,7 +263,6 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                     strokeDasharray="4,4"
                     strokeLinecap="round"
                   />
-                  {/* Bright blue circle and curve */}
                   <circle cx="26" cy="14" r="3" fill="#3B82F6" />
                   <path
                     d="M 26 14 A 18 18 0 0 1 20 2"
@@ -210,7 +271,6 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                     strokeWidth="2"
                     strokeLinecap="round"
                   />
-                  {/* Dark blue circle and curve */}
                   <circle cx="14" cy="26" r="3" fill="#1E40AF" />
                   <path
                     d="M 14 26 A 18 18 0 0 1 20 38"
@@ -227,34 +287,15 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
                   </defs>
                 </svg>
               </div>
-            </div>
-            
-            {!isCollapsed && (
-              <div className="flex flex-col">
-                <h1 className="text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight">
-                  OPPTYM
-                </h1>
-                <p className="text-xs text-primary-600 dark:text-primary-400 leading-tight">
-                  AI ENABLED INTELLIGENCE
-                </p>
-              </div>
-            )}
-          </div>
-          
-          {!isCollapsed ? (
-            <button
-              onClick={() => setIsCollapsed(true)}
-              className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsCollapsed(false)}
-              className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+              
+              {/* Expand button positioned absolutely */}
+              <button
+                onClick={() => setIsCollapsed(false)}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </>
           )}
         </div>
 
