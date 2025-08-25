@@ -259,7 +259,7 @@ export default function ProfileSettings() {
                   <button
                     type="button"
                     onClick={handlePhotoUpload}
-                    className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="absolute bottom-0 right-0 bg-white dark:bg-primary-700 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-primary-600 transition-colors"
                   >
                     <Camera className="w-4 h-4 text-gray-600" />
                   </button>
@@ -491,40 +491,40 @@ export default function ProfileSettings() {
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Email Notifications</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Email Notifications</span>
                   <button
                     onClick={() => handleSettingChange('emailNotifications', !settings.emailNotifications)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.emailNotifications ? 'bg-blue-600' : 'bg-gray-200'
+                      settings.emailNotifications ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
                     }`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${
                       settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
                     }`} />
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Push Notifications</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Push Notifications</span>
                   <button
                     onClick={() => handleSettingChange('pushNotifications', !settings.pushNotifications)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.pushNotifications ? 'bg-blue-600' : 'bg-gray-200'
+                      settings.pushNotifications ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
                     }`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${
                       settings.pushNotifications ? 'translate-x-6' : 'translate-x-1'
                     }`} />
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Marketing Emails</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Marketing Emails</span>
                   <button
                     onClick={() => handleSettingChange('marketingEmails', !settings.marketingEmails)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.marketingEmails ? 'bg-blue-600' : 'bg-gray-200'
+                      settings.marketingEmails ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
                     }`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${
                       settings.marketingEmails ? 'translate-x-6' : 'translate-x-1'
                     }`} />
                   </button>
@@ -540,20 +540,20 @@ export default function ProfileSettings() {
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Two-Factor Auth</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Two-Factor Auth</span>
                   <button
                     onClick={() => handleSettingChange('twoFactorAuth', !settings.twoFactorAuth)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.twoFactorAuth ? 'bg-blue-600' : 'bg-gray-200'
+                      settings.twoFactorAuth ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
                     }`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${
                       settings.twoFactorAuth ? 'translate-x-6' : 'translate-x-1'
                     }`} />
                   </button>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2">Session Timeout (minutes)</label>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Session Timeout (minutes)</label>
                   <select
                     value={settings.sessionTimeout}
                     onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}

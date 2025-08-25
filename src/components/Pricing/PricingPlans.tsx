@@ -278,13 +278,13 @@ export default function PricingPlans() {
 
       {/* Billing Toggle */}
       <div className="flex justify-center">
-        <div className="bg-gray-100 p-1 rounded-xl">
+        <div className="bg-gray-100 dark:bg-primary-700 p-1 rounded-xl">
           <button
             onClick={() => setBillingCycle('monthly')}
             className={`px-6 py-2 rounded-lg font-medium transition-all ${
               billingCycle === 'monthly'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white dark:bg-primary-600 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             Monthly
@@ -293,8 +293,8 @@ export default function PricingPlans() {
             onClick={() => setBillingCycle('yearly')}
             className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
               billingCycle === 'yearly'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white dark:bg-primary-600 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             Yearly
@@ -315,12 +315,12 @@ export default function PricingPlans() {
           return (
             <div
               key={plan.id}
-              className={`relative flex flex-col h-full bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+              className={`relative flex flex-col h-full bg-white dark:bg-primary-800 rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                 plan.popular
-                  ? 'border-blue-200 ring-4 ring-blue-100'
+                  ? 'border-blue-200 dark:border-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30'
                   : plan.recommended
-                  ? 'border-purple-200 ring-4 ring-purple-100'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-purple-200 dark:border-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30'
+                  : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
               }`}
               style={{ minHeight: '600px', display: 'flex' }}
             >

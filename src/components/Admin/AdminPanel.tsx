@@ -335,7 +335,7 @@ export default function AdminPanel() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex space-x-2 overflow-x-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -346,7 +346,7 @@ export default function AdminPanel() {
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -362,74 +362,74 @@ export default function AdminPanel() {
         <div className="space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl font-bold text-gray-900">{(systemStats.totalUsers ?? 0).toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{(systemStats.totalUsers ?? 0).toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Users</p>
-                  <p className="text-2xl font-bold text-green-600">{(systemStats.activeUsers ?? 0).toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">{(systemStats.activeUsers ?? 0).toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Projects</p>
-                  <p className="text-2xl font-bold text-purple-600">{(systemStats.totalProjects ?? 0).toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Projects</p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{(systemStats.totalProjects ?? 0).toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Globe className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Submissions</p>
-                  <p className="text-2xl font-bold text-orange-600">{(systemStats.totalSubmissions ?? 0).toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Submissions</p>
+                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{(systemStats.totalSubmissions ?? 0).toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-orange-600" />
+                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                  <Target className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Revenue</p>
-                  <p className="text-2xl font-bold text-green-600">${(systemStats.revenue ?? 0).toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Revenue</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">${(systemStats.revenue ?? 0).toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Success Rate</p>
-                  <p className="text-2xl font-bold text-blue-600">{(systemStats.successRate ?? 0)}%</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Success Rate</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{(systemStats.successRate ?? 0)}%</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </div>
@@ -437,8 +437,8 @@ export default function AdminPanel() {
 
           {/* Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent User Activity</h3>
+            <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent User Activity</h3>
               <div className="space-y-4">
                 {Array.isArray(users) && users.slice(0, 5).map((user) => (
                   <div key={user._id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
@@ -457,8 +457,8 @@ export default function AdminPanel() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Directories</h3>
+            <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Directories</h3>
               <div className="space-y-4">
                 {directories.slice(0, 5).map((directory) => (
                   <div key={directory.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -490,11 +490,11 @@ export default function AdminPanel() {
       {activeTab === 'users' && (
         <div className="space-y-6">
           {/* User Management Header */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-                <p className="text-sm text-gray-600 mt-1">{users.length} total users</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">User Management</h3>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{users.length} total users</p>
               </div>
               <button onClick={openCreateUser} className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all flex items-center space-x-2">
                 <Plus className="w-4 h-4" />
@@ -556,7 +556,7 @@ export default function AdminPanel() {
           </div>
 
           {/* User Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -668,7 +668,7 @@ export default function AdminPanel() {
       {activeTab === 'projects' && (
         <div className="space-y-6">
           {/* Projects Management Header */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Project Management</h3>
@@ -694,7 +694,7 @@ export default function AdminPanel() {
           </div>
 
           {/* Projects Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -773,7 +773,7 @@ export default function AdminPanel() {
       {activeTab === 'submissions' && (
         <div className="space-y-6">
           {/* Submissions Management Header */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Submission Management</h3>
@@ -806,7 +806,7 @@ export default function AdminPanel() {
           </div>
 
           {/* Submissions Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -907,7 +907,7 @@ export default function AdminPanel() {
       {/* Settings Tab */}
       {activeTab === 'settings' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">System Settings</h3>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1129,7 +1129,7 @@ export default function AdminPanel() {
       {/* Directory Modal */}
       {showDirectoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+          <div className="bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative">
             <button onClick={() => setShowDirectoryModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">&times;</button>
             <h2 className="text-xl font-bold mb-4">Add New Directory</h2>
             <form onSubmit={e => { e.preventDefault(); handleDirectoryFormSubmit(); }} className="space-y-4">
@@ -1203,7 +1203,7 @@ export default function AdminPanel() {
       {/* User Modal */}
       {showUserModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+          <div className="bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative">
             <button onClick={() => setShowUserModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">&times;</button>
             <h2 className="text-xl font-bold mb-4">{editingUser ? 'Edit User' : 'Create User'}</h2>
             <form onSubmit={e => { e.preventDefault(); handleUserFormSubmit(); }} className="space-y-4">
