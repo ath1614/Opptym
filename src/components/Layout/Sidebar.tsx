@@ -85,55 +85,55 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
   const menuItems = [
     {
       id: 'dashboard',
-      label: t('sidebar.dashboard'),
+      label: t('submissions.dashboard'),
       icon: Home,
       color: 'from-blue-500 to-blue-600',
-      description: 'Overview & Analytics'
+      description: t('dashboard.title')
     },
     {
       id: 'projects',
-      label: t('sidebar.projects'),
+      label: t('submissions.projects'),
       icon: FolderOpen,
       color: 'from-green-500 to-green-600',
-      description: 'Manage Projects'
+      description: t('projects.title')
     },
     {
       id: 'tools',
-      label: t('sidebar.tools'),
+      label: t('submissions.seoTools'),
       icon: BarChart3,
       color: 'from-purple-500 to-purple-600',
-      description: 'SEO Analysis Tools'
+      description: t('submissions.tools')
     },
     {
       id: 'directory',
-      label: t('sidebar.directory'),
+      label: t('submissions.directory'),
       icon: Globe,
       color: 'from-orange-500 to-orange-600',
-      description: 'Directory Submissions'
+      description: t('submissions.title')
     },
     {
       id: 'reports',
-      label: t('sidebar.reports'),
+      label: t('submissions.submissionReports'),
       icon: FileText,
       color: 'from-red-500 to-red-600',
-      description: 'Performance Reports'
+      description: t('submissions.reports')
     }
   ];
 
   const secondaryMenuItems = [
     {
       id: 'pricing',
-      label: t('sidebar.pricing'),
+      label: t('submissions.pricingPlans'),
       icon: CreditCard,
       color: 'from-yellow-500 to-yellow-600',
-      description: 'Plans & Billing'
+      description: t('submissions.pricing')
     },
     {
       id: 'profile',
-      label: t('sidebar.profile'),
+      label: t('submissions.profileSettings'),
       icon: User,
       color: 'from-indigo-500 to-indigo-600',
-      description: 'Account Settings'
+      description: t('submissions.profile')
     },
     {
       id: 'test',
@@ -148,7 +148,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
   const adminMenuItems = user?.isAdmin ? [
     {
       id: 'admin',
-      label: 'Admin Panel',
+      label: t('submissions.adminPanel'),
       icon: Shield,
       color: 'from-red-500 to-red-600',
       description: 'System Administration'
