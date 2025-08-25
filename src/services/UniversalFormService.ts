@@ -54,226 +54,191 @@ export class UniversalFormService {
   createUniversalBookmarklet(): string {
     const script = `
       (function() {
-        console.log('🚀 OPPTYM Universal Form Filler Starting...');
-        
-        const projectData = ${JSON.stringify(this.projectData)};
-        let filledCount = 0;
-        let errorCount = 0;
-        
-        // Show loading indicator
-        const loadingDiv = document.createElement('div');
-        loadingDiv.style.cssText = \`
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: #10b981;
-          color: white;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-          z-index: 10000;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        \`;
-        loadingDiv.textContent = '🔄 Filling form fields...';
-        document.body.appendChild(loadingDiv);
-        
-        // Enhanced field mapping function
-        function mapFieldToValue(input) {
-          const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
-          const fieldType = input.type.toLowerCase();
-          
-          // Email fields
-          if (fieldType === 'email' || fieldName.includes('email') || fieldName.includes('e-mail')) {
-            return projectData.email;
-          }
-          
-          // Phone fields
-          if (fieldType === 'tel' || fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('telephone') || fieldName.includes('contact')) {
-            return projectData.phone;
-          }
-          
-          // Name fields (personal name)
-          if ((fieldName.includes('name') && !fieldName.includes('company') && !fieldName.includes('business') && !fieldName.includes('user')) || 
-              fieldName.includes('first') || fieldName.includes('last') || fieldName.includes('full')) {
-            return projectData.name;
-          }
-          
-          // Company/Business fields
-          if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization') || fieldName.includes('firm') || fieldName.includes('enterprise')) {
-            return projectData.companyName;
-          }
-          
-          // Website/URL fields
-          if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site') || fieldName.includes('web') || fieldName.includes('link')) {
-            return projectData.url;
-          }
-          
-          // Address fields
-          if (fieldName.includes('address') || fieldName.includes('street') || fieldName.includes('location')) {
-            return projectData.address || '';
-          }
-          
-          // City fields
-          if (fieldName.includes('city') || fieldName.includes('town')) {
-            return projectData.city || '';
-          }
-          
-          // State fields
-          if (fieldName.includes('state') || fieldName.includes('province') || fieldName.includes('region')) {
-            return projectData.state || '';
-          }
-          
-          // Zip/Postal code fields
-          if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode') || fieldName.includes('code')) {
-            return projectData.pincode || '';
-          }
-          
-          // Country fields
-          if (fieldName.includes('country') || fieldName.includes('nation')) {
-            return projectData.country || '';
-          }
-          
-          // Description fields
-          if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('info') || fieldName.includes('summary')) {
-            return projectData.description;
-          }
-          
-          // Category fields
-          if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry') || fieldName.includes('sector')) {
-            return projectData.category || '';
-          }
-          
-          // Title fields
-          if (fieldName.includes('title') || fieldName.includes('job') || fieldName.includes('position')) {
-            return projectData.title || '';
-          }
-          
-          // Username fields
-          if (fieldName.includes('username') || fieldName.includes('user') || fieldName.includes('login')) {
-            return projectData.name || projectData.companyName;
-          }
-          
-          // Comments/Message fields
-          if (fieldName.includes('comment') || fieldName.includes('message') || fieldName.includes('note') || fieldName.includes('text')) {
-            return projectData.description || \`Contact from \${projectData.companyName || projectData.name}\`;
-          }
-          
-          return null;
-        }
-        
-        // Enhanced field filling function
-        function fillField(input, value) {
+        // Check if user is authenticated and has valid subscription
+        const checkAuth = async () => {
           try {
-            // Skip if field is disabled, readonly, or already has a value
-            if (input.disabled || input.readOnly || input.value) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              alert('❌ Please login to Opptym first to use this bookmarklet');
               return false;
             }
             
-            // Clear the field first
-            input.value = '';
-            
-            // Fill the field
-            input.value = value;
-            
-            // Trigger events
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            input.dispatchEvent(new Event('blur', { bubbles: true }));
-            
-            return true;
-          } catch (e) {
-            console.log('⚠️ Error filling field:', e);
-            return false;
-          }
-        }
-        
-        // Find and fill all input fields
-        const inputs = document.querySelectorAll('input, textarea, select');
-        console.log(\`Found \${inputs.length} input fields\`);
-        
-        inputs.forEach((input, index) => {
-          try {
-            const value = mapFieldToValue(input);
-            if (value) {
-              if (fillField(input, value)) {
-                filledCount++;
-                console.log(\`✅ Filled field \${index + 1}: \${input.name || input.id || input.placeholder} with: \${value}\`);
-              }
-            }
-          } catch (e) {
-            errorCount++;
-            console.log(\`⚠️ Error processing field \${index + 1}:\`, e);
-          }
-        });
-        
-        // Update loading message
-        setTimeout(() => {
-          loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
-          loadingDiv.textContent = filledCount > 0 
-            ? \`✅ \${filledCount} fields filled successfully!\`
-            : \`⚠️ No fields could be filled automatically\`;
-          
-          // Remove message after 3 seconds
-          setTimeout(() => {
-            if (loadingDiv.parentNode) {
-              loadingDiv.parentNode.removeChild(loadingDiv);
-            }
-          }, 3000);
-        }, 500);
-        
-        console.log(\`🎯 Form filling completed: \${filledCount} fields filled, \${errorCount} errors\`);
-        
-        // Auto-delete this bookmarklet after 30 minutes
-        setTimeout(() => {
-          try {
-            console.log('🕐 Auto-deletion timer triggered (30 minutes)');
-            
-            // Try to remove from Chrome bookmarks bar
-            if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
-              window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
-                bookmarks.forEach(bookmark => {
-                  window.chrome.bookmarks.remove(bookmark.id);
-                  console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
-                });
-              }).catch(e => console.log('Chrome bookmark removal failed:', e));
-            }
-            
-            // Try to remove from Firefox bookmarks bar
-            if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
-              window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
-                bookmarks.forEach(bookmark => {
-                  window.browser.bookmarks.remove(bookmark.id);
-                  console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
-                });
-              }).catch(e => console.log('Firefox bookmark removal failed:', e));
-            }
-            
-            // Also try to remove from DOM if present
-            const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
-            bookmarkletElements.forEach(element => {
-              element.remove();
-              console.log('🗑️ Removed bookmarklet from DOM');
+            // Verify token and check usage limits
+                         const response = await fetch('https://api.opptym.com/api/subscription/verify-usage', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({
+                action: 'bookmarklet_usage',
+                timestamp: Date.now()
+              })
             });
             
-            // Show notification that bookmarklet was auto-deleted
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
-            document.body.appendChild(notification);
+            const result = await response.json();
             
-            setTimeout(() => {
-              if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-              }
-            }, 5000);
+            if (!result.success) {
+              alert('❌ ' + (result.message || 'Usage limit exceeded or subscription expired'));
+              return false;
+            }
             
-            console.log('✅ Auto-deletion completed successfully');
-            
-          } catch (e) {
-            console.log('❌ Auto-deletion failed:', e);
+            return true;
+          } catch (error) {
+            console.error('Auth check failed:', error);
+            alert('❌ Authentication failed. Please refresh and try again.');
+            return false;
           }
-        }, 30 * 60 * 1000); // 30 minutes
+        };
+        
+        // Main form filling function
+        const fillForms = async () => {
+          // Check authentication first
+          const isAuthenticated = await checkAuth();
+          if (!isAuthenticated) return;
+          
+          // Show loading indicator
+          const loadingDiv = document.createElement('div');
+          loadingDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+          loadingDiv.textContent = '🤖 Filling forms...';
+          document.body.appendChild(loadingDiv);
+          
+          // Project data (this will be replaced with server-fetched data)
+          const projectData = {
+            name: "${this.projectData.name}",
+            email: "${this.projectData.email}",
+            companyName: "${this.projectData.companyName}",
+            phone: "${this.projectData.phone}",
+            description: "${this.projectData.description}",
+            url: "${this.projectData.url}"
+          };
+          
+          let filledCount = 0;
+          let errorCount = 0;
+          
+          // Enhanced field mapping with better detection
+          const fieldMappings = [
+            { patterns: ['name', 'fullname', 'full_name', 'firstname', 'first_name'], value: projectData.name },
+            { patterns: ['email', 'e-mail', 'mail'], value: projectData.email },
+            { patterns: ['company', 'companyname', 'company_name', 'business', 'organization'], value: projectData.companyName },
+            { patterns: ['phone', 'telephone', 'mobile', 'cell', 'contact'], value: projectData.phone },
+            { patterns: ['website', 'url', 'site', 'web'], value: projectData.url },
+            { patterns: ['description', 'message', 'comment', 'details', 'about'], value: projectData.description },
+            { patterns: ['address', 'street', 'location'], value: projectData.address || '' },
+            { patterns: ['city', 'town'], value: projectData.city || '' },
+            { patterns: ['state', 'province', 'region'], value: projectData.state || '' },
+            { patterns: ['country', 'nation'], value: projectData.country || '' },
+            { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
+          ];
+          
+          // Process all form fields
+          const processInputFields = () => {
+            const inputs = document.querySelectorAll('input, textarea, select');
+            
+            inputs.forEach((input, index) => {
+              try {
+                if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+                
+                const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
+                const fieldValue = input.value || '';
+                
+                // Skip if field already has a value
+                if (fieldValue.trim()) return;
+                
+                // Find matching field mapping
+                const mapping = fieldMappings.find(m => 
+                  m.patterns.some(pattern => fieldName.includes(pattern))
+                );
+                
+                if (mapping && mapping.value) {
+                  input.value = mapping.value;
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                  input.dispatchEvent(new Event('change', { bubbles: true }));
+                  filledCount++;
+                  console.log(\`✅ Filled field \${index + 1}: \${input.name || input.id || input.placeholder} with: \${mapping.value}\`);
+                }
+              } catch (e) {
+                errorCount++;
+                console.log(\`⚠️ Error processing field \${index + 1}:\`, e);
+              }
+            });
+          };
+          
+          // Execute form filling
+          processInputFields();
+          
+          // Update loading message
+          setTimeout(() => {
+            loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
+            loadingDiv.textContent = filledCount > 0 
+              ? \`✅ \${filledCount} fields filled successfully!\`
+              : \`⚠️ No fields could be filled automatically\`;
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+              if (loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+              }
+            }, 3000);
+          }, 500);
+          
+          console.log(\`🎯 Form filling completed: \${filledCount} fields filled, \${errorCount} errors\`);
+          
+          // Auto-delete this bookmarklet after 30 minutes
+          setTimeout(() => {
+            try {
+              console.log('🕐 Auto-deletion timer triggered (30 minutes)');
+              
+              // Try to remove from Chrome bookmarks bar
+              if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+                window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                  bookmarks.forEach(bookmark => {
+                    window.chrome.bookmarks.remove(bookmark.id);
+                    console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
+                  });
+                }).catch(e => console.log('Chrome bookmark removal failed:', e));
+              }
+              
+              // Try to remove from Firefox bookmarks bar
+              if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+                window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                  bookmarks.forEach(bookmark => {
+                    window.browser.bookmarks.remove(bookmark.id);
+                    console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
+                  });
+                }).catch(e => console.log('Firefox bookmark removal failed:', e));
+              }
+              
+              // Also try to remove from DOM if present
+              const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
+              bookmarkletElements.forEach(element => {
+                element.remove();
+                console.log('🗑️ Removed bookmarklet from DOM');
+              });
+              
+              // Show notification that bookmarklet was auto-deleted
+              const notification = document.createElement('div');
+              notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+              notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
+              document.body.appendChild(notification);
+              
+              setTimeout(() => {
+                if (notification.parentNode) {
+                  notification.parentNode.removeChild(notification);
+                }
+              }, 5000);
+              
+              console.log('✅ Auto-deletion completed successfully');
+              
+            } catch (e) {
+              console.log('❌ Auto-deletion failed:', e);
+            }
+          }, 30 * 60 * 1000); // 30 minutes
+          
+        };
+        
+        // Execute the form filling
+        fillForms();
         
       })();
     `;

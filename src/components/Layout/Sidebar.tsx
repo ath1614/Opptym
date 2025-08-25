@@ -172,7 +172,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${isCollapsed ? 'w-20' : 'w-72'}
         bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
-        overflow-hidden
+        flex flex-col
       `}>
         
         {/* Header */}
@@ -280,7 +280,7 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-transparent">
           {allMenuItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

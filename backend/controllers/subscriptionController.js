@@ -91,6 +91,66 @@ exports.trackUsage = async (req, res) => {
   }
 };
 
+// Verify bookmarklet usage and track it
+exports.verifyBookmarkletUsage = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { action, timestamp } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
+    }
+
+    // Check if subscription is active
+    if (user.subscriptionStatus !== 'active') {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Subscription is not active. Please renew your subscription.' 
+      });
+    }
+
+    // Check bookmarklet usage limits
+    const currentUsage = user.currentUsage?.bookmarkletUsage || 0;
+    const limit = user.subscriptionLimits?.bookmarkletUsage || 50; // Default limit
+
+    if (currentUsage >= limit) {
+      return res.status(429).json({ 
+        success: false, 
+        message: `Bookmarklet usage limit exceeded. You've used ${currentUsage}/${limit} times this month.` 
+      });
+    }
+
+    // Increment bookmarklet usage
+    if (!user.currentUsage) user.currentUsage = {};
+    user.currentUsage.bookmarkletUsage = (user.currentUsage.bookmarkletUsage || 0) + 1;
+    await user.save();
+
+    // Log the usage
+    console.log(`📊 Bookmarklet usage tracked for user ${userId}: ${user.currentUsage.bookmarkletUsage}/${limit}`);
+
+    res.json({
+      success: true,
+      message: 'Usage verified successfully',
+      usage: {
+        current: user.currentUsage.bookmarkletUsage,
+        limit: limit,
+        remaining: limit - user.currentUsage.bookmarkletUsage
+      }
+    });
+
+  } catch (error) {
+    console.error('Bookmarklet usage verification error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error. Please try again.' 
+    });
+  }
+};
+
 // Get team management features
 exports.getTeamManagement = async (req, res) => {
   try {

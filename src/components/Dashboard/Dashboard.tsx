@@ -61,7 +61,7 @@ export default function Dashboard() {
       const projects = projectsResponse.data || [];
       const submissions = submissionsResponse.data || [];
 
-      // Fetch subscription details
+      // Fetch subscription details with real usage tracking
       try {
         const subscriptionResponse = await axios.get('/api/subscription/details', {
           headers: { Authorization: `Bearer ${token}` }
@@ -69,6 +69,24 @@ export default function Dashboard() {
         setSubscription(subscriptionResponse.data);
       } catch (error) {
         console.log('No subscription details available, using default');
+        
+        // Calculate real limits based on user's subscription
+        const getPlanLimits = (plan: string) => {
+          switch (plan) {
+            case 'business':
+              return { submissions: 1000, projects: 50, tools: true };
+            case 'pro':
+              return { submissions: 500, projects: 25, tools: true };
+            case 'starter':
+              return { submissions: 100, projects: 10, tools: true };
+            case 'free':
+            default:
+              return { submissions: 10, projects: 1, tools: false };
+          }
+        };
+        
+        const limits = getPlanLimits(user?.subscription || 'free');
+        
         setSubscription({
           plan: user?.subscription || 'free',
           status: 'active',
@@ -76,8 +94,10 @@ export default function Dashboard() {
           usage: {
             submissions: submissions.length,
             projects: projects.length,
-            limit: user?.subscription === 'business' ? 1000 : user?.subscription === 'pro' ? 500 : 100
-          }
+            limit: limits.submissions,
+            projectLimit: limits.projects
+          },
+          limits: limits
         });
       }
 
@@ -297,20 +317,20 @@ export default function Dashboard() {
                 </div>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-primary-600 dark:text-primary-400">Projects Used</span>
-                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                    {subscription.usage?.projects || 0} / {subscription.plan === 'business' ? 'Unlimited' : '50'}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
-                  <div 
-                    className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.usage?.projects || 0) / 50 * 100, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
+                                <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-primary-600 dark:text-primary-400">Projects Used</span>
+                      <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
+                        {subscription.usage?.projects || 0} / {subscription.limits?.projects || subscription.plan === 'business' ? 'Unlimited' : '50'}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.min((subscription.usage?.projects || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
