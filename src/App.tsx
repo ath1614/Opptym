@@ -15,6 +15,7 @@ import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import TrialExpirationModal from './components/TrialExpirationModal';
+import TestChanges from './components/TestChanges';
 
 import { BookOpen, Settings, Shield, Sparkles } from 'lucide-react';
 import { showPopup } from './utils/popup';
@@ -437,6 +438,8 @@ function App() {
         return <ProfileSettings />;
       case 'admin':
         return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
+      case 'test':
+        return <TestChanges />;
       default:
         return <Dashboard />;
     }

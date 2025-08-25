@@ -134,6 +134,13 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
       icon: User,
       color: 'from-indigo-500 to-indigo-600',
       description: 'Account Settings'
+    },
+    {
+      id: 'test',
+      label: 'Test Changes',
+      icon: Activity,
+      color: 'from-purple-500 to-purple-600',
+      description: 'Test Component'
     }
   ];
 

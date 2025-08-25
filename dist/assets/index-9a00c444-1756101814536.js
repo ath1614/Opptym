@@ -243,7 +243,7 @@ function T$2(a2) {
   throw a2._result;
 }
 var U$2 = { current: null }, V$2 = { transition: null }, W$2 = { ReactCurrentDispatcher: U$2, ReactCurrentBatchConfig: V$2, ReactCurrentOwner: K$2 };
-function X$2() {
+function X$3() {
   throw Error("act(...) is not supported in production builds of React.");
 }
 react_production_min.Children = { map: S$2, forEach: function(a2, b2, e2) {
@@ -272,7 +272,7 @@ react_production_min.PureComponent = G$2;
 react_production_min.StrictMode = q$2;
 react_production_min.Suspense = w$1;
 react_production_min.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = W$2;
-react_production_min.act = X$2;
+react_production_min.act = X$3;
 react_production_min.cloneElement = function(a2, b2, e2) {
   if (null === a2 || void 0 === a2)
     throw Error("React.cloneElement(...): The argument must be a React element, but you passed " + a2 + ".");
@@ -329,7 +329,7 @@ react_production_min.startTransition = function(a2) {
     V$2.transition = b2;
   }
 };
-react_production_min.unstable_act = X$2;
+react_production_min.unstable_act = X$3;
 react_production_min.useCallback = function(a2, b2) {
   return U$2.current.useCallback(a2, b2);
 };
@@ -5552,7 +5552,7 @@ function Wj(a2, b2, c2) {
     for (Wj(a2, b2, c2), a2 = a2.sibling; null !== a2; )
       Wj(a2, b2, c2), a2 = a2.sibling;
 }
-var X$1 = null, Xj = false;
+var X$2 = null, Xj = false;
 function Yj(a2, b2, c2) {
   for (c2 = c2.child; null !== c2; )
     Zj(a2, b2, c2), c2 = c2.sibling;
@@ -5567,23 +5567,23 @@ function Zj(a2, b2, c2) {
     case 5:
       U$1 || Lj(c2, b2);
     case 6:
-      var d2 = X$1, e2 = Xj;
-      X$1 = null;
+      var d2 = X$2, e2 = Xj;
+      X$2 = null;
       Yj(a2, b2, c2);
-      X$1 = d2;
+      X$2 = d2;
       Xj = e2;
-      null !== X$1 && (Xj ? (a2 = X$1, c2 = c2.stateNode, 8 === a2.nodeType ? a2.parentNode.removeChild(c2) : a2.removeChild(c2)) : X$1.removeChild(c2.stateNode));
+      null !== X$2 && (Xj ? (a2 = X$2, c2 = c2.stateNode, 8 === a2.nodeType ? a2.parentNode.removeChild(c2) : a2.removeChild(c2)) : X$2.removeChild(c2.stateNode));
       break;
     case 18:
-      null !== X$1 && (Xj ? (a2 = X$1, c2 = c2.stateNode, 8 === a2.nodeType ? Kf(a2.parentNode, c2) : 1 === a2.nodeType && Kf(a2, c2), bd(a2)) : Kf(X$1, c2.stateNode));
+      null !== X$2 && (Xj ? (a2 = X$2, c2 = c2.stateNode, 8 === a2.nodeType ? Kf(a2.parentNode, c2) : 1 === a2.nodeType && Kf(a2, c2), bd(a2)) : Kf(X$2, c2.stateNode));
       break;
     case 4:
-      d2 = X$1;
+      d2 = X$2;
       e2 = Xj;
-      X$1 = c2.stateNode.containerInfo;
+      X$2 = c2.stateNode.containerInfo;
       Xj = true;
       Yj(a2, b2, c2);
-      X$1 = d2;
+      X$2 = d2;
       Xj = e2;
       break;
     case 0:
@@ -5643,24 +5643,24 @@ function ck(a2, b2) {
           for (; null !== h2; ) {
             switch (h2.tag) {
               case 5:
-                X$1 = h2.stateNode;
+                X$2 = h2.stateNode;
                 Xj = false;
                 break a;
               case 3:
-                X$1 = h2.stateNode.containerInfo;
+                X$2 = h2.stateNode.containerInfo;
                 Xj = true;
                 break a;
               case 4:
-                X$1 = h2.stateNode.containerInfo;
+                X$2 = h2.stateNode.containerInfo;
                 Xj = true;
                 break a;
             }
             h2 = h2.return;
           }
-        if (null === X$1)
+        if (null === X$2)
           throw Error(p$1(160));
         Zj(f2, g2, e2);
-        X$1 = null;
+        X$2 = null;
         Xj = false;
         var k2 = e2.alternate;
         null !== k2 && (k2.return = null);
@@ -13647,7 +13647,7 @@ const navigation$1 = {
   help: "Help",
   support: "Support"
 };
-const sidebar = {
+const sidebar$1 = {
   dashboard: "Dashboard",
   projects: "Projects",
   tools: "SEO Tools",
@@ -13685,7 +13685,7 @@ const en = {
   projects: projects$1,
   submissions: submissions$1,
   navigation: navigation$1,
-  sidebar,
+  sidebar: sidebar$1,
   settings: settings$1,
   errors: errors$1
 };
@@ -13831,6 +13831,15 @@ const errors = {
   unauthorized: "अनधिकृत पहुंच",
   forbidden: "पहुंच निषिद्ध"
 };
+const sidebar = {
+  dashboard: "डैशबोर्ड",
+  projects: "प्रोजेक्ट्स",
+  tools: "एसईओ टूल्स",
+  directory: "सबमिशन",
+  reports: "रिपोर्ट्स",
+  pricing: "मूल्य निर्धारण",
+  profile: "प्रोफ़ाइल"
+};
 const hi = {
   common,
   auth,
@@ -13840,7 +13849,8 @@ const hi = {
   submissions,
   navigation,
   settings,
-  errors
+  errors,
+  sidebar
 };
 const resources = {
   en: { translation: en },
@@ -14940,6 +14950,10 @@ const XCircle = createLucideIcon$1("XCircle", [
   ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
   ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ]);
+const X$1 = createLucideIcon$1("X", [
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+]);
 const Zap = createLucideIcon$1("Zap", [
   [
     "polygon",
@@ -15574,6 +15588,7 @@ function Register({ onSwitchToLogin }) {
   ] });
 }
 function Dashboard() {
+  var _a2, _b2, _c, _d, _e, _f, _g, _h;
   useTranslation();
   const { user } = useAuth();
   const [stats, setStats] = reactExports.useState({
@@ -15586,6 +15601,7 @@ function Dashboard() {
   });
   const [loading, setLoading] = reactExports.useState(true);
   const [recentActivity, setRecentActivity] = reactExports.useState([]);
+  const [subscription, setSubscription] = reactExports.useState(null);
   reactExports.useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -15601,6 +15617,40 @@ function Dashboard() {
       });
       const projects2 = projectsResponse.data || [];
       const submissions2 = submissionsResponse.data || [];
+      try {
+        const subscriptionResponse = await axios$1.get("/api/subscription/details", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSubscription(subscriptionResponse.data);
+      } catch (error) {
+        console.log("No subscription details available, using default");
+        const getPlanLimits = (plan) => {
+          switch (plan) {
+            case "business":
+              return { submissions: 1e3, projects: 50, tools: true };
+            case "pro":
+              return { submissions: 500, projects: 25, tools: true };
+            case "starter":
+              return { submissions: 100, projects: 10, tools: true };
+            case "free":
+            default:
+              return { submissions: 10, projects: 1, tools: false };
+          }
+        };
+        const limits = getPlanLimits((user == null ? void 0 : user.subscription) || "free");
+        setSubscription({
+          plan: (user == null ? void 0 : user.subscription) || "free",
+          status: "active",
+          nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3).toISOString(),
+          usage: {
+            submissions: submissions2.length,
+            projects: projects2.length,
+            limit: limits.submissions,
+            projectLimit: limits.projects
+          },
+          limits
+        });
+      }
       const calculatedStats = {
         totalProjects: projects2.length,
         totalSubmissions: submissions2.length,
@@ -15621,15 +15671,29 @@ function Dashboard() {
         {
           id: 2,
           type: "project",
-          message: 'New project "E-commerce Store" created',
+          message: "Created new project: E-commerce Store",
           time: "1 hour ago",
-          status: "info"
+          status: "success"
         },
         {
           id: 3,
-          type: "analysis",
-          message: "SEO analysis completed for example.com",
+          type: "submission",
+          message: "Submission to LocalBusiness failed",
           time: "3 hours ago",
+          status: "error"
+        },
+        {
+          id: 4,
+          type: "tool",
+          message: "SEO Analysis completed for TechBlog",
+          time: "5 hours ago",
+          status: "success"
+        },
+        {
+          id: 5,
+          type: "subscription",
+          message: "Upgraded to Pro plan",
+          time: "1 day ago",
           status: "success"
         }
       ]);
@@ -15737,8 +15801,163 @@ function Dashboard() {
       },
       index2
     )) }),
+    subscription && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.5s" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-6 h-6" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "Subscription Status" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Your current plan and usage" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200 capitalize", children: subscription.plan }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-success-600 dark:text-success-400 font-medium", children: subscription.status })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Submissions Used" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm font-semibold text-primary-800 dark:text-primary-200", children: [
+              ((_a2 = subscription.usage) == null ? void 0 : _a2.submissions) || 0,
+              " / ",
+              ((_b2 = subscription.usage) == null ? void 0 : _b2.limit) || 100
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: "bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300",
+              style: { width: `${Math.min((((_c = subscription.usage) == null ? void 0 : _c.submissions) || 0) / (((_d = subscription.usage) == null ? void 0 : _d.limit) || 100) * 100, 100)}%` }
+            }
+          ) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Projects Used" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm font-semibold text-primary-800 dark:text-primary-200", children: [
+              ((_e = subscription.usage) == null ? void 0 : _e.projects) || 0,
+              " / ",
+              ((_f = subscription.limits) == null ? void 0 : _f.projects) || subscription.plan === "business" ? "Unlimited" : "50"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: "bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300",
+              style: { width: `${Math.min((((_g = subscription.usage) == null ? void 0 : _g.projects) || 0) / (((_h = subscription.limits) == null ? void 0 : _h.projects) || 50) * 100, 100)}%` }
+            }
+          ) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Next Billing" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-semibold text-primary-800 dark:text-primary-200", children: new Date(subscription.nextBilling).toLocaleDateString() })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: "bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-300",
+              style: { width: `${Math.max(0, 100 - (new Date(subscription.nextBilling).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1e3) * 100)}%` }
+            }
+          ) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 pt-6 border-t border-primary-200 dark:border-primary-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-blue-800 dark:text-blue-200 mb-2", children: "Plan Features" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-sm text-blue-700 dark:text-blue-300 space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              "• ",
+              subscription.plan === "business" ? "Unlimited" : subscription.plan === "pro" ? "500" : "100",
+              " submissions per month"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              "• ",
+              subscription.plan === "business" ? "Unlimited" : "50",
+              " projects"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "• Advanced analytics" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "• Priority support" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-semibold text-green-800 dark:text-green-200 mb-2", children: "Quick Actions" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors", children: "• Upgrade Plan" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors", children: "• View Billing History" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "w-full text-left text-sm text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200 transition-colors", children: "• Download Invoice" })
+          ] })
+        ] })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-6 h-6" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "Available Plans" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Choose the perfect plan for your needs" })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
+        {
+          name: "Free",
+          price: "$0",
+          period: "forever",
+          features: ["1 Project", "10 Submissions/month", "Basic Analytics", "Email Support"],
+          current: (subscription == null ? void 0 : subscription.plan) === "free",
+          popular: false,
+          color: "from-gray-500 to-gray-600"
+        },
+        {
+          name: "Starter",
+          price: "$9.99",
+          period: "month",
+          features: ["1 Project", "100 Submissions/month", "Advanced Analytics", "Priority Support"],
+          current: (subscription == null ? void 0 : subscription.plan) === "starter",
+          popular: true,
+          color: "from-blue-500 to-blue-600"
+        },
+        {
+          name: "Pro",
+          price: "$39.99",
+          period: "month",
+          features: ["5 Projects", "500 Submissions/month", "All Analytics", "24/7 Support"],
+          current: (subscription == null ? void 0 : subscription.plan) === "pro",
+          popular: false,
+          color: "from-purple-500 to-purple-600"
+        },
+        {
+          name: "Business",
+          price: "$89.99",
+          period: "month",
+          features: ["Unlimited Projects", "Unlimited Submissions", "White-label Reports", "Dedicated Support"],
+          current: (subscription == null ? void 0 : subscription.plan) === "business",
+          popular: false,
+          color: "from-green-500 to-green-600"
+        }
+      ].map((plan, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative p-4 rounded-2xl border-2 transition-all duration-300 ${plan.current ? "border-accent-500 bg-accent-50 dark:bg-accent-900/30" : "border-primary-200 dark:border-primary-700 hover:border-accent-300 dark:hover:border-accent-600"}`, children: [
+        plan.popular && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-2 left-1/2 transform -translate-x-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bg-gradient-to-r from-yellow-500 to-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full", children: "POPULAR" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-bold text-primary-800 dark:text-primary-200", children: plan.name }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline justify-center space-x-1 mt-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200", children: plan.price }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-primary-600 dark:text-primary-400", children: [
+              "/",
+              plan.period
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-2 mb-4", children: plan.features.map((feature, featureIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center space-x-2 text-sm text-primary-600 dark:text-primary-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-500 flex-shrink-0" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: feature })
+        ] }, featureIndex)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: `w-full py-2 px-4 rounded-xl font-medium transition-all duration-300 ${plan.current ? "bg-accent-500 text-white cursor-default" : `bg-gradient-to-r ${plan.color} text-white hover:shadow-lg transform hover:scale-105`}`, children: plan.current ? "Current Plan" : "Upgrade" })
+      ] }, index2)) })
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.7s" }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "Recent Activity" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "text-sm text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 font-medium", children: "View All" })
@@ -15756,7 +15975,7 @@ function Dashboard() {
         ] }, activity.id)) })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.7s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200 mb-4", children: "Quick Actions" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: [
             { label: "Create New Project", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4" }), color: "from-blue-500 to-blue-600" },
@@ -15775,7 +15994,7 @@ function Dashboard() {
             index2
           )) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 bg-gradient-to-br from-accent-50 to-primary-50 dark:from-accent-900/30 dark:to-primary-900/30 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700/30 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 bg-gradient-to-br from-accent-50 to-primary-50 dark:from-accent-900/30 dark:to-primary-900/30 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700/30 p-6 animate-fade-in-up", style: { animationDelay: "0.9s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "w-5 h-5" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "Pro Tip" })
@@ -21034,14 +21253,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-5317cb9b-1756016025904.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-9ed031f0-1756101814536.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756016025904.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756101814536.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -24546,7 +24765,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-6299fb24-1756016025904.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-f4ea095b-1756101814536.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -44009,216 +44228,212 @@ class UniversalFormService {
   }
   // Create universal form filling bookmarklet
   createUniversalBookmarklet() {
+    const uniqueToken = this.generateUniqueToken();
+    const timestamp = Date.now();
     const script = `
       (function() {
-        console.log('🚀 OPPTYM Universal Form Filler Starting...');
+        // Unique bookmarklet token - prevents copying
+        const BOOKMARKLET_TOKEN = '${uniqueToken}';
+        const BOOKMARKLET_TIMESTAMP = ${timestamp};
         
-        const projectData = ${JSON.stringify(this.projectData)};
-        let filledCount = 0;
-        let errorCount = 0;
-        
-        // Show loading indicator
-        const loadingDiv = document.createElement('div');
-        loadingDiv.style.cssText = \`
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: #10b981;
-          color: white;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-          z-index: 10000;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        \`;
-        loadingDiv.textContent = '🔄 Filling form fields...';
-        document.body.appendChild(loadingDiv);
-        
-        // Enhanced field mapping function
-        function mapFieldToValue(input) {
-          const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
-          const fieldType = input.type.toLowerCase();
-          
-          // Email fields
-          if (fieldType === 'email' || fieldName.includes('email') || fieldName.includes('e-mail')) {
-            return projectData.email;
-          }
-          
-          // Phone fields
-          if (fieldType === 'tel' || fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('telephone') || fieldName.includes('contact')) {
-            return projectData.phone;
-          }
-          
-          // Name fields (personal name)
-          if ((fieldName.includes('name') && !fieldName.includes('company') && !fieldName.includes('business') && !fieldName.includes('user')) || 
-              fieldName.includes('first') || fieldName.includes('last') || fieldName.includes('full')) {
-            return projectData.name;
-          }
-          
-          // Company/Business fields
-          if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization') || fieldName.includes('firm') || fieldName.includes('enterprise')) {
-            return projectData.companyName;
-          }
-          
-          // Website/URL fields
-          if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site') || fieldName.includes('web') || fieldName.includes('link')) {
-            return projectData.url;
-          }
-          
-          // Address fields
-          if (fieldName.includes('address') || fieldName.includes('street') || fieldName.includes('location')) {
-            return projectData.address || '';
-          }
-          
-          // City fields
-          if (fieldName.includes('city') || fieldName.includes('town')) {
-            return projectData.city || '';
-          }
-          
-          // State fields
-          if (fieldName.includes('state') || fieldName.includes('province') || fieldName.includes('region')) {
-            return projectData.state || '';
-          }
-          
-          // Zip/Postal code fields
-          if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode') || fieldName.includes('code')) {
-            return projectData.pincode || '';
-          }
-          
-          // Country fields
-          if (fieldName.includes('country') || fieldName.includes('nation')) {
-            return projectData.country || '';
-          }
-          
-          // Description fields
-          if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('info') || fieldName.includes('summary')) {
-            return projectData.description;
-          }
-          
-          // Category fields
-          if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry') || fieldName.includes('sector')) {
-            return projectData.category || '';
-          }
-          
-          // Title fields
-          if (fieldName.includes('title') || fieldName.includes('job') || fieldName.includes('position')) {
-            return projectData.title || '';
-          }
-          
-          // Username fields
-          if (fieldName.includes('username') || fieldName.includes('user') || fieldName.includes('login')) {
-            return projectData.name || projectData.companyName;
-          }
-          
-          // Comments/Message fields
-          if (fieldName.includes('comment') || fieldName.includes('message') || fieldName.includes('note') || fieldName.includes('text')) {
-            return projectData.description || \`Contact from \${projectData.companyName || projectData.name}\`;
-          }
-          
-          return null;
-        }
-        
-        // Enhanced field filling function
-        function fillField(input, value) {
+        // Check if user is authenticated and has valid subscription
+        const checkAuth = async () => {
           try {
-            // Skip if field is disabled, readonly, or already has a value
-            if (input.disabled || input.readOnly || input.value) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              alert('❌ Please login to Opptym first to use this bookmarklet');
               return false;
             }
             
-            // Clear the field first
-            input.value = '';
+            // Verify token and check usage limits with unique bookmarklet token
+            const response = await fetch('https://api.opptym.com/api/subscription/verify-usage', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({
+                action: 'bookmarklet_usage',
+                bookmarkletToken: BOOKMARKLET_TOKEN,
+                timestamp: BOOKMARKLET_TIMESTAMP,
+                currentUrl: window.location.href
+              })
+            });
             
-            // Fill the field
-            input.value = value;
+            const result = await response.json();
             
-            // Trigger events
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            input.dispatchEvent(new Event('blur', { bubbles: true }));
+            if (!result.success) {
+              alert('❌ ' + (result.message || 'Usage limit exceeded or subscription expired'));
+              return false;
+            }
             
             return true;
-          } catch (e) {
-            console.log('⚠️ Error filling field:', e);
+          } catch (error) {
+            console.error('Auth check failed:', error);
+            alert('❌ Authentication failed. Please refresh and try again.');
             return false;
           }
-        }
+        };
         
-        // Find and fill all input fields
-        const inputs = document.querySelectorAll('input, textarea, select');
-        console.log(\`Found \${inputs.length} input fields\`);
-        
-        inputs.forEach((input, index) => {
-          try {
-            const value = mapFieldToValue(input);
-            if (value) {
-              if (fillField(input, value)) {
-                filledCount++;
-                console.log(\`✅ Filled field \${index + 1}: \${input.name || input.id || input.placeholder} with: \${value}\`);
-              }
-            }
-          } catch (e) {
-            errorCount++;
-            console.log(\`⚠️ Error processing field \${index + 1}:\`, e);
-          }
-        });
-        
-        // Update loading message
-        setTimeout(() => {
-          loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
-          loadingDiv.textContent = filledCount > 0 
-            ? \`✅ \${filledCount} fields filled successfully!\`
-            : \`⚠️ No fields could be filled automatically\`;
+        // Main form filling function
+        const fillForms = async () => {
+          // Check authentication first
+          const isAuthenticated = await checkAuth();
+          if (!isAuthenticated) return;
           
-          // Remove message after 3 seconds
-          setTimeout(() => {
-            if (loadingDiv.parentNode) {
-              loadingDiv.parentNode.removeChild(loadingDiv);
-            }
-          }, 3000);
-        }, 500);
-        
-        console.log(\`🎯 Form filling completed: \${filledCount} fields filled, \${errorCount} errors\`);
-        
-        // Auto-delete this bookmarklet after 30 minutes
-        setTimeout(() => {
-          try {
-            // Try to remove from bookmarks bar
-            if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
-              window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
-                bookmarks.forEach(bookmark => {
-                  window.chrome.bookmarks.remove(bookmark.id);
-                });
-              });
-            }
+          // Show loading indicator
+          const loadingDiv = document.createElement('div');
+          loadingDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+          loadingDiv.textContent = '🤖 Filling forms...';
+          document.body.appendChild(loadingDiv);
+          
+          // Project data (this will be replaced with server-fetched data)
+          const projectData = {
+            name: "${this.projectData.name}",
+            email: "${this.projectData.email}",
+            companyName: "${this.projectData.companyName}",
+            phone: "${this.projectData.phone}",
+            description: "${this.projectData.description}",
+            url: "${this.projectData.url}"
+          };
+          
+          let filledCount = 0;
+          let errorCount = 0;
+          
+          // Enhanced field mapping with better detection
+          const fieldMappings = [
+            { patterns: ['name', 'fullname', 'full_name', 'firstname', 'first_name'], value: projectData.name },
+            { patterns: ['email', 'e-mail', 'mail'], value: projectData.email },
+            { patterns: ['company', 'companyname', 'company_name', 'business', 'organization'], value: projectData.companyName },
+            { patterns: ['phone', 'telephone', 'mobile', 'cell', 'contact'], value: projectData.phone },
+            { patterns: ['website', 'url', 'site', 'web'], value: projectData.url },
+            { patterns: ['description', 'message', 'comment', 'details', 'about'], value: projectData.description },
+            { patterns: ['address', 'street', 'location'], value: projectData.address || '' },
+            { patterns: ['city', 'town'], value: projectData.city || '' },
+            { patterns: ['state', 'province', 'region'], value: projectData.state || '' },
+            { patterns: ['country', 'nation'], value: projectData.country || '' },
+            { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
+          ];
+          
+          // Process all form fields
+          const processInputFields = () => {
+            const inputs = document.querySelectorAll('input, textarea, select');
             
-            // Also try to remove from DOM if present
-            const bookmarkletElement = document.querySelector('a[href*="OPPTYM Auto-Fill"]');
-            if (bookmarkletElement) {
-              bookmarkletElement.remove();
-            }
-            
-            // Show notification that bookmarklet was auto-deleted
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-              if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+            inputs.forEach((input, index) => {
+              try {
+                if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+                
+                const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
+                const fieldValue = input.value || '';
+                
+                // Skip if field already has a value
+                if (fieldValue.trim()) return;
+                
+                // Find matching field mapping
+                const mapping = fieldMappings.find(m => 
+                  m.patterns.some(pattern => fieldName.includes(pattern))
+                );
+                
+                if (mapping && mapping.value) {
+                  input.value = mapping.value;
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                  input.dispatchEvent(new Event('change', { bubbles: true }));
+                  filledCount++;
+                  console.log(\`✅ Filled field \${index + 1}: \${input.name || input.id || input.placeholder} with: \${mapping.value}\`);
+                }
+              } catch (e) {
+                errorCount++;
+                console.log(\`⚠️ Error processing field \${index + 1}:\`, e);
               }
-            }, 5000);
+            });
+          };
+          
+          // Execute form filling
+          processInputFields();
+          
+          // Update loading message
+          setTimeout(() => {
+            loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
+            loadingDiv.textContent = filledCount > 0 
+              ? \`✅ \${filledCount} fields filled successfully!\`
+              : \`⚠️ No fields could be filled automatically\`;
             
-          } catch (e) {
-            // Silent fail for auto-delete
-          }
-        }, 30 * 60 * 1000); // 30 minutes
+            // Remove message after 3 seconds
+            setTimeout(() => {
+              if (loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+              }
+            }, 3000);
+          }, 500);
+          
+          console.log(\`🎯 Form filling completed: \${filledCount} fields filled, \${errorCount} errors\`);
+          
+          // Auto-delete this bookmarklet after 30 minutes
+          setTimeout(() => {
+            try {
+              console.log('🕐 Auto-deletion timer triggered (30 minutes)');
+              
+              // Try to remove from Chrome bookmarks bar
+              if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
+                window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                  bookmarks.forEach(bookmark => {
+                    window.chrome.bookmarks.remove(bookmark.id);
+                    console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
+                  });
+                }).catch(e => console.log('Chrome bookmark removal failed:', e));
+              }
+              
+              // Try to remove from Firefox bookmarks bar
+              if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
+                window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
+                  bookmarks.forEach(bookmark => {
+                    window.browser.bookmarks.remove(bookmark.id);
+                    console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
+                  });
+                }).catch(e => console.log('Firefox bookmark removal failed:', e));
+              }
+              
+              // Also try to remove from DOM if present
+              const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
+              bookmarkletElements.forEach(element => {
+                element.remove();
+                console.log('🗑️ Removed bookmarklet from DOM');
+              });
+              
+              // Show notification that bookmarklet was auto-deleted
+              const notification = document.createElement('div');
+              notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+              notification.textContent = '🗑️ OPPTYM bookmarklet auto-deleted (30min cleanup)';
+              document.body.appendChild(notification);
+              
+              setTimeout(() => {
+                if (notification.parentNode) {
+                  notification.parentNode.removeChild(notification);
+                }
+              }, 5000);
+              
+              console.log('✅ Auto-deletion completed successfully');
+              
+            } catch (e) {
+              console.log('❌ Auto-deletion failed:', e);
+            }
+          }, 30 * 60 * 1000); // 30 minutes
+          
+        };
+        
+        // Execute the form filling
+        fillForms();
         
       })();
     `;
     return `javascript:${encodeURIComponent(script)}`;
+  }
+  // Generate unique token for bookmarklet
+  generateUniqueToken() {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    const userId = localStorage.getItem("userId") || "anonymous";
+    return `${userId}_${timestamp}_${random}`;
   }
   // Smart bookmarklet installation with user-friendly workflow
   async installBookmarkletAutomatically() {
@@ -44968,7 +45183,7 @@ const SubmissionsDashboard = () => {
   const [projectsError, setProjectsError] = reactExports.useState(null);
   const [expandedCategories, setExpandedCategories] = reactExports.useState(/* @__PURE__ */ new Set());
   const fetchProjects = async () => {
-    var _a2, _b2;
+    var _a2, _b2, _c, _d;
     try {
       setProjectsLoading(true);
       setProjectsError(null);
@@ -44983,10 +45198,15 @@ const SubmissionsDashboard = () => {
       });
       console.log("Projects fetched:", response.data);
       console.log("First project structure:", response.data[0]);
+      console.log("First project title field:", (_a2 = response.data[0]) == null ? void 0 : _a2.title);
+      console.log("First project name field:", (_b2 = response.data[0]) == null ? void 0 : _b2.name);
+      console.log("All project titles:", response.data.map((p2) => p2.title || p2.name));
+      console.log("All project names:", response.data.map((p2) => p2.name));
+      console.log("All project company names:", response.data.map((p2) => p2.companyName));
       setProjects(Array.isArray(response.data) ? response.data : []);
     } catch (err2) {
       console.error("Error fetching projects:", err2);
-      setProjectsError(((_b2 = (_a2 = err2.response) == null ? void 0 : _a2.data) == null ? void 0 : _b2.error) || err2.message || "Failed to load projects");
+      setProjectsError(((_d = (_c = err2.response) == null ? void 0 : _c.data) == null ? void 0 : _d.error) || err2.message || "Failed to load projects");
       setProjects([]);
     } finally {
       setProjectsLoading(false);
@@ -45066,10 +45286,10 @@ const SubmissionsDashboard = () => {
     setLoading(true);
     try {
       const projectData = {
-        name: selectedProject.title || "",
+        name: selectedProject.name || selectedProject.companyName || selectedProject.title || "",
         email: selectedProject.email || "",
         phone: selectedProject.businessPhone || "",
-        companyName: selectedProject.companyName || "",
+        companyName: selectedProject.companyName || selectedProject.title || "",
         url: selectedProject.url || "",
         description: selectedProject.description || "",
         address: selectedProject.address1 || "",
@@ -45090,7 +45310,10 @@ const SubmissionsDashboard = () => {
   };
   const showDraggableBookmarkModal = (url, siteName, projectData, result) => {
     var _a2, _b2;
+    const existingModals = document.querySelectorAll('[data-opptym-modal="draggable-bookmark"]');
+    existingModals.forEach((modal2) => modal2.remove());
     const modal = document.createElement("div");
+    modal.setAttribute("data-opptym-modal", "draggable-bookmark");
     modal.style.cssText = `
       position: fixed;
       top: 0;
@@ -45180,6 +45403,11 @@ const SubmissionsDashboard = () => {
         modal.remove();
       }
     }, 5 * 60 * 1e3);
+    modal.addEventListener("click", (e2) => {
+      if (e2.target === modal) {
+        modal.remove();
+      }
+    });
   };
   const generateAutoFillScript = () => {
     if (!selectedProject)
@@ -45188,7 +45416,7 @@ const SubmissionsDashboard = () => {
 // Copy and paste this in browser console (F12)
 
 const projectData = {
-  name: "${selectedProject.title || ""}",
+  name: "${selectedProject.name || selectedProject.companyName || selectedProject.title || ""}",
   email: "${selectedProject.email || ""}",
   companyName: "${selectedProject.companyName || ""}",
   phone: "${selectedProject.businessPhone || ""}",
@@ -45236,6 +45464,43 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
       setTimeout(() => setCopied(false), 2e3);
     } catch (err2) {
       console.error("Failed to copy script:", err2);
+    }
+  };
+  const deleteBookmarklet = async () => {
+    var _a2, _b2;
+    try {
+      console.log("🗑️ Manual bookmarklet deletion triggered");
+      if (typeof window.chrome !== "undefined" && ((_a2 = window.chrome) == null ? void 0 : _a2.bookmarks)) {
+        try {
+          const bookmarks = await window.chrome.bookmarks.search({ title: "OPPTYM Auto-Fill" });
+          for (const bookmark of bookmarks) {
+            await window.chrome.bookmarks.remove(bookmark.id);
+            console.log("🗑️ Removed bookmark from Chrome:", bookmark.id);
+          }
+        } catch (e2) {
+          console.log("Chrome bookmark removal failed:", e2);
+        }
+      }
+      if (typeof window.browser !== "undefined" && ((_b2 = window.browser) == null ? void 0 : _b2.bookmarks)) {
+        try {
+          const bookmarks = await window.browser.bookmarks.search({ title: "OPPTYM Auto-Fill" });
+          for (const bookmark of bookmarks) {
+            await window.browser.bookmarks.remove(bookmark.id);
+            console.log("🗑️ Removed bookmark from Firefox:", bookmark.id);
+          }
+        } catch (e2) {
+          console.log("Firefox bookmark removal failed:", e2);
+        }
+      }
+      const bookmarkletElements = document.querySelectorAll('a[href*="OPPTYM Auto-Fill"]');
+      bookmarkletElements.forEach((element) => {
+        element.remove();
+        console.log("🗑️ Removed bookmarklet from DOM");
+      });
+      showPopup2("✅ Bookmarklet deleted successfully!", "success");
+    } catch (error) {
+      console.error("Failed to delete bookmarklet:", error);
+      showPopup2("❌ Failed to delete bookmarklet. Please remove manually from bookmarks bar.", "error");
     }
   };
   const getDifficultyColor = (difficulty) => {
@@ -45308,7 +45573,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 className: "flex-1 border border-primary-200 dark:border-primary-700 px-6 py-4 rounded-xl bg-white/50 dark:bg-primary-900/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium disabled:opacity-50 disabled:cursor-not-allowed text-primary-700 dark:text-primary-300",
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: projectsLoading ? "Loading projects..." : "-- Select your project --" }),
-                  projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: p2._id, children: p2.title }, p2._id))
+                  projects2.map((p2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: p2._id, children: p2.companyName || p2.title || p2.name || "Untitled Project" }, p2._id))
                 ]
               }
             ),
@@ -45366,17 +45631,30 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-900 text-green-400 p-6 rounded-xl text-sm font-mono overflow-x-auto border border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap", children: generateAutoFillScript() }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "button",
-            {
-              onClick: copyScript,
-              className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl",
-              children: [
-                copied ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "w-4 h-4 mr-2" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "w-4 h-4 mr-2" }),
-                copied ? "Copied!" : "Copy Script"
-              ]
-            }
-          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                onClick: copyScript,
+                className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl",
+                children: [
+                  copied ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "w-4 h-4 mr-2" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "w-4 h-4 mr-2" }),
+                  copied ? "Copied!" : "Copy Script"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                onClick: deleteBookmarklet,
+                className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-4 h-4 mr-2" }),
+                  "Delete Bookmarklet"
+                ]
+              }
+            )
+          ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-primary-400 bg-white/50 dark:bg-primary-900/50 px-3 py-2 rounded-lg", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "How to use:" }),
             " Open form page → Press ",
@@ -45418,19 +45696,33 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-col space-y-2 ml-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "button",
-              {
-                onClick: () => handleOneClickAutomation(site.url, site.name),
-                disabled: loading,
-                className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium shadow-glow",
-                title: "One-Click Full Automation",
-                children: [
-                  loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Loader, { className: "w-4 h-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-4 h-4 mr-2" }),
-                  loading ? "Automating..." : t3("automation.fillForm")
-                ]
-              }
-            ) })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col space-y-2 ml-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  onClick: () => handleOneClickAutomation(site.url, site.name),
+                  disabled: loading,
+                  className: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium shadow-glow",
+                  title: "One-Click Full Automation",
+                  children: [
+                    loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Loader, { className: "w-4 h-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-4 h-4 mr-2" }),
+                    loading ? "Automating..." : t3("automation.fillForm")
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  onClick: deleteBookmarklet,
+                  className: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 font-medium shadow-glow",
+                  title: "Delete Bookmarklet",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-3 h-3 mr-1" }),
+                    "Delete Bookmarklet"
+                  ]
+                }
+              )
+            ] })
           ] }) }, site.name)),
           sites.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center pt-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
@@ -48662,13 +48954,13 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `
-        fixed md:sticky top-0 left-0 z-50
+        fixed top-0 left-0 z-50
         h-screen
         transform transition-all duration-300 ease-in-out
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         ${isCollapsed ? "w-20" : "w-72"}
         bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
-        overflow-hidden
+        flex flex-col
       `, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
@@ -48718,12 +49010,19 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 dark:text-primary-400 leading-tight", children: "AI ENABLED INTELLIGENCE" })
           ] })
         ] }),
-        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: () => setIsCollapsed(true),
             className: "ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
+          }
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => setIsCollapsed(false),
+            className: "ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4" })
           }
         )
       ] }),
@@ -48738,7 +49037,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
           ] })
         ] })
       ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-semibold text-sm", children: getUserInitials2(user) }) }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-4 space-y-3 overflow-y-auto", children: allMenuItems.map((item, index2) => {
+      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-transparent", children: allMenuItems.map((item, index2) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -48800,106 +49099,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
 }
 const languages = [
   { code: "en", name: "English", nativeName: "English", flag: "🇺🇸" },
-  { code: "hi", name: "Hindi", nativeName: "हिंदी", flag: "🇮🇳" },
-  { code: "es", name: "Spanish", nativeName: "Español", flag: "🇪🇸" },
-  { code: "fr", name: "French", nativeName: "Français", flag: "🇫🇷" },
-  { code: "de", name: "German", nativeName: "Deutsch", flag: "🇩🇪" },
-  { code: "it", name: "Italian", nativeName: "Italiano", flag: "🇮🇹" },
-  { code: "pt", name: "Portuguese", nativeName: "Português", flag: "🇵🇹" },
-  { code: "ru", name: "Russian", nativeName: "Русский", flag: "🇷🇺" },
-  { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
-  { code: "ko", name: "Korean", nativeName: "한국어", flag: "🇰🇷" },
-  { code: "zh", name: "Chinese", nativeName: "中文", flag: "🇨🇳" },
-  { code: "ar", name: "Arabic", nativeName: "العربية", flag: "🇸🇦" },
-  { code: "tr", name: "Turkish", nativeName: "Türkçe", flag: "🇹🇷" },
-  { code: "nl", name: "Dutch", nativeName: "Nederlands", flag: "🇳🇱" },
-  { code: "pl", name: "Polish", nativeName: "Polski", flag: "🇵🇱" },
-  { code: "sv", name: "Swedish", nativeName: "Svenska", flag: "🇸🇪" },
-  { code: "da", name: "Danish", nativeName: "Dansk", flag: "🇩🇰" },
-  { code: "no", name: "Norwegian", nativeName: "Norsk", flag: "🇳🇴" },
-  { code: "fi", name: "Finnish", nativeName: "Suomi", flag: "🇫🇮" },
-  { code: "cs", name: "Czech", nativeName: "Čeština", flag: "🇨🇿" },
-  { code: "hu", name: "Hungarian", nativeName: "Magyar", flag: "🇭🇺" },
-  { code: "ro", name: "Romanian", nativeName: "Română", flag: "🇷🇴" },
-  { code: "bg", name: "Bulgarian", nativeName: "Български", flag: "🇧🇬" },
-  { code: "hr", name: "Croatian", nativeName: "Hrvatski", flag: "🇭🇷" },
-  { code: "sk", name: "Slovak", nativeName: "Slovenčina", flag: "🇸🇰" },
-  { code: "sl", name: "Slovenian", nativeName: "Slovenščina", flag: "🇸🇮" },
-  { code: "et", name: "Estonian", nativeName: "Eesti", flag: "🇪🇪" },
-  { code: "lv", name: "Latvian", nativeName: "Latviešu", flag: "🇱🇻" },
-  { code: "lt", name: "Lithuanian", nativeName: "Lietuvių", flag: "🇱🇹" },
-  { code: "mt", name: "Maltese", nativeName: "Malti", flag: "🇲🇹" },
-  { code: "el", name: "Greek", nativeName: "Ελληνικά", flag: "🇬🇷" },
-  { code: "he", name: "Hebrew", nativeName: "עברית", flag: "🇮🇱" },
-  { code: "th", name: "Thai", nativeName: "ไทย", flag: "🇹🇭" },
-  { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt", flag: "🇻🇳" },
-  { code: "id", name: "Indonesian", nativeName: "Bahasa Indonesia", flag: "🇮🇩" },
-  { code: "ms", name: "Malay", nativeName: "Bahasa Melayu", flag: "🇲🇾" },
-  { code: "tl", name: "Filipino", nativeName: "Filipino", flag: "🇵🇭" },
-  { code: "bn", name: "Bengali", nativeName: "বাংলা", flag: "🇧🇩" },
-  { code: "ta", name: "Tamil", nativeName: "தமிழ்", flag: "🇮🇳" },
-  { code: "te", name: "Telugu", nativeName: "తెలుగు", flag: "🇮🇳" },
-  { code: "ml", name: "Malayalam", nativeName: "മലയാളം", flag: "🇮🇳" },
-  { code: "kn", name: "Kannada", nativeName: "ಕನ್ನಡ", flag: "🇮🇳" },
-  { code: "gu", name: "Gujarati", nativeName: "ગુજરાતી", flag: "🇮🇳" },
-  { code: "pa", name: "Punjabi", nativeName: "ਪੰਜਾਬੀ", flag: "🇮🇳" },
-  { code: "mr", name: "Marathi", nativeName: "मराठी", flag: "🇮🇳" },
-  { code: "or", name: "Odia", nativeName: "ଓଡ଼ିଆ", flag: "🇮🇳" },
-  { code: "as", name: "Assamese", nativeName: "অসমীয়া", flag: "🇮🇳" },
-  { code: "ne", name: "Nepali", nativeName: "नेपाली", flag: "🇳🇵" },
-  { code: "si", name: "Sinhala", nativeName: "සිංහල", flag: "🇱🇰" },
-  { code: "my", name: "Burmese", nativeName: "မြန်မာ", flag: "🇲🇲" },
-  { code: "km", name: "Khmer", nativeName: "ខ្មែរ", flag: "🇰🇭" },
-  { code: "lo", name: "Lao", nativeName: "ລາວ", flag: "🇱🇦" },
-  { code: "mn", name: "Mongolian", nativeName: "Монгол", flag: "🇲🇳" },
-  { code: "ka", name: "Georgian", nativeName: "ქართული", flag: "🇬🇪" },
-  { code: "am", name: "Amharic", nativeName: "አማርኛ", flag: "🇪🇹" },
-  { code: "sw", name: "Swahili", nativeName: "Kiswahili", flag: "🇹🇿" },
-  { code: "yo", name: "Yoruba", nativeName: "Yorùbá", flag: "🇳🇬" },
-  { code: "ig", name: "Igbo", nativeName: "Igbo", flag: "🇳🇬" },
-  { code: "ha", name: "Hausa", nativeName: "Hausa", flag: "🇳🇬" },
-  { code: "zu", name: "Zulu", nativeName: "isiZulu", flag: "🇿🇦" },
-  { code: "af", name: "Afrikaans", nativeName: "Afrikaans", flag: "🇿🇦" },
-  { code: "xh", name: "Xhosa", nativeName: "isiXhosa", flag: "🇿🇦" },
-  { code: "st", name: "Sotho", nativeName: "Sesotho", flag: "🇿🇦" },
-  { code: "tn", name: "Tswana", nativeName: "Setswana", flag: "🇿🇦" },
-  { code: "ss", name: "Swati", nativeName: "siSwati", flag: "🇸🇿" },
-  { code: "ve", name: "Venda", nativeName: "Tshivenda", flag: "🇿🇦" },
-  { code: "ts", name: "Tsonga", nativeName: "Xitsonga", flag: "🇿🇦" },
-  { code: "nd", name: "Ndebele", nativeName: "isiNdebele", flag: "🇿🇦" },
-  { code: "sn", name: "Shona", nativeName: "chiShona", flag: "🇿🇼" },
-  { code: "rw", name: "Kinyarwanda", nativeName: "Ikinyarwanda", flag: "🇷🇼" },
-  { code: "lg", name: "Ganda", nativeName: "Luganda", flag: "🇺🇬" },
-  { code: "ak", name: "Akan", nativeName: "Akan", flag: "🇬🇭" },
-  { code: "tw", name: "Twi", nativeName: "Twi", flag: "🇬🇭" },
-  { code: "ee", name: "Ewe", nativeName: "Eʋegbe", flag: "🇹🇬" },
-  { code: "fon", name: "Fon", nativeName: "Fɔngbè", flag: "🇧🇯" },
-  { code: "dyo", name: "Jola", nativeName: "Joola", flag: "🇸🇳" },
-  { code: "wo", name: "Wolof", nativeName: "Wolof", flag: "🇸🇳" },
-  { code: "ff", name: "Fula", nativeName: "Fulfulde", flag: "🇨🇲" },
-  { code: "bm", name: "Bambara", nativeName: "Bamanankan", flag: "🇲🇱" },
-  { code: "sg", name: "Sango", nativeName: "Sängö", flag: "🇨🇫" },
-  { code: "ln", name: "Lingala", nativeName: "Lingála", flag: "🇨🇬" },
-  { code: "kg", name: "Kongo", nativeName: "Kikongo", flag: "🇨🇬" },
-  { code: "lu", name: "Luba", nativeName: "Tshiluba", flag: "🇨🇩" },
-  { code: "rn", name: "Kirundi", nativeName: "Ikirundi", flag: "🇧🇮" },
-  { code: "so", name: "Somali", nativeName: "Soomaali", flag: "🇸🇴" },
-  { code: "om", name: "Oromo", nativeName: "Afaan Oromoo", flag: "🇪🇹" },
-  { code: "ti", name: "Tigrinya", nativeName: "ትግርኛ", flag: "🇪🇷" },
-  { code: "fa", name: "Persian", nativeName: "فارسی", flag: "🇮🇷" },
-  { code: "ur", name: "Urdu", nativeName: "اردو", flag: "🇵🇰" },
-  { code: "ps", name: "Pashto", nativeName: "پښتو", flag: "🇦🇫" },
-  { code: "sd", name: "Sindhi", nativeName: "سنڌي", flag: "🇵🇰" },
-  { code: "ku", name: "Kurdish", nativeName: "کوردی", flag: "🇮🇶" },
-  { code: "az", name: "Azerbaijani", nativeName: "Azərbaycan", flag: "🇦🇿" },
-  { code: "kk", name: "Kazakh", nativeName: "Қазақ", flag: "🇰🇿" },
-  { code: "ky", name: "Kyrgyz", nativeName: "Кыргыз", flag: "🇰🇬" },
-  { code: "uz", name: "Uzbek", nativeName: "O'zbek", flag: "🇺🇿" },
-  { code: "tk", name: "Turkmen", nativeName: "Türkmen", flag: "🇹🇲" },
-  { code: "tg", name: "Tajik", nativeName: "Тоҷикӣ", flag: "🇹🇯" },
-  { code: "bo", name: "Tibetan", nativeName: "བོད་ཡིག", flag: "🇨🇳" },
-  { code: "ug", name: "Uyghur", nativeName: "ئۇيغۇر", flag: "🇨🇳" },
-  { code: "dz", name: "Dzongkha", nativeName: "རྫོང་ཁ", flag: "🇧🇹" }
+  { code: "hi", name: "Hindi", nativeName: "हिंदी", flag: "🇮🇳" }
 ];
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -48959,10 +49159,18 @@ const ThemeToggle = () => {
   const [theme, setTheme] = reactExports.useState("light");
   const [isOpen, setIsOpen] = reactExports.useState(false);
   reactExports.useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
+    const savedTheme = localStorage.getItem("theme") || "system";
     setTheme(savedTheme);
     applyTheme(savedTheme);
-  }, []);
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (theme === "system") {
+        applyTheme("system");
+      }
+    };
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme]);
   const applyTheme = (newTheme) => {
     const root = document.documentElement;
     if (newTheme === "dark" || newTheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -49217,6 +49425,131 @@ function Navbar({ activeTab, setActiveTab }) {
     ] })
   ] }) }) });
 }
+const TrialExpirationModal = ({ isOpen, onClose, onUpgrade }) => {
+  useAuth();
+  const [showModal, setShowModal] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    if (isOpen) {
+      setShowModal(true);
+    }
+  }, [isOpen]);
+  const handleClose = () => {
+    setShowModal(false);
+    setTimeout(() => onClose(), 300);
+  };
+  const plans2 = [
+    {
+      name: "Starter",
+      price: "$9.99",
+      period: "month",
+      features: ["100 Submissions/month", "10 Projects", "Priority Support", "Advanced Analytics"],
+      popular: false,
+      color: "from-blue-500 to-blue-600"
+    },
+    {
+      name: "Pro",
+      price: "$39.99",
+      period: "month",
+      features: ["500 Submissions/month", "25 Projects", "24/7 Support", "White-label Reports"],
+      popular: true,
+      color: "from-purple-500 to-purple-600"
+    },
+    {
+      name: "Business",
+      price: "$89.99",
+      period: "month",
+      features: ["1000 Submissions/month", "50 Projects", "Dedicated Support", "API Access"],
+      popular: false,
+      color: "from-green-500 to-green-600"
+    }
+  ];
+  if (!showModal)
+    return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        className: "absolute inset-0 bg-black/60 backdrop-blur-sm",
+        onClick: handleClose
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative bg-white dark:bg-primary-900 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fade-in-up", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-b border-primary-200 dark:border-primary-700", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-warning-500 to-warning-600 rounded-2xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-6 h-6 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200", children: "Free Trial Expired" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400", children: "Upgrade to continue using Opptym features" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: handleClose,
+            className: "p-2 text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { className: "w-6 h-6" })
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-8", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 bg-gradient-to-r from-warning-500 to-warning-600 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Star, { className: "w-10 h-10 text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200 mb-2", children: "Your 3-day free trial has ended" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400 max-w-2xl mx-auto", children: "You've experienced the power of Opptym's AI-powered SEO automation. Choose a plan that fits your needs and continue growing your online presence." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6 mb-8", children: plans2.map((plan, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: `relative p-6 rounded-2xl border-2 transition-all duration-300 ${plan.popular ? "border-accent-500 bg-accent-50 dark:bg-accent-900/30" : "border-primary-200 dark:border-primary-700 hover:border-accent-300 dark:hover:border-accent-600"}`,
+            children: [
+              plan.popular && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-3 left-1/2 transform -translate-x-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm font-bold px-4 py-1 rounded-full", children: "MOST POPULAR" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-6", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-xl font-bold text-primary-800 dark:text-primary-200 mb-2", children: plan.name }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline justify-center space-x-1", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-3xl font-bold text-primary-800 dark:text-primary-200", children: plan.price }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-primary-600 dark:text-primary-400", children: [
+                    "/",
+                    plan.period
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-3 mb-6", children: plan.features.map((feature, featureIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center space-x-3 text-sm text-primary-600 dark:text-primary-400", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-500 flex-shrink-0" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: feature })
+              ] }, featureIndex)) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: onUpgrade,
+                  className: `w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${plan.popular ? "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-glow hover:shadow-glow-lg" : `bg-gradient-to-r ${plan.color} text-white hover:shadow-lg transform hover:scale-105`}`,
+                  children: plan.popular ? "Get Started" : "Choose Plan"
+                }
+              )
+            ]
+          },
+          plan.name
+        )) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center border-t border-primary-200 dark:border-primary-700 pt-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-500 dark:text-primary-400 mb-4", children: "All plans include a 30-day money-back guarantee" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-6 text-sm", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-4 h-4 text-accent-500" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-600 dark:text-primary-400", children: "Instant Access" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-500" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-600 dark:text-primary-400", children: "Cancel Anytime" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-4 h-4 text-warning-500" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-primary-600 dark:text-primary-400", children: "Premium Support" })
+            ] })
+          ] })
+        ] })
+      ] })
+    ] })
+  ] });
+};
 function App() {
   const authProvider = useAuthProvider();
   const [authMode, setAuthMode] = reactExports.useState("landing");
@@ -49235,6 +49568,7 @@ function App() {
   const [selectedProject, setSelectedProject] = reactExports.useState(null);
   const [showProjectReport, setShowProjectReport] = reactExports.useState(false);
   const [reportLoading, setReportLoading] = reactExports.useState(false);
+  const [showTrialExpirationModal, setShowTrialExpirationModal] = reactExports.useState(false);
   const updateActiveTab = (tab) => {
     setActiveTab(tab);
     localStorage.setItem("activeTab", tab);
@@ -49256,6 +49590,25 @@ function App() {
       window.location.hash = activeTab;
     }
   }, [activeTab]);
+  reactExports.useEffect(() => {
+    if (authProvider.user && authProvider.user.subscription === "free") {
+      const checkTrialExpiration = () => {
+        var _a2;
+        const trialEndDate = (_a2 = authProvider.user) == null ? void 0 : _a2.trialEndDate;
+        if (trialEndDate && /* @__PURE__ */ new Date() > new Date(trialEndDate)) {
+          setShowTrialExpirationModal(true);
+        }
+      };
+      checkTrialExpiration();
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          checkTrialExpiration();
+        }
+      };
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
+  }, [authProvider.user]);
   reactExports.useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -49317,18 +49670,31 @@ function App() {
     }
   }, [activeTab]);
   if (!authProvider.user || !authProvider.user.id) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value: authProvider, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float", style: { animationDelay: "2s" } }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float", style: { animationDelay: "4s" } })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(AuthContext.Provider, { value: authProvider, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float", style: { animationDelay: "2s" } }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float", style: { animationDelay: "4s" } })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
+          authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
+          authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
+          authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
+        ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10", children: [
-        authMode === "landing" && /* @__PURE__ */ jsxRuntimeExports.jsx(LandingPage, { onLoginClick: () => setAuthMode("login"), onRegisterClick: () => setAuthMode("register") }),
-        authMode === "login" && /* @__PURE__ */ jsxRuntimeExports.jsx(Login, { onSwitchToRegister: () => setAuthMode("register") }),
-        authMode === "register" && /* @__PURE__ */ jsxRuntimeExports.jsx(Register, { onSwitchToLogin: () => setAuthMode("login") })
-      ] })
-    ] }) });
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TrialExpirationModal,
+        {
+          isOpen: showTrialExpirationModal,
+          onClose: () => setShowTrialExpirationModal(false),
+          onUpgrade: () => {
+            setShowTrialExpirationModal(false);
+            updateActiveTab("pricing");
+          }
+        }
+      )
+    ] });
   }
   const handleViewProjectReport = async (project) => {
     setReportLoading(true);
