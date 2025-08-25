@@ -173,14 +173,15 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
 
       {/* Sidebar */}
       <div className={`
-        relative z-50
+        absolute md:relative z-50
         h-full
-        transform transition-all duration-300 ease-in-out
+        transition-all duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${isCollapsed ? 'w-20' : 'w-72'}
         bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
         flex flex-col
         flex-shrink-0
+        md:translate-x-0
       `}>
         
         {/* Header */}
