@@ -463,7 +463,7 @@ function App() {
             isCollapsed={sidebarCollapsed}
             setIsCollapsed={setSidebarCollapsed}
           />
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <div className="flex-1 flex flex-col min-w-0">
             <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
             <main className="flex-1 p-6 overflow-auto">
               {renderContent()}
