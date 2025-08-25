@@ -52,8 +52,16 @@ export class UniversalFormService {
 
   // Create universal form filling bookmarklet
   createUniversalBookmarklet(): string {
+    // Generate unique token for this bookmarklet instance
+    const uniqueToken = this.generateUniqueToken();
+    const timestamp = Date.now();
+    
     const script = `
       (function() {
+        // Unique bookmarklet token - prevents copying
+        const BOOKMARKLET_TOKEN = '${uniqueToken}';
+        const BOOKMARKLET_TIMESTAMP = ${timestamp};
+        
         // Check if user is authenticated and has valid subscription
         const checkAuth = async () => {
           try {
@@ -63,8 +71,8 @@ export class UniversalFormService {
               return false;
             }
             
-            // Verify token and check usage limits
-                         const response = await fetch('https://api.opptym.com/api/subscription/verify-usage', {
+            // Verify token and check usage limits with unique bookmarklet token
+            const response = await fetch('https://api.opptym.com/api/subscription/verify-usage', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +80,9 @@ export class UniversalFormService {
               },
               body: JSON.stringify({
                 action: 'bookmarklet_usage',
-                timestamp: Date.now()
+                bookmarkletToken: BOOKMARKLET_TOKEN,
+                timestamp: BOOKMARKLET_TIMESTAMP,
+                currentUrl: window.location.href
               })
             });
             
@@ -244,6 +254,14 @@ export class UniversalFormService {
     `;
     
     return `javascript:${encodeURIComponent(script)}`;
+  }
+
+  // Generate unique token for bookmarklet
+  private generateUniqueToken(): string {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    const userId = localStorage.getItem('userId') || 'anonymous';
+    return `${userId}_${timestamp}_${random}`;
   }
 
   // Smart bookmarklet installation with user-friendly workflow

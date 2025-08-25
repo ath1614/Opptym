@@ -12,7 +12,18 @@ const ThemeToggle: React.FC = () => {
     const savedTheme = localStorage.getItem('theme') as Theme || 'system';
     setTheme(savedTheme);
     applyTheme(savedTheme);
-  }, []);
+    
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (theme === 'system') {
+        applyTheme('system');
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
 
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;

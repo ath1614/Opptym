@@ -22,6 +22,9 @@ interface User {
   isAdmin?: boolean;
   isOwner?: boolean;
   isEmployee?: boolean;
+  trialEndDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface AuthContextType {

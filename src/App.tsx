@@ -14,6 +14,7 @@ import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
+import TrialExpirationModal from './components/TrialExpirationModal';
 
 import { BookOpen, Settings, Shield, Sparkles } from 'lucide-react';
 import { showPopup } from './utils/popup';
@@ -68,6 +69,9 @@ function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showProjectReport, setShowProjectReport] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
+  
+  // Trial expiration modal state
+  const [showTrialExpirationModal, setShowTrialExpirationModal] = useState(false);
 
   // Update localStorage and URL hash when activeTab changes
   const updateActiveTab = (tab: string) => {
@@ -96,6 +100,32 @@ function App() {
       window.location.hash = activeTab;
     }
   }, [activeTab]);
+
+  // Check trial expiration
+  useEffect(() => {
+    if (authProvider.user && authProvider.user.subscription === 'free') {
+      // Check if trial has expired
+      const checkTrialExpiration = () => {
+        const trialEndDate = authProvider.user?.trialEndDate;
+        if (trialEndDate && new Date() > new Date(trialEndDate)) {
+          // Show trial expiration modal
+          setShowTrialExpirationModal(true);
+        }
+      };
+      
+      checkTrialExpiration();
+      
+      // Check every time user navigates
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          checkTrialExpiration();
+        }
+      };
+      
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }
+  }, [authProvider.user]);
 
   // Clear invalid tokens on app startup
   useEffect(() => {
@@ -196,6 +226,16 @@ function App() {
             {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
           </div>
         </div>
+        
+        {/* Trial Expiration Modal */}
+        <TrialExpirationModal
+          isOpen={showTrialExpirationModal}
+          onClose={() => setShowTrialExpirationModal(false)}
+          onUpgrade={() => {
+            setShowTrialExpirationModal(false);
+            updateActiveTab('pricing');
+          }}
+        />
       </AuthContext.Provider>
     );
   }

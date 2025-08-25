@@ -95,7 +95,7 @@ exports.trackUsage = async (req, res) => {
 exports.verifyBookmarkletUsage = async (req, res) => {
   try {
     const userId = req.userId;
-    const { action, timestamp } = req.body;
+    const { action, bookmarkletToken, timestamp, currentUrl } = req.body;
     
     const user = await User.findById(userId);
     if (!user) {
@@ -105,23 +105,61 @@ exports.verifyBookmarkletUsage = async (req, res) => {
       });
     }
 
-    // Check if subscription is active
-    if (user.subscriptionStatus !== 'active') {
+    // Check if user is in trial period
+    const isInTrial = user.subscription === 'free' && user.trialEndDate && new Date() < new Date(user.trialEndDate);
+    const trialDaysLeft = isInTrial ? Math.ceil((new Date(user.trialEndDate) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+
+    // Check if trial has expired
+    if (user.subscription === 'free' && user.trialEndDate && new Date() > new Date(user.trialEndDate)) {
       return res.status(403).json({ 
         success: false, 
-        message: 'Subscription is not active. Please renew your subscription.' 
+        message: 'Free trial has expired. Please upgrade to continue using Opptym features.' 
       });
     }
 
-    // Check bookmarklet usage limits
+    // Check bookmarklet usage limits based on subscription
+    let limit;
+    if (user.subscription === 'free') {
+      limit = 3; // Free trial users get 3 uses
+    } else if (user.subscription === 'starter') {
+      limit = 20;
+    } else if (user.subscription === 'pro') {
+      limit = 100;
+    } else if (user.subscription === 'business') {
+      limit = 500;
+    } else {
+      limit = 3; // Default for free users
+    }
+
     const currentUsage = user.currentUsage?.bookmarkletUsage || 0;
-    const limit = user.subscriptionLimits?.bookmarkletUsage || 50; // Default limit
 
     if (currentUsage >= limit) {
+      const message = user.subscription === 'free' 
+        ? `Free trial limit reached (${currentUsage}/${limit} uses). Please upgrade to continue.`
+        : `Bookmarklet usage limit exceeded. You've used ${currentUsage}/${limit} times this month.`;
+      
       return res.status(429).json({ 
         success: false, 
-        message: `Bookmarklet usage limit exceeded. You've used ${currentUsage}/${limit} times this month.` 
+        message: message,
+        requiresUpgrade: true
       });
+    }
+
+    // Track unique bookmarklet token to prevent copying
+    if (!user.bookmarkletTokens) user.bookmarkletTokens = [];
+    
+    // Check if this token was already used
+    if (user.bookmarkletTokens.includes(bookmarkletToken)) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'This bookmarklet has already been used. Please create a new one.' 
+      });
+    }
+
+    // Add token to used list (keep only last 100 tokens)
+    user.bookmarkletTokens.push(bookmarkletToken);
+    if (user.bookmarkletTokens.length > 100) {
+      user.bookmarkletTokens = user.bookmarkletTokens.slice(-100);
     }
 
     // Increment bookmarklet usage
@@ -130,7 +168,7 @@ exports.verifyBookmarkletUsage = async (req, res) => {
     await user.save();
 
     // Log the usage
-    console.log(`📊 Bookmarklet usage tracked for user ${userId}: ${user.currentUsage.bookmarkletUsage}/${limit}`);
+    console.log(`📊 Bookmarklet usage tracked for user ${userId}: ${user.currentUsage.bookmarkletUsage}/${limit} (Token: ${bookmarkletToken})`);
 
     res.json({
       success: true,
@@ -139,7 +177,12 @@ exports.verifyBookmarkletUsage = async (req, res) => {
         current: user.currentUsage.bookmarkletUsage,
         limit: limit,
         remaining: limit - user.currentUsage.bookmarkletUsage
-      }
+      },
+      trialInfo: isInTrial ? {
+        isInTrial: true,
+        daysLeft: trialDaysLeft,
+        trialEndDate: user.trialEndDate
+      } : null
     });
 
   } catch (error) {
