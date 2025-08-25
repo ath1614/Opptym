@@ -10,12 +10,12 @@ export default defineConfig({
     },
   },
   build: {
-    // Force cache busting
+    // Force cache busting with git commit hash
     rollupOptions: {
       output: {
-        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: `assets/[name]-[hash].js`,
+        assetFileNames: `assets/[name]-[hash].[ext]`
       }
     },
     // Add cache busting headers
@@ -27,5 +27,6 @@ export default defineConfig({
   // Force cache busting for development
   define: {
     __BUILD_TIME__: JSON.stringify(Date.now()),
+    __BUILD_VERSION__: JSON.stringify(`v1.0.1-${Date.now()}`),
   },
 })

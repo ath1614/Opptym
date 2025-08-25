@@ -14258,6 +14258,9 @@ const createLucideIcon = (iconName, iconNode) => {
   return Component;
 };
 var createLucideIcon$1 = createLucideIcon;
+const Activity = createLucideIcon$1("Activity", [
+  ["path", { d: "M22 12h-4l-3 9L9 3l-3 9H2", key: "d5dnw9" }]
+]);
 const AlertCircle = createLucideIcon$1("AlertCircle", [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
@@ -15651,52 +15654,48 @@ function Dashboard() {
           limits
         });
       }
+      const successfulSubmissions = submissions2.filter((s2) => s2.status === "success" || s2.status === "completed");
+      const pendingSubmissions = submissions2.filter((s2) => s2.status === "pending" || s2.status === "processing");
+      const failedSubmissions = submissions2.filter((s2) => s2.status === "failed" || s2.status === "error");
       const calculatedStats = {
         totalProjects: projects2.length,
         totalSubmissions: submissions2.length,
-        successRate: submissions2.length > 0 ? Math.round(submissions2.filter((s2) => s2.status === "success").length / submissions2.length * 100) : 0,
-        averageRanking: Math.round(Math.random() * 50) + 10,
-        backlinksGained: Math.round(Math.random() * 100) + 50,
-        directoriesSubmitted: Math.round(Math.random() * 500) + 200
+        successRate: submissions2.length > 0 ? Math.round(successfulSubmissions.length / submissions2.length * 100) : 0,
+        averageRanking: successfulSubmissions.length > 0 ? Math.round(successfulSubmissions.reduce((acc, s2) => acc + (s2.ranking || 0), 0) / successfulSubmissions.length) : 0,
+        backlinksGained: successfulSubmissions.length,
+        directoriesSubmitted: submissions2.length
       };
       setStats(calculatedStats);
-      setRecentActivity([
-        {
-          id: 1,
+      const realActivity = [];
+      submissions2.slice(0, 3).forEach((submission, index2) => {
+        const timeAgo = submission.createdAt ? new Date(submission.createdAt).toLocaleDateString() : `${index2 + 1} day${index2 > 0 ? "s" : ""} ago`;
+        realActivity.push({
+          id: `submission-${submission._id || index2}`,
           type: "submission",
-          message: "Successfully submitted to TechDirectory",
-          time: "2 minutes ago",
-          status: "success"
-        },
-        {
-          id: 2,
+          message: `Submission to ${submission.directoryName || "Directory"} ${submission.status === "success" ? "completed" : submission.status === "failed" ? "failed" : "is processing"}`,
+          time: timeAgo,
+          status: submission.status === "success" ? "success" : submission.status === "failed" ? "error" : "pending"
+        });
+      });
+      projects2.slice(0, 2).forEach((project, index2) => {
+        realActivity.push({
+          id: `project-${project._id || index2}`,
           type: "project",
-          message: "Created new project: E-commerce Store",
-          time: "1 hour ago",
+          message: `Project: ${project.title || project.companyName || "Untitled Project"}`,
+          time: project.createdAt ? new Date(project.createdAt).toLocaleDateString() : `${index2 + 1} day${index2 > 0 ? "s" : ""} ago`,
           status: "success"
-        },
-        {
-          id: 3,
-          type: "submission",
-          message: "Submission to LocalBusiness failed",
-          time: "3 hours ago",
-          status: "error"
-        },
-        {
-          id: 4,
-          type: "tool",
-          message: "SEO Analysis completed for TechBlog",
-          time: "5 hours ago",
+        });
+      });
+      if (realActivity.length === 0) {
+        realActivity.push({
+          id: "welcome",
+          type: "project",
+          message: "Welcome to Opptym! Create your first project to get started.",
+          time: "Just now",
           status: "success"
-        },
-        {
-          id: 5,
-          type: "subscription",
-          message: "Upgraded to Pro plan",
-          time: "1 day ago",
-          status: "success"
-        }
-      ]);
+        });
+      }
+      setRecentActivity(realActivity);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -15892,70 +15891,45 @@ function Dashboard() {
         ] })
       ] }) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-6 h-6" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200", children: "Available Plans" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Choose the perfect plan for your needs" })
-        ] })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
-        {
-          name: "Free",
-          price: "$0",
-          period: "forever",
-          features: ["1 Project", "10 Submissions/month", "Basic Analytics", "Email Support"],
-          current: (subscription == null ? void 0 : subscription.plan) === "free",
-          popular: false,
-          color: "from-gray-500 to-gray-600"
-        },
-        {
-          name: "Starter",
-          price: "$9.99",
-          period: "month",
-          features: ["1 Project", "100 Submissions/month", "Advanced Analytics", "Priority Support"],
-          current: (subscription == null ? void 0 : subscription.plan) === "starter",
-          popular: true,
-          color: "from-blue-500 to-blue-600"
-        },
-        {
-          name: "Pro",
-          price: "$39.99",
-          period: "month",
-          features: ["5 Projects", "500 Submissions/month", "All Analytics", "24/7 Support"],
-          current: (subscription == null ? void 0 : subscription.plan) === "pro",
-          popular: false,
-          color: "from-purple-500 to-purple-600"
-        },
-        {
-          name: "Business",
-          price: "$89.99",
-          period: "month",
-          features: ["Unlimited Projects", "Unlimited Submissions", "White-label Reports", "Dedicated Support"],
-          current: (subscription == null ? void 0 : subscription.plan) === "business",
-          popular: false,
-          color: "from-green-500 to-green-600"
-        }
-      ].map((plan, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative p-4 rounded-2xl border-2 transition-all duration-300 ${plan.current ? "border-accent-500 bg-accent-50 dark:bg-accent-900/30" : "border-primary-200 dark:border-primary-700 hover:border-accent-300 dark:hover:border-accent-600"}`, children: [
-        plan.popular && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-2 left-1/2 transform -translate-x-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bg-gradient-to-r from-yellow-500 to-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full", children: "POPULAR" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-bold text-primary-800 dark:text-primary-200", children: plan.name }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline justify-center space-x-1 mt-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200", children: plan.price }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-primary-600 dark:text-primary-400", children: [
-              "/",
-              plan.period
-            ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-accent-50 to-primary-50 dark:from-accent-900/30 dark:to-primary-900/30 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700/30 p-8 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4 mb-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-6 h-6" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200", children: "Upgrade Your Plan" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-primary-600 dark:text-primary-400", children: "Unlock unlimited submissions, advanced analytics, and priority support" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-2 mb-4", children: plan.features.map((feature, featureIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center space-x-2 text-sm text-primary-600 dark:text-primary-400", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-500 flex-shrink-0" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: feature })
-        ] }, featureIndex)) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: `w-full py-2 px-4 rounded-xl font-medium transition-all duration-300 ${plan.current ? "bg-accent-500 text-white cursor-default" : `bg-gradient-to-r ${plan.color} text-white hover:shadow-lg transform hover:scale-105`}`, children: plan.current ? "Current Plan" : "Upgrade" })
-      ] }, index2)) })
-    ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4 mb-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-600 dark:text-success-400" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-700 dark:text-primary-300", children: "Unlimited Submissions" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-600 dark:text-success-400" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-700 dark:text-primary-300", children: "Advanced Analytics" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-success-100 dark:bg-success-900/50 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-4 h-4 text-success-600 dark:text-success-400" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-primary-700 dark:text-primary-300", children: "Priority Support" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center space-y-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-3xl font-bold text-primary-800 dark:text-primary-200", children: (subscription == null ? void 0 : subscription.plan) === "free" ? "Free" : (subscription == null ? void 0 : subscription.plan) === "starter" ? "Starter" : (subscription == null ? void 0 : subscription.plan) === "pro" ? "Pro" : "Business" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-primary-600 dark:text-primary-400", children: "Current Plan" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => window.location.hash = "pricing",
+            className: "bg-gradient-to-r from-accent-500 to-accent-600 text-white px-8 py-3 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105",
+            children: "View All Plans"
+          }
+        )
+      ] })
+    ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.7s" }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
@@ -15978,13 +15952,14 @@ function Dashboard() {
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-primary-800 dark:text-primary-200 mb-4", children: "Quick Actions" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: [
-            { label: "Create New Project", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4" }), color: "from-blue-500 to-blue-600" },
-            { label: "Start Submission", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-4 h-4" }), color: "from-green-500 to-green-600" },
-            { label: "Run SEO Analysis", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(BarChart3, { className: "w-4 h-4" }), color: "from-purple-500 to-purple-600" },
-            { label: "View Reports", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-4 h-4" }), color: "from-orange-500 to-orange-600" }
+            { label: "Create New Project", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4" }), color: "from-blue-500 to-blue-600", action: () => window.location.hash = "projects" },
+            { label: "Start Submission", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-4 h-4" }), color: "from-green-500 to-green-600", action: () => window.location.hash = "directory" },
+            { label: "Run SEO Analysis", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(BarChart3, { className: "w-4 h-4" }), color: "from-purple-500 to-purple-600", action: () => window.location.hash = "tools" },
+            { label: "View Reports", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-4 h-4" }), color: "from-orange-500 to-orange-600", action: () => window.location.hash = "reports" }
           ].map((action, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "button",
             {
+              onClick: action.action,
               className: "w-full flex items-center space-x-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/50 hover:bg-primary-100 dark:hover:bg-primary-900 transition-all duration-200 group",
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-8 h-8 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all duration-300`, children: action.icon }),
@@ -21253,14 +21228,14 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-9ed031f0-1756101814536.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-8aa68634.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
     });
   }
   function i2() {
-    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e-1756101814536.js"), true ? [] : void 0)).catch(function(t3) {
+    return (n.DOMPurify ? Promise.resolve(n.DOMPurify) : __vitePreload(() => import("./purify.es-50f67d1e.js"), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load dompurify: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -24765,7 +24740,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-f4ea095b-1756101814536.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-8f172b78.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -48930,6 +48905,13 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
       icon: User,
       color: "from-indigo-500 to-indigo-600",
       description: "Account Settings"
+    },
+    {
+      id: "test",
+      label: "Test Changes",
+      icon: Activity,
+      color: "from-purple-500 to-purple-600",
+      description: "Test Component"
     }
   ];
   const adminMenuItems = (user == null ? void 0 : user.isAdmin) ? [
@@ -48954,13 +48936,14 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `
-        fixed top-0 left-0 z-50
-        h-screen
+        relative z-50
+        h-full
         transform transition-all duration-300 ease-in-out
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         ${isCollapsed ? "w-20" : "w-72"}
         bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
         flex flex-col
+        flex-shrink-0
       `, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
@@ -49550,6 +49533,45 @@ const TrialExpirationModal = ({ isOpen, onClose, onUpgrade }) => {
     ] })
   ] });
 };
+const TestChanges = () => {
+  const { user } = useAuth();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 bg-white dark:bg-primary-900 rounded-xl shadow-glass", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-primary-800 dark:text-primary-200 mb-4", children: "Test Changes Component" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-primary-50 dark:bg-primary-800 rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-primary-700 dark:text-primary-300 mb-2", children: "User Information" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-primary-600 dark:text-primary-400", children: [
+          "Email: ",
+          (user == null ? void 0 : user.email) || "Not logged in"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-primary-600 dark:text-primary-400", children: [
+          "Subscription: ",
+          (user == null ? void 0 : user.subscription) || "Free"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-primary-600 dark:text-primary-400", children: [
+          "Trial End Date: ",
+          (user == null ? void 0 : user.trialEndDate) || "No trial"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-accent-50 dark:bg-accent-900/30 rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-accent-700 dark:text-accent-300 mb-2", children: "Dark Mode Test" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-accent-600 dark:text-accent-400", children: "This text should be visible in both light and dark modes" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-success-50 dark:bg-success-900/30 rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-success-700 dark:text-success-300 mb-2", children: "Success Colors" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-success-600 dark:text-success-400", children: "Success message styling test" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-warning-50 dark:bg-warning-900/30 rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-warning-700 dark:text-warning-300 mb-2", children: "Warning Colors" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-warning-600 dark:text-warning-400", children: "Warning message styling test" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-error-50 dark:bg-error-900/30 rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-error-700 dark:text-error-300 mb-2", children: "Error Colors" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-error-600 dark:text-error-400", children: "Error message styling test" })
+      ] })
+    ] })
+  ] });
+};
 function App() {
   const authProvider = useAuthProvider();
   const [authMode, setAuthMode] = reactExports.useState("landing");
@@ -49826,17 +49848,19 @@ function App() {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(ProfileSettings, {});
       case "admin":
         return isAdmin ? /* @__PURE__ */ jsxRuntimeExports.jsx(AdminPanel, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Access Denied" });
+      case "test":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(TestChanges, {});
       default:
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {});
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value: authProvider, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value: authProvider, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float", style: { animationDelay: "4s" } })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-900 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-700 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "2s" } }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float", style: { animationDelay: "4s" } })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 flex h-screen", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar,
         {
@@ -49846,11 +49870,11 @@ function App() {
           setIsCollapsed: setSidebarCollapsed
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 flex flex-col min-w-0", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { activeTab, setActiveTab: updateActiveTab }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "p-6", children: renderContent() })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 p-6 overflow-auto", children: renderContent() })
       ] })
-    ] }) })
+    ] })
   ] }) });
 }
 const index = "";
