@@ -19,7 +19,8 @@ import {
   FileText,
   Users,
   Globe,
-  Zap
+  Zap,
+  AlertCircle
 } from 'lucide-react';
 
 type Project = {
@@ -32,6 +33,10 @@ const BrokenLinkTool = () => {
   const [selectedProjectId, setSelectedProjectId] = useState('');
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [scanComplete, setScanComplete] = useState(false);
+  const [totalLinks, setTotalLinks] = useState(0);
+  const [brokenLinks, setBrokenLinks] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -52,10 +57,19 @@ const BrokenLinkTool = () => {
     }
 
     setLoading(true);
+    setError(null);
+    setScanComplete(false);
+    setBrokenLinks([]);
+    setTotalLinks(0);
+
     try {
       const res = await runBrokenLinkChecker(selectedProjectId);
       setReport(res);
+      setTotalLinks(res.totalLinks || 0);
+      setBrokenLinks(res.brokenLinks || []);
+      setScanComplete(true);
     } catch (err) {
+      setError('Analyzer failed to run. Please try again.');
       console.error('Analyzer failed:', err);
     } finally {
       setLoading(false);
@@ -381,17 +395,17 @@ const BrokenLinkTool = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Enhanced Broken Link Scanner</h3>
-        <p className="text-gray-600 mb-6">Advanced broken link analysis with malware detection, classification, and priority-based recommendations.</p>
+      <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Enhanced Broken Link Scanner</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Advanced broken link analysis with malware detection, classification, and priority-based recommendations.</p>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Project</label>
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-primary-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
             >
               <option value="">Choose a project to analyze</option>
               {projects.map((project) => (
@@ -407,8 +421,8 @@ const BrokenLinkTool = () => {
             disabled={loading || !selectedProjectId}
             className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
               loading || !selectedProjectId
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-700'
+                : 'bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-800'
             }`}
           >
             {loading ? (
@@ -442,19 +456,19 @@ const BrokenLinkTool = () => {
 
           {/* Category Breakdown */}
           {report.categories && Object.keys(report.categories).length > 0 && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Broken Links by Category</h4>
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Broken Links by Category</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(report.categories).map(([category, links]: [string, any]) => (
                   <div key={category} className={`p-4 rounded-lg border ${getCategoryColor(category)}`}>
                     <div className="flex items-center space-x-3 mb-2">
                       {getCategoryIcon(category)}
-                      <span className="font-medium capitalize">
+                      <span className="font-medium capitalize dark:text-gray-300">
                         {category.replace(/([A-Z])/g, ' $1').trim()}
                       </span>
                     </div>
-                    <div className="text-2xl font-bold">{Array.isArray(links) ? links.length : 0}</div>
-                    <div className="text-sm opacity-75">broken links</div>
+                    <div className="text-2xl font-bold dark:text-gray-300">{Array.isArray(links) ? links.length : 0}</div>
+                    <div className="text-sm opacity-75 dark:text-gray-400">broken links</div>
                   </div>
                 ))}
               </div>
@@ -463,32 +477,32 @@ const BrokenLinkTool = () => {
 
           {/* Severity Breakdown */}
           {report.severityCounts && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Priority Breakdown</h4>
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Priority Breakdown</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <Shield className="w-5 h-5 text-red-600" />
-                    <span className="font-medium text-red-800">High Priority</span>
+                    <span className="font-medium text-red-800 dark:text-red-300">High Priority</span>
                   </div>
-                  <div className="text-2xl font-bold text-red-600">{report.severityCounts.high || 0}</div>
-                  <div className="text-sm text-red-600">Security & Critical Issues</div>
+                  <div className="text-2xl font-bold text-red-600 dark:text-red-400">{report.severityCounts.high || 0}</div>
+                  <div className="text-sm text-red-600 dark:text-red-400">Security & Critical Issues</div>
                 </div>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <AlertTriangle className="w-5 h-5 text-yellow-600" />
-                    <span className="font-medium text-yellow-800">Medium Priority</span>
+                    <span className="font-medium text-yellow-800 dark:text-yellow-300">Medium Priority</span>
                   </div>
-                  <div className="text-2xl font-bold text-yellow-600">{report.severityCounts.medium || 0}</div>
-                  <div className="text-sm text-yellow-600">Business & User Experience</div>
+                  <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{report.severityCounts.medium || 0}</div>
+                  <div className="text-sm text-yellow-600 dark:text-yellow-400">Business & User Experience</div>
                 </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <Link className="w-5 h-5 text-blue-600" />
-                    <span className="font-medium text-blue-800">Low Priority</span>
+                    <span className="font-medium text-blue-800 dark:text-blue-300">Low Priority</span>
                   </div>
-                  <div className="text-2xl font-bold text-blue-600">{report.severityCounts.low || 0}</div>
-                  <div className="text-sm text-blue-600">General & Content Links</div>
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{report.severityCounts.low || 0}</div>
+                  <div className="text-sm text-blue-600 dark:text-blue-400">General & Content Links</div>
                 </div>
               </div>
             </div>
@@ -496,22 +510,22 @@ const BrokenLinkTool = () => {
 
           {/* Detailed Broken Links */}
           {report.brokenLinks && report.brokenLinks.length > 0 && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Detailed Analysis</h4>
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Detailed Analysis</h4>
               <div className="space-y-4">
                 {report.brokenLinks.slice(0, 8).map((link: any, index: number) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <div className="font-medium text-gray-800 truncate">{link.url}</div>
-                        <div className="text-sm text-gray-600 mt-1">
+                        <div className="font-medium text-gray-800 dark:text-white truncate">{link.url}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           {link.text && link.text !== 'No text' ? `"${link.text}"` : 'No link text'}
                         </div>
                       </div>
                       <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        link.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        link.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-blue-100 text-blue-800'
+                        link.priority === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                        link.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
+                        'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                       }`}>
                         {link.priority} priority
                       </div>
@@ -519,17 +533,17 @@ const BrokenLinkTool = () => {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-600">Category:</span>
-                        <span className="ml-2 font-medium capitalize">
+                        <span className="text-gray-600 dark:text-gray-400">Category:</span>
+                        <span className="ml-2 font-medium capitalize dark:text-gray-300">
                           {link.classification?.category?.replace(/([A-Z])/g, ' $1').trim() || 'General'}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Severity:</span>
+                        <span className="text-gray-600 dark:text-gray-400">Severity:</span>
                         <span className={`ml-2 font-medium ${
-                          link.classification?.severity === 'high' ? 'text-red-600' :
-                          link.classification?.severity === 'medium' ? 'text-yellow-600' :
-                          'text-blue-600'
+                          link.classification?.severity === 'high' ? 'text-red-600 dark:text-red-400' :
+                          link.classification?.severity === 'medium' ? 'text-yellow-600 dark:text-yellow-400' :
+                          'text-blue-600 dark:text-blue-400'
                         }`}>
                           {link.classification?.severity || 'low'}
                         </span>
@@ -538,10 +552,10 @@ const BrokenLinkTool = () => {
                     
                     {link.recommendations && link.recommendations.length > 0 && (
                       <div className="mt-3">
-                        <div className="text-sm text-gray-600 mb-2">Recommendations:</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Recommendations:</div>
                         <ul className="space-y-1">
                           {link.recommendations.slice(0, 2).map((rec: string, recIndex: number) => (
-                            <li key={recIndex} className="text-sm text-gray-700 flex items-start space-x-2">
+                            <li key={recIndex} className="text-sm text-gray-700 dark:text-gray-300 flex items-start space-x-2">
                               <span className="text-gray-500">•</span>
                               <span>{rec}</span>
                             </li>
@@ -553,10 +567,66 @@ const BrokenLinkTool = () => {
                 ))}
                 
                 {report.brokenLinks.length > 8 && (
-                  <div className="text-center text-gray-600">
+                  <div className="text-center text-gray-600 dark:text-gray-400">
                     ... and {report.brokenLinks.length - 8} more broken links
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Results Section */}
+          {brokenLinks.length > 0 && (
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Broken Links Found</h3>
+              <div className="space-y-3">
+                {brokenLinks.map((link, index) => (
+                  <div key={index} className="border border-red-200 dark:border-red-700 rounded-lg p-3 bg-red-50 dark:bg-red-900/20">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-red-800 dark:text-red-300">{link.url}</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">Status: {link.status}</p>
+                      </div>
+                      <button
+                        onClick={() => window.open(link.url, '_blank')}
+                        className="ml-2 px-2 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-300 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
+                      >
+                        Check
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Summary Section */}
+          {scanComplete && (
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Scan Summary</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{totalLinks}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Total Links</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600 dark:text-red-400">{brokenLinks.length}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Broken Links</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">{totalLinks - brokenLinks.length}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Working Links</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Error Section */}
+          {error && (
+            <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
+                <AlertCircle className="w-5 h-5" />
+                <span className="font-medium dark:text-red-400">Error: {error}</span>
               </div>
             </div>
           )}

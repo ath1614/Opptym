@@ -22,7 +22,7 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group"
+        className="flex items-center space-x-2 px-3 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group"
         aria-label="Select language"
       >
         <div className="w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
@@ -35,7 +35,7 @@ const LanguageSwitcher: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up max-h-96 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-2 w-56 bg-white/90 dark:bg-primary-800/90 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 rounded-2xl shadow-glass z-50 animate-fade-in-up max-h-96 overflow-y-auto">
           <div className="p-2">
             {languages.map((language, index) => (
               <button
@@ -58,7 +58,7 @@ const LanguageSwitcher: React.FC = () => {
                   </div>
                 </div>
                 {i18n.language === language.code && (
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-white dark:bg-primary-300 rounded-full animate-pulse"></div>
                 )}
               </button>
             ))}

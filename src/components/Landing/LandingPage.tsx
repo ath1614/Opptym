@@ -182,7 +182,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             
-            <button className="group px-8 py-4 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 text-primary-700 dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 transition-all duration-300 flex items-center space-x-2">
+            <button className="group px-8 py-4 bg-white dark:bg-primary-800 text-accent-600 dark:text-accent-400 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2">
+              <span>Get Started</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300">
               <Play className="w-5 h-5" />
               <span>Watch Demo</span>
             </button>
@@ -366,7 +370,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
               
               <button
                 onClick={onLoginClick}
-                className="px-8 py-4 border-2 border-white text-white rounded-2xl font-semibold text-lg hover:bg-white hover:text-accent-600 transition-all duration-300"
+                className="px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300"
               >
                 Sign In
               </button>

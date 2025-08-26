@@ -2495,7 +2495,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         {/* Information Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Automation Status */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-r from-success-500 to-success-600 rounded-xl flex items-center justify-center shadow-glow">
                 <Check className="w-5 h-5 text-white" />
@@ -2522,7 +2522,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
           </div>
 
           {/* Quick Guide */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
                 <BookOpen className="w-5 h-5 text-white" />
@@ -2553,7 +2553,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
           </div>
 
           {/* Statistics */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-glow">
                 <Zap className="w-5 h-5 text-white" />

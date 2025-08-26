@@ -53,7 +53,7 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
       </div>
 
       <div className="max-w-md w-full relative z-10">
-        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up">
+        <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8 animate-fade-in-up">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow">

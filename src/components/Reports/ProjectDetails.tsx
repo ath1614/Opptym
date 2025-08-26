@@ -649,25 +649,25 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Title Length</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.titleLength || 0} chars</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title Length</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.titleLength || 0} chars</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Description Length</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.descriptionLength || 0} chars</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description Length</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.descriptionLength || 0} chars</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Found</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.keywords?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keywords Found</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.keywords?.length || 0}</div>
               </div>
             </div>
             {reportData.suggestions && reportData.suggestions.length > 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <div className="text-sm font-medium text-blue-800 mb-2">Suggestions:</div>
+              <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
+                <div className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">Suggestions:</div>
                 <div className="space-y-1">
                   {reportData.suggestions.map((suggestion: string, index: number) => (
-                    <div key={index} className="text-sm text-blue-700 flex items-start space-x-2">
-                      <span className="text-blue-600 font-bold">{index + 1}.</span>
+                    <div key={index} className="text-sm text-blue-700 dark:text-blue-300 flex items-start space-x-2">
+                      <span className="text-blue-600 dark:text-blue-400 font-bold">{index + 1}.</span>
                       <span>{suggestion}</span>
                     </div>
                   ))}
@@ -682,16 +682,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Words</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.totalWords?.toLocaleString() || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Words</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.totalWords?.toLocaleString() || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Analyzed</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.keywordStats?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keywords Analyzed</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.keywordStats?.length || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Avg Density</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avg Density</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.keywordStats?.length > 0 
                     ? `${(reportData.keywordStats.reduce((sum: number, kw: any) => 
                         sum + parseFloat(kw.density.replace('%', '')), 0) / reportData.keywordStats.length).toFixed(2)}%`
@@ -701,12 +701,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             </div>
             {reportData.keywordStats && reportData.keywordStats.length > 0 && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-2">Keyword Analysis:</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keyword Analysis:</div>
                 <div className="space-y-2">
                   {reportData.keywordStats.slice(0, 5).map((kw: any, index: number) => (
                     <div key={index} className="flex justify-between items-center text-sm">
-                      <span className="font-medium text-gray-800">{kw.keyword}</span>
-                      <span className="text-gray-600">{kw.density} ({kw.count} times)</span>
+                      <span className="font-medium text-gray-800 dark:text-white">{kw.keyword}</span>
+                      <span className="text-gray-600 dark:text-gray-400">{kw.density} ({kw.count} times)</span>
                     </div>
                   ))}
                 </div>
@@ -720,28 +720,28 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Backlinks</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.totalExternal || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Backlinks</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.totalExternal || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Unique Domains</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.domainsLinkingIn || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unique Domains</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.domainsLinkingIn || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Avg Links/Domain</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avg Links/Domain</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.domainsLinkingIn > 0 ? Math.round((reportData.totalExternal || 0) / reportData.domainsLinkingIn) : 0}
                 </div>
               </div>
             </div>
             {reportData.domains && Object.keys(reportData.domains).length > 0 && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-2">Top Linking Domains:</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Top Linking Domains:</div>
                 <div className="space-y-1">
                   {Object.entries(reportData.domains).slice(0, 5).map(([domain, anchors]: [string, any], index: number) => (
                     <div key={index} className="flex justify-between items-center text-sm">
-                      <span className="font-medium text-gray-800">{domain}</span>
-                      <span className="text-gray-600">{Array.isArray(anchors) ? anchors.length : 0} links</span>
+                      <span className="font-medium text-gray-800 dark:text-white">{domain}</span>
+                      <span className="text-gray-600 dark:text-gray-400">{Array.isArray(anchors) ? anchors.length : 0} links</span>
                     </div>
                   ))}
                 </div>
@@ -755,16 +755,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Links</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.totalLinks || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Links</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.totalLinks || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Broken Links</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Broken Links</div>
                 <div className="text-lg font-bold text-red-600">{reportData.brokenCount || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Health Score</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Health Score</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.overallHealthScore || (reportData.totalLinks > 0 
                     ? `${Math.round(((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks) * 100)}%`
                     : 'N/A')}
@@ -807,7 +807,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                           {category.replace(/([A-Z])/g, ' $1').trim()}
                         </span>
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{links.length}</span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">{links.length}</span>
                     </div>
                   ))}
                 </div>
@@ -838,14 +838,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                     
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-600">Category:</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Category:</span>
                         <span className="text-xs font-medium text-gray-800 capitalize">
                           {link.classification?.category?.replace(/([A-Z])/g, ' $1').trim() || 'General'}
                         </span>
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-600">Severity:</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Severity:</span>
                         <span className={`text-xs font-medium ${
                           link.classification?.severity === 'high' ? 'text-red-600' :
                           link.classification?.severity === 'medium' ? 'text-yellow-600' :
@@ -902,17 +902,17 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Sitemap Status</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.sitemapStatus || 'Not Found'}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sitemap Status</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.sitemapStatus || 'Not Found'}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Robots Status</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.robotsStatus || 'Not Found'}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Robots Status</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.robotsStatus || 'Not Found'}</div>
               </div>
             </div>
             {reportData.crawlRules && reportData.crawlRules.length > 0 && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-2">Crawl Rules:</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Crawl Rules:</div>
                 <div className="space-y-1">
                   {reportData.crawlRules.slice(0, 5).map((rule: string, index: number) => (
                     <div key={index} className="text-sm text-gray-700">{rule}</div>
@@ -928,12 +928,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Robots.txt Status</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.robotsStatus || 'Not Found'}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Robots.txt Status</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.robotsStatus || 'Not Found'}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Crawl Rules</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.crawlRules?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Crawl Rules</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.crawlRules?.length || 0}</div>
               </div>
             </div>
           </div>
@@ -944,18 +944,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Tracked</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.results?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keywords Tracked</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.results?.length || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Found</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keywords Found</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.results?.filter((r: any) => r.found).length || 0}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Success Rate</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Success Rate</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.results?.length > 0 
                     ? `${Math.round((reportData.results.filter((r: any) => r.found).length / reportData.results.length) * 100)}%`
                     : '0%'}
@@ -964,11 +964,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             </div>
             {reportData.results && reportData.results.length > 0 && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-2">Keyword Rankings:</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keyword Rankings:</div>
                 <div className="space-y-2">
                   {reportData.results.slice(0, 5).map((result: any, index: number) => (
                     <div key={index} className="flex justify-between items-center text-sm">
-                      <span className="font-medium text-gray-800">{result.keyword}</span>
+                      <span className="font-medium text-gray-800 dark:text-white">{result.keyword}</span>
                       <span className={`font-bold ${result.found ? 'text-green-600' : 'text-red-600'}`}>
                         {result.found ? `Position ${result.position}` : 'Not in top 10'}
                       </span>
@@ -985,22 +985,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Performance Score</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.score || 0}/100</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Performance Score</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.score || 0}/100</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">First Contentful Paint</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.metrics?.firstContentfulPaint || 0}ms</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Contentful Paint</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.metrics?.firstContentfulPaint || 0}ms</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Largest Contentful Paint</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.metrics?.largestContentfulPaint || 0}ms</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Largest Contentful Paint</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.metrics?.largestContentfulPaint || 0}ms</div>
               </div>
             </div>
             {reportData.metrics?.cumulativeLayoutShift && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Cumulative Layout Shift</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.metrics.cumulativeLayoutShift.toFixed(3)}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cumulative Layout Shift</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.metrics.cumulativeLayoutShift.toFixed(3)}</div>
               </div>
             )}
           </div>
@@ -1011,20 +1011,20 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Mobile Friendly</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile Friendly</div>
                 <div className={`text-lg font-bold ${reportData.audit?.isMobileFriendly ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.audit?.isMobileFriendly ? 'Yes' : 'No'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Viewport Meta</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Viewport Meta</div>
                 <div className={`text-lg font-bold ${reportData.audit?.hasViewportMeta ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.audit?.hasViewportMeta ? 'Present' : 'Missing'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Small Tap Targets</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.audit?.smallTapTargets || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Small Tap Targets</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.audit?.smallTapTargets || 0}</div>
               </div>
             </div>
           </div>
@@ -1035,18 +1035,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Keywords Analyzed</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.results?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keywords Analyzed</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.results?.length || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Competitors</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Competitors</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.results?.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0) || 0}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Avg Competitors/Keyword</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avg Competitors/Keyword</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.results?.length > 0 
                     ? Math.round(reportData.results.reduce((acc: number, result: any) => acc + (result.competitors?.length || 0), 0) / reportData.results.length)
                     : 0}
@@ -1061,24 +1061,24 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Title Present</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title Present</div>
                 <div className={`text-lg font-bold ${reportData.audit?.title ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.audit?.title ? 'Yes' : 'No'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Meta Description</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Meta Description</div>
                 <div className={`text-lg font-bold ${reportData.audit?.metaDescription ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.audit?.metaDescription ? 'Yes' : 'No'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">H1 Count</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.audit?.h1Count || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">H1 Count</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.audit?.h1Count || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Internal Links</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.audit?.internalLinks || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Internal Links</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.audit?.internalLinks || 0}</div>
               </div>
             </div>
             {reportData.issues && reportData.issues.length > 0 && (
@@ -1104,23 +1104,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Schema Found</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Schema Found</div>
                 <div className={`text-lg font-bold ${reportData.found ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.found ? 'Yes' : 'No'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Schema Types</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.schemaTypes?.length || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Schema Types</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.schemaTypes?.length || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Validation Errors</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Validation Errors</div>
                 <div className="text-lg font-bold text-red-600">{reportData.errors?.length || 0}</div>
               </div>
             </div>
             {reportData.schemaTypes && reportData.schemaTypes.length > 0 && (
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-2">Schema Types Found:</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Schema Types Found:</div>
                 <div className="space-y-1">
                   {reportData.schemaTypes.map((type: string, index: number) => (
                     <div key={index} className="text-sm text-gray-700">{type}</div>
@@ -1136,16 +1136,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Images</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.audit?.totalImages || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Images</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.audit?.totalImages || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Missing Alt Text</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Missing Alt Text</div>
                 <div className="text-lg font-bold text-red-600">{reportData.audit?.missingAltCount || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Coverage</div>
-                <div className="text-lg font-bold text-gray-900">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Coverage</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">
                   {reportData.audit?.totalImages > 0 
                     ? `${Math.round(((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages) * 100)}%`
                     : 'N/A'}
@@ -1175,13 +1175,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Canonical Present</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Canonical Present</div>
                 <div className={`text-lg font-bold ${reportData.canonicalUrl !== 'Not found' ? 'text-green-600' : 'text-red-600'}`}>
                   {reportData.canonicalUrl !== 'Not found' ? 'Yes' : 'No'}
                 </div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Issues Found</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Issues Found</div>
                 <div className="text-lg font-bold text-red-600">{reportData.issues?.length || 0}</div>
               </div>
             </div>
@@ -1203,16 +1203,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Total Keywords</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.totalKeywords || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Total Keywords</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.analysis?.totalKeywords || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Avg Search Volume</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.avgSearchVolume?.toLocaleString() || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avg Search Volume</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.analysis?.avgSearchVolume?.toLocaleString() || 0}</div>
               </div>
               <div className="bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-sm font-medium text-gray-700 mb-1">Avg Competition</div>
-                <div className="text-lg font-bold text-gray-900">{reportData.analysis?.avgCompetition || 0}</div>
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avg Competition</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">{reportData.analysis?.avgCompetition || 0}</div>
               </div>
             </div>
             {reportData.recommendations && reportData.recommendations.length > 0 && (
@@ -1231,8 +1231,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
       default:
         return (
           <div className="bg-white dark:bg-primary-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <div className="text-sm font-medium text-gray-700 mb-2">Analysis Results:</div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Analysis Results:</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               {reportData && typeof reportData === 'object' ? (
                 <div className="space-y-2">
                   {Object.entries(reportData).map(([key, value]) => (
@@ -1240,7 +1240,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                       <span className="font-medium text-gray-800 capitalize">
                         {key.replace(/([A-Z])/g, ' $1').trim()}:
                       </span>
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 dark:text-gray-400">
                         {typeof value === 'object' ? JSON.stringify(value).slice(0, 50) + '...' : String(value)}
                       </span>
                     </div>
@@ -1267,8 +1267,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">{project.title}</h1>
-                <p className="text-gray-600">{project.url}</p>
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{project.title}</h1>
+                <p className="text-gray-600 dark:text-gray-400">{project.url}</p>
               </div>
             </div>
             <button
@@ -1340,8 +1340,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                 <Info className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-800">Project Information</h2>
-                <p className="text-sm text-gray-600">Basic project details and metadata</p>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Project Information</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Basic project details and metadata</p>
               </div>
             </div>
             
@@ -1349,18 +1349,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Globe className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">URL:</span>
-                  <span className="text-sm font-medium text-gray-800">{project.url}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">URL:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">{project.url}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Category:</span>
-                  <span className="text-sm font-medium text-gray-800">{project.category || 'Not specified'}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Category:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">{project.category || 'Not specified'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Target className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Target Keywords:</span>
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Target Keywords:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">
                     {project.targetKeywords?.join(', ') || 'Not specified'}
                   </span>
                 </div>
@@ -1368,22 +1368,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <FileText className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Meta Title:</span>
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Meta Title:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">
                     {project.metaTitle || 'Not specified'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Search className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Keywords:</span>
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Keywords:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">
                     {project.keywords?.join(', ') || 'Not specified'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Settings className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Sitemap:</span>
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Sitemap:</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-white">
                     {project.sitemapUrl || 'Not specified'}
                   </span>
                 </div>
@@ -1398,8 +1398,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-800">SEO Performance Score</h2>
-                <p className="text-sm text-gray-600">Overall performance and optimization score</p>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">SEO Performance Score</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Overall performance and optimization score</p>
               </div>
             </div>
             
@@ -1418,7 +1418,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                   {Object.entries(calculatedSeoScore.breakdown).map(([tool, score]) => (
                     <div key={tool} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                       <div className="text-sm font-medium text-gray-700">{tool}</div>
-                      <div className="text-xl font-bold text-gray-900">{score}/10</div>
+                      <div className="text-xl font-bold text-gray-900 dark:text-white">{score}/10</div>
                     </div>
                   ))}
                 </div>
@@ -1452,8 +1452,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">SEO Tool Reports</h2>
-                  <p className="text-sm text-gray-600">{usedTools.length} tool(s) analyzed</p>
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">SEO Tool Reports</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{usedTools.length} tool(s) analyzed</p>
                 </div>
               </div>
               
@@ -1467,8 +1467,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                           {config.icon}
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-800">{config.title}</h3>
-                          <p className="text-sm text-gray-600">{config.description}</p>
+                          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{config.title}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{config.description}</p>
                         </div>
                       </div>
                       
@@ -1488,8 +1488,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">Submissions</h2>
-                  <p className="text-sm text-gray-600">{project.submissions.length} submission(s) logged</p>
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Submissions</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{project.submissions.length} submission(s) logged</p>
                 </div>
               </div>
               

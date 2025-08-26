@@ -113,7 +113,7 @@ const KeywordTrackerTool = () => {
       details.push({
         label: `"${result.keyword}"`,
         value: result.found ? `Position: ${result.position}` : 'Not in top 10',
-        status: result.found ? 'good' : 'warning'
+        status: (result.found ? 'good' : 'warning') as 'good' | 'warning'
       });
     });
     
