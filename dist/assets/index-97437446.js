@@ -13625,6 +13625,20 @@ const submissions$1 = {
   other: "Other",
   selectProject: "Select a project first!",
   automationSetup: "Setting Up Form Automation",
+  reports: "Reports",
+  tools: "SEO Tools",
+  pricing: "Pricing",
+  profile: "Profile",
+  admin: "Admin Panel",
+  settings: "Settings",
+  logout: "Logout",
+  dashboard: "Dashboard",
+  projects: "My Projects",
+  seoTools: "SEO Tools",
+  submissionReports: "Submission Reports",
+  pricingPlans: "Pricing Plans",
+  profileSettings: "Profile Settings",
+  adminPanel: "Admin Panel",
   creatingBookmarklet: "Creating your personalized form filler...",
   preparingAutomation: "Preparing automation...",
   formAutomationReady: "Form Automation Ready!",
@@ -13746,20 +13760,17 @@ const dashboard = {
   recentActivity: "हाल की गतिविधि"
 };
 const automation = {
-  fillForm: "फॉर्म भरें",
-  smartAutoFill: "स्मार्ट ऑटो-फिल",
-  universal: "सार्वभौमिक",
-  instructions: "निर्देश",
-  automationReady: "ऑटोमेशन तैयार",
-  nextSteps: "अगले कदम",
-  visitWebsite: "वेबसाइट पर जाएं",
-  copyBookmarklet: "बुकमार्कलेट कॉपी करें",
-  deleteBookmarklet: "बुकमार्कलेट हटाएं",
-  projectDataReady: "प्रोजेक्ट डेटा तैयार",
-  important: "महत्वपूर्ण",
-  bookmarkletExpires: "बुकमार्कलेट 30 मिनट के बाद स्वचालित रूप से हटा दिया जाएगा",
-  submitBeforeExpiry: "बुकमार्कलेट समाप्त होने से पहले फॉर्म सबमिट करना सुनिश्चित करें",
-  createNewBookmarklet: "आप हमेशा नया बुकमार्कलेट बना सकते हैं"
+  creatingBookmarklet: "आपका व्यक्तिगत फॉर्म फिलर बना रहा है...",
+  preparingAutomation: "ऑटोमेशन तैयार कर रहा है...",
+  formAutomationReady: "फॉर्म ऑटोमेशन तैयार!",
+  personalizedFormFiller: "आपका व्यक्तिगत फॉर्म फिलर उपयोग के लिए तैयार है",
+  howToUse: "कैसे उपयोग करें",
+  dragToBookmarks: "हरे बटन को अपने बुकमार्क बार में खींचें",
+  orClickImmediately: "या तुरंत उपयोग के लिए क्लिक करें",
+  visitAnyWebsite: "फॉर्म वाली किसी भी वेबसाइट पर जाएं",
+  clickBookmarklet: "फॉर्म भरने के लिए बुकमार्कलेट पर क्लिक करें",
+  reviewAndSubmit: "फॉर्म की समीक्षा करें और सबमिट करें",
+  returnToDelete: "बुकमार्कलेट हटाने के लिए यहां वापस आएं"
 };
 const projects = {
   title: "प्रोजेक्ट्स",
@@ -13788,17 +13799,20 @@ const submissions = {
   other: "अन्य",
   selectProject: "पहले एक प्रोजेक्ट चुनें!",
   automationSetup: "फॉर्म ऑटोमेशन सेटअप कर रहा है",
-  creatingBookmarklet: "आपका व्यक्तिगत फॉर्म फिलर बना रहा है...",
-  preparingAutomation: "ऑटोमेशन तैयार कर रहा है...",
-  formAutomationReady: "फॉर्म ऑटोमेशन तैयार!",
-  personalizedFormFiller: "आपका व्यक्तिगत फॉर्म फिलर उपयोग के लिए तैयार है",
-  howToUse: "कैसे उपयोग करें",
-  dragToBookmarks: "हरे बटन को अपने बुकमार्क बार में खींचें",
-  orClickImmediately: "या तुरंत उपयोग के लिए क्लिक करें",
-  visitAnyWebsite: "फॉर्म वाली किसी भी वेबसाइट पर जाएं",
-  clickBookmarklet: "फॉर्म भरने के लिए बुकमार्कलेट पर क्लिक करें",
-  reviewAndSubmit: "फॉर्म की समीक्षा करें और सबमिट करें",
-  returnToDelete: "बुकमार्कलेट हटाने के लिए यहां वापस आएं"
+  reports: "रिपोर्ट्स",
+  tools: "एसईओ टूल्स",
+  pricing: "मूल्य निर्धारण",
+  profile: "प्रोफ़ाइल",
+  admin: "एडमिन पैनल",
+  settings: "सेटिंग्स",
+  logout: "लॉगआउट",
+  dashboard: "डैशबोर्ड",
+  projects: "मेरे प्रोजेक्ट्स",
+  seoTools: "एसईओ टूल्स",
+  submissionReports: "सबमिशन रिपोर्ट्स",
+  pricingPlans: "मूल्य निर्धारण योजनाएं",
+  profileSettings: "प्रोफ़ाइल सेटिंग्स",
+  adminPanel: "एडमिन पैनल"
 };
 const navigation = {
   home: "होम",
@@ -15107,7 +15121,11 @@ function LandingPage({ onLoginClick, onRegisterClick }) {
             ]
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "group px-8 py-4 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 text-primary-700 dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 transition-all duration-300 flex items-center space-x-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "group px-8 py-4 bg-white dark:bg-primary-800 text-accent-600 dark:text-accent-400 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Get Started" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { className: "w-5 h-5 group-hover:translate-x-1 transition-transform" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { className: "w-5 h-5" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Watch Demo" })
         ] })
@@ -15227,7 +15245,7 @@ function LandingPage({ onLoginClick, onRegisterClick }) {
           "button",
           {
             onClick: onLoginClick,
-            className: "px-8 py-4 border-2 border-white text-white rounded-2xl font-semibold text-lg hover:bg-white hover:text-accent-600 transition-all duration-300",
+            className: "px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300",
             children: "Sign In"
           }
         )
@@ -15432,7 +15450,7 @@ function Register({ onSwitchToLogin }) {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float", style: { animationDelay: "2s" } }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float", style: { animationDelay: "4s" } })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-md w-full relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-8 animate-fade-in-up", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-md w-full relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8 animate-fade-in-up", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center mb-8", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl mb-6 shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-8 h-8", viewBox: "0 0 40 40", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -21228,7 +21246,7 @@ function(t3) {
   }, t3.loadImageFile = t3.loadFile;
 }(E.API), function(e2) {
   function r2() {
-    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-8aa68634.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
+    return (n.html2canvas ? Promise.resolve(n.html2canvas) : __vitePreload(() => import("./html2canvas-54124cde.js").then((n2) => n2.h), true ? [] : void 0)).catch(function(t3) {
       return Promise.reject(new Error("Could not load html2canvas: " + t3));
     }).then(function(t3) {
       return t3.default ? t3.default : t3;
@@ -24740,7 +24758,7 @@ function(t3) {
  */
 function(t3) {
   function e2() {
-    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-8f172b78.js"), true ? [] : void 0)).catch(function(t4) {
+    return (n.canvg ? Promise.resolve(n.canvg) : __vitePreload(() => import("./index.es-3757b365.js"), true ? [] : void 0)).catch(function(t4) {
       return Promise.reject(new Error("Could not load canvg: " + t4));
     }).then(function(t4) {
       return t4.default ? t4.default : t4;
@@ -39087,10 +39105,10 @@ function requireHtml2canvas() {
 var html2pdfExports = html2pdf$1.exports;
 const html2pdf = /* @__PURE__ */ getDefaultExportFromCjs(html2pdfExports);
 const ProjectDetails = ({ project }) => {
-  var _a2, _b2;
+  var _a2, _b2, _c, _d, _e;
   const reportRef = reactExports.useRef(null);
   const calculatedSeoScore = reactExports.useMemo(() => {
-    var _a3, _b3, _c, _d, _e, _f, _g;
+    var _a3, _b3, _c2, _d2, _e2, _f, _g;
     const scores = {};
     let totalScore = 0;
     let totalTools = 0;
@@ -39134,7 +39152,7 @@ const ProjectDetails = ({ project }) => {
       if (report.brokenCount > 0) {
         const highPriority = ((_a3 = report.severityCounts) == null ? void 0 : _a3.high) || 0;
         const mediumPriority = ((_b3 = report.severityCounts) == null ? void 0 : _b3.medium) || 0;
-        const lowPriority = ((_c = report.severityCounts) == null ? void 0 : _c.low) || 0;
+        const lowPriority = ((_c2 = report.severityCounts) == null ? void 0 : _c2.low) || 0;
         score -= highPriority * 3;
         score -= mediumPriority * 2;
         score -= lowPriority * 1;
@@ -39147,7 +39165,7 @@ const ProjectDetails = ({ project }) => {
         if (lowPriority > 0) {
           suggestions.push(`Review ${lowPriority} low-priority broken links`);
         }
-        if (((_d = report.categories) == null ? void 0 : _d.malware) && report.categories.malware.length > 0) {
+        if (((_d2 = report.categories) == null ? void 0 : _d2.malware) && report.categories.malware.length > 0) {
           suggestions.push("🚨 MALWARE LINKS DETECTED - Immediate security review required");
         }
       }
@@ -39169,7 +39187,7 @@ const ProjectDetails = ({ project }) => {
     if (project.mobileAuditReport) {
       const report = project.mobileAuditReport;
       let score = 10;
-      if (!((_e = report.audit) == null ? void 0 : _e.isMobileFriendly)) {
+      if (!((_e2 = report.audit) == null ? void 0 : _e2.isMobileFriendly)) {
         score -= 5;
         suggestions.push("Make website mobile-friendly");
       }
@@ -39603,34 +39621,34 @@ const ProjectDetails = ({ project }) => {
     ([key]) => project[key] && Object.keys(project[key]).length > 0
   );
   const renderToolData = (toolKey, reportData) => {
-    var _a3, _b3, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t2, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J;
+    var _a3, _b3, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t2, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J;
     switch (toolKey) {
       case "metaTagReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Title Length" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Title Length" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: [
                 reportData.titleLength || 0,
                 " chars"
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Description Length" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Description Length" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: [
                 reportData.descriptionLength || 0,
                 " chars"
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Keywords Found" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_a3 = reportData.keywords) == null ? void 0 : _a3.length) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Keywords Found" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_a3 = reportData.keywords) == null ? void 0 : _a3.length) || 0 })
             ] })
           ] }),
-          reportData.suggestions && reportData.suggestions.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-blue-50 border border-blue-200 rounded-lg p-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-blue-800 mb-2", children: "Suggestions:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: reportData.suggestions.map((suggestion, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-blue-700 flex items-start space-x-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-blue-600 font-bold", children: [
+          reportData.suggestions && reportData.suggestions.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-blue-800 dark:text-blue-300 mb-2", children: "Suggestions:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: reportData.suggestions.map((suggestion, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-blue-700 dark:text-blue-300 flex items-start space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-blue-600 dark:text-blue-400 font-bold", children: [
                 index2 + 1,
                 "."
               ] }),
@@ -39641,24 +39659,24 @@ const ProjectDetails = ({ project }) => {
       case "keywordDensityReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Words" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_b3 = reportData.totalWords) == null ? void 0 : _b3.toLocaleString()) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Words" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_b3 = reportData.totalWords) == null ? void 0 : _b3.toLocaleString()) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Keywords Analyzed" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_c = reportData.keywordStats) == null ? void 0 : _c.length) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Keywords Analyzed" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_c2 = reportData.keywordStats) == null ? void 0 : _c2.length) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Avg Density" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_d = reportData.keywordStats) == null ? void 0 : _d.length) > 0 ? `${(reportData.keywordStats.reduce((sum, kw) => sum + parseFloat(kw.density.replace("%", "")), 0) / reportData.keywordStats.length).toFixed(2)}%` : "0%" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Avg Density" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_d2 = reportData.keywordStats) == null ? void 0 : _d2.length) > 0 ? `${(reportData.keywordStats.reduce((sum, kw) => sum + parseFloat(kw.density.replace("%", "")), 0) / reportData.keywordStats.length).toFixed(2)}%` : "0%" })
             ] })
           ] }),
-          reportData.keywordStats && reportData.keywordStats.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Keyword Analysis:" }),
+          reportData.keywordStats && reportData.keywordStats.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Keyword Analysis:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: reportData.keywordStats.slice(0, 5).map((kw, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center text-sm", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800", children: kw.keyword }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-600", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800 dark:text-white", children: kw.keyword }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-600 dark:text-gray-400", children: [
                 kw.density,
                 " (",
                 kw.count,
@@ -39670,24 +39688,24 @@ const ProjectDetails = ({ project }) => {
       case "backlinkReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Backlinks" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.totalExternal || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Backlinks" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.totalExternal || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Unique Domains" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.domainsLinkingIn || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Unique Domains" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.domainsLinkingIn || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Avg Links/Domain" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.domainsLinkingIn > 0 ? Math.round((reportData.totalExternal || 0) / reportData.domainsLinkingIn) : 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Avg Links/Domain" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.domainsLinkingIn > 0 ? Math.round((reportData.totalExternal || 0) / reportData.domainsLinkingIn) : 0 })
             ] })
           ] }),
-          reportData.domains && Object.keys(reportData.domains).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Top Linking Domains:" }),
+          reportData.domains && Object.keys(reportData.domains).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Top Linking Domains:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: Object.entries(reportData.domains).slice(0, 5).map(([domain, anchors], index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center text-sm", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800", children: domain }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-600", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800 dark:text-white", children: domain }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-600 dark:text-gray-400", children: [
                 Array.isArray(anchors) ? anchors.length : 0,
                 " links"
               ] })
@@ -39697,17 +39715,17 @@ const ProjectDetails = ({ project }) => {
       case "brokenLinksReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Links" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.totalLinks || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Links" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.totalLinks || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Broken Links" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Broken Links" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-red-600", children: reportData.brokenCount || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Health Score" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.overallHealthScore || (reportData.totalLinks > 0 ? `${Math.round((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks * 100)}%` : "N/A") })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Health Score" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.overallHealthScore || (reportData.totalLinks > 0 ? `${Math.round((reportData.totalLinks - (reportData.brokenCount || 0)) / reportData.totalLinks * 100)}%` : "N/A") })
             ] })
           ] }),
           reportData.severityCounts && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
@@ -39724,20 +39742,20 @@ const ProjectDetails = ({ project }) => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-blue-600", children: reportData.severityCounts.low || 0 })
             ] })
           ] }),
-          reportData.categories && Object.keys(reportData.categories).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-4 border border-gray-200", children: [
+          reportData.categories && Object.keys(reportData.categories).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-3", children: "Broken Links by Category:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: Object.entries(reportData.categories).map(([category, links]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center p-2 bg-gray-50 rounded", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `w-3 h-3 rounded-full ${category === "malware" ? "bg-red-500" : category === "financial" || category === "government" ? "bg-yellow-500" : "bg-blue-500"}` }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 capitalize", children: category.replace(/([A-Z])/g, " $1").trim() })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-gray-900", children: links.length })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-gray-900 dark:text-white", children: links.length })
             ] }, category)) })
           ] }),
           reportData.brokenLinks && reportData.brokenLinks.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700", children: "Detailed Analysis:" }),
             reportData.brokenLinks.slice(0, 5).map((link, index2) => {
-              var _a4, _b4, _c2, _d2, _e2;
+              var _a4, _b4, _c3, _d3, _e3;
               return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 border border-red-200 rounded-lg p-3", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-start mb-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
@@ -39751,12 +39769,12 @@ const ProjectDetails = ({ project }) => {
                 ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-600", children: "Category:" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-600 dark:text-gray-400", children: "Category:" }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-800 capitalize", children: ((_b4 = (_a4 = link.classification) == null ? void 0 : _a4.category) == null ? void 0 : _b4.replace(/([A-Z])/g, " $1").trim()) || "General" })
                   ] }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-600", children: "Severity:" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs font-medium ${((_c2 = link.classification) == null ? void 0 : _c2.severity) === "high" ? "text-red-600" : ((_d2 = link.classification) == null ? void 0 : _d2.severity) === "medium" ? "text-yellow-600" : "text-blue-600"}`, children: ((_e2 = link.classification) == null ? void 0 : _e2.severity) || "low" })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-600 dark:text-gray-400", children: "Severity:" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs font-medium ${((_c3 = link.classification) == null ? void 0 : _c3.severity) === "high" ? "text-red-600" : ((_d3 = link.classification) == null ? void 0 : _d3.severity) === "medium" ? "text-yellow-600" : "text-blue-600"}`, children: ((_e3 = link.classification) == null ? void 0 : _e3.severity) || "low" })
                   ] }),
                   link.recommendations && link.recommendations.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 mb-1", children: "Recommendations:" }),
@@ -39788,51 +39806,51 @@ const ProjectDetails = ({ project }) => {
       case "sitemapReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Sitemap Status" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.sitemapStatus || "Not Found" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Sitemap Status" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.sitemapStatus || "Not Found" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Robots Status" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.robotsStatus || "Not Found" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Robots Status" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.robotsStatus || "Not Found" })
             ] })
           ] }),
-          reportData.crawlRules && reportData.crawlRules.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Crawl Rules:" }),
+          reportData.crawlRules && reportData.crawlRules.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Crawl Rules:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: reportData.crawlRules.slice(0, 5).map((rule, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-700", children: rule }, index2)) })
           ] })
         ] });
       case "robotsReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Robots.txt Status" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.robotsStatus || "Not Found" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Robots.txt Status" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.robotsStatus || "Not Found" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Crawl Rules" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_e = reportData.crawlRules) == null ? void 0 : _e.length) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Crawl Rules" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_e2 = reportData.crawlRules) == null ? void 0 : _e2.length) || 0 })
           ] })
         ] }) });
       case "keywordTrackerReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Keywords Tracked" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_f = reportData.results) == null ? void 0 : _f.length) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Keywords Tracked" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_f = reportData.results) == null ? void 0 : _f.length) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Keywords Found" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_g = reportData.results) == null ? void 0 : _g.filter((r2) => r2.found).length) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Keywords Found" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_g = reportData.results) == null ? void 0 : _g.filter((r2) => r2.found).length) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Success Rate" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_h = reportData.results) == null ? void 0 : _h.length) > 0 ? `${Math.round(reportData.results.filter((r2) => r2.found).length / reportData.results.length * 100)}%` : "0%" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Success Rate" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_h = reportData.results) == null ? void 0 : _h.length) > 0 ? `${Math.round(reportData.results.filter((r2) => r2.found).length / reportData.results.length * 100)}%` : "0%" })
             ] })
           ] }),
-          reportData.results && reportData.results.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Keyword Rankings:" }),
+          reportData.results && reportData.results.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Keyword Rankings:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: reportData.results.slice(0, 5).map((result, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center text-sm", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800", children: result.keyword }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-800 dark:text-white", children: result.keyword }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-bold ${result.found ? "text-green-600" : "text-red-600"}`, children: result.found ? `Position ${result.position}` : "Not in top 10" })
             ] }, index2)) })
           ] })
@@ -39840,64 +39858,64 @@ const ProjectDetails = ({ project }) => {
       case "pageSpeedReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Performance Score" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Performance Score" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: [
                 reportData.score || 0,
                 "/100"
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "First Contentful Paint" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "First Contentful Paint" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: [
                 ((_i = reportData.metrics) == null ? void 0 : _i.firstContentfulPaint) || 0,
                 "ms"
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Largest Contentful Paint" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Largest Contentful Paint" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: [
                 ((_j = reportData.metrics) == null ? void 0 : _j.largestContentfulPaint) || 0,
                 "ms"
               ] })
             ] })
           ] }),
-          ((_k = reportData.metrics) == null ? void 0 : _k.cumulativeLayoutShift) && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Cumulative Layout Shift" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: reportData.metrics.cumulativeLayoutShift.toFixed(3) })
+          ((_k = reportData.metrics) == null ? void 0 : _k.cumulativeLayoutShift) && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Cumulative Layout Shift" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: reportData.metrics.cumulativeLayoutShift.toFixed(3) })
           ] })
         ] });
       case "mobileAuditReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Mobile Friendly" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Mobile Friendly" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${((_l = reportData.audit) == null ? void 0 : _l.isMobileFriendly) ? "text-green-600" : "text-red-600"}`, children: ((_m = reportData.audit) == null ? void 0 : _m.isMobileFriendly) ? "Yes" : "No" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Viewport Meta" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Viewport Meta" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${((_n = reportData.audit) == null ? void 0 : _n.hasViewportMeta) ? "text-green-600" : "text-red-600"}`, children: ((_o = reportData.audit) == null ? void 0 : _o.hasViewportMeta) ? "Present" : "Missing" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Small Tap Targets" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_p = reportData.audit) == null ? void 0 : _p.smallTapTargets) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Small Tap Targets" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_p = reportData.audit) == null ? void 0 : _p.smallTapTargets) || 0 })
           ] })
         ] }) });
       case "competitorReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Keywords Analyzed" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_q = reportData.results) == null ? void 0 : _q.length) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Keywords Analyzed" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_q = reportData.results) == null ? void 0 : _q.length) || 0 })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Competitors" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_r = reportData.results) == null ? void 0 : _r.reduce((acc, result) => {
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Competitors" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_r = reportData.results) == null ? void 0 : _r.reduce((acc, result) => {
               var _a4;
               return acc + (((_a4 = result.competitors) == null ? void 0 : _a4.length) || 0);
             }, 0)) || 0 })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Avg Competitors/Keyword" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_s = reportData.results) == null ? void 0 : _s.length) > 0 ? Math.round(reportData.results.reduce((acc, result) => {
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Avg Competitors/Keyword" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_s = reportData.results) == null ? void 0 : _s.length) > 0 ? Math.round(reportData.results.reduce((acc, result) => {
               var _a4;
               return acc + (((_a4 = result.competitors) == null ? void 0 : _a4.length) || 0);
             }, 0) / reportData.results.length) : 0 })
@@ -39906,21 +39924,21 @@ const ProjectDetails = ({ project }) => {
       case "technicalAuditReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Title Present" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Title Present" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${((_t2 = reportData.audit) == null ? void 0 : _t2.title) ? "text-green-600" : "text-red-600"}`, children: ((_u = reportData.audit) == null ? void 0 : _u.title) ? "Yes" : "No" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Meta Description" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Meta Description" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${((_v = reportData.audit) == null ? void 0 : _v.metaDescription) ? "text-green-600" : "text-red-600"}`, children: ((_w = reportData.audit) == null ? void 0 : _w.metaDescription) ? "Yes" : "No" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "H1 Count" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_x = reportData.audit) == null ? void 0 : _x.h1Count) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "H1 Count" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_x = reportData.audit) == null ? void 0 : _x.h1Count) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Internal Links" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_y = reportData.audit) == null ? void 0 : _y.internalLinks) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Internal Links" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_y = reportData.audit) == null ? void 0 : _y.internalLinks) || 0 })
             ] })
           ] }),
           reportData.issues && reportData.issues.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 border border-red-200 rounded-lg p-3", children: [
@@ -39938,38 +39956,38 @@ const ProjectDetails = ({ project }) => {
       case "schemaReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Schema Found" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Schema Found" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${reportData.found ? "text-green-600" : "text-red-600"}`, children: reportData.found ? "Yes" : "No" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Schema Types" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_z = reportData.schemaTypes) == null ? void 0 : _z.length) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Schema Types" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_z = reportData.schemaTypes) == null ? void 0 : _z.length) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Validation Errors" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Validation Errors" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-red-600", children: ((_A = reportData.errors) == null ? void 0 : _A.length) || 0 })
             ] })
           ] }),
-          reportData.schemaTypes && reportData.schemaTypes.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Schema Types Found:" }),
+          reportData.schemaTypes && reportData.schemaTypes.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Schema Types Found:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: reportData.schemaTypes.map((type, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-700", children: type }, index2)) })
           ] })
         ] });
       case "altTextReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Images" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_B = reportData.audit) == null ? void 0 : _B.totalImages) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Images" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_B = reportData.audit) == null ? void 0 : _B.totalImages) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Missing Alt Text" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Missing Alt Text" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-red-600", children: ((_C = reportData.audit) == null ? void 0 : _C.missingAltCount) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Coverage" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_D = reportData.audit) == null ? void 0 : _D.totalImages) > 0 ? `${Math.round((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages * 100)}%` : "N/A" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Coverage" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_D = reportData.audit) == null ? void 0 : _D.totalImages) > 0 ? `${Math.round((reportData.audit.totalImages - (reportData.audit.missingAltCount || 0)) / reportData.audit.totalImages * 100)}%` : "N/A" })
             ] })
           ] }),
           ((_E = reportData.audit) == null ? void 0 : _E.imagesMissingAlt) && reportData.audit.imagesMissingAlt.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 border border-red-200 rounded-lg p-3", children: [
@@ -39987,12 +40005,12 @@ const ProjectDetails = ({ project }) => {
       case "canonicalReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Canonical Present" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Canonical Present" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-lg font-bold ${reportData.canonicalUrl !== "Not found" ? "text-green-600" : "text-red-600"}`, children: reportData.canonicalUrl !== "Not found" ? "Yes" : "No" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Issues Found" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Issues Found" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-red-600", children: ((_F = reportData.issues) == null ? void 0 : _F.length) || 0 })
             ] })
           ] }),
@@ -40004,17 +40022,17 @@ const ProjectDetails = ({ project }) => {
       case "keywordResearcherReport":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Total Keywords" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_G = reportData.analysis) == null ? void 0 : _G.totalKeywords) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Total Keywords" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_G = reportData.analysis) == null ? void 0 : _G.totalKeywords) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Avg Search Volume" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_I = (_H = reportData.analysis) == null ? void 0 : _H.avgSearchVolume) == null ? void 0 : _I.toLocaleString()) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Avg Search Volume" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_I = (_H = reportData.analysis) == null ? void 0 : _H.avgSearchVolume) == null ? void 0 : _I.toLocaleString()) || 0 })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-3 border border-gray-200", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-1", children: "Avg Competition" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900", children: ((_J = reportData.analysis) == null ? void 0 : _J.avgCompetition) || 0 })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Avg Competition" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-lg font-bold text-gray-900 dark:text-white", children: ((_J = reportData.analysis) == null ? void 0 : _J.avgCompetition) || 0 })
             ] })
           ] }),
           reportData.recommendations && reportData.recommendations.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-blue-50 border border-blue-200 rounded-lg p-3", children: [
@@ -40023,25 +40041,25 @@ const ProjectDetails = ({ project }) => {
           ] })
         ] });
       default:
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-4 border border-gray-200", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 mb-2", children: "Analysis Results:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600", children: reportData && typeof reportData === "object" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: Object.entries(reportData).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Analysis Results:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: reportData && typeof reportData === "object" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: Object.entries(reportData).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-medium text-gray-800 capitalize", children: [
               key.replace(/([A-Z])/g, " $1").trim(),
               ":"
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600", children: typeof value === "object" ? JSON.stringify(value).slice(0, 50) + "..." : String(value) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600 dark:text-gray-400", children: typeof value === "object" ? JSON.stringify(value).slice(0, 50) + "..." : String(value) })
           ] }, key)) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500", children: "No data available" }) })
         ] });
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-6 h-6 text-white" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold text-gray-800", children: project.title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600", children: project.url })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-bold text-gray-800 dark:text-white", children: project.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-400", children: project.url })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -40056,58 +40074,88 @@ const ProjectDetails = ({ project }) => {
         }
       )
     ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Total Submissions" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 dark:text-white", children: ((_a2 = project.submissions) == null ? void 0 : _a2.length) || 0 })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "w-5 h-5 text-blue-600 dark:text-blue-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Successful" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-green-600 dark:text-green-400", children: ((_b2 = project.submissions) == null ? void 0 : _b2.filter((s2) => s2.submissionType === "Success").length) || 0 })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-5 h-5 text-green-600 dark:text-green-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Pending" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-yellow-600 dark:text-yellow-400", children: ((_c = project.submissions) == null ? void 0 : _c.filter((s2) => s2.submissionType === "Pending").length) || 0 })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "w-5 h-5 text-yellow-600 dark:text-yellow-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Success Rate" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-purple-600 dark:text-purple-400", children: project.submissions && project.submissions.length > 0 ? `${Math.round(project.submissions.filter((s2) => s2.submissionType === "Success").length / project.submissions.length * 100)}%` : "0%" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "w-5 h-5 text-purple-600 dark:text-purple-400" }) })
+      ] }) })
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: reportRef, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800", children: "Project Information" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Basic project details and metadata" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800 dark:text-white", children: "Project Information" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Basic project details and metadata" })
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "URL:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: project.url })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "URL:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: project.url })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "Category:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: project.category || "Not specified" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Category:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: project.category || "Not specified" })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "Target Keywords:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: ((_a2 = project.targetKeywords) == null ? void 0 : _a2.join(", ")) || "Not specified" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Target Keywords:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: ((_d = project.targetKeywords) == null ? void 0 : _d.join(", ")) || "Not specified" })
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "Meta Title:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: project.metaTitle || "Not specified" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Meta Title:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: project.metaTitle || "Not specified" })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "Keywords:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: ((_b2 = project.keywords) == null ? void 0 : _b2.join(", ")) || "Not specified" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Keywords:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: ((_e = project.keywords) == null ? void 0 : _e.join(", ")) || "Not specified" })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-4 h-4 text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600", children: "Sitemap:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800", children: project.sitemapUrl || "Not specified" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Sitemap:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-white", children: project.sitemapUrl || "Not specified" })
             ] })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800", children: "SEO Performance Score" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Overall performance and optimization score" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800 dark:text-white", children: "SEO Performance Score" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Overall performance and optimization score" })
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [
@@ -40123,7 +40171,7 @@ const ProjectDetails = ({ project }) => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-800 mb-4", children: "Score Breakdown" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-2 md:grid-cols-3 gap-3", children: Object.entries(calculatedSeoScore.breakdown).map(([tool, score]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 rounded-lg p-3 border border-gray-200", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-700", children: tool }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xl font-bold text-gray-900", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xl font-bold text-gray-900 dark:text-white", children: [
                 score,
                 "/10"
               ] })
@@ -40144,12 +40192,12 @@ const ProjectDetails = ({ project }) => {
           ] }, i2)) })
         ] })
       ] }),
-      usedTools.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: [
+      usedTools.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BarChart3, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800", children: "SEO Tool Reports" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800 dark:text-white", children: "SEO Tool Reports" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: [
               usedTools.length,
               " tool(s) analyzed"
             ] })
@@ -40161,20 +40209,20 @@ const ProjectDetails = ({ project }) => {
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-10 h-10 bg-gradient-to-r ${config.color} rounded-xl flex items-center justify-center`, children: config.icon }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-800", children: config.title }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: config.description })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-800 dark:text-white", children: config.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: config.description })
               ] })
             ] }),
             renderToolData(key, reportData)
           ] }, key);
         }) })
       ] }),
-      project.submissions && project.submissions.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6", children: [
+      project.submissions && project.submissions.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MapPin, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800", children: "Submissions" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-800 dark:text-white", children: "Submissions" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: [
               project.submissions.length,
               " submission(s) logged"
             ] })
@@ -40197,7 +40245,7 @@ const ProjectDetails = ({ project }) => {
           ] })
         ] }, index2)) })
       ] }),
-      usedTools.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-12 text-center", children: [
+      usedTools.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-12 text-center", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BarChart3, { className: "w-8 h-8 text-white" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-gray-800 mb-2", children: "No SEO Tools Used Yet" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 mb-6", children: "This project hasn't been analyzed with any SEO tools yet. Run some tools to see detailed reports here." }),
@@ -40328,8 +40376,8 @@ const MyProjects = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-gray-900", children: "My Projects" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600", children: "Manage your SEO projects and track their performance" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-gray-900 dark:text-white", children: "My Projects" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-300", children: "Manage your SEO projects and track their performance" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
@@ -40343,9 +40391,9 @@ const MyProjects = () => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 relative", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
@@ -40353,18 +40401,18 @@ const MyProjects = () => {
             placeholder: "Search projects...",
             value: searchTerm,
             onChange: (e2) => setSearchTerm(e2.target.value),
-            className: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className: "w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
           }
         )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Filter, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Filter, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "select",
           {
             value: filterStatus,
             onChange: (e2) => setFilterStatus(e2.target.value),
-            className: "pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 appearance-none bg-white",
+            className: "pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white",
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "all", children: "All Status" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "active", children: "Active" }),
@@ -40376,9 +40424,9 @@ const MyProjects = () => {
       ] })
     ] }) }),
     filteredProjects.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-8 h-8 text-gray-400" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-medium text-gray-900 mb-2", children: "No projects found" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 mb-6", children: projects2.length === 0 ? "You haven't created any projects yet. Create your first project to get started." : "No projects match your current filters. Try adjusting your search or filters." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-8 h-8 text-gray-400 dark:text-gray-500" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-medium text-gray-900 dark:text-white mb-2", children: "No projects found" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-300 mb-6", children: projects2.length === 0 ? "You haven't created any projects yet. Create your first project to get started." : "No projects match your current filters. Try adjusting your search or filters." }),
       projects2.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
@@ -40391,13 +40439,13 @@ const MyProjects = () => {
         }
       )
     ] }),
-    filteredProjects.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: filteredProjects.map((project) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6", children: [
+    filteredProjects.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: filteredProjects.map((project) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between mb-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-5 h-5 text-white" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-gray-900", children: project.title || "Untitled Project" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: project.url || "No URL" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-gray-900 dark:text-white", children: project.title || "Untitled Project" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 dark:text-gray-400", children: project.url || "No URL" }),
             project.status && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs px-2 py-1 rounded-full mt-1 inline-block ${getStatusColor(project.status)}`, children: project.status })
           ] })
         ] }),
@@ -40412,14 +40460,14 @@ const MyProjects = () => {
                   setOpenDropdown(openDropdown === project._id ? null : project._id);
                 }
               },
-              className: "p-1 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
+              className: "p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
               "aria-label": "Project options",
               "aria-expanded": openDropdown === project._id,
               "aria-haspopup": "true",
               children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertical, { className: "w-4 h-4 text-gray-400" })
             }
           ),
-          openDropdown === project._id && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg w-32 z-10", role: "menu", children: [
+          openDropdown === project._id && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 z-10", role: "menu", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "button",
               {
@@ -40433,7 +40481,7 @@ const MyProjects = () => {
                     alert("Failed to load project details. Please try again.");
                   }
                 },
-                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2",
+                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2",
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-3 h-3" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View" })
@@ -40447,7 +40495,7 @@ const MyProjects = () => {
                   setEditProject(project);
                   setOpenDropdown(null);
                 },
-                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2",
+                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2",
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(PenLine, { className: "w-3 h-3" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Edit" })
@@ -40464,7 +40512,7 @@ const MyProjects = () => {
                   }
                 },
                 disabled: deleting === project._id,
-                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 text-red-600 flex items-center space-x-2 disabled:opacity-50",
+                className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2 disabled:opacity-50",
                 children: [
                   deleting === project._id ? /* @__PURE__ */ jsxRuntimeExports.jsx(Loader2, { className: "w-3 h-3 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-3 h-3" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: deleting === project._id ? "Deleting..." : "Delete" })
@@ -40474,7 +40522,7 @@ const MyProjects = () => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 dark:text-gray-300", children: [
         "Category: ",
         project.category || "General"
       ] })
@@ -41027,6 +41075,10 @@ const BrokenLinkTool = () => {
   const [selectedProjectId, setSelectedProjectId] = reactExports.useState("");
   const [report, setReport] = reactExports.useState(null);
   const [loading, setLoading] = reactExports.useState(false);
+  const [error, setError] = reactExports.useState(null);
+  const [scanComplete, setScanComplete] = reactExports.useState(false);
+  const [totalLinks, setTotalLinks] = reactExports.useState(0);
+  const [brokenLinks, setBrokenLinks] = reactExports.useState([]);
   reactExports.useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -41044,10 +41096,18 @@ const BrokenLinkTool = () => {
       return;
     }
     setLoading(true);
+    setError(null);
+    setScanComplete(false);
+    setBrokenLinks([]);
+    setTotalLinks(0);
     try {
       const res = await runBrokenLinkChecker(selectedProjectId);
       setReport(res);
+      setTotalLinks(res.totalLinks || 0);
+      setBrokenLinks(res.brokenLinks || []);
+      setScanComplete(true);
     } catch (err2) {
+      setError("Analyzer failed to run. Please try again.");
       console.error("Analyzer failed:", err2);
     } finally {
       setLoading(false);
@@ -41056,14 +41116,14 @@ const BrokenLinkTool = () => {
   const getMetrics = () => {
     if (!report)
       return [];
-    const totalLinks = report.totalLinks || 0;
+    const totalLinks2 = report.totalLinks || 0;
     const brokenCount = report.brokenCount || 0;
-    const workingCount = report.workingCount || totalLinks - brokenCount;
-    const healthScore = report.overallHealthScore || (totalLinks > 0 ? Math.round(workingCount / totalLinks * 100) : 100);
+    const workingCount = report.workingCount || totalLinks2 - brokenCount;
+    const healthScore = report.overallHealthScore || (totalLinks2 > 0 ? Math.round(workingCount / totalLinks2 * 100) : 100);
     return [
       {
         label: "Total Links",
-        value: totalLinks,
+        value: totalLinks2,
         status: "good",
         icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { className: "w-4 h-4" })
       },
@@ -41084,16 +41144,16 @@ const BrokenLinkTool = () => {
   const getDetails = () => {
     if (!report)
       return [];
-    const totalLinks = report.totalLinks || 0;
+    const totalLinks2 = report.totalLinks || 0;
     const brokenCount = report.brokenCount || 0;
-    const workingCount = report.workingCount || totalLinks - brokenCount;
-    const healthScore = report.overallHealthScore || (totalLinks > 0 ? Math.round(workingCount / totalLinks * 100) : 100);
+    const workingCount = report.workingCount || totalLinks2 - brokenCount;
+    const healthScore = report.overallHealthScore || (totalLinks2 > 0 ? Math.round(workingCount / totalLinks2 * 100) : 100);
     const severityCounts = report.severityCounts || { high: 0, medium: 0, low: 0 };
     const categories2 = report.categories || {};
     const details = [
       {
         label: "Total External Links",
-        value: totalLinks,
+        value: totalLinks2,
         status: "good"
       },
       {
@@ -41336,18 +41396,18 @@ const BrokenLinkTool = () => {
     return suggestions;
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg border border-gray-200 p-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-bold text-gray-800 mb-2", children: "Enhanced Broken Link Scanner" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 mb-6", children: "Advanced broken link analysis with malware detection, classification, and priority-based recommendations." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-bold text-gray-800 dark:text-white mb-2", children: "Enhanced Broken Link Scanner" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-400 mb-6", children: "Advanced broken link analysis with malware detection, classification, and priority-based recommendations." }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Select Project" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Select Project" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "select",
             {
               value: selectedProjectId,
               onChange: (e2) => setSelectedProjectId(e2.target.value),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent",
+              className: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-primary-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent",
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Choose a project to analyze" }),
                 projects2.map((project) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: project._id, children: project.title }, project._id))
@@ -41360,7 +41420,7 @@ const BrokenLinkTool = () => {
           {
             onClick: handleRunAnalyzer,
             disabled: loading || !selectedProjectId,
-            className: `w-full px-4 py-3 rounded-lg font-medium transition-colors ${loading || !selectedProjectId ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"}`,
+            className: `w-full px-4 py-3 rounded-lg font-medium transition-colors ${loading || !selectedProjectId ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-700" : "bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-800"}`,
             children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-white" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Scanning with Enhanced Analysis..." })
@@ -41386,88 +41446,132 @@ const BrokenLinkTool = () => {
           improvementGuide: getImprovementGuide()
         }
       ),
-      report.categories && Object.keys(report.categories).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg border border-gray-200 p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 mb-4", children: "Broken Links by Category" }),
+      report.categories && Object.keys(report.categories).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 dark:text-white mb-4", children: "Broken Links by Category" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: Object.entries(report.categories).map(([category, links]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `p-4 rounded-lg border ${getCategoryColor(category)}`, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-2", children: [
             getCategoryIcon(category),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium capitalize", children: category.replace(/([A-Z])/g, " $1").trim() })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium capitalize dark:text-gray-300", children: category.replace(/([A-Z])/g, " $1").trim() })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold", children: Array.isArray(links) ? links.length : 0 }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm opacity-75", children: "broken links" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold dark:text-gray-300", children: Array.isArray(links) ? links.length : 0 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm opacity-75 dark:text-gray-400", children: "broken links" })
         ] }, category)) })
       ] }),
-      report.severityCounts && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg border border-gray-200 p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 mb-4", children: "Priority Breakdown" }),
+      report.severityCounts && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 dark:text-white mb-4", children: "Priority Breakdown" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 border border-red-200 rounded-lg p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-lg p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 mb-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-5 h-5 text-red-600" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-red-800", children: "High Priority" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-red-800 dark:text-red-300", children: "High Priority" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-red-600", children: report.severityCounts.high || 0 }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-red-600", children: "Security & Critical Issues" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-red-600 dark:text-red-400", children: report.severityCounts.high || 0 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-red-600 dark:text-red-400", children: "Security & Critical Issues" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-yellow-50 border border-yellow-200 rounded-lg p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 rounded-lg p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 mb-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(AlertTriangle, { className: "w-5 h-5 text-yellow-600" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-yellow-800", children: "Medium Priority" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-yellow-800 dark:text-yellow-300", children: "Medium Priority" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-yellow-600", children: report.severityCounts.medium || 0 }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-yellow-600", children: "Business & User Experience" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-yellow-600 dark:text-yellow-400", children: report.severityCounts.medium || 0 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-yellow-600 dark:text-yellow-400", children: "Business & User Experience" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-blue-50 border border-blue-200 rounded-lg p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-lg p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 mb-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { className: "w-5 h-5 text-blue-600" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-blue-800", children: "Low Priority" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-blue-800 dark:text-blue-300", children: "Low Priority" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-blue-600", children: report.severityCounts.low || 0 }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-blue-600", children: "General & Content Links" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-blue-600 dark:text-blue-400", children: report.severityCounts.low || 0 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-blue-600 dark:text-blue-400", children: "General & Content Links" })
           ] })
         ] })
       ] }),
-      report.brokenLinks && report.brokenLinks.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg border border-gray-200 p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 mb-4", children: "Detailed Analysis" }),
+      report.brokenLinks && report.brokenLinks.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-lg font-semibold text-gray-800 dark:text-white mb-4", children: "Detailed Analysis" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           report.brokenLinks.slice(0, 8).map((link, index2) => {
             var _a2, _b2, _c, _d, _e;
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 rounded-lg p-4", children: [
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg p-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-start mb-3", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-gray-800 truncate", children: link.url }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 mt-1", children: link.text && link.text !== "No text" ? `"${link.text}"` : "No link text" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-gray-800 dark:text-white truncate", children: link.url }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 mt-1", children: link.text && link.text !== "No text" ? `"${link.text}"` : "No link text" })
                 ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `px-3 py-1 rounded-full text-xs font-medium ${link.priority === "high" ? "bg-red-100 text-red-800" : link.priority === "medium" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `px-3 py-1 rounded-full text-xs font-medium ${link.priority === "high" ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300" : link.priority === "medium" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300" : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"}`, children: [
                   link.priority,
                   " priority"
                 ] })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4 text-sm", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600", children: "Category:" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 font-medium capitalize", children: ((_b2 = (_a2 = link.classification) == null ? void 0 : _a2.category) == null ? void 0 : _b2.replace(/([A-Z])/g, " $1").trim()) || "General" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600 dark:text-gray-400", children: "Category:" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 font-medium capitalize dark:text-gray-300", children: ((_b2 = (_a2 = link.classification) == null ? void 0 : _a2.category) == null ? void 0 : _b2.replace(/([A-Z])/g, " $1").trim()) || "General" })
                 ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600", children: "Severity:" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `ml-2 font-medium ${((_c = link.classification) == null ? void 0 : _c.severity) === "high" ? "text-red-600" : ((_d = link.classification) == null ? void 0 : _d.severity) === "medium" ? "text-yellow-600" : "text-blue-600"}`, children: ((_e = link.classification) == null ? void 0 : _e.severity) || "low" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600 dark:text-gray-400", children: "Severity:" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `ml-2 font-medium ${((_c = link.classification) == null ? void 0 : _c.severity) === "high" ? "text-red-600 dark:text-red-400" : ((_d = link.classification) == null ? void 0 : _d.severity) === "medium" ? "text-yellow-600 dark:text-yellow-400" : "text-blue-600 dark:text-blue-400"}`, children: ((_e = link.classification) == null ? void 0 : _e.severity) || "low" })
                 ] })
               ] }),
               link.recommendations && link.recommendations.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 mb-2", children: "Recommendations:" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-1", children: link.recommendations.slice(0, 2).map((rec, recIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "text-sm text-gray-700 flex items-start space-x-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 mb-2", children: "Recommendations:" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-1", children: link.recommendations.slice(0, 2).map((rec, recIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "text-sm text-gray-700 dark:text-gray-300 flex items-start space-x-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-500", children: "•" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: rec })
                 ] }, recIndex)) })
               ] })
             ] }, index2);
           }),
-          report.brokenLinks.length > 8 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-gray-600", children: [
+          report.brokenLinks.length > 8 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-gray-600 dark:text-gray-400", children: [
             "... and ",
             report.brokenLinks.length - 8,
             " more broken links"
           ] })
         ] })
-      ] })
+      ] }),
+      brokenLinks.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Broken Links Found" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: brokenLinks.map((link, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-red-200 dark:border-red-700 rounded-lg p-3 bg-red-50 dark:bg-red-900/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-start", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-red-800 dark:text-red-300", children: link.url }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-red-600 dark:text-red-400 mt-1", children: [
+              "Status: ",
+              link.status
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: () => window.open(link.url, "_blank"),
+              className: "ml-2 px-2 py-1 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-300 rounded text-xs hover:bg-red-200 dark:hover:bg-red-700 transition-colors",
+              children: "Check"
+            }
+          )
+        ] }) }, index2)) })
+      ] }),
+      scanComplete && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Scan Summary" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-blue-600 dark:text-blue-400", children: totalLinks }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Total Links" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-red-600 dark:text-red-400", children: brokenLinks.length }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Broken Links" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold text-green-600 dark:text-green-400", children: totalLinks - brokenLinks.length }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Working Links" })
+          ] })
+        ] })
+      ] }),
+      error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-red-600 dark:text-red-400", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(AlertCircle, { className: "w-5 h-5" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-medium dark:text-red-400", children: [
+          "Error: ",
+          error
+        ] })
+      ] }) })
     ] })
   ] });
 };
@@ -41677,13 +41781,13 @@ const ToolCard = ({ name, description, icon, onClick }) => /* @__PURE__ */ jsxRu
   "div",
   {
     onClick,
-    className: "bg-white border rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition space-y-2",
+    className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition space-y-2",
     children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center", children: icon }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-md font-semibold text-gray-800", children: name })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center", children: icon }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-md font-semibold text-gray-800 dark:text-white", children: name })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: description })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 dark:text-gray-300", children: description })
     ]
   }
 );
@@ -44144,8 +44248,8 @@ const SEOToolsDashboard = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Grid, { className: "w-5 h-5 text-white" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-gray-900", children: "SEO Tools" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600", children: "Run diagnostics or view saved reports" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-gray-900 dark:text-white", children: "SEO Tools" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-300", children: "Run diagnostics or view saved reports" })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6", children: tools.map((tool) => /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -44164,7 +44268,7 @@ const SEOToolsDashboard = () => {
         "button",
         {
           onClick: handleBack,
-          className: "flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-gray-700 font-medium shadow-sm",
+          className: "flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 text-gray-700 dark:text-gray-300 font-medium shadow-sm",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeft, { className: "w-4 h-4" }),
             "Back to Tools"
@@ -44174,12 +44278,12 @@ const SEOToolsDashboard = () => {
       selectedToolInfo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center", children: React.cloneElement(selectedToolInfo.icon, { className: "w-4 h-4 text-white" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-gray-900", children: selectedToolInfo.name }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: selectedToolInfo.description })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-gray-900 dark:text-white", children: selectedToolInfo.name }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-300", children: selectedToolInfo.description })
         ] })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 rounded-xl p-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 dark:bg-gray-800 rounded-xl p-6", children: [
       selectedTool === "meta" && /* @__PURE__ */ jsxRuntimeExports.jsx(MetaAnalyzer, {}),
       selectedTool === "keyword-density" && /* @__PURE__ */ jsxRuntimeExports.jsx(KeywordDensityTool, {}),
       selectedTool === "keyword-research" && /* @__PURE__ */ jsxRuntimeExports.jsx(KeywordResearcherTool, {}),
@@ -45573,7 +45677,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "No projects found. Create a project first to use submission tools." })
           ] }),
           !projectsLoading && !projectsError && projects2.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-lg", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-green-500 rounded-full" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
                 projects2.length,
@@ -45582,8 +45686,8 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 " available"
               ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { className: "cursor-pointer hover:text-gray-700", children: "Debug: Show project details" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-lg", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { className: "cursor-pointer hover:text-gray-700 dark:hover:text-gray-300", children: "Debug: Show project details" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2 space-y-1", children: projects2.map((p2, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-mono", children: [
                 "[",
                 index2,
@@ -45720,7 +45824,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
         ] })
       ] }, category)) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.4s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.4s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-success-500 to-success-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "w-5 h-5 text-white" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -45743,7 +45847,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.6s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "w-5 h-5 text-white" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -45770,7 +45874,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up", style: { animationDelay: "0.8s" }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 mb-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-5 h-5 text-white" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -45996,35 +46100,35 @@ function PricingPlans() {
     return null;
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 space-y-8", children: [
-    user && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-2xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-2xl p-6 text-center", children: [
+    user && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-2xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center space-x-3 mb-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-bold text-sm", children: "✓" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Current Plan" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white", children: "Current Plan" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-gray-700 mb-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-gray-700 dark:text-gray-300 mb-2", children: [
         "You are currently on the ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-blue-600", children: ((_a2 = plans.find((p2) => p2.id === user.subscription)) == null ? void 0 : _a2.name) || user.subscription }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-blue-600 dark:text-blue-400", children: ((_a2 = plans.find((p2) => p2.id === user.subscription)) == null ? void 0 : _a2.name) || user.subscription }),
         " plan"
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: user.subscription === "free" ? "Free forever plan with basic features" : user.subscription === "starter" ? "1 project, 100 submissions per month" : user.subscription === "pro" ? "5 projects, 500 submissions per month" : user.subscription === "business" ? "10 projects, 1000 submissions per month" : "Unlimited projects and submissions" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: user.subscription === "free" ? "Free forever plan with basic features" : user.subscription === "starter" ? "1 project, 100 submissions per month" : user.subscription === "pro" ? "5 projects, 500 submissions per month" : user.subscription === "business" ? "10 projects, 1000 submissions per month" : "Unlimited projects and submissions" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-4 py-2 rounded-full", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "w-5 h-5 text-blue-600" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-blue-700", children: "Choose Your Perfect Plan" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-blue-700 dark:text-blue-300", children: "Choose Your Perfect Plan" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-4xl font-bold text-gray-900", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-4xl font-bold text-gray-900 dark:text-white", children: [
         "Pricing that scales with your",
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent", children: " success" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl text-gray-600 max-w-2xl mx-auto", children: "Start free and upgrade as you grow. All plans include our core SEO tools and directory submission features." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto", children: "Start free and upgrade as you grow. All plans include our core SEO tools and directory submission features." })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-100 p-1 rounded-xl", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-100 dark:bg-primary-700 p-1 rounded-xl", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           onClick: () => setBillingCycle("monthly"),
-          className: `px-6 py-2 rounded-lg font-medium transition-all ${billingCycle === "monthly" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}`,
+          className: `px-6 py-2 rounded-lg font-medium transition-all ${billingCycle === "monthly" ? "bg-white dark:bg-primary-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"}`,
           children: "Monthly"
         }
       ),
@@ -46032,7 +46136,7 @@ function PricingPlans() {
         "button",
         {
           onClick: () => setBillingCycle("yearly"),
-          className: `px-6 py-2 rounded-lg font-medium transition-all relative ${billingCycle === "yearly" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}`,
+          className: `px-6 py-2 rounded-lg font-medium transition-all relative ${billingCycle === "yearly" ? "bg-white dark:bg-primary-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"}`,
           children: [
             "Yearly",
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute -top-2 -right-2 bg-gradient-to-r from-orange-400 to-red-400 text-white text-xs px-2 py-0.5 rounded-full", children: "20% OFF" })
@@ -46047,7 +46151,7 @@ function PricingPlans() {
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "div",
         {
-          className: `relative flex flex-col h-full bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${plan.popular ? "border-blue-200 ring-4 ring-blue-100" : plan.recommended ? "border-purple-200 ring-4 ring-purple-100" : "border-gray-200 hover:border-gray-300"}`,
+          className: `relative flex flex-col h-full bg-white dark:bg-primary-800 rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${plan.popular ? "border-blue-200 dark:border-blue-600 ring-4 ring-blue-100 dark:ring-blue-900/30" : plan.recommended ? "border-purple-200 dark:border-purple-600 ring-4 ring-purple-100 dark:ring-purple-900/30" : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"}`,
           style: { minHeight: "600px", display: "flex" },
           children: [
             plan.popular && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -top-4 left-1/2 transform -translate-x-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium", children: "Most Popular" }) }),
@@ -46429,7 +46533,7 @@ function ProfileSettings() {
               {
                 type: "button",
                 onClick: handlePhotoUpload,
-                className: "absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors",
+                className: "absolute bottom-0 right-0 bg-white dark:bg-primary-700 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-primary-600 transition-colors",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(Camera, { className: "w-4 h-4 text-gray-600" })
               }
             )
@@ -46690,35 +46794,35 @@ function ProfileSettings() {
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700", children: "Email Notifications" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: "Email Notifications" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "button",
                 {
                   onClick: () => handleSettingChange("emailNotifications", !settings2.emailNotifications),
-                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.emailNotifications ? "bg-blue-600" : "bg-gray-200"}`,
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings2.emailNotifications ? "translate-x-6" : "translate-x-1"}` })
+                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.emailNotifications ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"}`,
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${settings2.emailNotifications ? "translate-x-6" : "translate-x-1"}` })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700", children: "Push Notifications" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: "Push Notifications" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "button",
                 {
                   onClick: () => handleSettingChange("pushNotifications", !settings2.pushNotifications),
-                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.pushNotifications ? "bg-blue-600" : "bg-gray-200"}`,
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings2.pushNotifications ? "translate-x-6" : "translate-x-1"}` })
+                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.pushNotifications ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"}`,
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${settings2.pushNotifications ? "translate-x-6" : "translate-x-1"}` })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700", children: "Marketing Emails" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: "Marketing Emails" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "button",
                 {
                   onClick: () => handleSettingChange("marketingEmails", !settings2.marketingEmails),
-                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.marketingEmails ? "bg-blue-600" : "bg-gray-200"}`,
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings2.marketingEmails ? "translate-x-6" : "translate-x-1"}` })
+                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.marketingEmails ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"}`,
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${settings2.marketingEmails ? "translate-x-6" : "translate-x-1"}` })
                 }
               )
             ] })
@@ -46731,18 +46835,18 @@ function ProfileSettings() {
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700", children: "Two-Factor Auth" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: "Two-Factor Auth" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "button",
                 {
                   onClick: () => handleSettingChange("twoFactorAuth", !settings2.twoFactorAuth),
-                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.twoFactorAuth ? "bg-blue-600" : "bg-gray-200"}`,
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings2.twoFactorAuth ? "translate-x-6" : "translate-x-1"}` })
+                  className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings2.twoFactorAuth ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"}`,
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-block h-4 w-4 transform rounded-full bg-white dark:bg-primary-300 transition-transform ${settings2.twoFactorAuth ? "translate-x-6" : "translate-x-1"}` })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm text-gray-700 mb-2", children: "Session Timeout (minutes)" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm text-gray-700 dark:text-gray-300 mb-2", children: "Session Timeout (minutes)" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs(
                 "select",
                 {
@@ -46987,67 +47091,66 @@ const EmployeeManagement = () => {
         }
       )
     ] }),
-    team && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-4 gap-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white p-4 rounded-lg border border-gray-200", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-5 h-5 text-blue-600" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-600", children: "Team Members" })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Total Employees" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 dark:text-white", children: members.length })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-gray-900 mt-1", children: [
-          members.length,
-          " / ",
-          team.maxMembers
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white p-4 rounded-lg border border-gray-200", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Briefcase, { className: "w-5 h-5 text-green-600" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-600", children: "Projects" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-6 h-6 text-blue-600 dark:text-blue-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Active Employees" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-green-600 dark:text-green-400", children: members.filter((member) => member.status === "active").length })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 mt-1", children: team.totalProjects })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white p-4 rounded-lg border border-gray-200", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-5 h-5 text-purple-600" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-600", children: "Submissions" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-6 h-6 text-green-600 dark:text-green-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Departments" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-purple-600 dark:text-purple-400", children: new Set(members.map((member) => member.role)).size })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 mt-1", children: team.totalSubmissions })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white p-4 rounded-lg border border-gray-200", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Crown, { className: "w-5 h-5 text-yellow-600" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-600", children: "Plan" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Building, { className: "w-6 h-6 text-purple-600 dark:text-purple-400" }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Avg Salary" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-orange-600 dark:text-orange-400", children: [
+            "$",
+            Math.round(members.reduce((sum, member) => sum + 1e3, 0) / members.length).toLocaleString()
+          ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 mt-1 capitalize", children: team.subscriptionPlan })
-      ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "w-6 h-6 text-orange-600 dark:text-orange-400" }) })
+      ] }) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg border border-gray-200", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 border-b border-gray-200", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Team Members" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white", children: "Team Members" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Member" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Role" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Status" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Last Login" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Actions" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50 dark:bg-primary-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Member" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Role" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Last Login" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Actions" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white divide-y divide-gray-200", children: members.map((member) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-primary-800 divide-y divide-gray-200 dark:divide-gray-700", children: members.map((member) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 h-10 w-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(User, { className: "w-5 h-5 text-gray-600" }) }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900", children: member.username }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-500", children: member.email })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: member.username }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-500 dark:text-gray-400", children: member.email })
             ] })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
             getRoleIcon(member.role),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 capitalize", children: member.role })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white capitalize", children: member.role })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
             getStatusIcon(member.status),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 capitalize", children: member.status })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white capitalize", children: member.status })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500", children: member.lastLogin ? new Date(member.lastLogin).toLocaleDateString() : "Never" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", children: member.lastLogin ? new Date(member.lastLogin).toLocaleDateString() : "Never" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
@@ -47056,7 +47159,7 @@ const EmployeeManagement = () => {
                   setSelectedMember(member);
                   setShowEditModal(true);
                 },
-                className: "text-blue-600 hover:text-blue-900",
+                className: "text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(PenSquare, { className: "w-4 h-4" })
               }
             ),
@@ -47064,7 +47167,7 @@ const EmployeeManagement = () => {
               "button",
               {
                 onClick: () => handleRemoveMember(member.id),
-                className: "text-red-600 hover:text-red-900",
+                className: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300",
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-4 h-4" })
               }
             )
@@ -47072,30 +47175,30 @@ const EmployeeManagement = () => {
         ] }, member.id)) })
       ] }) })
     ] }),
-    showInviteModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-6 w-full max-w-md", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 mb-4", children: "Invite Team Member" }),
+    showInviteModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-6 w-full max-w-md", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Invite Team Member" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Email Address" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Email Address" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               type: "email",
               value: inviteForm.email,
               onChange: (e2) => setInviteForm({ ...inviteForm, email: e2.target.value }),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+              className: "w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
               placeholder: "employee@company.com"
             }
           )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Role" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Role" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "select",
             {
               value: inviteForm.role,
               onChange: (e2) => handleRoleChange(e2.target.value),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+              className: "w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
               children: Object.entries(roleTemplates).map(([key, template]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: key, children: [
                 template.name,
                 " - ",
@@ -47105,7 +47208,7 @@ const EmployeeManagement = () => {
           )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: "Permissions" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Permissions" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-40 overflow-y-auto", children: Object.entries(inviteForm.permissions).map(([permission, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center space-x-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
@@ -47119,10 +47222,10 @@ const EmployeeManagement = () => {
                     [permission]: e2.target.checked
                   }
                 }),
-                className: "rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className: "rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-blue-400"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700", children: permission.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: permission.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()) })
           ] }, permission)) })
         ] })
       ] }),
@@ -47131,7 +47234,7 @@ const EmployeeManagement = () => {
           "button",
           {
             onClick: () => setShowInviteModal(false),
-            className: "px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200",
+            className: "px-4 py-2 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600",
             children: "Cancel"
           }
         ),
@@ -47139,35 +47242,35 @@ const EmployeeManagement = () => {
           "button",
           {
             onClick: handleInviteMember,
-            className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700",
+            className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800",
             children: "Send Invitation"
           }
         )
       ] })
     ] }) }),
-    showEditModal && selectedMember && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg p-6 w-full max-w-md", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 mb-4", children: "Edit Team Member" }),
+    showEditModal && selectedMember && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg p-6 w-full max-w-md", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Edit Team Member" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Email" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Email" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               type: "email",
               value: selectedMember.email,
               disabled: true,
-              className: "w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+              className: "w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-md bg-gray-50"
             }
           )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 mb-1", children: "Role" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Role" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "select",
             {
               value: selectedMember.role,
               onChange: (e2) => setSelectedMember({ ...selectedMember, role: e2.target.value }),
-              className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+              className: "w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
               children: Object.entries(roleTemplates).map(([key, template]) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: key, children: template.name }, key))
             }
           )
@@ -47178,7 +47281,7 @@ const EmployeeManagement = () => {
           "button",
           {
             onClick: () => setShowEditModal(false),
-            className: "px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200",
+            className: "px-4 py-2 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600",
             children: "Cancel"
           }
         ),
@@ -47189,7 +47292,7 @@ const EmployeeManagement = () => {
               role: selectedMember.role,
               permissions: roleTemplates[selectedMember.role].permissions
             }),
-            className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700",
+            className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800",
             children: "Update Member"
           }
         )
@@ -48045,13 +48148,13 @@ function AdminPanel() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-red-700", children: "Admin Access" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex space-x-2 overflow-x-auto", children: tabs.map((tab) => {
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex space-x-2 overflow-x-auto", children: tabs.map((tab) => {
       const Icon = tab.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
           onClick: () => setActiveTab(tab.id),
-          className: `flex items-center space-x-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${activeTab === tab.id ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" : "text-gray-700 hover:bg-gray-100"}`,
+          className: `flex items-center space-x-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${activeTab === tab.id ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"}`,
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "w-4 h-4" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: tab.name })
@@ -48062,58 +48165,58 @@ function AdminPanel() {
     }) }) }),
     activeTab === "overview" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Total Users" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900", children: (systemStats.totalUsers ?? 0).toLocaleString() })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Total Users" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-gray-900 dark:text-white", children: (systemStats.totalUsers ?? 0).toLocaleString() })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-6 h-6 text-blue-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-6 h-6 text-blue-600 dark:text-blue-400" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Active Users" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-green-600", children: (systemStats.activeUsers ?? 0).toLocaleString() })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Active Users" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-green-600 dark:text-green-400", children: (systemStats.activeUsers ?? 0).toLocaleString() })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-6 h-6 text-green-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCircle, { className: "w-6 h-6 text-green-600 dark:text-green-400" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Total Projects" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-purple-600", children: (systemStats.totalProjects ?? 0).toLocaleString() })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Total Projects" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-purple-600 dark:text-purple-400", children: (systemStats.totalProjects ?? 0).toLocaleString() })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-6 h-6 text-purple-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-6 h-6 text-purple-600 dark:text-purple-400" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Submissions" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-orange-600", children: (systemStats.totalSubmissions ?? 0).toLocaleString() })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Submissions" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-orange-600 dark:text-orange-400", children: (systemStats.totalSubmissions ?? 0).toLocaleString() })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "w-6 h-6 text-orange-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "w-6 h-6 text-orange-600 dark:text-orange-400" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Revenue" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-green-600", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Revenue" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-green-600 dark:text-green-400", children: [
               "$",
               (systemStats.revenue ?? 0).toLocaleString()
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "w-6 h-6 text-green-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "w-6 h-6 text-green-600 dark:text-green-400" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl p-6 shadow-sm border border-gray-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600", children: "Success Rate" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-blue-600", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-600 dark:text-gray-400", children: "Success Rate" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-bold text-blue-600 dark:text-blue-400", children: [
               systemStats.successRate ?? 0,
               "%"
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "w-6 h-6 text-blue-600" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "w-6 h-6 text-blue-600 dark:text-blue-400" }) })
         ] }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 mb-4", children: "Recent User Activity" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Recent User Activity" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.isArray(users) && users.slice(0, 5).map((user2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 p-3 bg-gray-50 rounded-lg", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "w-4 h-4 text-white" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
@@ -48126,8 +48229,8 @@ function AdminPanel() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user2.status)}`, children: user2.status.charAt(0).toUpperCase() + user2.status.slice(1) })
           ] }, user2._id)) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 mb-4", children: "Top Directories" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Top Directories" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: directories.slice(0, 5).map((directory) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-3 bg-gray-50 rounded-lg", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Database, { className: "w-4 h-4 text-white" }) }),
@@ -48154,10 +48257,10 @@ function AdminPanel() {
       ] })
     ] }),
     activeTab === "users" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "User Management" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 mt-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 dark:text-white", children: "User Management" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 dark:text-gray-400 mt-1", children: [
             users.length,
             " total users"
           ] })
@@ -48236,7 +48339,7 @@ function AdminPanel() {
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
@@ -48261,7 +48364,7 @@ function AdminPanel() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Join Date" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Actions" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white divide-y divide-gray-200", children: Array.isArray(users) && users.map((user2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-gray-50", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-primary-800 divide-y divide-gray-200 dark:divide-gray-700", children: Array.isArray(users) && users.map((user2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-gray-50", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
@@ -48291,7 +48394,7 @@ function AdminPanel() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500", children: formatDate(user2.joinDate) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "p-1 hover:bg-gray-100 rounded-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertical, { className: "w-4 h-4 text-gray-400" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg w-40 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2", onClick: (e2) => {
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute right-0 top-8 bg-white dark:bg-primary-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-40 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2", onClick: (e2) => {
               e2.stopPropagation();
               openEditUser(user2);
             }, children: [
@@ -48303,7 +48406,7 @@ function AdminPanel() {
       ] }) }) })
     ] }),
     activeTab === "projects" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Project Management" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 mt-1", children: [
@@ -48329,7 +48432,7 @@ function AdminPanel() {
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Project" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Owner" }),
@@ -48337,7 +48440,7 @@ function AdminPanel() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Submissions" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Actions" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white divide-y divide-gray-200", children: Array.isArray(projects2) && projects2.map((project) => {
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-primary-800 divide-y divide-gray-200 dark:divide-gray-700", children: Array.isArray(projects2) && projects2.map((project) => {
           const projectUser = users.find((u2) => u2._id === project.userId);
           const projectSubmissions = submissions2.filter((s2) => s2.projectId === project._id);
           return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-gray-50", children: [
@@ -48362,7 +48465,7 @@ function AdminPanel() {
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "p-1 hover:bg-gray-100 rounded-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertical, { className: "w-4 h-4 text-gray-400" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white dark:bg-primary-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-3 h-3" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View" })
@@ -48378,7 +48481,7 @@ function AdminPanel() {
       ] }) }) })
     ] }),
     activeTab === "submissions" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Submission Management" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-gray-600 mt-1", children: [
@@ -48410,7 +48513,7 @@ function AdminPanel() {
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "User" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Project" }),
@@ -48420,7 +48523,7 @@ function AdminPanel() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Submitted" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", children: "Actions" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white divide-y divide-gray-200", children: Array.isArray(submissions2) && submissions2.map((sub) => {
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-primary-800 divide-y divide-gray-200 dark:divide-gray-700", children: Array.isArray(submissions2) && submissions2.map((sub) => {
           const submissionUser = users.find((u2) => u2._id === sub.userId);
           const submissionProject = projects2.find((p2) => p2._id === sub.projectId);
           return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-gray-50", children: [
@@ -48444,7 +48547,7 @@ function AdminPanel() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500", children: formatDate(sub.submittedAt) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "p-1 hover:bg-gray-100 rounded-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MoreVertical, { className: "w-4 h-4 text-gray-400" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-8 bg-white dark:bg-primary-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "w-3 h-3" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "View" })
@@ -48461,7 +48564,7 @@ function AdminPanel() {
     ] }),
     activeTab === "directories" && /* @__PURE__ */ jsxRuntimeExports.jsx(DirectoryManagement, {}),
     activeTab === "employees" && /* @__PURE__ */ jsxRuntimeExports.jsx(EmployeeManagement, {}),
-    activeTab === "settings" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-xl shadow-sm border border-gray-100 p-6", children: [
+    activeTab === "settings" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold text-gray-900 mb-6", children: "System Settings" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-8", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
@@ -48674,7 +48777,7 @@ function AdminPanel() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Save Settings" })
       ] }) })
     ] }) }),
-    showDirectoryModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative", children: [
+    showDirectoryModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setShowDirectoryModal(false), className: "absolute top-2 right-2 text-gray-400 hover:text-gray-600", children: "×" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold mb-4", children: "Add New Directory" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: (e2) => {
@@ -48760,7 +48863,7 @@ function AdminPanel() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", className: "w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all", disabled: isLoading, children: isLoading ? "Saving..." : "Add Directory" })
       ] })
     ] }) }),
-    showUserModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative", children: [
+    showUserModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setShowUserModal(false), className: "absolute top-2 right-2 text-gray-400 hover:text-gray-600", children: "×" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold mb-4", children: editingUser ? "Edit User" : "Create User" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: (e2) => {
@@ -48857,54 +48960,54 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
   const menuItems = [
     {
       id: "dashboard",
-      label: t3("sidebar.dashboard"),
+      label: t3("submissions.dashboard"),
       icon: Home,
       color: "from-blue-500 to-blue-600",
-      description: "Overview & Analytics"
+      description: t3("dashboard.title")
     },
     {
       id: "projects",
-      label: t3("sidebar.projects"),
+      label: t3("submissions.projects"),
       icon: FolderOpen,
       color: "from-green-500 to-green-600",
-      description: "Manage Projects"
+      description: t3("projects.title")
     },
     {
       id: "tools",
-      label: t3("sidebar.tools"),
+      label: t3("submissions.seoTools"),
       icon: BarChart3,
       color: "from-purple-500 to-purple-600",
-      description: "SEO Analysis Tools"
+      description: t3("submissions.tools")
     },
     {
       id: "directory",
-      label: t3("sidebar.directory"),
+      label: t3("submissions.directory"),
       icon: Globe,
       color: "from-orange-500 to-orange-600",
-      description: "Directory Submissions"
+      description: t3("submissions.title")
     },
     {
       id: "reports",
-      label: t3("sidebar.reports"),
+      label: t3("submissions.submissionReports"),
       icon: FileText,
       color: "from-red-500 to-red-600",
-      description: "Performance Reports"
+      description: t3("submissions.reports")
     }
   ];
   const secondaryMenuItems = [
     {
       id: "pricing",
-      label: t3("sidebar.pricing"),
+      label: t3("submissions.pricingPlans"),
       icon: CreditCard,
       color: "from-yellow-500 to-yellow-600",
-      description: "Plans & Billing"
+      description: t3("submissions.pricing")
     },
     {
       id: "profile",
-      label: t3("sidebar.profile"),
+      label: t3("submissions.profileSettings"),
       icon: User,
       color: "from-indigo-500 to-indigo-600",
-      description: "Account Settings"
+      description: t3("submissions.profile")
     },
     {
       id: "test",
@@ -48917,7 +49020,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
   const adminMenuItems = (user == null ? void 0 : user.isAdmin) ? [
     {
       id: "admin",
-      label: "Admin Panel",
+      label: t3("submissions.adminPanel"),
       icon: Shield,
       color: "from-red-500 to-red-600",
       description: "System Administration"
@@ -48945,7 +49048,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
         flex flex-col
         flex-shrink-0
       `, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3 p-4 border-b border-primary-200 dark:border-primary-700", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex items-center ${!isCollapsed ? "space-x-3" : "justify-center"} p-4 border-b border-primary-200 dark:border-primary-700 relative`, children: !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 relative", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-10 h-10 absolute inset-0", viewBox: "0 0 40 40", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -48988,27 +49091,70 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
               /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#1E40AF" })
             ] }) })
           ] }) }) }),
-          !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight", children: "OPPTYM" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-primary-600 dark:text-primary-400 leading-tight", children: "AI ENABLED INTELLIGENCE" })
           ] })
         ] }),
-        !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: () => setIsCollapsed(true),
             className: "ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "w-4 h-4" })
           }
-        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+        )
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 relative", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "w-10 h-10 absolute inset-0", viewBox: "0 0 40 40", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "circle",
+            {
+              cx: "20",
+              cy: "20",
+              r: "18",
+              fill: "none",
+              stroke: "url(#blueGradient)",
+              strokeWidth: "2",
+              strokeDasharray: "4,4",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "26", cy: "14", r: "3", fill: "#3B82F6" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 26 14 A 18 18 0 0 1 20 2",
+              fill: "none",
+              stroke: "#3B82F6",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "14", cy: "26", r: "3", fill: "#1E40AF" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "path",
+            {
+              d: "M 14 26 A 18 18 0 0 1 20 38",
+              fill: "none",
+              stroke: "#1E40AF",
+              strokeWidth: "2",
+              strokeLinecap: "round"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("defs", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "blueGradient", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", stopColor: "#3B82F6" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#1E40AF" })
+          ] }) })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: () => setIsCollapsed(false),
-            className: "ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors",
+            className: "absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm",
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "w-4 h-4" })
           }
         )
-      ] }),
+      ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-b border-white/20 dark:border-primary-700/20", children: !isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-white font-semibold text-sm", children: getUserInitials2(user) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
@@ -49038,7 +49184,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
             title: isCollapsed ? item.label : void 0,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `
-                  ${isCollapsed ? "w-10 h-10" : "w-8 h-8"} rounded-lg flex items-center justify-center transition-all duration-200
+                  ${isCollapsed ? "w-10 h-10" : "w-8 h-8"} rounded-xl flex items-center justify-center transition-all duration-200
                   ${isActive ? "bg-white/20" : "bg-gradient-to-r " + item.color + " group-hover:shadow-glow"}
                 `, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: `${isCollapsed ? "w-5 h-5" : "w-4 h-4"}` }) }),
               !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 text-left", children: [
@@ -49062,7 +49208,7 @@ function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
           title: isCollapsed ? "Logout" : void 0,
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `
-              ${isCollapsed ? "w-10 h-10" : "w-8 h-8"} rounded-lg flex items-center justify-center transition-all duration-200
+              ${isCollapsed ? "w-10 h-10" : "w-8 h-8"} rounded-xl flex items-center justify-center transition-all duration-200
               bg-gradient-to-r from-red-500 to-red-600 group-hover:shadow-glow
             `, children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { className: `${isCollapsed ? "w-5 h-5" : "w-4 h-4"}` }) }),
             !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: "Logout" })
@@ -49097,7 +49243,7 @@ const LanguageSwitcher = () => {
       "button",
       {
         onClick: () => setIsOpen(!isOpen),
-        className: "flex items-center space-x-2 px-3 py-2 bg-white/80 backdrop-blur-lg border border-white/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
+        className: "flex items-center space-x-2 px-3 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 rounded-xl shadow-glass hover:shadow-glass-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent group",
         "aria-label": "Select language",
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-5 h-5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-lg flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { className: "w-3 h-3 text-white" }) }),
@@ -49110,7 +49256,7 @@ const LanguageSwitcher = () => {
         ]
       }
     ),
-    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-56 bg-white/90 backdrop-blur-lg border border-white/20 rounded-2xl shadow-glass z-50 animate-fade-in-up max-h-96 overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: languages.map((language, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-full left-0 mt-2 w-56 bg-white/90 dark:bg-primary-800/90 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 rounded-2xl shadow-glass z-50 animate-fade-in-up max-h-96 overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2", children: languages.map((language, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
         onClick: () => handleLanguageChange(language.code),
@@ -49124,7 +49270,7 @@ const LanguageSwitcher = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs ${i18n.language === language.code ? "text-white/80" : "text-primary-500"}`, children: language.name })
             ] })
           ] }),
-          i18n.language === language.code && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-white rounded-full animate-pulse" })
+          i18n.language === language.code && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-white dark:bg-primary-300 rounded-full animate-pulse" })
         ]
       },
       language.code
@@ -49744,10 +49890,10 @@ function App() {
       case "directory":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(SubmissionsDashboard, {});
       case "reports":
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 p-6 relative overflow-hidden", children: [
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 p-6 relative overflow-hidden", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-0 overflow-hidden", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float", style: { animationDelay: "2s" } })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-900 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-700 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float", style: { animationDelay: "2s" } })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto space-y-8 relative z-10", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center space-y-6 animate-fade-in-up", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center space-x-4 bg-white/80 backdrop-blur-lg rounded-2xl px-8 py-4 shadow-glass border border-white/20", children: [

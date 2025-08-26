@@ -9,10 +9,32 @@ type Project = {
   title: string;
 };
 
+type KeywordResult = {
+  keyword: string;
+  found: boolean;
+  rank?: number;
+  position?: number;
+  url?: string;
+  page?: number;
+};
+
+type KeywordReport = {
+  success: boolean;
+  results: KeywordResult[];
+  audit?: {
+    totalKeywords: number;
+    foundKeywords: number;
+    averageRank: number;
+  };
+  suggestions?: string[];
+  message?: string;
+  error?: string;
+};
+
 const KeywordTrackerTool = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState('');
-  const [report, setReport] = useState<any>(null);
+  const [report, setReport] = useState<KeywordReport | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,6 +44,7 @@ const KeywordTrackerTool = () => {
         setProjects(Array.isArray(res) ? res : []);
       } catch (err) {
         console.error('Error fetching projects:', err);
+        showPopup('Failed to load projects', 'error');
       }
     };
     fetchProjects();
@@ -37,17 +60,53 @@ const KeywordTrackerTool = () => {
     try {
       const res = await runKeywordTracker(selectedProjectId);
       console.log('🔍 Keyword Tracker Response:', res);
-      console.log('🔍 Response structure:', {
-        success: res.success,
-        hasResults: !!res.results,
-        resultsType: Array.isArray(res.results) ? 'array' : typeof res.results,
-        resultsLength: Array.isArray(res.results) ? res.results.length : 'N/A',
-        hasAudit: !!res.audit,
-        auditType: typeof res.audit
-      });
-      setReport(res);
+      
+      // Validate response structure
+      if (!res || typeof res !== 'object') {
+        throw new Error('Invalid response format');
+      }
+
+      // Ensure results is an array
+      const validatedResults = Array.isArray(res.results) ? res.results : [];
+      
+      // Normalize the data structure
+      const normalizedResults = validatedResults.map((result: any): KeywordResult => ({
+        keyword: result.keyword || 'Unknown',
+        found: Boolean(result.found),
+        rank: typeof result.rank === 'number' ? result.rank : undefined,
+        position: typeof result.position === 'number' ? result.position : undefined,
+        url: result.url || undefined,
+        page: typeof result.page === 'number' ? result.page : undefined
+      }));
+
+      const normalizedReport: KeywordReport = {
+        success: Boolean(res.success),
+        results: normalizedResults,
+        audit: res.audit || {
+          totalKeywords: normalizedResults.length,
+          foundKeywords: normalizedResults.filter((r: KeywordResult) => r.found).length,
+          averageRank: 0
+        },
+        suggestions: Array.isArray(res.suggestions) ? res.suggestions : [],
+        message: res.message || 'Keyword tracking completed',
+        error: res.error
+      };
+
+      setReport(normalizedReport);
+      
+      if (normalizedReport.success) {
+        showPopup('Keyword tracking completed successfully', 'success');
+      } else {
+        showPopup(normalizedReport.error || 'Keyword tracking failed', 'error');
+      }
     } catch (err) {
       console.error('Analyzer failed:', err);
+      showPopup('Failed to run keyword tracker', 'error');
+      setReport({
+        success: false,
+        results: [],
+        error: err instanceof Error ? err.message : 'Unknown error'
+      });
     } finally {
       setLoading(false);
     }
@@ -56,9 +115,8 @@ const KeywordTrackerTool = () => {
   const getMetrics = () => {
     if (!report?.results) return [];
     
-    // Extract actual data from backend response
-    const results = Array.isArray(report.results) ? report.results : [];
-    const foundKeywords = results.filter((r: any) => r.found).length;
+    const results = report.results;
+    const foundKeywords = results.filter((r: KeywordResult) => r.found).length;
     const totalKeywords = results.length;
     const successRate = totalKeywords > 0 ? (foundKeywords / totalKeywords) * 100 : 0;
     
@@ -87,33 +145,52 @@ const KeywordTrackerTool = () => {
   const getDetails = () => {
     if (!report?.results) return [];
     
-    // Extract actual data from backend response
-    const results = Array.isArray(report.results) ? report.results : [];
+    const results = report.results;
     
-    const details = [
+    const details: Array<{
+      label: string;
+      value: string | number;
+      status: 'good' | 'warning' | 'error';
+    }> = [
       {
         label: 'Total Keywords Analyzed',
         value: results.length,
-        status: 'good' as const
+        status: 'good'
       },
       {
         label: 'Keywords in Top 10',
-        value: results.filter((r: any) => r.found && r.position <= 10).length,
-        status: 'good' as const
+        value: results.filter((r: KeywordResult) => r.found && r.position && r.position <= 10).length,
+        status: 'good'
       },
       {
         label: 'Keywords in Top 3',
-        value: results.filter((r: any) => r.found && r.position <= 3).length,
-        status: 'good' as const
+        value: results.filter((r: KeywordResult) => r.found && r.position && r.position <= 3).length,
+        status: 'good'
       }
     ];
 
     // Add individual keyword results
-    results.forEach((result: any, index: number) => {
+    results.forEach((result, index) => {
+      let value = 'Not found';
+      let status: 'good' | 'warning' = 'warning';
+      
+      if (result.found) {
+        if (result.position) {
+          value = `Position: ${result.position}`;
+          status = result.position <= 3 ? 'good' : 'warning';
+        } else if (result.rank) {
+          value = `Rank: ${result.rank}`;
+          status = result.rank <= 3 ? 'good' : 'warning';
+        } else {
+          value = 'Found (position unknown)';
+          status = 'good';
+        }
+      }
+      
       details.push({
         label: `"${result.keyword}"`,
-        value: result.found ? `Position: ${result.position}` : 'Not in top 10',
-        status: (result.found ? 'good' : 'warning') as 'good' | 'warning'
+        value,
+        status: status as 'good' | 'warning' | 'error'
       });
     });
     
@@ -124,11 +201,11 @@ const KeywordTrackerTool = () => {
     if (!report?.results) return [];
 
     const guides = [];
-    const results = Array.isArray(report.results) ? report.results : [];
-    const foundKeywords = results.filter((r: any) => r.found).length;
+    const results = report.results;
+    const foundKeywords = results.filter((r: KeywordResult) => r.found).length;
     const totalKeywords = results.length;
     const successRate = totalKeywords > 0 ? (foundKeywords / totalKeywords) : 0;
-    const top3Keywords = results.filter((r: any) => r.found && r.position <= 3).length;
+    const top3Keywords = results.filter((r: KeywordResult) => r.found && r.position && r.position <= 3).length;
 
     // Low success rate guide
     if (successRate < 0.3) {
