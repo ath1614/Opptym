@@ -241,7 +241,7 @@ const EmployeeManagement = () => {
       case 'inactive':
         return <XCircle className="w-4 h-4 text-red-500" />;
       default:
-        return <User className="w-4 h-4 text-gray-500" />;
+        return <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />;
     }
   };
 
@@ -266,8 +266,8 @@ const EmployeeManagement = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Employee Management</h2>
-          <p className="text-gray-600">Manage your team members and their access permissions</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Employee Management</h2>
+          <p className="text-gray-600 dark:text-gray-400">Manage your team members and their access permissions</p>
         </div>
         <button
           onClick={() => setShowInviteModal(true)}
@@ -369,7 +369,7 @@ const EmployeeManagement = () => {
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
                         <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                          <User className="w-5 h-5 text-gray-600" />
+                          <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         </div>
                       </div>
                       <div className="ml-4">

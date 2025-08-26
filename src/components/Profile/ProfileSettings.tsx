@@ -261,14 +261,14 @@ export default function ProfileSettings() {
                     onClick={handlePhotoUpload}
                     className="absolute bottom-0 right-0 bg-white dark:bg-primary-700 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-primary-600 transition-colors"
                   >
-                    <Camera className="w-4 h-4 text-gray-600" />
+                    <Camera className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   </button>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xl font-semibold text-gray-900">
+                  <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
                     {getUserDisplayName(user)}
                   </h4>
-                  <p className="text-gray-600">{user?.email}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{user?.email}</p>
                   <button
                     type="button"
                     onClick={handlePhotoUpload}
@@ -290,7 +290,7 @@ export default function ProfileSettings() {
               <form onSubmit={handleProfileSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Username</label>
                     <input
                       type="text"
                       value={profileForm.username}
@@ -300,7 +300,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
                     <input
                       type="email"
                       value={profileForm.email}
@@ -310,7 +310,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
                     <input
                       type="text"
                       value={profileForm.firstName}
@@ -320,7 +320,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
                     <input
                       type="text"
                       value={profileForm.lastName}
@@ -330,7 +330,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone</label>
                     <input
                       type="tel"
                       value={profileForm.phone}
@@ -340,7 +340,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Company</label>
                     <input
                       type="text"
                       value={profileForm.company}
@@ -350,7 +350,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Website</label>
                     <input
                       type="url"
                       value={profileForm.website}
@@ -360,7 +360,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Timezone</label>
                     <select
                       value={profileForm.timezone}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, timezone: e.target.value }))}
@@ -375,7 +375,7 @@ export default function ProfileSettings() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bio</label>
                   <textarea
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
@@ -409,7 +409,7 @@ export default function ProfileSettings() {
               
               <form onSubmit={handlePasswordSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
                   <input
                     type="password"
                     value={passwordForm.currentPassword}
@@ -421,7 +421,7 @@ export default function ProfileSettings() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
                     <input
                       type="password"
                       value={passwordForm.newPassword}
@@ -431,7 +431,7 @@ export default function ProfileSettings() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
                     <input
                       type="password"
                       value={passwordForm.confirmPassword}

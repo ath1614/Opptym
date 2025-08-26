@@ -242,10 +242,10 @@ export default function DirectoryManagement() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active': return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'inactive': return <XCircle className="w-4 h-4 text-gray-600" />;
+      case 'inactive': return <XCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
       case 'pending': return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
       case 'rejected': return <XCircle className="w-4 h-4 text-red-600" />;
-      default: return <XCircle className="w-4 h-4 text-gray-600" />;
+      default: return <XCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -269,8 +269,8 @@ export default function DirectoryManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Directory Management</h2>
-          <p className="text-gray-600">Manage directories and their submission settings</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Directory Management</h2>
+          <p className="text-gray-600 dark:text-gray-400">Manage directories and their submission settings</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -334,12 +334,12 @@ export default function DirectoryManagement() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Directory</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Category</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Metrics</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Submissions</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Directory</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Category</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Metrics</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Submissions</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -351,8 +351,8 @@ export default function DirectoryManagement() {
                         <Globe className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{directory.name}</p>
-                        <p className="text-sm text-gray-500">{directory.domain}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{directory.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{directory.domain}</p>
                         {directory.isPremium && (
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                             <Star className="w-3 h-3 mr-1" />
@@ -368,11 +368,11 @@ export default function DirectoryManagement() {
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-500">PR:</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">PR:</span>
                         <span className="text-sm font-medium">{directory.pageRank}</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-500">DA:</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">DA:</span>
                         <span className="text-sm font-medium">{directory.daScore}</span>
                       </div>
                     </div>
@@ -393,7 +393,7 @@ export default function DirectoryManagement() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="w-3 h-3 text-green-400" />
-                        <span className="text-sm text-gray-600">{directory.successfulSubmissions}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{directory.successfulSubmissions}</span>
                       </div>
                     </div>
                   </td>
@@ -515,7 +515,7 @@ export default function DirectoryManagement() {
                     onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="isPremium" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="isPremium" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Premium Directory
                   </label>
                 </div>
@@ -527,7 +527,7 @@ export default function DirectoryManagement() {
                     onChange={(e) => setFormData(prev => ({ ...prev, requiresApproval: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="requiresApproval" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="requiresApproval" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Requires Approval
                   </label>
                 </div>
@@ -654,7 +654,7 @@ export default function DirectoryManagement() {
                     onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="editIsPremium" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="editIsPremium" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Premium Directory
                   </label>
                 </div>
@@ -666,7 +666,7 @@ export default function DirectoryManagement() {
                     onChange={(e) => setFormData(prev => ({ ...prev, requiresApproval: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="editRequiresApproval" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="editRequiresApproval" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Requires Approval
                   </label>
                 </div>

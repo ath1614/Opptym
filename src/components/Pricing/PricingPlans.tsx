@@ -369,16 +369,16 @@ export default function PricingPlans() {
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${plan.gradient} mb-4`}>
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-4">{plan.description}</p>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">{plan.description}</p>
                   
                   <div className="space-y-2">
                     <div className="flex items-baseline justify-center space-x-2">
-                      <span className="text-5xl font-bold text-gray-900">
+                      <span className="text-5xl font-bold text-gray-900 dark:text-white">
                         ₹{getDiscountedPrice(plan.price, plan.id)}
                       </span>
                       {plan.price > 0 && (
-                        <span className="text-gray-500">/{billingCycle === 'yearly' ? 'year' : 'month'}</span>
+                        <span className="text-gray-500 dark:text-gray-400">/{billingCycle === 'yearly' ? 'year' : 'month'}</span>
                       )}
                     </div>
                     {plan.originalPrice && billingCycle === 'monthly' && (
@@ -404,7 +404,7 @@ export default function PricingPlans() {
                       <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r ${plan.gradient} flex items-center justify-center mt-0.5`}>
                         <Check className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-gray-700">{feature}</span>
+                                              <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -413,28 +413,28 @@ export default function PricingPlans() {
                 <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center space-x-2">
-                      <Globe className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">Projects</span>
-                    </div>
-                    <span className="font-medium text-gray-900">
+                                              <Globe className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                        <span className="text-gray-600 dark:text-gray-400">Projects</span>
+                      </div>
+                      <span className="font-medium text-gray-900 dark:text-white">
                       {plan.limits.projects === -1 ? 'Unlimited' : plan.limits.projects}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center space-x-2">
-                      <BarChart3 className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">Submissions</span>
-                    </div>
-                    <span className="font-medium text-gray-900">
+                                              <BarChart3 className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                        <span className="text-gray-600 dark:text-gray-400">Submissions</span>
+                      </div>
+                      <span className="font-medium text-gray-900 dark:text-white">
                       {plan.limits.submissions === -1 ? 'Unlimited' : `${plan.limits.submissions}/month`}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center space-x-2">
-                      <Headphones className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">Support</span>
-                    </div>
-                    <span className="font-medium text-gray-900">{plan.limits.support}</span>
+                                              <Headphones className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                        <span className="text-gray-600 dark:text-gray-400">Support</span>
+                      </div>
+                      <span className="font-medium text-gray-900 dark:text-white">{plan.limits.support}</span>
                   </div>
                 </div>
 
@@ -442,7 +442,7 @@ export default function PricingPlans() {
                 {planStatus === 'current' ? (
                   <button
                     disabled
-                    className="w-full bg-gray-100 text-gray-500 py-3 px-6 rounded-xl font-medium cursor-not-allowed"
+                    className="w-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 py-3 px-6 rounded-xl font-medium cursor-not-allowed"
                   >
                     Current Plan
                   </button>
@@ -482,37 +482,37 @@ export default function PricingPlans() {
       {/* FAQ Section */}
       <div className="max-w-4xl mx-auto mt-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-          <p className="text-gray-600">Everything you need to know about our pricing plans</p>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+        <p className="text-gray-600 dark:text-gray-400">Everything you need to know about our pricing plans</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Can I change plans anytime?</h3>
-              <p className="text-gray-600">Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.</p>
+                          <h3 className="font-bold text-gray-900 dark:text-white mb-2">Can I change plans anytime?</h3>
+            <p className="text-gray-600 dark:text-gray-400">Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">What payment methods do you accept?</h3>
-              <p className="text-gray-600">We accept all major credit cards, PayPal, and bank transfers for annual plans.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-2">What payment methods do you accept?</h3>
+              <p className="text-gray-600 dark:text-gray-400">We accept all major credit cards, PayPal, and bank transfers for annual plans.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Is there a free trial?</h3>
-              <p className="text-gray-600">Our Starter plan is completely free forever. No credit card required to get started.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-2">Is there a free trial?</h3>
+              <p className="text-gray-600 dark:text-gray-400">Our Starter plan is completely free forever. No credit card required to get started.</p>
             </div>
           </div>
           <div className="space-y-6">
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Do you offer refunds?</h3>
-              <p className="text-gray-600">Yes, we offer a 30-day money-back guarantee on all paid plans.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-2">Do you offer refunds?</h3>
+              <p className="text-gray-600 dark:text-gray-400">Yes, we offer a 30-day money-back guarantee on all paid plans.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Can I cancel anytime?</h3>
-              <p className="text-gray-600">Absolutely! You can cancel your subscription at any time from your account settings.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-2">Can I cancel anytime?</h3>
+              <p className="text-gray-600 dark:text-gray-400">Absolutely! You can cancel your subscription at any time from your account settings.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Do you offer custom plans?</h3>
-              <p className="text-gray-600">Yes, we offer custom enterprise plans for large organizations. Contact our sales team.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-2">Do you offer custom plans?</h3>
+              <p className="text-gray-600 dark:text-gray-400">Yes, we offer custom enterprise plans for large organizations. Contact our sales team.</p>
             </div>
           </div>
         </div>
@@ -521,7 +521,7 @@ export default function PricingPlans() {
       {/* Contact Section */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 text-center max-w-4xl mx-auto">
         <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Need a custom solution?</h3>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Need a custom solution?</h3>
         <p className="text-gray-600 mb-6">
           Our team can help you create a custom plan that fits your specific needs and budget.
         </p>

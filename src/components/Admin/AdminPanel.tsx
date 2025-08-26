@@ -325,8 +325,8 @@ export default function AdminPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Admin Panel</h2>
-          <p className="text-gray-600">Manage users, directories, and system settings</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Panel</h2>
+          <p className="text-gray-600 dark:text-gray-400">Manage users, directories, and system settings</p>
         </div>
         <div className="flex items-center space-x-2 bg-gradient-to-r from-red-100 to-orange-100 px-4 py-2 rounded-lg">
           <Shield className="w-5 h-5 text-red-600" />
@@ -446,8 +446,8 @@ export default function AdminPanel() {
                       <Users className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-600">Last active: {formatDate(user.lastActive)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Last active: {formatDate(user.lastActive)}</p>
                     </div>
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
                       {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
@@ -467,8 +467,8 @@ export default function AdminPanel() {
                         <Database className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{directory.name}</p>
-                        <p className="text-xs text-gray-600">{directory.submissionCount} submissions</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{directory.name}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{directory.submissionCount} submissions</p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -621,8 +621,8 @@ export default function AdminPanel() {
                             <Users className="w-5 h-5 text-white" />
                           </div>
                           <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                           </div>
                         </div>
                       </td>
@@ -636,13 +636,13 @@ export default function AdminPanel() {
                           {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {user.projectsCount}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {user.submissionsCount}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(user.joinDate)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -671,7 +671,7 @@ export default function AdminPanel() {
           <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Project Management</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Project Management</h3>
                 <p className="text-sm text-gray-600 mt-1">{projects.length} total projects</p>
               </div>
               
@@ -718,8 +718,8 @@ export default function AdminPanel() {
                               <Globe className="w-5 h-5 text-white" />
                             </div>
                             <div className="ml-3">
-                              <div className="text-sm font-medium text-gray-900">{project.title || 'Untitled Project'}</div>
-                              <div className="text-sm text-gray-500">{project.url || 'No URL'}</div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">{project.title || 'Untitled Project'}</div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400">{project.url || 'No URL'}</div>
                             </div>
                           </div>
                         </td>
@@ -729,12 +729,12 @@ export default function AdminPanel() {
                               <Users className="w-4 h-4 text-white" />
                             </div>
                             <div className="ml-2">
-                              <div className="text-sm font-medium text-gray-900">{projectUser?.username || 'Unknown User'}</div>
-                              <div className="text-xs text-gray-500">{projectUser?.email || 'No email'}</div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">{projectUser?.username || 'Unknown User'}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{projectUser?.email || 'No email'}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(project.createdAt)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -776,7 +776,7 @@ export default function AdminPanel() {
           <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Submission Management</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Submission Management</h3>
                 <p className="text-sm text-gray-600 mt-1">{submissions.length} total submissions</p>
               </div>
               
@@ -832,14 +832,14 @@ export default function AdminPanel() {
                               <Users className="w-4 h-4 text-white" />
                             </div>
                             <div className="ml-2">
-                              <div className="text-sm font-medium text-gray-900">{submissionUser?.username || 'Unknown User'}</div>
-                              <div className="text-xs text-gray-500">{submissionUser?.email || 'No email'}</div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">{submissionUser?.username || 'Unknown User'}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{submissionUser?.email || 'No email'}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{submissionProject?.title || 'Unknown Project'}</div>
-                          <div className="text-xs text-gray-500">{submissionProject?.url || 'No URL'}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">{submissionProject?.title || 'Unknown Project'}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{submissionProject?.url || 'No URL'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -851,8 +851,8 @@ export default function AdminPanel() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{sub.siteName || 'Unknown Site'}</div>
-                          <div className="text-xs text-gray-500">{sub.siteUrl || 'No URL'}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">{sub.siteName || 'Unknown Site'}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{sub.siteUrl || 'No URL'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -864,7 +864,7 @@ export default function AdminPanel() {
                             {sub.status || 'Unknown'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(sub.submittedAt)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -956,8 +956,8 @@ export default function AdminPanel() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Require Email Verification</p>
-                        <p className="text-sm text-gray-600">New users must verify their email</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">Require Email Verification</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">New users must verify their email</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" defaultChecked className="sr-only peer" />
@@ -966,8 +966,8 @@ export default function AdminPanel() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Enable Rate Limiting</p>
-                        <p className="text-sm text-gray-600">Limit API requests per user</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">Enable Rate Limiting</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Limit API requests per user</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" defaultChecked className="sr-only peer" />
@@ -976,8 +976,8 @@ export default function AdminPanel() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Enable Two-Factor Authentication</p>
-                        <p className="text-sm text-gray-600">Require 2FA for admin accounts</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">Enable Two-Factor Authentication</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Require 2FA for admin accounts</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" />
@@ -1001,8 +1001,8 @@ export default function AdminPanel() {
                     ].map((plan) => (
                       <div key={plan.id} className="p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-center justify-between mb-3">
-                          <h5 className="font-medium text-gray-900">{plan.name}</h5>
-                          <span className="text-sm font-medium text-gray-600">₹{plan.price}/month</span>
+                          <h5 className="font-medium text-gray-900 dark:text-white">{plan.name}</h5>
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">₹{plan.price}/month</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
@@ -1098,8 +1098,8 @@ export default function AdminPanel() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Enable AI Form Detection</p>
-                        <p className="text-sm text-gray-600">Use AI to automatically detect form fields</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">Enable AI Form Detection</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Use AI to automatically detect form fields</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" defaultChecked className="sr-only peer" />
@@ -1130,7 +1130,7 @@ export default function AdminPanel() {
       {showDirectoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
           <div className="bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative">
-            <button onClick={() => setShowDirectoryModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">&times;</button>
+            <button onClick={() => setShowDirectoryModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:text-gray-400">&times;</button>
             <h2 className="text-xl font-bold mb-4">Add New Directory</h2>
             <form onSubmit={e => { e.preventDefault(); handleDirectoryFormSubmit(); }} className="space-y-4">
               <div>
@@ -1204,7 +1204,7 @@ export default function AdminPanel() {
       {showUserModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
           <div className="bg-white dark:bg-primary-800 rounded-lg shadow-lg p-8 w-full max-w-md relative">
-            <button onClick={() => setShowUserModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">&times;</button>
+            <button onClick={() => setShowUserModal(false)} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:text-gray-400">&times;</button>
             <h2 className="text-xl font-bold mb-4">{editingUser ? 'Edit User' : 'Create User'}</h2>
             <form onSubmit={e => { e.preventDefault(); handleUserFormSubmit(); }} className="space-y-4">
               <div>
