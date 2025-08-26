@@ -382,7 +382,7 @@ export default function PricingPlans() {
                       )}
                     </div>
                     {plan.originalPrice && billingCycle === 'monthly' && (
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         <span className="line-through">${plan.originalPrice}</span>
                         <span className="ml-2 text-green-600 font-medium">
                           Save ${plan.originalPrice - finalPrice}
@@ -519,10 +519,10 @@ export default function PricingPlans() {
       </div>
 
       {/* Contact Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 text-center max-w-4xl mx-auto">
-        <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Need a custom solution?</h3>
-        <p className="text-gray-600 mb-6">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl p-8 text-center max-w-4xl mx-auto">
+          <Users className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Need a custom solution?</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
           Our team can help you create a custom plan that fits your specific needs and budget.
         </p>
         <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105">

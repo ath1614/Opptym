@@ -179,7 +179,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
+      <div className="bg-white dark:bg-primary-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Create New Project</h2>
 
         {error && <p className="text-red-600 mb-4">{error}</p>}
