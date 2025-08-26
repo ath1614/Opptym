@@ -288,13 +288,13 @@ const KeywordTrackerTool = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Keyword Tracker</h3>
-        <p className="text-gray-600 mb-6">Check where your domain ranks for target keywords in Google search results.</p>
+      <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Keyword Tracker</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Check where your domain ranks for target keywords in Google search results.</p>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Project</label>
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}

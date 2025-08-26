@@ -282,7 +282,7 @@ export default function ProfileSettings() {
 
             {/* Profile Form */}
             <div className="card-modern p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
                 <User className="w-5 h-5 text-blue-600" />
                 <span>Personal Information</span>
               </h3>
@@ -402,7 +402,7 @@ export default function ProfileSettings() {
 
             {/* Password Change */}
             <div className="card-modern p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
                 <Lock className="w-5 h-5 text-blue-600" />
                 <span>Change Password</span>
               </h3>

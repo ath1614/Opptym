@@ -227,14 +227,14 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({ project, onClose, o
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Edit Project</h2>
+      <div className="bg-white dark:bg-primary-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Edit Project</h2>
 
         {error && <p className="text-red-600 mb-4">{error}</p>}
 
         {groupedFields.map(group => (
           <div key={group.title} className="mb-6">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">{group.title}</h3>
+            <h3 className="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-300">{group.title}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.fields.map(({ key, label, type = 'text' }) => {
                 const isRequired = key === 'title' || key === 'url';

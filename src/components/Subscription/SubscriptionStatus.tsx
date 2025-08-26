@@ -90,9 +90,9 @@ const SubscriptionStatus = () => {
       case 'starter':
         return <Star className="w-6 h-6 text-green-600" />;
       case 'free':
-        return <Gift className="w-6 h-6 text-gray-600" />;
+        return <Gift className="w-6 h-6 text-gray-600 dark:text-gray-400" />;
       default:
-        return <Gift className="w-6 h-6 text-gray-600" />;
+        return <Gift className="w-6 h-6 text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -180,13 +180,13 @@ const SubscriptionStatus = () => {
       {/* Usage Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Projects */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Globe className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Projects</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Projects</span>
             </div>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {subscription.currentUsage.projectsCreated} / {subscription.limits.projects === -1 ? '∞' : subscription.limits.projects}
             </span>
           </div>
@@ -199,13 +199,13 @@ const SubscriptionStatus = () => {
         </div>
 
         {/* Submissions */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Target className="w-5 h-5 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">Submissions</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Submissions</span>
             </div>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {subscription.currentUsage.submissionsMade} / {subscription.limits.submissions === -1 ? '∞' : subscription.limits.submissions}
             </span>
           </div>
@@ -218,13 +218,13 @@ const SubscriptionStatus = () => {
         </div>
 
         {/* SEO Tools */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Zap className="w-5 h-5 text-purple-600" />
-              <span className="text-sm font-medium text-gray-700">SEO Tools</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">SEO Tools</span>
             </div>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {subscription.currentUsage.seoToolsUsed} used
             </span>
           </div>
@@ -234,19 +234,19 @@ const SubscriptionStatus = () => {
               style={{ width: subscription.limits.tools ? '100%' : '0%' }}
             ></div>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {subscription.limits.tools ? 'Available' : 'Not available'}
           </p>
         </div>
 
         {/* Team Members */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-orange-600" />
-              <span className="text-sm font-medium text-gray-700">Team Members</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Team Members</span>
             </div>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {subscription.limits.teamMembers === -1 ? '∞' : subscription.limits.teamMembers}
             </span>
           </div>
@@ -256,28 +256,28 @@ const SubscriptionStatus = () => {
               style={{ width: subscription.limits.teamMembers > 0 ? '100%' : '0%' }}
             ></div>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {subscription.limits.teamMembers > 0 ? 'Available' : 'Not available'}
           </p>
         </div>
       </div>
 
       {/* Plan Features */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4">Plan Features</h4>
+      <div className="bg-white dark:bg-primary-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Plan Features</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-sm text-gray-700">SEO Tools Access</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">SEO Tools Access</span>
             </div>
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-sm text-gray-700">Project Management</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Project Management</span>
             </div>
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-sm text-gray-700">Directory Submissions</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Directory Submissions</span>
             </div>
           </div>
           <div className="space-y-3">
@@ -287,7 +287,7 @@ const SubscriptionStatus = () => {
               ) : (
                 <CheckCircle className="w-4 h-4 text-green-500" />
               )}
-              <span className="text-sm text-gray-700">Advanced Analytics</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Advanced Analytics</span>
             </div>
             <div className="flex items-center space-x-2">
               {['pro', 'business', 'enterprise'].includes(subscription.subscription) ? (
@@ -295,7 +295,7 @@ const SubscriptionStatus = () => {
               ) : (
                 <XCircle className="w-4 h-4 text-red-500" />
               )}
-              <span className="text-sm text-gray-700">Team Management</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Team Management</span>
             </div>
             <div className="flex items-center space-x-2">
               {['business', 'enterprise'].includes(subscription.subscription) ? (
@@ -303,7 +303,7 @@ const SubscriptionStatus = () => {
               ) : (
                 <XCircle className="w-4 h-4 text-red-500" />
               )}
-              <span className="text-sm text-gray-700">API Access</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">API Access</span>
             </div>
           </div>
         </div>
