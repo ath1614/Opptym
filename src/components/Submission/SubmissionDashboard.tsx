@@ -29,7 +29,8 @@ import {
   Trash2,
   Loader,
   Filter,
-  Tag
+  Tag,
+  AlertCircle
 } from 'lucide-react';
 import { JSX } from 'react/jsx-runtime';
 
@@ -1286,7 +1287,7 @@ const SubmissionsDashboard = () => {
   // NEW: One-Click Full Automation Function with Bookmarklet First
   const handleOneClickAutomation = async (url: string, siteName: string) => {
     if (!selectedProject) {
-      showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
+      showPopup(`⚠️ Please select a project first! Go to the "Project Selection" dropdown above and choose your project before clicking "Fill Form".`, 'warning');
       return;
     }
 
@@ -2394,6 +2395,13 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                   <span className="text-success-700 dark:text-success-400 font-medium">Project Selected</span>
                 </div>
               )}
+              
+              {!selectedProject && projects.length > 0 && (
+                <div className="flex items-center space-x-3 px-4 py-2 bg-warning-50 dark:bg-warning-900/30 border border-warning-200 dark:border-warning-700/30 rounded-xl">
+                  <div className="w-3 h-3 bg-warning-500 rounded-full animate-pulse"></div>
+                  <span className="text-warning-700 dark:text-warning-400 font-medium">⚠️ Select a project to use Fill Form</span>
+                </div>
+              )}
             </div>
 
             {/* Loading and Error States */}
@@ -2621,16 +2629,18 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                       <div className="flex flex-col space-y-2 ml-4">
                         <button
                           onClick={() => handleOneClickAutomation(site.url, site.name)}
-                          disabled={loading}
+                          disabled={loading || !selectedProject}
                           className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-medium shadow-glow"
-                          title="One-Click Full Automation"
+                          title={!selectedProject ? "Select a project first" : "One-Click Full Automation"}
                         >
                           {loading ? (
                             <Loader className="w-4 h-4 mr-2 animate-spin" />
+                          ) : !selectedProject ? (
+                            <AlertCircle className="w-4 h-4 mr-2" />
                           ) : (
                             <Zap className="w-4 h-4 mr-2" />
                           )}
-                          {loading ? 'Automating...' : t('automation.fillForm')}
+                          {loading ? 'Automating...' : !selectedProject ? 'Select Project First' : t('automation.fillForm')}
                         </button>
                         
 
