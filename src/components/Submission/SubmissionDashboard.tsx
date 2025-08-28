@@ -623,12 +623,11 @@ const getSiteMap = (directories: any[]) => {
   // Combine custom directories (at top) with hardcoded directories
   const allDirectorySites = [...customDirectorySites, ...hardcodedDirectorySites];
 
+  // Return all categories from siteMap, but update the directory category with combined sites
   return {
+    ...siteMap,
     directory: {
-      icon: <MapPin className="w-5 h-5" />,
-      color: 'text-indigo-600',
-      gradient: 'from-indigo-500 to-purple-600',
-      description: 'Business directories and local listings',
+      ...siteMap.directory,
       sites: allDirectorySites
     }
   };
