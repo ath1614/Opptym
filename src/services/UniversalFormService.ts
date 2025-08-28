@@ -50,78 +50,137 @@ export class UniversalFormService {
     this.projectData = projectData;
   }
 
-  // Create universal form filling bookmarklet
-  createUniversalBookmarklet(): string {
-    // Generate unique token for this bookmarklet instance
-    const uniqueToken = this.generateUniqueToken();
-    const timestamp = Date.now();
-    
-    const script = `
-      (function() {
-        // Unique bookmarklet token - prevents copying
-        const BOOKMARKLET_TOKEN = '${uniqueToken}';
-        const BOOKMARKLET_TIMESTAMP = ${timestamp};
-        
-        // Check if user is authenticated and has valid subscription
-        const checkAuth = async () => {
-          try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-              alert('❌ Please login to Opptym first to use this bookmarklet');
-              return false;
-            }
-            
-            // Verify token and check usage limits with unique bookmarklet token
-            const response = await fetch('https://api.opptym.com/api/subscription/verify-usage', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              },
-              body: JSON.stringify({
-                action: 'bookmarklet_usage',
-                bookmarkletToken: BOOKMARKLET_TOKEN,
-                timestamp: BOOKMARKLET_TIMESTAMP,
-                currentUrl: window.location.href
-              })
-            });
-            
-            const result = await response.json();
-            
-            if (!result.success) {
-              alert('❌ ' + (result.message || 'Usage limit exceeded or subscription expired'));
-              return false;
-            }
-            
-            return true;
-          } catch (error) {
-            console.error('Auth check failed:', error);
-            alert('❌ Authentication failed. Please refresh and try again.');
-            return false;
-          }
-        };
-        
-        // Main form filling function
-        const fillForms = async () => {
-          // Check authentication first
-          const isAuthenticated = await checkAuth();
-          if (!isAuthenticated) return;
+  // Create universal form filling bookmarklet with server-side token validation
+  async createUniversalBookmarklet(): Promise<string> {
+    try {
+      // Get authentication token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please login to Opptym first.');
+      }
+
+      // Get current project ID from localStorage or context
+      const projectId = localStorage.getItem('currentProjectId');
+      if (!projectId) {
+        throw new Error('No project selected. Please select a project first.');
+      }
+
+      // Generate bookmarklet token from server
+      const response = await fetch('/api/bookmarklet/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          projectId: projectId
+        })
+      });
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to generate bookmarklet token');
+      }
+
+      const { token: bookmarkletToken, expiresAt, maxUsage, usageCount, rateLimitSeconds } = result.data;
+
+      // Create the bookmarklet script with server-side validation
+      const script = `
+        (function() {
+          // Server-generated bookmarklet token
+          const BOOKMARKLET_TOKEN = '${bookmarkletToken}';
+          const API_BASE_URL = '${window.location.origin}';
           
-          // Show loading indicator
-          const loadingDiv = document.createElement('div');
-          loadingDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-          loadingDiv.textContent = '🤖 Filling forms...';
-          document.body.appendChild(loadingDiv);
-          
-          // Project data (this will be replaced with server-fetched data)
-          const projectData = {
-            name: "${this.projectData.name}",
-            email: "${this.projectData.email}",
-            companyName: "${this.projectData.companyName}",
-            phone: "${this.projectData.phone}",
-            description: "${this.projectData.description}",
-            url: "${this.projectData.url}"
+          // Check if user is authenticated and has valid subscription
+          const validateToken = async () => {
+            try {
+              // Show loading indicator
+              const loadingDiv = document.createElement('div');
+              loadingDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+              loadingDiv.textContent = '🔐 Validating bookmarklet...';
+              document.body.appendChild(loadingDiv);
+              
+              // Validate token with server
+              const response = await fetch('\${API_BASE_URL}/api/bookmarklet/validate', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  token: BOOKMARKLET_TOKEN
+                })
+              });
+              
+              const result = await response.json();
+              
+              // Remove loading indicator
+              if (loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+              }
+              
+              if (!result.success) {
+                alert('❌ ' + (result.message || 'Bookmarklet validation failed'));
+                return null;
+              }
+              
+              return result.data;
+            } catch (error) {
+              console.error('Token validation failed:', error);
+              alert('❌ Network error. Please check your connection and try again.');
+              return null;
+            }
           };
+          
+          // Main form filling function
+          const fillForms = async () => {
+            // Validate token first
+            const validationResult = await validateToken();
+            if (!validationResult) return;
+            
+            const projectData = validationResult.projectData;
+            const usageInfo = {
+              current: validationResult.usageCount,
+              max: validationResult.maxUsage,
+              remaining: validationResult.remainingUses
+            };
+            
+            // Show usage info
+            const usageDiv = document.createElement('div');
+            usageDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            usageDiv.innerHTML = \`✅ Token validated! Uses: \${usageInfo.current}/\${usageInfo.max} (\${usageInfo.remaining} remaining)\`;
+            document.body.appendChild(usageDiv);
+            
+            // Remove usage info after 3 seconds
+            setTimeout(() => {
+              if (usageDiv.parentNode) {
+                usageDiv.parentNode.removeChild(usageDiv);
+              }
+            }, 3000);
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.style.cssText = 'position: fixed; top: 60px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            loadingDiv.textContent = '🤖 Filling forms...';
+            document.body.appendChild(loadingDiv);
+            
+            let filledCount = 0;
+            let errorCount = 0;
+            
+            // Enhanced field mapping with better detection
+            const fieldMappings = [
+              { patterns: ['name', 'fullname', 'full_name', 'firstname', 'first_name'], value: projectData.name },
+              { patterns: ['email', 'e-mail', 'mail'], value: projectData.email },
+              { patterns: ['company', 'companyname', 'company_name', 'business', 'organization'], value: projectData.companyName },
+              { patterns: ['phone', 'telephone', 'mobile', 'cell', 'contact'], value: projectData.phone },
+              { patterns: ['website', 'url', 'site', 'web'], value: projectData.url },
+              { patterns: ['description', 'message', 'comment', 'details', 'about'], value: projectData.description },
+              { patterns: ['address', 'street', 'location'], value: projectData.address || '' },
+              { patterns: ['city', 'town'], value: projectData.city || '' },
+              { patterns: ['state', 'province', 'region'], value: projectData.state || '' },
+              { patterns: ['country', 'nation'], value: projectData.country || '' },
+              { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
+            ];
           
           let filledCount = 0;
           let errorCount = 0;
@@ -238,8 +297,8 @@ export class UniversalFormService {
                 }
               }, 5000);
               
-              console.log('✅ Auto-deletion completed successfully');
-              
+                        console.log('✅ Auto-deletion completed successfully');
+          
             } catch (e) {
               console.log('❌ Auto-deletion failed:', e);
             }
@@ -254,6 +313,11 @@ export class UniversalFormService {
     `;
     
     return `javascript:${encodeURIComponent(script)}`;
+    
+    } catch (error) {
+      console.error('❌ Error creating bookmarklet:', error);
+      throw error;
+    }
   }
 
   // Generate unique token for bookmarklet
@@ -266,7 +330,7 @@ export class UniversalFormService {
 
   // Smart bookmarklet installation with user-friendly workflow
   async installBookmarkletAutomatically(): Promise<BookmarkletResult> {
-    const bookmarkletCode = this.createUniversalBookmarklet();
+    const bookmarkletCode = await this.createUniversalBookmarklet();
     
     try {
       // Method 1: Try browser extension API (if available and user has granted permissions)
@@ -447,40 +511,7 @@ export class UniversalFormService {
     }
   }
 
-  // Delete bookmarklet automatically
-  async deleteBookmarklet(bookmarkletId?: string): Promise<boolean> {
-    try {
-      if (bookmarkletId) {
-        if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
-          await window.chrome.bookmarks.remove(bookmarkletId);
-          return true;
-        } else if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
-          await window.browser.bookmarks.remove(bookmarkletId);
-          return true;
-        }
-      }
-      
-      // Try to find and remove by title
-      if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks) {
-        const bookmarks = await window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
-        for (const bookmark of bookmarks) {
-          await window.chrome.bookmarks.remove(bookmark.id);
-        }
-        return bookmarks.length > 0;
-      } else if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
-        const bookmarks = await window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' });
-        for (const bookmark of bookmarks) {
-          await window.browser.bookmarks.remove(bookmark.id);
-        }
-        return bookmarks.length > 0;
-      }
-      
-      return false;
-    } catch (error: unknown) {
-      console.error('Error deleting bookmarklet:', error);
-      return false;
-    }
-  }
+
 
   // Get project data for manual filling
   getProjectDataForManual(): string {

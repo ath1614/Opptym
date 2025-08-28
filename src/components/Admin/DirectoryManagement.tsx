@@ -27,6 +27,8 @@ interface Directory {
   domain: string;
   description?: string;
   category: string;
+  country: string;
+  classification: string;
   pageRank: number;
   daScore: number;
   spamScore: number;
@@ -38,6 +40,8 @@ interface Directory {
   totalSubmissions: number;
   successfulSubmissions: number;
   rejectionRate: number;
+  isCustom: boolean;
+  priority: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +51,8 @@ interface DirectoryForm {
   domain: string;
   description: string;
   category: string;
+  country: string;
+  classification: string;
   pageRank: number;
   daScore: number;
   spamScore: number;
@@ -60,11 +66,20 @@ interface DirectoryForm {
   proUserLimit: number;
   businessUserLimit: number;
   enterpriseUserLimit: number;
+  priority: number;
 }
 
 const categories = [
   'business', 'technology', 'health', 'education', 'finance', 
   'entertainment', 'sports', 'travel', 'food', 'lifestyle', 'other'
+];
+
+const countries = [
+  'Global', 'USA', 'UK', 'Canada', 'Australia', 'Germany', 'France', 'India', 'Japan', 'Brazil', 'Mexico', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Switzerland', 'Austria', 'Belgium', 'Ireland', 'New Zealand', 'Singapore', 'South Korea', 'China', 'Russia', 'South Africa', 'Nigeria', 'Egypt', 'Kenya', 'Ghana', 'Morocco', 'Tunisia', 'Algeria', 'Libya', 'Sudan', 'Ethiopia', 'Uganda', 'Tanzania', 'Zambia', 'Zimbabwe', 'Botswana', 'Namibia', 'Mozambique', 'Angola', 'Congo', 'Cameroon', 'Gabon', 'Chad', 'Niger', 'Mali', 'Burkina Faso', 'Senegal', 'Guinea', 'Sierra Leone', 'Liberia', 'Ivory Coast', 'Togo', 'Benin', 'Central African Republic', 'Equatorial Guinea', 'Sao Tome and Principe', 'Cape Verde', 'Mauritania', 'Gambia', 'Guinea-Bissau', 'Comoros', 'Seychelles', 'Mauritius', 'Madagascar', 'Malawi', 'Lesotho', 'Eswatini', 'Other'
+];
+
+const classifications = [
+  'General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Other'
 ];
 
 export default function DirectoryManagement() {
@@ -80,6 +95,8 @@ export default function DirectoryManagement() {
     domain: '',
     description: '',
     category: 'business',
+    country: 'Global',
+    classification: 'General',
     pageRank: 0,
     daScore: 0,
     spamScore: 0,
@@ -92,7 +109,8 @@ export default function DirectoryManagement() {
     starterUserLimit: 5,
     proUserLimit: 20,
     businessUserLimit: 50,
-    enterpriseUserLimit: -1
+    enterpriseUserLimit: -1,
+    priority: 0
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -336,6 +354,9 @@ export default function DirectoryManagement() {
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Directory</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Category</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Country</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Classification</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Priority</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Metrics</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Submissions</th>
@@ -364,6 +385,22 @@ export default function DirectoryManagement() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-gray-900 capitalize">{directory.category}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-gray-900">{directory.country || 'Global'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-gray-900">{directory.classification || 'General'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium">{directory.priority || 0}</span>
+                      {directory.isCustom && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          Custom
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
@@ -461,6 +498,46 @@ export default function DirectoryManagement() {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                  <select
+                    value={formData.country}
+                    onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                    className="select-modern"
+                  >
+                    {countries.map(country => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Classification</label>
+                  <select
+                    value={formData.classification}
+                    onChange={(e) => setFormData(prev => ({ ...prev, classification: e.target.value }))}
+                    className="select-modern"
+                  >
+                    {classifications.map(classification => (
+                      <option key={classification} value={classification}>
+                        {classification}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority (0-100)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.priority}
+                    onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
+                    className="input-modern"
+                    placeholder="Higher number = higher priority"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Submission URL</label>
@@ -600,6 +677,46 @@ export default function DirectoryManagement() {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                  <select
+                    value={formData.country}
+                    onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                    className="select-modern"
+                  >
+                    {countries.map(country => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Classification</label>
+                  <select
+                    value={formData.classification}
+                    onChange={(e) => setFormData(prev => ({ ...prev, classification: e.target.value }))}
+                    className="select-modern"
+                  >
+                    {classifications.map(classification => (
+                      <option key={classification} value={classification}>
+                        {classification}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority (0-100)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.priority}
+                    onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
+                    className="input-modern"
+                    placeholder="Higher number = higher priority"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Submission URL</label>

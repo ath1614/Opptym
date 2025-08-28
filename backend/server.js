@@ -329,10 +329,25 @@ try {
   console.error('❌ Error loading payment routes:', error);
 }
 
+// Load pricing routes
+try {
+  app.use('/api/pricing', require('./routes/pricingRoutes'));
+  console.log('✅ Pricing routes loaded');
+} catch (error) {
+  console.error('❌ Error loading pricing routes:', error);
+}
+
+// Load bookmarklet routes
+try {
+  app.use('/api/bookmarklet', require('./routes/bookmarkletRoutes'));
+  console.log('✅ Bookmarklet routes loaded');
+} catch (error) {
+  console.error('❌ Error loading bookmarklet routes:', error);
+}
+
 // Load email verification routes after basic setup
 try {
   app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
-app.use('/api/pricing', require('./routes/pricingRoutes'));
   console.log('✅ Email verification routes loaded successfully');
 } catch (error) {
   console.error('❌ Error loading email verification routes:', error);

@@ -19,6 +19,26 @@ const directorySchema = new mongoose.Schema({
     required: true,
     enum: ['business', 'technology', 'health', 'education', 'finance', 'entertainment', 'sports', 'travel', 'food', 'lifestyle', 'other']
   },
+  country: { 
+    type: String, 
+    default: 'Global',
+    enum: ['Global', 'USA', 'UK', 'Canada', 'Australia', 'Germany', 'France', 'India', 'Japan', 'Brazil', 'Mexico', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Switzerland', 'Austria', 'Belgium', 'Ireland', 'New Zealand', 'Singapore', 'South Korea', 'China', 'Russia', 'South Africa', 'Nigeria', 'Egypt', 'Kenya', 'Ghana', 'Morocco', 'Tunisia', 'Algeria', 'Libya', 'Sudan', 'Ethiopia', 'Uganda', 'Tanzania', 'Zambia', 'Zimbabwe', 'Botswana', 'Namibia', 'Mozambique', 'Angola', 'Congo', 'Cameroon', 'Gabon', 'Chad', 'Niger', 'Mali', 'Burkina Faso', 'Senegal', 'Guinea', 'Sierra Leone', 'Liberia', 'Ivory Coast', 'Togo', 'Benin', 'Central African Republic', 'Equatorial Guinea', 'Sao Tome and Principe', 'Cape Verde', 'Mauritania', 'Gambia', 'Guinea-Bissau', 'Comoros', 'Seychelles', 'Mauritius', 'Madagascar', 'Malawi', 'Lesotho', 'Eswatini', 'Other']
+  },
+  classification: { 
+    type: String, 
+    default: 'General',
+    enum: ['General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Other']
+  },
+  isCustom: { 
+    type: Boolean, 
+    default: false 
+  },
+  priority: { 
+    type: Number, 
+    default: 0,
+    min: 0,
+    max: 100
+  },
   
   // SEO Metrics
   pageRank: { 

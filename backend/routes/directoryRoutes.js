@@ -7,13 +7,50 @@ const User = require('../models/userModel');
 // Get all directories (public - for users to see available directories)
 router.get('/', protect, async (req, res) => {
   try {
-    const directories = await Directory.find({ status: 'active' })
+    const { country, classification, category } = req.query;
+    
+    let filter = { status: 'active' };
+    
+    // Add filters if provided
+    if (country && country !== 'all') {
+      filter.country = country;
+    }
+    if (classification && classification !== 'all') {
+      filter.classification = classification;
+    }
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+    
+    const directories = await Directory.find(filter)
       .select('-requiredFields -submissionGuidelines')
-      .sort({ pageRank: -1, daScore: -1 });
+      .sort({ 
+        isCustom: -1, // Custom directories first
+        priority: -1, // Then by priority
+        pageRank: -1, // Then by page rank
+        daScore: -1   // Then by DA score
+      });
     
     res.json(directories);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch directories' });
+  }
+});
+
+// Get available countries and classifications (public)
+router.get('/filters', protect, async (req, res) => {
+  try {
+    const countries = await Directory.distinct('country');
+    const classifications = await Directory.distinct('classification');
+    const categories = await Directory.distinct('category');
+    
+    res.json({
+      countries: countries.sort(),
+      classifications: classifications.sort(),
+      categories: categories.sort()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch filters' });
   }
 });
 
@@ -40,6 +77,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
       domain,
       description,
       category,
+      country,
+      classification,
       pageRank,
       daScore,
       spamScore,
@@ -53,7 +92,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
       starterUserLimit,
       proUserLimit,
       businessUserLimit,
-      enterpriseUserLimit
+      enterpriseUserLimit,
+      priority
     } = req.body;
 
     // Check if directory with same name already exists
@@ -67,6 +107,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
       domain,
       description,
       category,
+      country: country || 'Global',
+      classification: classification || 'General',
       pageRank: pageRank || 0,
       daScore: daScore || 0,
       spamScore: spamScore || 0,
@@ -81,6 +123,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
       proUserLimit: proUserLimit || 20,
       businessUserLimit: businessUserLimit || 50,
       enterpriseUserLimit: enterpriseUserLimit || -1,
+      priority: priority || 0,
+      isCustom: true, // Mark as custom directory
       createdBy: req.userId
     });
 
