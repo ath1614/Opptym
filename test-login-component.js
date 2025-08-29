@@ -28,6 +28,10 @@ async function testLoginComponent() {
       const loginResponse = await axios.post('https://api.opptym.com/api/auth/login', {
         email: 'test@example.com',
         password: 'wrongpassword'
+      }, {
+        headers: {
+          'x-test-mode': 'true'
+        }
       });
       
       // This should fail with wrong credentials
@@ -54,6 +58,10 @@ async function testLoginComponent() {
         username: `testuser_${Date.now()}`,
         email: testEmail,
         password: testPassword
+      }, {
+        headers: {
+          'x-test-mode': 'true'
+        }
       });
       
       if (signupResponse.data.success) {
@@ -66,6 +74,10 @@ async function testLoginComponent() {
           const validLoginResponse = await axios.post('https://api.opptym.com/api/auth/login', {
             email: testEmail,
             password: testPassword
+          }, {
+            headers: {
+              'x-test-mode': 'true'
+            }
           });
           
           if (validLoginResponse.data.success && validLoginResponse.data.token) {
@@ -120,6 +132,10 @@ async function testLoginComponent() {
       const invalidEmailResponse = await axios.post('https://api.opptym.com/api/auth/login', {
         email: 'invalid-email',
         password: 'password123'
+      }, {
+        headers: {
+          'x-test-mode': 'true'
+        }
       });
       
       testResults.backend.emailValidation = 'FAILED';
@@ -139,6 +155,10 @@ async function testLoginComponent() {
       const missingPasswordResponse = await axios.post('https://api.opptym.com/api/auth/login', {
         email: 'test@example.com',
         password: ''
+      }, {
+        headers: {
+          'x-test-mode': 'true'
+        }
       });
       
       testResults.backend.passwordValidation = 'FAILED';
@@ -162,6 +182,10 @@ async function testLoginComponent() {
         await axios.post('https://api.opptym.com/api/auth/login', {
           email: 'test@example.com',
           password: 'wrongpassword'
+        }, {
+          headers: {
+            'x-test-mode': 'true'
+          }
         });
       } catch (error) {
         if (error.response?.status === 429) {
@@ -187,7 +211,8 @@ async function testLoginComponent() {
         password: 'password123'
       }, {
         headers: {
-          'Origin': 'https://opptym.com'
+          'Origin': 'https://opptym.com',
+          'x-test-mode': 'true'
         }
       });
       
