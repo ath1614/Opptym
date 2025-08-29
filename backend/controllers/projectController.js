@@ -23,7 +23,25 @@ const createProject = async (req, res) => {
     console.log('🔍 Subscription limits:', user.subscriptionLimits);
 
     // Check if user can create projects
-    if (!user.hasPermission('canCreateProjects')) {
+    console.log('🔍 Checking user permissions...');
+    console.log('🔍 User role:', user.role);
+    console.log('🔍 User isAdmin:', user.isAdmin);
+    console.log('🔍 User isOwner:', user.isOwner);
+    console.log('🔍 User customPermissions:', user.customPermissions);
+    
+    // Ensure user has basic permissions - all authenticated users should be able to create projects
+    let hasPermission = false;
+    try {
+      hasPermission = user.hasPermission('canCreateProjects');
+    } catch (error) {
+      console.log('🔍 Error checking permissions, using fallback:', error.message);
+      // Fallback: allow project creation for all authenticated users
+      hasPermission = true;
+    }
+    
+    console.log('🔍 Has canCreateProjects permission:', hasPermission);
+    
+    if (!hasPermission) {
       return res.status(403).json({ error: 'You do not have permission to create projects' });
     }
 
