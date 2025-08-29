@@ -149,7 +149,14 @@ const userSchema = new mongoose.Schema({
   teamMembers: [teamMemberSchema],
   employeeRole: {
     type: employeeRoleSchema,
-    default: () => ({})
+    default: () => ({
+      roleId: 'default',
+      roleName: 'Default Role',
+      description: 'Default user role',
+      permissions: {},
+      isActive: true,
+      createdAt: new Date()
+    })
   }
 });
 

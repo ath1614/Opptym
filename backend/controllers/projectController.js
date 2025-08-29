@@ -8,9 +8,13 @@ const User = require('../models/userModel');
 // @access  Private
 const createProject = async (req, res) => {
   try {
+    console.log('🔍 createProject called with userId:', req.userId);
+    console.log('🔍 Request body:', req.body);
+    
     // Check subscription limits
     const user = await User.findById(req.userId);
     if (!user) {
+      console.log('❌ User not found for userId:', req.userId);
       return res.status(404).json({ error: 'User not found' });
     }
 
