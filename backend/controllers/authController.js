@@ -155,7 +155,7 @@ const login = async (req, res) => {
             });
         }
         
-        if (!password) {
+        if (!password || password.trim() === '') {
             return res.status(400).json({ 
                 error: 'MISSING_PASSWORD',
                 message: 'Password is required' 

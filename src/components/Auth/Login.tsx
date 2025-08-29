@@ -18,13 +18,56 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Client-side validation
+    if (!email || !email.trim()) {
+      setError('Email is required');
+      return;
+    }
+    
+    if (!password || !password.trim()) {
+      setError('Password is required');
+      return;
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
     try {
       setIsLoading(true);
       await login(email, password);
       console.log('✅ Logged in successfully');
     } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
+      
+      // Handle specific error types
+      if (err.response?.data?.error) {
+        switch (err.response.data.error) {
+          case 'INVALID_EMAIL':
+            setError('Please enter a valid email address');
+            break;
+          case 'MISSING_PASSWORD':
+            setError('Password is required');
+            break;
+          case 'USER_NOT_FOUND':
+            setError('No account found with this email address');
+            break;
+          case 'WRONG_PASSWORD':
+            setError('Incorrect password. Please try again.');
+            break;
+          case 'EMAIL_NOT_VERIFIED':
+            setError('Please verify your email address before logging in');
+            break;
+          default:
+            setError(err.response.data.message || 'Login failed. Please try again.');
+        }
+      } else {
+        setError('Login failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -84,10 +127,14 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up">
+              <div 
+                className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up"
+                role="alert"
+                aria-live="polite"
+              >
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-error-500 rounded-full"></div>
-                  <span>{error}</span>
+                  <span id="login-error">{error}</span>
                 </div>
               </div>
             )}
@@ -107,6 +154,8 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
                     className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your email"
                     required
+                    aria-describedby="email-error"
+                    aria-invalid={error && error.includes('email') ? 'true' : 'false'}
                   />
                 </div>
               </div>
@@ -125,11 +174,15 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
                     className="w-full pl-14 pr-14 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your password"
                     required
+                    aria-describedby="password-error"
+                    aria-invalid={error && error.includes('password') ? 'true' : 'false'}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-accent-600 transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -142,9 +195,13 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
               type="submit"
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-accent-500 to-accent-600 text-white py-4 px-6 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2 group"
+              aria-describedby={error ? 'login-error' : undefined}
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Logging in...</span>
+                </>
               ) : (
                 <>
                   <span>Login to Opptym</span>

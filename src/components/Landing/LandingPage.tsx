@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ArrowRight, 
@@ -23,8 +23,54 @@ interface LandingPageProps {
   onRegisterClick: () => void;
 }
 
+// Add error boundary component
+class LandingPageErrorBoundary extends React.Component {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error('LandingPage Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-accent-50">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-primary-800 mb-4">Something went wrong</h1>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPageProps) {
   const { t } = useTranslation();
+  
+  // Add error boundary for translation
+  const safeTranslate = (key: string, defaultValue: string) => {
+    try {
+      return t(key) || defaultValue;
+    } catch (error) {
+      console.warn('Translation error:', error);
+      return defaultValue;
+    }
+  };
 
   const features = [
     {
@@ -81,12 +127,22 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <LandingPageErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 relative overflow-hidden">
+      {/* Animated Background Elements - Optimized for performance */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float"></div>
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-800 dark:to-primary-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '4s' }}></div>
+        <div 
+          className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float"
+          style={{ willChange: 'transform' }}
+        ></div>
+        <div 
+          className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-800 dark:to-primary-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" 
+          style={{ animationDelay: '2s', willChange: 'transform' }}
+        ></div>
+        <div 
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" 
+          style={{ animationDelay: '4s', willChange: 'transform' }}
+        ></div>
       </div>
 
       {/* Navigation */}
@@ -186,7 +242,13 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
               <span>Get Started</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300">
+            <button 
+              onClick={() => {
+                // Open demo video in new tab or show modal
+                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+              }}
+              className="px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300 flex items-center space-x-2"
+            >
               <Play className="w-5 h-5" />
               <span>Watch Demo</span>
             </button>
@@ -394,12 +456,23 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             
             <div className="flex items-center space-x-6 text-sm text-primary-600 dark:text-primary-400">
               <span>© 2024 OPPTYM. All rights reserved.</span>
-              <span>Privacy Policy</span>
-              <span>Terms of Service</span>
+              <button 
+                onClick={() => window.open('/privacy', '_blank')}
+                className="hover:text-accent-600 dark:hover:text-accent-400 transition-colors cursor-pointer"
+              >
+                Privacy Policy
+              </button>
+              <button 
+                onClick={() => window.open('/terms', '_blank')}
+                className="hover:text-accent-600 dark:hover:text-accent-400 transition-colors cursor-pointer"
+              >
+                Terms of Service
+              </button>
             </div>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </LandingPageErrorBoundary>
   );
 }
