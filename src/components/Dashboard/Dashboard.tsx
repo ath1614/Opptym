@@ -50,13 +50,26 @@ export default function Dashboard() {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const projectsResponse = await axios.get('/api/projects', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      if (!token) {
+        console.error('No authentication token found');
+        return;
+      }
       
-      const submissionsResponse = await axios.get('/api/submissions', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Fetch data in parallel for better performance
+      const [projectsResponse, submissionsResponse] = await Promise.all([
+        axios.get('/api/projects', {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(error => {
+          console.error('Error fetching projects:', error);
+          return { data: [] };
+        }),
+        axios.get('/api/submissions', {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(error => {
+          console.error('Error fetching submissions:', error);
+          return { data: [] };
+        })
+      ]);
 
       const projects = projectsResponse.data || [];
       const submissions = submissionsResponse.data || [];
@@ -74,14 +87,14 @@ export default function Dashboard() {
         const getPlanLimits = (plan: string) => {
           switch (plan) {
             case 'business':
-              return { submissions: 1000, projects: 50, tools: true };
+              return { submissions: 1500, projects: 10, tools: true };
             case 'pro':
-              return { submissions: 500, projects: 25, tools: true };
+              return { submissions: 750, projects: 5, tools: true };
             case 'starter':
-              return { submissions: 100, projects: 10, tools: true };
+              return { submissions: 150, projects: 1, tools: true };
             case 'free':
             default:
-              return { submissions: 10, projects: 1, tools: false };
+              return { submissions: 50, projects: 10, tools: true };
           }
         };
         
@@ -170,9 +183,9 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
+          <div className="flex items-center justify-center h-64" role="status" aria-live="polite">
             <div className="flex items-center space-x-3">
-              <RefreshCw className="w-6 h-6 animate-spin text-accent-600" />
+              <RefreshCw className="w-6 h-6 animate-spin text-accent-600" aria-hidden="true" />
               <span className="text-lg text-primary-700 dark:text-primary-300">Loading dashboard...</span>
             </div>
           </div>
@@ -199,8 +212,10 @@ export default function Dashboard() {
             <button
               onClick={fetchDashboardData}
               className="flex items-center space-x-2 px-4 py-2 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border border-primary-200 dark:border-primary-700 rounded-xl text-primary-700 dark:text-primary-300 hover:bg-white dark:hover:bg-primary-800 transition-all duration-300"
+              aria-label="Refresh dashboard data"
+              title="Refresh dashboard data"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" aria-hidden="true" />
               <span>Refresh</span>
             </button>
           </div>
@@ -436,6 +451,8 @@ export default function Dashboard() {
               <button 
                 onClick={() => window.location.hash = 'pricing'}
                 className="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-8 py-3 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105"
+                aria-label="View all subscription plans"
+                title="View all subscription plans"
               >
                 View All Plans
               </button>
@@ -498,6 +515,8 @@ export default function Dashboard() {
                     key={index}
                     onClick={action.action}
                     className="w-full flex items-center space-x-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/50 hover:bg-primary-100 dark:hover:bg-primary-900 transition-all duration-200 group"
+                    aria-label={action.label}
+                    title={action.label}
                   >
                     <div className={`w-8 h-8 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all duration-300`}>
                       {action.icon}
