@@ -16,6 +16,28 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Password strength indicator
+  const getPasswordStrength = (password: string) => {
+    if (!password) return { strength: 0, label: '', color: '' };
+    
+    let strength = 0;
+    if (password.length >= 6) strength++;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+    const colors = ['', 'text-red-500', 'text-orange-500', 'text-yellow-500', 'text-green-500', 'text-green-600'];
+    
+    return {
+      strength: Math.min(strength, 5),
+      label: labels[Math.min(strength, 5)],
+      color: colors[Math.min(strength, 5)]
+    };
+  };
+
   const { register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,20 +45,61 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
     setError('');
     setSuccess('');
 
+    // Client-side validation
+    if (!name || !name.trim()) {
+      setError('Full name is required');
+      return;
+    }
+
+    if (!email || !email.trim()) {
+      setError('Email is required');
+      return;
+    }
+
+    if (!password || !password.trim()) {
+      setError('Password is required');
+      return;
+    }
+
+    if (!confirmPassword || !confirmPassword.trim()) {
+      setError('Please confirm your password');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Password strength validation
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    // Username validation (use name as username)
+    if (name.length < 3) {
+      setError('Full name must be at least 3 characters long');
+      return;
+    }
+
     try {
       setIsLoading(true);
+      // Use name as username for the register function
       await register(name, email, password);
       setSuccess('Account created successfully! You can now login.');
       setTimeout(() => {
         onSwitchToLogin();
       }, 2000);
     } catch (err: any) {
-      console.error(err);
+      console.error('Registration error:', err);
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -97,19 +160,27 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up">
+              <div 
+                className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up"
+                role="alert"
+                aria-live="polite"
+              >
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-error-500 rounded-full"></div>
-                  <span>{error}</span>
+                  <span id="register-error">{error}</span>
                 </div>
               </div>
             )}
             
             {success && (
-              <div className="bg-success-50 border border-success-200 text-success-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up">
+              <div 
+                className="bg-success-50 border border-success-200 text-success-700 px-4 py-3 rounded-xl text-sm animate-fade-in-up"
+                role="alert"
+                aria-live="polite"
+              >
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-success-500 rounded-full"></div>
-                  <span>{success}</span>
+                  <span id="register-success">{success}</span>
                 </div>
               </div>
             )}
@@ -129,6 +200,8 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
                     className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your full name"
                     required
+                    aria-describedby={error && error.includes('name') ? 'register-error' : undefined}
+                    aria-invalid={error && error.includes('name') ? 'true' : 'false'}
                   />
                 </div>
               </div>
@@ -147,6 +220,8 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
                     className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Enter your email"
                     required
+                    aria-describedby={error && error.includes('email') ? 'register-error' : undefined}
+                    aria-invalid={error && error.includes('email') ? 'true' : 'false'}
                   />
                 </div>
               </div>
@@ -165,15 +240,41 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
                     className="w-full pl-14 pr-14 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Create a password"
                     required
+                    aria-describedby={error && error.includes('password') ? 'register-error' : undefined}
+                    aria-invalid={error && error.includes('password') ? 'true' : 'false'}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-accent-600 transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                
+                {/* Password Strength Indicator */}
+                {password && (
+                  <div className="mt-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            getPasswordStrength(password).strength >= 4 ? 'bg-green-500' :
+                            getPasswordStrength(password).strength >= 3 ? 'bg-yellow-500' :
+                            getPasswordStrength(password).strength >= 2 ? 'bg-orange-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${(getPasswordStrength(password).strength / 5) * 100}%` }}
+                        ></div>
+                      </div>
+                      <span className={`text-xs font-medium ${getPasswordStrength(password).color}`}>
+                        {getPasswordStrength(password).label}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Confirm Password */}
@@ -190,6 +291,8 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
                     className="w-full pl-14 pr-4 py-4 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
                     placeholder="Confirm your password"
                     required
+                    aria-describedby={error && error.includes('confirm') ? 'register-error' : undefined}
+                    aria-invalid={error && error.includes('confirm') ? 'true' : 'false'}
                   />
                 </div>
               </div>
@@ -200,9 +303,13 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
               type="submit"
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-accent-500 to-accent-600 text-white py-4 px-6 rounded-xl font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2 group"
+              aria-describedby={error ? 'register-error' : success ? 'register-success' : undefined}
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Creating Account...</span>
+                </>
               ) : (
                 <>
                   <span>Create Account</span>
