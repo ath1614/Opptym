@@ -60,7 +60,7 @@ export class UniversalFormService {
       }
 
       // Get current project ID from localStorage or context
-      const projectId = localStorage.getItem('currentProjectId');
+      const projectId = localStorage.getItem('selectedProject');
       if (!projectId) {
         throw new Error('No project selected. Please select a project first.');
       }
