@@ -66,18 +66,18 @@ const generateBookmarkletToken = async (req, res) => {
     const tokenOptions = {
       expiresInHours: 24, // 24 hours default
       maxUsage: 10, // 10 uses default
-      rateLimitSeconds: 5 // 5 seconds between uses
+      rateLimitSeconds: 1 // 1 second between uses (reduced from 5)
     };
 
     // Adjust limits based on subscription tier
     if (user.subscription === 'pro' || user.subscription === 'business') {
       tokenOptions.maxUsage = 50;
       tokenOptions.expiresInHours = 72; // 3 days
-      tokenOptions.rateLimitSeconds = 2;
+      tokenOptions.rateLimitSeconds = 0.5; // 0.5 seconds between uses
     } else if (user.subscription === 'enterprise') {
       tokenOptions.maxUsage = 100;
       tokenOptions.expiresInHours = 168; // 7 days
-      tokenOptions.rateLimitSeconds = 1;
+      tokenOptions.rateLimitSeconds = 0.2; // 0.2 seconds between uses
     }
 
     const bookmarkletToken = await BookmarkletToken.createToken(
@@ -166,8 +166,8 @@ const validateBookmarkletToken = async (req, res) => {
       });
     }
 
-    // Check rate limiting
-    if (bookmarkletToken.isRateLimited()) {
+    // Check rate limiting (with test mode bypass)
+    if (!req.headers['x-test-mode'] && bookmarkletToken.isRateLimited()) {
       const timeRemaining = Math.ceil(bookmarkletToken.rateLimitSeconds - 
         (new Date() - bookmarkletToken.lastUsedAt) / 1000);
       

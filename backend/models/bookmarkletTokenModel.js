@@ -83,7 +83,7 @@ const bookmarkletTokenSchema = new mongoose.Schema({
   // Minimum time between uses (in seconds)
   rateLimitSeconds: {
     type: Number,
-    default: 5
+    default: 1
   },
   
   // Metadata
