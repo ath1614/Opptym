@@ -66,7 +66,7 @@ export class UniversalFormService {
       }
 
       // Generate bookmarklet token from server
-      const response = await fetch('/api/bookmarklet/generate', {
+      const response = await fetch('https://api.opptym.com/api/bookmarklet/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
