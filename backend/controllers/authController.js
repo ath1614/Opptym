@@ -255,18 +255,16 @@ const updateProfile = async (req, res) => {
 
     res.json({
       message: 'Profile updated successfully',
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        company: user.company,
-        website: user.website,
-        timezone: user.timezone,
-        bio: user.bio
-      }
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      company: user.company,
+      website: user.website,
+      timezone: user.timezone,
+      bio: user.bio
     });
   } catch (err) {
     console.error('Profile update error:', err);
@@ -316,21 +314,19 @@ const getProfile = async (req, res) => {
     }
 
     res.json({
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        company: user.company,
-        website: user.website,
-        timezone: user.timezone,
-        bio: user.bio,
-        subscription: user.subscription,
-        isAdmin: user.isAdmin,
-        status: user.status
-      }
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      company: user.company,
+      website: user.website,
+      timezone: user.timezone,
+      bio: user.bio,
+      subscription: user.subscription,
+      isAdmin: user.isAdmin,
+      status: user.status
     });
   } catch (err) {
     console.error('Get profile error:', err);

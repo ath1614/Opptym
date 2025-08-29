@@ -97,6 +97,44 @@ router.post('/users', protect, adminOnly, async (req, res) => {
   }
 });
 
+// Update user (admin only)
+router.put('/users/:userId', protect, adminOnly, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { username, email, firstName, lastName, isAdmin, subscription, status, phone, company, website, timezone, bio } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update fields if provided
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (isAdmin !== undefined) user.isAdmin = isAdmin;
+    if (subscription) user.subscription = subscription;
+    if (status) user.status = status;
+    if (phone) user.phone = phone;
+    if (company) user.company = company;
+    if (website) user.website = website;
+    if (timezone) user.timezone = timezone;
+    if (bio) user.bio = bio;
+
+    await user.save();
+
+    // Return updated user without password
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.json(userResponse);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
 // Update user verification status (admin only)
 router.put('/users/:userId/verify', protect, adminOnly, async (req, res) => {
   try {
@@ -359,6 +397,87 @@ router.get('/directories', protect, adminOnly, async (req, res) => {
     res.json(directories);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch directories' });
+  }
+});
+
+// Create new directory (admin only)
+router.post('/directories', protect, adminOnly, async (req, res) => {
+  try {
+    const { name, domain, category, pageRank, status, description, submissionUrl, requirements } = req.body;
+
+    // Check if directory already exists
+    const existingDirectory = await Directory.findOne({ $or: [{ name }, { domain }] });
+    if (existingDirectory) {
+      return res.status(400).json({ error: 'Directory with this name or domain already exists' });
+    }
+
+    // Create new directory
+    const directory = new Directory({
+      name,
+      domain,
+      category: category || 'general',
+      pageRank: pageRank || 1,
+      status: status || 'active',
+      description: description || '',
+      submissionUrl: submissionUrl || '',
+      requirements: requirements || []
+    });
+
+    await directory.save();
+    
+    res.status(201).json(directory);
+  } catch (error) {
+    console.error('Error creating directory:', error);
+    res.status(500).json({ error: 'Failed to create directory' });
+  }
+});
+
+// Update directory (admin only)
+router.put('/directories/:directoryId', protect, adminOnly, async (req, res) => {
+  try {
+    const { directoryId } = req.params;
+    const { name, domain, category, pageRank, status, description, submissionUrl, requirements } = req.body;
+
+    const directory = await Directory.findById(directoryId);
+    if (!directory) {
+      return res.status(404).json({ error: 'Directory not found' });
+    }
+
+    // Update fields if provided
+    if (name) directory.name = name;
+    if (domain) directory.domain = domain;
+    if (category) directory.category = category;
+    if (pageRank !== undefined) directory.pageRank = pageRank;
+    if (status) directory.status = status;
+    if (description !== undefined) directory.description = description;
+    if (submissionUrl !== undefined) directory.submissionUrl = submissionUrl;
+    if (requirements) directory.requirements = requirements;
+
+    await directory.save();
+    
+    res.json(directory);
+  } catch (error) {
+    console.error('Error updating directory:', error);
+    res.status(500).json({ error: 'Failed to update directory' });
+  }
+});
+
+// Delete directory (admin only)
+router.delete('/directories/:directoryId', protect, adminOnly, async (req, res) => {
+  try {
+    const { directoryId } = req.params;
+
+    const directory = await Directory.findById(directoryId);
+    if (!directory) {
+      return res.status(404).json({ error: 'Directory not found' });
+    }
+
+    await Directory.findByIdAndDelete(directoryId);
+    
+    res.json({ message: 'Directory deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting directory:', error);
+    res.status(500).json({ error: 'Failed to delete directory' });
   }
 });
 

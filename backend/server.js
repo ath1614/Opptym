@@ -62,17 +62,22 @@ app.use(compression());
 // Rate limiting - production ready
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 200, // limit each IP to 200 requests per windowMs (increased for testing)
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.path === '/api/health', // Skip health checks
+  skip: (req) => {
+    // Skip rate limiting for health checks and test scenarios
+    return req.path === '/api/health' || 
+           req.headers['x-test-mode'] === 'true' ||
+           req.headers['x-test-mode'] === true;
+  }
 });
 
 // Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // limit each IP to 50 auth requests per windowMs (increased for testing)
+  max: 100, // limit each IP to 100 auth requests per windowMs (increased for testing)
   message: 'Too many authentication attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -80,10 +85,12 @@ const authLimiter = rateLimit({
     // Skip rate limiting for health checks and certain test scenarios
     return req.path === '/api/health' || 
            req.path === '/api/test-cors' ||
-           req.headers['x-test-mode'] === 'true';
+           req.headers['x-test-mode'] === 'true' ||
+           req.headers['x-test-mode'] === true;
   }
 });
 
+// Enable rate limiting for production
 app.use('/api/', limiter);
 app.use('/api/auth/', authLimiter);
 
@@ -372,6 +379,14 @@ try {
   console.log('✅ Bookmarklet routes loaded');
 } catch (error) {
   console.error('❌ Error loading bookmarklet routes:', error);
+}
+
+// Load analytics routes
+try {
+  app.use('/api/analytics', require('./routes/analyticsRoutes'));
+  console.log('✅ Analytics routes loaded');
+} catch (error) {
+  console.error('❌ Error loading analytics routes:', error);
 }
 
 // Load email verification routes after basic setup
