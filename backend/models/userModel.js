@@ -42,8 +42,8 @@ const permissionSchema = new mongoose.Schema({
 
 // Employee role schema
 const employeeRoleSchema = new mongoose.Schema({
-  roleId: { type: String, required: true },
-  roleName: { type: String, required: true },
+  roleId: { type: String, required: false, default: 'default' },
+  roleName: { type: String, required: false, default: 'Default Role' },
   description: { type: String },
   permissions: { type: permissionSchema, default: () => ({}) },
   isActive: { type: Boolean, default: true },
@@ -149,6 +149,7 @@ const userSchema = new mongoose.Schema({
   teamMembers: [teamMemberSchema],
   employeeRole: {
     type: employeeRoleSchema,
+    required: false,
     default: () => ({
       roleId: 'default',
       roleName: 'Default Role',
