@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 // Test configuration
 const BASE_URL = 'https://api.opptym.com';

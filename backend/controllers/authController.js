@@ -67,6 +67,8 @@ const signup = async (req, res) => {
     }
 
     // Create new user
+    console.log('🔍 Creating new user with data:', { username, email, isEmailVerified: true, status: 'active' });
+    
     const user = new User({
       username,
       email,
@@ -75,7 +77,9 @@ const signup = async (req, res) => {
       status: 'active'
     });
 
+    console.log('🔍 User object created, attempting to save...');
     await user.save();
+    console.log('✅ User saved successfully:', user._id);
 
     // Generate JWT token
     const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
@@ -106,10 +110,18 @@ const signup = async (req, res) => {
     });
     
   } catch (err) {
-    console.error('Signup error:', err);
+    console.error('❌ Signup error:', err);
+    console.error('❌ Error details:', {
+      name: err.name,
+      message: err.message,
+      code: err.code,
+      errors: err.errors
+    });
+    
     res.status(400).json({ 
       error: 'SIGNUP_FAILED',
-      message: 'Failed to create account. Please try again.' 
+      message: 'Failed to create account. Please try again.',
+      details: err.message
     });
   }
 };
