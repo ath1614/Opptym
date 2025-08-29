@@ -165,17 +165,22 @@ async function testDashboardComponent() {
         }
       });
       
-      if (createProjectResponse.data.success) {
+      if (createProjectResponse.data && createProjectResponse.data._id) {
         testResults.backend.projectCreation = 'PASSED';
         console.log('✅ Test project created successfully');
-        console.log('✅ Project ID:', createProjectResponse.data.project._id);
+        console.log('✅ Project ID:', createProjectResponse.data._id);
       } else {
         testResults.backend.projectCreation = 'FAILED';
         console.log('❌ Project creation failed');
+        console.log('❌ Response data:', createProjectResponse.data);
       }
     } catch (error) {
       testResults.backend.projectCreation = 'FAILED';
       console.log('❌ Project creation error:', error.message);
+      if (error.response) {
+        console.log('❌ Error response:', error.response.data);
+        console.log('❌ Error status:', error.response.status);
+      }
     }
     
     // Test 5: Create Test Submission
