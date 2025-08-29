@@ -10,7 +10,7 @@ const getBaseURL = () => {
     const cleanApiUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
     return cleanApiUrl.endsWith('/api') ? cleanApiUrl : `${cleanApiUrl}/api`;
   }
-  return 'http://localhost:3000/api';
+  return 'https://api.opptym.com/api';
 };
 
 export const BASE_URL = getBaseURL();

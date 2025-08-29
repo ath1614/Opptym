@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://api.opptym.com';
 
 // Sample admin token (you'll need to replace this with a real admin token)
 const ADMIN_TOKEN = 'your-admin-token-here';

@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://api.opptym.com';
 const FRONTEND_URL = 'http://localhost:5173';
 
 // Test data

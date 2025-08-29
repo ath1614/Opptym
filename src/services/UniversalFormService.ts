@@ -90,7 +90,7 @@ export class UniversalFormService {
         (function() {
           // Server-generated bookmarklet token
           const BOOKMARKLET_TOKEN = '${bookmarkletToken}';
-          const API_BASE_URL = '${window.location.origin}';
+          const API_BASE_URL = 'https://api.opptym.com';
           
           // Check if user is authenticated and has valid subscription
           const validateToken = async () => {

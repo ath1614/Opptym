@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // Test configuration
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://api.opptym.com';
 const TEST_USER = {
   email: 'test@example.com',
   password: 'testpassword123'
