@@ -5,8 +5,14 @@ const User = require('../models/userModel');
 // Generate a new bookmarklet token
 const generateBookmarkletToken = async (req, res) => {
   try {
+    console.log('🔍 generateBookmarkletToken called with:', { 
+      projectId: req.body.projectId, 
+      userId: req.userId,
+      body: req.body 
+    });
+    
     const { projectId } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     if (!projectId) {
       return res.status(400).json({
@@ -26,18 +32,26 @@ const generateBookmarkletToken = async (req, res) => {
 
     // Check user subscription status
     const user = await User.findById(userId);
-    if (!user || !user.subscription || !user.subscription.isActive) {
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if user has permission to create bookmarklets
+    if (!user.hasPermission('canCreateProjects')) {
       return res.status(403).json({
         success: false,
-        message: 'Active subscription required to create bookmarklets'
+        message: 'Permission denied to create bookmarklets'
       });
     }
 
     // Prepare project data for bookmarklet
     const projectData = {
-      name: project.name || '',
+      name: project.name || project.title || '',
       email: project.email || '',
-      phone: project.phone || '',
+      phone: project.businessPhone || '',
       companyName: project.companyName || '',
       url: project.url || '',
       description: project.description || '',
@@ -56,11 +70,11 @@ const generateBookmarkletToken = async (req, res) => {
     };
 
     // Adjust limits based on subscription tier
-    if (user.subscription.plan === 'premium') {
+    if (user.subscription === 'pro' || user.subscription === 'business') {
       tokenOptions.maxUsage = 50;
       tokenOptions.expiresInHours = 72; // 3 days
       tokenOptions.rateLimitSeconds = 2;
-    } else if (user.subscription.plan === 'enterprise') {
+    } else if (user.subscription === 'enterprise') {
       tokenOptions.maxUsage = 100;
       tokenOptions.expiresInHours = 168; // 7 days
       tokenOptions.rateLimitSeconds = 1;
