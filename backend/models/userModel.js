@@ -53,7 +53,7 @@ const employeeRoleSchema = new mongoose.Schema({
 // Team member schema
 const teamMemberSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  role: { type: String, required: true },
+  role: { type: String, required: false, default: 'member' },
   permissions: { type: permissionSchema, default: () => ({}) },
   addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   addedAt: { type: Date, default: Date.now },

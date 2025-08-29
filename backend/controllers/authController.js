@@ -78,6 +78,16 @@ const signup = async (req, res) => {
     });
 
     console.log('🔍 User object created, attempting to save...');
+    console.log('🔍 User object before save:', {
+      username: user.username,
+      email: user.email,
+      isEmailVerified: user.isEmailVerified,
+      status: user.status,
+      subscription: user.subscription,
+      role: user.role,
+      employeeRole: user.employeeRole
+    });
+    
     await user.save();
     console.log('✅ User saved successfully:', user._id);
 
