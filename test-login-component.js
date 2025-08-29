@@ -127,6 +127,9 @@ async function testLoginComponent() {
     // Test 6: Form Validation (Simulated)
     console.log('📋 Test 6: Form Validation (Simulated)');
     
+    // Add delay to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     // Test invalid email format
     try {
       const invalidEmailResponse = await axios.post('https://api.opptym.com/api/auth/login', {
@@ -144,11 +147,17 @@ async function testLoginComponent() {
       if (error.response?.data?.error === 'INVALID_EMAIL') {
         testResults.backend.emailValidation = 'PASSED';
         console.log('✅ Email validation working correctly');
+      } else if (error.response?.status === 429) {
+        testResults.backend.emailValidation = 'SKIPPED';
+        console.log('⚠️ Email validation test skipped due to rate limiting');
       } else {
         testResults.backend.emailValidation = 'FAILED';
         console.log('❌ Email validation not working as expected');
       }
     }
+    
+    // Add delay to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Test missing password
     try {
@@ -167,9 +176,14 @@ async function testLoginComponent() {
       if (error.response?.data?.error === 'MISSING_PASSWORD') {
         testResults.backend.passwordValidation = 'PASSED';
         console.log('✅ Password validation working correctly');
+        console.log('✅ Error response:', error.response.data);
+      } else if (error.response?.status === 429) {
+        testResults.backend.passwordValidation = 'SKIPPED';
+        console.log('⚠️ Password validation test skipped due to rate limiting');
       } else {
         testResults.backend.passwordValidation = 'FAILED';
         console.log('❌ Password validation not working as expected');
+        console.log('❌ Actual error:', error.response?.data);
       }
     }
     
@@ -242,7 +256,9 @@ async function testLoginComponent() {
     // Calculate success rate
     const allTests = [...Object.values(testResults.frontend), ...Object.values(testResults.backend)];
     const passedTests = allTests.filter(result => result === 'PASSED').length;
-    const successRate = (passedTests / allTests.length) * 100;
+    const skippedTests = allTests.filter(result => result === 'SKIPPED').length;
+    const totalTests = allTests.length - skippedTests;
+    const successRate = totalTests > 0 ? (passedTests / totalTests) * 100 : 0;
     
     console.log(`\n📈 Overall Success Rate: ${successRate.toFixed(1)}%`);
     
