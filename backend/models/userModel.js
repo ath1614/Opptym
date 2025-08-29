@@ -118,6 +118,38 @@ const userSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  // Current usage tracking
+  currentUsage: {
+    type: usageSchema,
+    default: () => ({
+      month: new Date().toISOString().slice(0, 7),
+      projectsCreated: 0,
+      submissionsMade: 0,
+      apiCallsUsed: 0,
+      seoToolsUsed: 0,
+      lastReset: new Date()
+    })
+  },
+  // Role and permissions
+  role: {
+    type: String,
+    enum: ['owner', 'manager', 'analyst', 'viewer', 'employee'],
+    default: 'employee'
+  },
+  customPermissions: {
+    type: permissionSchema,
+    default: () => ({})
+  },
+  isOwner: {
+    type: Boolean,
+    default: false
+  },
+  // Team management
+  teamMembers: [teamMemberSchema],
+  employeeRole: {
+    type: employeeRoleSchema,
+    default: () => ({})
   }
 });
 
@@ -197,7 +229,7 @@ userSchema.methods.hasPermission = function(permission) {
     employee: ['canUseSeoTools', 'canCreateProjects', 'canSubmitToDirectories']
   };
   
-  return rolePermissions[this.role]?.includes(permission) || false;
+  return rolePermissions[this.role || 'employee']?.includes(permission) || false;
 };
 
 // Method to check if user is in trial period
@@ -216,7 +248,12 @@ userSchema.methods.isInTrialPeriod = function() {
 // Method to check usage limits
 userSchema.methods.checkUsageLimit = function(feature) {
   const limits = this.subscriptionLimits;
-  const currentUsage = this.currentUsage;
+  const currentUsage = this.currentUsage || {
+    projectsCreated: 0,
+    submissionsMade: 0,
+    apiCallsUsed: 0,
+    seoToolsUsed: 0
+  };
   
   // If user is in trial period, use trial limits
   if (this.isInTrialPeriod()) {
@@ -229,13 +266,13 @@ userSchema.methods.checkUsageLimit = function(feature) {
     
     switch(feature) {
       case 'projects':
-        return trialLimits.projects === -1 || currentUsage.projectsCreated < trialLimits.projects;
+        return trialLimits.projects === -1 || (currentUsage.projectsCreated || 0) < trialLimits.projects;
       case 'submissions':
-        return trialLimits.submissions === -1 || currentUsage.submissionsMade < trialLimits.submissions;
+        return trialLimits.submissions === -1 || (currentUsage.submissionsMade || 0) < trialLimits.submissions;
       case 'apiCalls':
-        return trialLimits.apiCalls === -1 || currentUsage.apiCallsUsed < trialLimits.apiCalls;
+        return trialLimits.apiCalls === -1 || (currentUsage.apiCallsUsed || 0) < trialLimits.apiCalls;
       case 'seoTools':
-        return trialLimits.seoTools === -1 || currentUsage.seoToolsUsed < trialLimits.seoTools;
+        return trialLimits.seoTools === -1 || (currentUsage.seoToolsUsed || 0) < trialLimits.seoTools;
       default:
         return true;
     }
@@ -244,11 +281,11 @@ userSchema.methods.checkUsageLimit = function(feature) {
   // Regular subscription limits
   switch(feature) {
     case 'projects':
-      return limits.projects === -1 || currentUsage.projectsCreated < limits.projects;
+      return limits.projects === -1 || (currentUsage.projectsCreated || 0) < limits.projects;
     case 'submissions':
-      return limits.submissions === -1 || currentUsage.submissionsMade < limits.submissions;
+      return limits.submissions === -1 || (currentUsage.submissionsMade || 0) < limits.submissions;
     case 'apiCalls':
-      return this.customPermissions.apiCallLimit === -1 || currentUsage.apiCallsUsed < this.customPermissions.apiCallLimit;
+      return (this.customPermissions?.apiCallLimit || -1) === -1 || (currentUsage.apiCallsUsed || 0) < (this.customPermissions?.apiCallLimit || 0);
     case 'seoTools':
       return true; // Allow unlimited SEO tools usage for now
     default:
@@ -258,8 +295,16 @@ userSchema.methods.checkUsageLimit = function(feature) {
 
 // Method to increment usage
 userSchema.methods.incrementUsage = function(feature, amount = 1) {
+  // Ensure currentUsage exists and has proper structure
   if (!this.currentUsage) {
-    this.currentUsage = {};
+    this.currentUsage = {
+      month: new Date().toISOString().slice(0, 7),
+      projectsCreated: 0,
+      submissionsMade: 0,
+      apiCallsUsed: 0,
+      seoToolsUsed: 0,
+      lastReset: new Date()
+    };
   }
   
   const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
@@ -274,6 +319,12 @@ userSchema.methods.incrementUsage = function(feature, amount = 1) {
       lastReset: new Date()
     };
   }
+  
+  // Ensure all properties exist
+  if (typeof this.currentUsage.projectsCreated !== 'number') this.currentUsage.projectsCreated = 0;
+  if (typeof this.currentUsage.submissionsMade !== 'number') this.currentUsage.submissionsMade = 0;
+  if (typeof this.currentUsage.apiCallsUsed !== 'number') this.currentUsage.apiCallsUsed = 0;
+  if (typeof this.currentUsage.seoToolsUsed !== 'number') this.currentUsage.seoToolsUsed = 0;
   
   switch(feature) {
     case 'projects':

@@ -697,11 +697,41 @@ const SubmissionsDashboard = () => {
     fetchAvailableFilters();
   }, []);
 
+  // Restore selected project from localStorage when projects are loaded
+  useEffect(() => {
+    if (projects.length > 0 && !selectedProject) {
+      const savedProjectId = localStorage.getItem('selectedProject');
+      console.log('🔍 Restoring project from localStorage:', savedProjectId);
+      
+      if (savedProjectId) {
+        const found = projects.find(p => p._id === savedProjectId);
+        console.log('🔍 Found project to restore:', found);
+        
+        if (found) {
+          setSelectedProject(found);
+          console.log('✅ Project restored successfully:', found._id);
+        } else {
+          console.log('❌ Saved project not found in current projects, clearing localStorage');
+          localStorage.removeItem('selectedProject');
+        }
+      }
+    }
+  }, [projects, selectedProject]);
+
   const handleProjectSelect = (id: string) => {
+    console.log('🔍 handleProjectSelect called with id:', id);
+    console.log('🔍 Available projects:', projects);
+    
     const found = (projects || []).find(p => p._id === id) || null;
+    console.log('🔍 Found project:', found);
+    
     setSelectedProject(found);
     if (found) {
       localStorage.setItem('selectedProject', found._id);
+      console.log('✅ Project selected and saved to localStorage:', found._id);
+    } else {
+      localStorage.removeItem('selectedProject');
+      console.log('❌ No project found, cleared localStorage');
     }
   };
 
@@ -1286,7 +1316,12 @@ const SubmissionsDashboard = () => {
 
   // NEW: One-Click Full Automation Function with Bookmarklet First
   const handleOneClickAutomation = async (url: string, siteName: string) => {
+    console.log('🔍 handleOneClickAutomation called with:', { url, siteName });
+    console.log('🔍 selectedProject:', selectedProject);
+    console.log('🔍 projects:', projects);
+    
     if (!selectedProject) {
+      console.log('❌ No project selected, showing warning');
       showPopup(`⚠️ Please select a project first! Go to the "Project Selection" dropdown above and choose your project before clicking "Fill Form".`, 'warning');
       return;
     }
