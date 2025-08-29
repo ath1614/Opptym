@@ -59,19 +59,70 @@ const createProject = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized: userId is missing' });
     }
 
+    // Input validation
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      return res.status(400).json({ error: 'Project title is required' });
+    }
+
+    if (!url || typeof url !== 'string' || url.trim().length === 0) {
+      return res.status(400).json({ error: 'Project URL is required' });
+    }
+
+    // Validate URL format
+    try {
+      new URL(url);
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid URL format' });
+    }
+
+    // Sanitize inputs
+    const sanitizedData = {
+      title: title.trim().substring(0, 200),
+      url: url.trim(),
+      category: category ? category.trim().substring(0, 100) : undefined,
+      email: email ? email.trim().substring(0, 100) : undefined,
+      metaTitle: metaTitle ? metaTitle.trim().substring(0, 200) : undefined,
+      metaDescription: metaDescription ? metaDescription.trim().substring(0, 500) : undefined,
+      keywords: Array.isArray(keywords) ? keywords.slice(0, 50).map(k => k.trim().substring(0, 100)) : undefined,
+      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords.slice(0, 50).map(k => k.trim().substring(0, 100)) : undefined,
+      name: name ? name.trim().substring(0, 100) : undefined,
+      companyName: companyName ? companyName.trim().substring(0, 100) : undefined,
+      businessPhone: businessPhone ? businessPhone.trim().substring(0, 20) : undefined,
+      whatsapp: whatsapp ? whatsapp.trim().substring(0, 20) : undefined,
+      description: description ? description.trim().substring(0, 1000) : undefined,
+      buildingName: buildingName ? buildingName.trim().substring(0, 100) : undefined,
+      address1: address1 ? address1.trim().substring(0, 200) : undefined,
+      address2: address2 ? address2.trim().substring(0, 200) : undefined,
+      address3: address3 ? address3.trim().substring(0, 200) : undefined,
+      district: district ? district.trim().substring(0, 100) : undefined,
+      city: city ? city.trim().substring(0, 100) : undefined,
+      state: state ? state.trim().substring(0, 100) : undefined,
+      country: country ? country.trim().substring(0, 100) : undefined,
+      pincode: pincode ? pincode.trim().substring(0, 20) : undefined,
+      articleTitle: articleTitle ? articleTitle.trim().substring(0, 200) : undefined,
+      articleContent: articleContent ? articleContent.trim().substring(0, 10000) : undefined,
+      authorName: authorName ? authorName.trim().substring(0, 100) : undefined,
+      authorBio: authorBio ? authorBio.trim().substring(0, 500) : undefined,
+      tags: Array.isArray(tags) ? tags.slice(0, 20).map(t => t.trim().substring(0, 50)) : undefined,
+      productName: productName ? productName.trim().substring(0, 100) : undefined,
+      price: price ? price.trim().substring(0, 50) : undefined,
+      condition: condition ? condition.trim().substring(0, 50) : undefined,
+      productImageUrl: productImageUrl ? productImageUrl.trim().substring(0, 500) : undefined,
+      facebook: facebook ? facebook.trim().substring(0, 200) : undefined,
+      twitter: twitter ? twitter.trim().substring(0, 200) : undefined,
+      instagram: instagram ? instagram.trim().substring(0, 200) : undefined,
+      linkedin: linkedin ? linkedin.trim().substring(0, 200) : undefined,
+      youtube: youtube ? youtube.trim().substring(0, 200) : undefined,
+      businessHours: businessHours ? businessHours.trim().substring(0, 200) : undefined,
+      establishedYear: establishedYear ? establishedYear.trim().substring(0, 10) : undefined,
+      logoUrl: logoUrl ? logoUrl.trim().substring(0, 500) : undefined,
+      sitemapUrl: sitemapUrl ? sitemapUrl.trim().substring(0, 500) : undefined,
+      robotsTxtUrl: robotsTxtUrl ? robotsTxtUrl.trim().substring(0, 500) : undefined
+    };
+
     const project = await Project.create({
       userId: req.userId,
-      title, url, category, email,
-      metaTitle, metaDescription,
-      keywords, targetKeywords,
-      name, companyName, businessPhone, whatsapp, description,
-      buildingName, address1, address2, address3,
-      district, city, state, country, pincode,
-      articleTitle, articleContent, authorName, authorBio, tags,
-      productName, price, condition, productImageUrl,
-      facebook, twitter, instagram, linkedin, youtube,
-      businessHours, establishedYear, logoUrl,
-      sitemapUrl, robotsTxtUrl
+      ...sanitizedData
     });
 
     // Increment usage

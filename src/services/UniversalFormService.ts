@@ -77,6 +77,10 @@ export class UniversalFormService {
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const result = await response.json();
       
       if (!result.success) {

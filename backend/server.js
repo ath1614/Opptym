@@ -14,9 +14,26 @@ const app = express();
 // Trust proxy for rate limiting behind load balancers
 app.set('trust proxy', 1);
 
-// CORS configuration - allow all origins temporarily for debugging
+// CORS configuration - production ready
+const allowedOrigins = [
+  'https://opptym.com',
+  'https://www.opptym.com',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: true, // Allow all origins
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('🚫 CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -26,10 +43,8 @@ app.use(cors({
     'X-Requested-With', 
     'Origin', 
     'Accept',
-    'Cache-Control',
-    'X-File-Name'
-  ],
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
+    'Cache-Control'
+  ]
 }));
 
 console.log('🌐 CORS configured to allow all origins');
@@ -44,15 +59,27 @@ app.use(helmet({
 }));
 app.use(compression());
 
-// Rate limiting - reduced for development
+// Rate limiting - production ready
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // increased limit for development
+  max: 100, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path === '/api/health', // Skip health checks
 });
+
+// Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 auth requests per windowMs
+  message: 'Too many authentication attempts, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use('/api/', limiter);
+app.use('/api/auth/', authLimiter);
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -73,23 +100,19 @@ const connectDB = async () => {
     console.log('🔗 Attempting to connect to MongoDB...');
     console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
     
-    // Check if environment variable is truncated or invalid
-    if (!mongoURI || 
-        !mongoURI.includes('opptym.tkcz5nx.mongodb.net') || 
-        mongoURI.length < 100) {
-      
-      console.log('⚠️ Environment MONGODB_URI is truncated or invalid, using fallback');
-      mongoURI = 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym';
+    // Validate MongoDB URI
+    if (!mongoURI) {
+      console.error('❌ MONGODB_URI environment variable is not set');
+      throw new Error('MongoDB URI not configured');
+    }
+    
+    // Validate URI format
+    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('mongodb.net/')) {
+      throw new Error('Invalid MongoDB URI format');
     }
     
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
     console.log('🔍 Full URI length:', mongoURI.length);
-    console.log('🔍 Using fallback URI:', mongoURI === 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym');
-    
-    // Validate URI format
-    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('@opptym.tkcz5nx.mongodb.net/')) {
-      throw new Error('Invalid MongoDB URI format');
-    }
     
     // Test connection with timeout
     const connectionPromise = mongoose.connect(mongoURI, {

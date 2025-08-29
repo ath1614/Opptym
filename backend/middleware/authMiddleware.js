@@ -19,8 +19,12 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ error: 'Not authorized, invalid token format' });
     }
 
-    // Use fallback JWT secret if environment variable is not set
-    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    // JWT secret must be set in environment variables
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('❌ JWT_SECRET environment variable is not set');
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     
     let decoded;
     try {

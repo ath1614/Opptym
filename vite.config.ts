@@ -10,19 +10,31 @@ export default defineConfig({
     },
   },
   build: {
-    // Force cache busting with git commit hash
+    // Production optimizations
     rollupOptions: {
       output: {
         entryFileNames: `assets/[name]-[hash].js`,
         chunkFileNames: `assets/[name]-[hash].js`,
-        assetFileNames: `assets/[name]-[hash].[ext]`
+        assetFileNames: `assets/[name]-[hash].[ext]`,
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['lucide-react', 'antd']
+        }
       }
     },
-    // Add cache busting headers
-    assetsInlineLimit: 0,
+    // Performance optimizations
+    assetsInlineLimit: 4096, // Inline small assets
     sourcemap: false,
-    // Disable minification to avoid terser dependency
-    minify: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000
   },
   // Force cache busting for development
   define: {

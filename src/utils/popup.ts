@@ -30,12 +30,28 @@ export const showPopup = (message: string, type: PopupType = 'info', duration: n
 
   const { icon, color } = getIconAndColor();
 
-  content.innerHTML = `
-    <div style="font-size: 48px; margin-bottom: 20px;">${icon}</div>
-    <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;">${type.charAt(0).toUpperCase() + type.slice(1)}</h2>
-    <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">${message}</p>
-    <button id="closePopup" style="background: ${color}; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;">OK</button>
-  `;
+  // Create elements safely to prevent XSS
+  const iconDiv = document.createElement('div');
+  iconDiv.style.cssText = 'font-size: 48px; margin-bottom: 20px;';
+  iconDiv.textContent = icon;
+
+  const title = document.createElement('h2');
+  title.style.cssText = 'margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;';
+  title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+
+  const messageP = document.createElement('p');
+  messageP.style.cssText = 'margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;';
+  messageP.textContent = message;
+
+  const button = document.createElement('button');
+  button.id = 'closePopup';
+  button.style.cssText = `background: ${color}; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;`;
+  button.textContent = 'OK';
+
+  content.appendChild(iconDiv);
+  content.appendChild(title);
+  content.appendChild(messageP);
+  content.appendChild(button);
 
   document.body.appendChild(modal);
 
@@ -77,15 +93,39 @@ export const showConfirmPopup = (message: string, onConfirm: () => void, onCance
     text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   `;
 
-  content.innerHTML = `
-    <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-    <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;">Confirm Action</h2>
-    <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;">${message}</p>
-    <div style="display: flex; gap: 12px; justify-content: center;">
-      <button id="confirmBtn" style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;">Confirm</button>
-      <button id="cancelBtn" style="background: #6b7280; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancel</button>
-    </div>
-  `;
+  // Create elements safely to prevent XSS
+  const iconDiv = document.createElement('div');
+  iconDiv.style.cssText = 'font-size: 48px; margin-bottom: 20px;';
+  iconDiv.textContent = '⚠️';
+
+  const title = document.createElement('h2');
+  title.style.cssText = 'margin: 0 0 10px 0; font-size: 20px; font-weight: 600; color: #1f2937;';
+  title.textContent = 'Confirm Action';
+
+  const messageP = document.createElement('p');
+  messageP.style.cssText = 'margin: 0 0 20px 0; color: #6b7280; font-size: 16px; line-height: 1.5;';
+  messageP.textContent = message;
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.cssText = 'display: flex; gap: 12px; justify-content: center;';
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.id = 'confirmBtn';
+  confirmBtn.style.cssText = 'background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;';
+  confirmBtn.textContent = 'Confirm';
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.id = 'cancelBtn';
+  cancelBtn.style.cssText = 'background: #6b7280; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500;';
+  cancelBtn.textContent = 'Cancel';
+
+  buttonContainer.appendChild(confirmBtn);
+  buttonContainer.appendChild(cancelBtn);
+
+  content.appendChild(iconDiv);
+  content.appendChild(title);
+  content.appendChild(messageP);
+  content.appendChild(buttonContainer);
 
   document.body.appendChild(modal);
 

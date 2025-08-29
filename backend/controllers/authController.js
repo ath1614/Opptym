@@ -92,7 +92,11 @@ const signup = async (req, res) => {
     console.log('✅ User saved successfully:', user._id);
 
     // Generate JWT token
-    const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('❌ JWT_SECRET environment variable is not set');
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     
     console.log('🔐 Generating JWT token for signup user:', user._id);
     
@@ -185,7 +189,11 @@ const login = async (req, res) => {
         }
 
         // Generate JWT token
-        const jwtSecret = process.env.JWT_SECRET || 'opptym-secret-key-2024-fallback';
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+          console.error('❌ JWT_SECRET environment variable is not set');
+          return res.status(500).json({ error: 'Server configuration error' });
+        }
         
         console.log('🔐 Generating JWT token for login user:', user._id);
         
