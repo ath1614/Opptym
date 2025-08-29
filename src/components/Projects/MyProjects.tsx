@@ -119,7 +119,9 @@ const MyProjects = () => {
       });
     } catch (err: any) {
       console.error('❌ Error deleting project:', err);
-      alert('Failed to delete project. Please try again.');
+      // Use a more user-friendly error message
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to delete project. Please try again.';
+      alert(errorMessage);
     } finally {
       setDeleting(null);
     }
@@ -245,7 +247,12 @@ const MyProjects = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              aria-label="Search projects"
+              aria-describedby="search-description"
             />
+            <div id="search-description" className="sr-only">
+              Search through your projects by title or description
+            </div>
           </div>
           <div className="relative">
             <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
@@ -253,6 +260,7 @@ const MyProjects = () => {
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               className="pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400 appearance-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              aria-label="Filter projects by status"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -292,7 +300,12 @@ const MyProjects = () => {
       {filteredProjects.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
-            <div key={project._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+            <div 
+              key={project._id} 
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow"
+              role="article"
+              aria-labelledby={`project-title-${project._id}`}
+            >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -300,10 +313,18 @@ const MyProjects = () => {
                       <Globe className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{project.title || 'Untitled Project'}</h3>
+                      <h3 
+                        id={`project-title-${project._id}`}
+                        className="font-semibold text-gray-900 dark:text-white"
+                      >
+                        {project.title || 'Untitled Project'}
+                      </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">{project.url || 'No URL'}</p>
                       {project.status && (
-                        <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${getStatusColor(project.status)}`}>
+                        <span 
+                          className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${getStatusColor(project.status)}`}
+                          aria-label={`Project status: ${project.status}`}
+                        >
                           {project.status}
                         </span>
                       )}
@@ -328,16 +349,21 @@ const MyProjects = () => {
                       <MoreVertical className="w-4 h-4 text-gray-400" />
                     </button>
                     {openDropdown === project._id && (
-                      <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 z-10" role="menu">
+                      <div 
+                        className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-32 z-10" 
+                        role="menu"
+                        aria-label={`Options for ${project.title || 'project'}`}
+                      >
                         <button
                           onClick={async () => {
                             try {
                               const res = await getProjectById(project._id);
                               setSelectedProject(res);
                               setOpenDropdown(null);
-                            } catch (err) {
+                            } catch (err: any) {
                               console.error('❌ Failed to load project details:', err);
-                              alert('Failed to load project details. Please try again.');
+                              const errorMessage = err.response?.data?.error || err.message || 'Failed to load project details. Please try again.';
+                              alert(errorMessage);
                             }
                           }}
                           className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2"
@@ -407,12 +433,13 @@ const MyProjects = () => {
           <div className="bg-white rounded-lg max-w-4xl w-full p-6 overflow-y-auto max-h-screen shadow-lg">
             <ProjectDetails project={selectedProject} />
             <div className="pt-4 text-right">
-              <button
-                onClick={() => setSelectedProject(null)}
-                className="px-4 py-2 bg-gradient-to-r from-sky-400 to-blue-600 text-white rounded-lg hover:from-sky-500 hover:to-blue-700"
-              >
-                Close
-              </button>
+                          <button
+              onClick={() => setSelectedProject(null)}
+              className="px-4 py-2 bg-gradient-to-r from-sky-400 to-blue-600 text-white rounded-lg hover:from-sky-500 hover:to-blue-700"
+              aria-label="Close project details"
+            >
+              Close
+            </button>
             </div>
           </div>
         </div>
