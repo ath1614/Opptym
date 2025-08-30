@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 // Get subscription details
 const getSubscriptionDetails = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -29,7 +29,7 @@ const getSubscriptionDetails = async (req, res) => {
 const checkFeatureAccess = async (req, res) => {
   try {
     const { feature } = req.params;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -54,7 +54,7 @@ const checkFeatureAccess = async (req, res) => {
 const checkUsageLimit = async (req, res) => {
   try {
     const { feature } = req.params;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -83,7 +83,7 @@ const checkUsageLimit = async (req, res) => {
 const trackUsage = async (req, res) => {
   try {
     const { feature } = req.params;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -125,7 +125,7 @@ const trackUsage = async (req, res) => {
 // Get team management (for admin users)
 const getTeamManagement = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     
     if (!user || user.role !== 'admin') {
       return res.status(403).json({ error: 'Admin access required' });
@@ -157,7 +157,7 @@ const updateUserSubscription = async (req, res) => {
     const { userId } = req.params;
     const { subscription, subscriptionStatus, trialEndDate } = req.body;
     
-    const adminUser = await User.findById(req.user.id);
+    const adminUser = await User.findById(req.userId);
     if (!adminUser || adminUser.role !== 'admin') {
       return res.status(403).json({ error: 'Admin access required' });
     }
@@ -203,7 +203,7 @@ const updateUserSubscription = async (req, res) => {
 // Get subscription analytics (admin only)
 const getSubscriptionAnalytics = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     
     if (!user || user.role !== 'admin') {
       return res.status(403).json({ error: 'Admin access required' });
