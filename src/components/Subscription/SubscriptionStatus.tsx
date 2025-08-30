@@ -23,15 +23,17 @@ interface SubscriptionDetails {
     projects: number;
     submissions: number;
     tools: number;
-    teamMembers: number;
+    teamMembers?: number;
   };
   currentUsage: {
-    projectsCreated: number;
-    submissionsMade: number;
+    projectsUsed?: number;
+    projectsCreated?: number;
+    submissionsUsed?: number;
+    submissionsMade?: number;
     apiCallsUsed: number;
     seoToolsUsed: number;
   };
-  canUpgrade: boolean;
+  canUpgrade?: boolean;
   nextBillingDate?: string;
   trialEndDate?: string;
   isInTrial?: boolean;
@@ -138,7 +140,24 @@ const SubscriptionStatus = () => {
     }
   };
 
-  const getUsagePercentage = (current: number, limit: number) => {
+  const getPlanLimits = (plan: string) => {
+    switch (plan) {
+      case 'enterprise':
+        return { submissions: -1, projects: -1, tools: -1, apiCalls: -1 };
+      case 'business':
+        return { submissions: 1500, projects: 50, tools: 1000, apiCalls: 5000 };
+      case 'pro':
+        return { submissions: 750, projects: 15, tools: 500, apiCalls: 2000 };
+      case 'starter':
+        return { submissions: 150, projects: 5, tools: 100, apiCalls: 500 };
+      case 'free':
+      default:
+        return { submissions: 5, projects: 2, tools: 10, apiCalls: 20 };
+    }
+  };
+
+  const getUsagePercentage = (current: number | undefined, limit: number | undefined) => {
+    if (!current || !limit) return 0;
     if (limit === -1) return 0; // Unlimited
     if (limit === 0) return 100; // No access
     return Math.min((current / limit) * 100, 100);
@@ -272,13 +291,13 @@ const SubscriptionStatus = () => {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Projects</span>
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {subscription.currentUsage.projectsCreated} / {subscription.limits.projects === -1 ? '∞' : subscription.limits.projects}
+              {(subscription.currentUsage.projectsUsed || subscription.currentUsage.projectsCreated || 0)} / {subscription.limits.projects === -1 ? '∞' : subscription.limits.projects}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className={`h-2 rounded-full ${getUsageColor(getUsagePercentage(subscription.currentUsage.projectsCreated, subscription.limits.projects))}`}
-              style={{ width: `${getUsagePercentage(subscription.currentUsage.projectsCreated, subscription.limits.projects)}%` }}
+              className={`h-2 rounded-full ${getUsageColor(getUsagePercentage((subscription.currentUsage.projectsUsed || subscription.currentUsage.projectsCreated || 0), subscription.limits.projects))}`}
+              style={{ width: `${getUsagePercentage((subscription.currentUsage.projectsUsed || subscription.currentUsage.projectsCreated || 0), subscription.limits.projects)}%` }}
             ></div>
           </div>
         </div>
@@ -332,17 +351,17 @@ const SubscriptionStatus = () => {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Team Members</span>
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {subscription.limits.teamMembers === -1 ? '∞' : subscription.limits.teamMembers}
+              {subscription.limits.teamMembers === -1 ? '∞' : (subscription.limits.teamMembers || 0)}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className={`h-2 rounded-full ${subscription.limits.teamMembers > 0 ? 'bg-green-500' : 'bg-gray-400'}`}
-              style={{ width: subscription.limits.teamMembers > 0 ? '100%' : '0%' }}
+              className={`h-2 rounded-full ${(subscription.limits.teamMembers || 0) > 0 ? 'bg-green-500' : 'bg-gray-400'}`}
+              style={{ width: (subscription.limits.teamMembers || 0) > 0 ? '100%' : '0%' }}
             ></div>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {subscription.limits.teamMembers > 0 ? 'Available' : 'Not available'}
+            {(subscription.limits.teamMembers || 0) > 0 ? 'Available' : 'Not available'}
           </p>
         </div>
       </div>

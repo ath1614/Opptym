@@ -60,7 +60,7 @@ export default function Dashboard() {
         setSubscription(subscriptionResponse.data);
       } catch (error) {
         console.log('⚠️ Could not fetch subscription details:', error);
-        // Set fallback subscription data
+        // Set fallback subscription data for free users
         const getPlanLimits = (plan: string) => {
           switch (plan) {
             case 'business':
@@ -75,21 +75,25 @@ export default function Dashboard() {
           }
         };
         
-        const limits = getPlanLimits(user?.subscription || 'free');
+        // Always default to free plan if subscription API fails
+        const userPlan = 'free';
+        const limits = getPlanLimits(userPlan);
         
         setSubscription({
-          subscription: user?.subscription || 'free',
+          subscription: userPlan,
           status: 'active',
-          nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          nextBillingDate: null, // No billing date for free users
           currentUsage: {
-            submissionsMade: 0, // Placeholder, will be updated from submissions
-            projectsCreated: 0, // Placeholder, will be updated from projects
+            submissionsUsed: 0,
+            projectsUsed: 0,
             seoToolsUsed: 0,
             apiCallsUsed: 0
           },
           limits: limits,
-          isInTrial: user?.subscription === 'free',
-          trialDaysLeft: user?.subscription === 'free' ? 3 : 0
+          isInTrial: true,
+          trialDaysLeft: 3,
+          trialEndDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+          trialExpired: false
         });
       }
 
@@ -393,6 +397,11 @@ export default function Dashboard() {
                 <div className="text-sm text-green-300 font-medium">
                   {subscription.status}
                 </div>
+                {subscription.nextBillingDate && (
+                  <div className="text-xs text-white/60">
+                    Next billing: {new Date(subscription.nextBillingDate).toLocaleDateString()}
+                  </div>
+                )}
               </div>
             </div>
             
@@ -401,13 +410,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/80">Submissions Used</span>
                   <span className="text-sm font-semibold text-white">
-                    {subscription.currentUsage?.submissionsUsed || 0} / {subscription.limits?.submissions || 100}
+                    {subscription.currentUsage?.submissionsUsed || 0} / {subscription.limits?.submissions === -1 ? 'Unlimited' : subscription.limits?.submissions || 5}
                   </span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
                   <div 
                     className="bg-white h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.currentUsage?.submissionsUsed || 0) / (subscription.limits?.submissions || 100) * 100, 100)}%` }}
+                    style={{ width: `${subscription.limits?.submissions === -1 ? 0 : Math.min((subscription.currentUsage?.submissionsUsed || 0) / (subscription.limits?.submissions || 5) * 100, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -416,13 +425,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/80">Projects Used</span>
                   <span className="text-sm font-semibold text-white">
-                    {subscription.currentUsage?.projectsUsed || 0} / {subscription.limits?.projects || 50}
+                    {subscription.currentUsage?.projectsUsed || 0} / {subscription.limits?.projects === -1 ? 'Unlimited' : subscription.limits?.projects || 2}
                   </span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
                   <div 
                     className="bg-white h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.currentUsage?.projectsUsed || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
+                    style={{ width: `${subscription.limits?.projects === -1 ? 0 : Math.min((subscription.currentUsage?.projectsUsed || 0) / (subscription.limits?.projects || 2) * 100, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -431,13 +440,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/80">SEO Tools Used</span>
                   <span className="text-sm font-semibold text-white">
-                    {subscription.currentUsage?.seoToolsUsed || 0} / {subscription.limits?.tools || 100}
+                    {subscription.currentUsage?.seoToolsUsed || 0} / {subscription.limits?.tools === -1 ? 'Unlimited' : subscription.limits?.tools || 10}
                   </span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
                   <div 
                     className="bg-white h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.currentUsage?.seoToolsUsed || 0) / (subscription.limits?.tools || 100) * 100, 100)}%` }}
+                    style={{ width: `${subscription.limits?.tools === -1 ? 0 : Math.min((subscription.currentUsage?.seoToolsUsed || 0) / (subscription.limits?.tools || 10) * 100, 100)}%` }}
                   ></div>
                 </div>
               </div>
