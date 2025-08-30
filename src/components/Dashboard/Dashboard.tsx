@@ -43,6 +43,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    // Add deployment verification
+    console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v2.0');
   }, []);
 
   const fetchDashboardData = async () => {
