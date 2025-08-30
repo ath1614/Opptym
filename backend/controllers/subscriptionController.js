@@ -257,12 +257,51 @@ const getSubscriptionAnalytics = async (req, res) => {
   }
 };
 
+// Verify bookmarklet usage (placeholder - implement as needed)
+const verifyBookmarkletUsage = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if user can use bookmarklet
+    const canUse = user.hasFeatureAccess('submissions') && user.checkUsageLimit('submissions');
+    
+    res.json({
+      canUse,
+      remainingSubmissions: user.planLimits.submissions - user.usage.submissionsUsed,
+      subscription: user.subscription
+    });
+  } catch (error) {
+    console.error('Error verifying bookmarklet usage:', error);
+    res.status(500).json({ error: 'Failed to verify bookmarklet usage' });
+  }
+};
+
+// Team management functions (placeholders - implement as needed)
+const inviteTeamMember = async (req, res) => {
+  res.status(501).json({ error: 'Team management not implemented yet' });
+};
+
+const updateTeamMemberPermissions = async (req, res) => {
+  res.status(501).json({ error: 'Team management not implemented yet' });
+};
+
+const removeTeamMember = async (req, res) => {
+  res.status(501).json({ error: 'Team management not implemented yet' });
+};
+
 module.exports = {
   getSubscriptionDetails,
   checkFeatureAccess,
   checkUsageLimit,
   trackUsage,
+  verifyBookmarkletUsage,
   getTeamManagement,
   updateUserSubscription,
-  getSubscriptionAnalytics
+  getSubscriptionAnalytics,
+  inviteTeamMember,
+  updateTeamMemberPermissions,
+  removeTeamMember
 }; 
