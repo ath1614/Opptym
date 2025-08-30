@@ -45,9 +45,9 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ error: 'Not authorized, user not found' });
     }
 
-    // Check if user subscription is active
-    if (user.subscriptionStatus !== 'active') {
-      console.log('🔍 User subscription not active:', user.subscriptionStatus);
+    // Check if user subscription is active or if they're a free user in trial
+    if (user.subscriptionStatus !== 'active' && !(user.subscription === 'free' && user.isInTrialPeriod())) {
+      console.log('🔍 User subscription not active:', user.subscriptionStatus, 'subscription:', user.subscription);
       return res.status(401).json({ error: 'Not authorized, subscription not active' });
     }
 
