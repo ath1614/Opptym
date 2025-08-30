@@ -152,7 +152,7 @@ export class UniversalFormService {
             // Show usage info
             const usageDiv = document.createElement('div');
             usageDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            usageDiv.innerHTML = \`✅ Token validated! Uses: \${usageInfo.current}/\${usageInfo.max} (\${usageInfo.remaining} remaining)\`;
+            usageDiv.innerHTML = '✅ Token validated! Uses: ' + usageInfo.current + '/' + usageInfo.max + ' (' + usageInfo.remaining + ' remaining)';
             document.body.appendChild(usageDiv);
             
             // Remove usage info after 3 seconds
@@ -186,24 +186,6 @@ export class UniversalFormService {
               { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
             ];
           
-          let filledCount = 0;
-          let errorCount = 0;
-          
-          // Enhanced field mapping with better detection
-          const fieldMappings = [
-            { patterns: ['name', 'fullname', 'full_name', 'firstname', 'first_name'], value: projectData.name },
-            { patterns: ['email', 'e-mail', 'mail'], value: projectData.email },
-            { patterns: ['company', 'companyname', 'company_name', 'business', 'organization'], value: projectData.companyName },
-            { patterns: ['phone', 'telephone', 'mobile', 'cell', 'contact'], value: projectData.phone },
-            { patterns: ['website', 'url', 'site', 'web'], value: projectData.url },
-            { patterns: ['description', 'message', 'comment', 'details', 'about'], value: projectData.description },
-            { patterns: ['address', 'street', 'location'], value: projectData.address || '' },
-            { patterns: ['city', 'town'], value: projectData.city || '' },
-            { patterns: ['state', 'province', 'region'], value: projectData.state || '' },
-            { patterns: ['country', 'nation'], value: projectData.country || '' },
-            { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
-          ];
-          
           // Process all form fields
           const processInputFields = () => {
             const inputs = document.querySelectorAll('input, textarea, select');
@@ -228,11 +210,11 @@ export class UniversalFormService {
                   input.dispatchEvent(new Event('input', { bubbles: true }));
                   input.dispatchEvent(new Event('change', { bubbles: true }));
                   filledCount++;
-                  console.log(\`✅ Filled field \${index + 1}: \${input.name || input.id || input.placeholder} with: \${mapping.value}\`);
+                  console.log('✅ Filled field ' + (index + 1) + ': ' + (input.name || input.id || input.placeholder) + ' with: ' + mapping.value);
                 }
               } catch (e) {
                 errorCount++;
-                console.log(\`⚠️ Error processing field \${index + 1}:\`, e);
+                console.log('⚠️ Error processing field ' + (index + 1) + ':', e);
               }
             });
           };
@@ -244,8 +226,8 @@ export class UniversalFormService {
           setTimeout(() => {
             loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
             loadingDiv.textContent = filledCount > 0 
-              ? \`✅ \${filledCount} fields filled successfully!\`
-              : \`⚠️ No fields could be filled automatically\`;
+              ? '✅ ' + filledCount + ' fields filled successfully!'
+              : '⚠️ No fields could be filled automatically';
             
             // Remove message after 3 seconds
             setTimeout(() => {
@@ -255,7 +237,7 @@ export class UniversalFormService {
             }, 3000);
           }, 500);
           
-          console.log(\`🎯 Form filling completed: \${filledCount} fields filled, \${errorCount} errors\`);
+          console.log('🎯 Form filling completed: ' + filledCount + ' fields filled, ' + errorCount + ' errors');
           
           // Auto-delete this bookmarklet after 30 minutes
           setTimeout(() => {
@@ -267,9 +249,9 @@ export class UniversalFormService {
                 window.chrome.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
                   bookmarks.forEach(bookmark => {
                     window.chrome.bookmarks.remove(bookmark.id);
-                    console.log('🗑️ Removed bookmark from Chrome:', bookmark.id);
+                    console.log('🗑️ Removed bookmark from Chrome: ' + bookmark.id);
                   });
-                }).catch(e => console.log('Chrome bookmark removal failed:', e));
+                }).catch(e => console.log('Chrome bookmark removal failed: ' + e));
               }
               
               // Try to remove from Firefox bookmarks bar
@@ -277,9 +259,9 @@ export class UniversalFormService {
                 window.browser.bookmarks.search({ title: 'OPPTYM Auto-Fill' }).then(bookmarks => {
                   bookmarks.forEach(bookmark => {
                     window.browser.bookmarks.remove(bookmark.id);
-                    console.log('🗑️ Removed bookmark from Firefox:', bookmark.id);
+                    console.log('🗑️ Removed bookmark from Firefox: ' + bookmark.id);
                   });
-                }).catch(e => console.log('Firefox bookmark removal failed:', e));
+                }).catch(e => console.log('Firefox bookmark removal failed: ' + e));
               }
               
               // Also try to remove from DOM if present
@@ -304,7 +286,7 @@ export class UniversalFormService {
                         console.log('✅ Auto-deletion completed successfully');
           
             } catch (e) {
-              console.log('❌ Auto-deletion failed:', e);
+              console.log('❌ Auto-deletion failed: ' + e);
             }
           }, 30 * 60 * 1000); // 30 minutes
           
