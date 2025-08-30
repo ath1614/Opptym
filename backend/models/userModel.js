@@ -183,6 +183,28 @@ userSchema.methods.hasFeatureAccess = function(feature) {
   return this.features[feature] || false;
 };
 
+userSchema.methods.hasPermission = function(permission) {
+  // Admin has all permissions
+  if (this.role === 'admin') return true;
+  
+  // Check if trial is expired
+  if (this.subscription === 'free' && !this.isInTrialPeriod()) {
+    return false;
+  }
+  
+  // Map permissions to features
+  const permissionMap = {
+    'canCreateProjects': 'canCreateProjects',
+    'canSubmitToDirectories': 'canSubmitDirectories',
+    'canUseSeoTools': 'canUseSeoTools',
+    'canAccessAnalytics': 'canAccessAnalytics',
+    'canAccessAdmin': 'canAccessAdmin'
+  };
+  
+  const feature = permissionMap[permission];
+  return feature ? this.features[feature] : false;
+};
+
 userSchema.methods.checkUsageLimit = function(feature) {
   // Admin has unlimited access
   if (this.role === 'admin') return true;
@@ -246,6 +268,20 @@ userSchema.methods.getSubscriptionDetails = function() {
     features: this.features
   };
 };
+
+// Getter methods for backward compatibility
+userSchema.virtual('subscriptionLimits').get(function() {
+  return this.planLimits;
+});
+
+userSchema.virtual('currentUsage').get(function() {
+  return {
+    submissionsMade: this.usage.submissionsUsed,
+    projectsCreated: this.usage.projectsUsed,
+    seoToolsUsed: this.usage.seoToolsUsed,
+    apiCallsUsed: this.usage.apiCallsUsed
+  };
+});
 
 // Static methods
 userSchema.statics.findByEmail = function(email) {

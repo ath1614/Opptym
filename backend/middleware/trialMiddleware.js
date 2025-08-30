@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 // Check trial status and block expired trials
 const checkTrialStatus = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -38,7 +38,7 @@ const checkTrialStatus = async (req, res, next) => {
 const checkUsageLimit = (feature) => {
   return async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -93,7 +93,7 @@ const checkUsageLimit = (feature) => {
 const trackUsage = (feature) => {
   return async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -116,7 +116,7 @@ const trackUsage = (feature) => {
 const requireSubscription = (requiredPlans = []) => {
   return async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -158,7 +158,7 @@ const requireSubscription = (requiredPlans = []) => {
 // Check admin access
 const requireAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -182,7 +182,7 @@ const requireAdmin = async (req, res, next) => {
 const subscriptionRateLimit = (defaultLimit = 100, defaultWindow = 15 * 60 * 1000) => {
   return async (req, res, next) => {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }

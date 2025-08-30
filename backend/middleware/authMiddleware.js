@@ -63,7 +63,7 @@ const protect = async (req, res, next) => {
 const adminOnly = async (req, res, next) => {
   if (!req.userId) return res.status(401).json({ error: 'Unauthorized' });
   const user = await User.findById(req.userId);
-  if (!user || !user.isAdmin) return res.status(403).json({ error: 'Forbidden' });
+  if (!user || user.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
   next();
 };
 
