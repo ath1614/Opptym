@@ -45,10 +45,10 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ error: 'Not authorized, user not found' });
     }
 
-    // Check if user is active
-    if (user.status !== 'active') {
-      console.log('🔍 User account not active:', user.status);
-      return res.status(401).json({ error: 'Not authorized, account not active' });
+    // Check if user subscription is active
+    if (user.subscriptionStatus !== 'active') {
+      console.log('🔍 User subscription not active:', user.subscriptionStatus);
+      return res.status(401).json({ error: 'Not authorized, subscription not active' });
     }
 
     req.userId = decoded.userId;
