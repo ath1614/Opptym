@@ -106,7 +106,7 @@ export class UniversalFormService {
               document.body.appendChild(loadingDiv);
               
               // Validate token with server
-              const response = await fetch('\${API_BASE_URL}/api/bookmarklet/validate', {
+              const response = await fetch(API_BASE_URL + '/api/bookmarklet/validate', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
