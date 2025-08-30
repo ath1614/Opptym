@@ -13,10 +13,10 @@
     <meta http-equiv="Surrogate-Control" content="no-store">
     
     <!-- Force Cache Busting -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=<script>document.write(Date.now())</script>">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="/src/main.tsx?v=<script>document.write(Date.now())</script>" as="script">
+    <link rel="preload" href="/src/main.tsx" as="script">
     
     <style>
         /* Loading spinner */
@@ -70,7 +70,7 @@
         })();
     </script>
 
-    <!-- Main App Script with Cache Busting -->
-    <script type="module" src="/src/main.tsx?v=<script>document.write(Date.now())</script>"></script>
+    <!-- Main App Script -->
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
