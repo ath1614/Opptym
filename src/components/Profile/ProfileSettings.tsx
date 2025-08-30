@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { BASE_URL } from '../../lib/api';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import SubscriptionStatus from '../Subscription/SubscriptionStatus';
 import { 
   Camera, 
   Save, 
@@ -398,6 +399,15 @@ export default function ProfileSettings() {
                   <span>Save Changes</span>
                 </button>
               </form>
+            </div>
+
+            {/* Subscription Status */}
+            <div className="card-modern p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center space-x-2">
+                <Shield className="w-5 h-5 text-blue-600" />
+                <span>Subscription & Billing</span>
+              </h3>
+              <SubscriptionStatus />
             </div>
 
             {/* Password Change */}
