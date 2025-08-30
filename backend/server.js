@@ -581,4 +581,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
-});// Production deployment trigger - Sat Aug 30 15:30:15 IST 2025

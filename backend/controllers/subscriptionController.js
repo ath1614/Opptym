@@ -43,14 +43,17 @@ exports.getSubscriptionDetails = async (req, res) => {
     // Calculate trial information for free users
     let trialInfo = {};
     if (user.subscription === 'free') {
-      const isInTrial = user.isInTrialPeriod();
-      
       // Ensure trial dates are set
-      if (!user.trialEndDate && user.createdAt) {
-        user.trialEndDate = new Date(user.createdAt.getTime() + (3 * 24 * 60 * 60 * 1000));
+      if (!user.trialStartDate) {
+        user.trialStartDate = user.createdAt || new Date();
+      }
+      
+      if (!user.trialEndDate) {
+        user.trialEndDate = new Date(user.trialStartDate.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days
         await user.save();
       }
       
+      const isInTrial = user.isInTrialPeriod();
       const trialEndDate = user.trialEndDate;
       const trialDaysLeft = isInTrial && trialEndDate ? Math.ceil((trialEndDate - new Date()) / (1000 * 60 * 60 * 24)) : 0;
       
@@ -60,18 +63,36 @@ exports.getSubscriptionDetails = async (req, res) => {
         trialDaysLeft: Math.max(0, trialDaysLeft),
         trialExpired: !isInTrial
       };
+      
+      console.log('🔍 Trial info for user:', user.email, trialInfo);
     }
     
-    res.json({
+    // Calculate next billing date for paid users
+    let nextBillingDate = null;
+    if (user.subscription !== 'free' && user.subscriptionExpiresAt) {
+      nextBillingDate = user.subscriptionExpiresAt.toISOString();
+    }
+    
+    const response = {
       subscription: user.subscription,
-      status: user.subscriptionStatus,
+      status: user.subscriptionStatus || 'active',
       limits,
       currentUsage,
       canUpgrade: user.subscription !== 'enterprise',
-      nextBillingDate: user.subscriptionEndDate,
+      nextBillingDate,
       ...trialInfo
+    };
+    
+    console.log('📊 Subscription details for user:', user.email, {
+      subscription: response.subscription,
+      isInTrial: response.isInTrial,
+      trialDaysLeft: response.trialDaysLeft,
+      trialExpired: response.trialExpired
     });
+    
+    res.json(response);
   } catch (error) {
+    console.error('❌ Error in getSubscriptionDetails:', error);
     res.status(500).json({ error: error.message });
   }
 };

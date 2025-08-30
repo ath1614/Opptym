@@ -2,30 +2,51 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=<?php echo time(); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OPPTYM - AI-Powered SEO Automation Platform</title>
     
-    <!-- Aggressive Cache Busting -->
+    <!-- Enhanced Aggressive Cache Busting -->
     <script>
-      // Force clear all storage and cache
+      // Force clear all storage and cache with timestamp
+      const cacheBust = Date.now();
+      console.log('🔄 Cache busting with timestamp:', cacheBust);
+      
+      // Clear localStorage and sessionStorage
       localStorage.clear();
       sessionStorage.clear();
+      
+      // Clear all caches
       if ('caches' in window) {
         caches.keys().then(names => {
           names.forEach(name => {
             caches.delete(name);
+            console.log('🗑️ Deleted cache:', name);
           });
         });
       }
+      
       // Clear cookies
       document.cookie.split(";").forEach(function(c) { 
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
+      
+      // Add cache bust parameter to all requests
+      window.__CACHE_BUST__ = cacheBust;
+      
+      // Force reload if this is a cached version
+      if (performance.navigation.type === 1) {
+        console.log('🔄 Page reloaded, ensuring fresh content');
+      }
     </script>
+    
+    <!-- Cache Control Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx?v=<?php echo time(); ?>"></script>
   </body>
 </html>

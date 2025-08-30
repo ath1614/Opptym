@@ -10,12 +10,13 @@ export default defineConfig({
     },
   },
   build: {
-    // Production optimizations
+    // Production optimizations with enhanced cache busting
     rollupOptions: {
       output: {
-        entryFileNames: `assets/[name]-[hash].js`,
-        chunkFileNames: `assets/[name]-[hash].js`,
-        assetFileNames: `assets/[name]-[hash].[ext]`,
+        // Add timestamp to all file names for aggressive cache busting
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`,
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
@@ -36,9 +37,18 @@ export default defineConfig({
     // Chunk size warnings
     chunkSizeWarningLimit: 1000
   },
-  // Force cache busting for development
+  // Force cache busting for development and production
   define: {
     __BUILD_TIME__: JSON.stringify(Date.now()),
-    __BUILD_VERSION__: JSON.stringify(`v1.0.1-${Date.now()}`),
+    __BUILD_VERSION__: JSON.stringify(`v1.0.2-${Date.now()}`),
+    __CACHE_BUST__: JSON.stringify(`cb-${Date.now()}`),
   },
+  // Add cache control headers
+  server: {
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  }
 })

@@ -183,30 +183,47 @@ const SubscriptionStatus = () => {
 
       {/* Trial Status Banner for Free Users */}
       {subscription.subscription === 'free' && (
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <AlertTriangle className="w-5 h-5 text-orange-600" />
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-orange-900 mb-1">
-                {subscription.isInTrial ? 'Free Trial Active' : 'Free Trial Expired'}
-              </h4>
-              <p className="text-xs text-orange-700">
-                {subscription.isInTrial 
-                  ? `Your trial ends on ${subscription.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'soon'}. Upgrade to continue using all features.`
-                  : 'Your free trial has expired. Upgrade to continue using Opptym features.'
-                }
+        <div className={`bg-gradient-to-r ${subscription.isInTrial ? 'from-orange-50 to-yellow-50 border-orange-200' : 'from-red-50 to-pink-50 border-red-200'} border rounded-lg p-6`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              {subscription.isInTrial ? (
+                <AlertTriangle className="w-6 h-6 text-orange-600" />
+              ) : (
+                <XCircle className="w-6 h-6 text-red-600" />
+              )}
+              <div className="flex-1">
+                <h4 className={`text-lg font-bold mb-2 ${subscription.isInTrial ? 'text-orange-900' : 'text-red-900'}`}>
+                  {subscription.isInTrial ? '🎉 Free Trial Active' : '⏰ Free Trial Expired'}
+                </h4>
+                <p className={`text-sm ${subscription.isInTrial ? 'text-orange-700' : 'text-red-700'} mb-2`}>
+                  {subscription.isInTrial 
+                    ? `Your trial ends on ${subscription.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'soon'}.`
+                    : 'Your free trial has expired. Upgrade to continue using all Opptym features.'
+                  }
+                </p>
                 {subscription.trialDaysLeft !== undefined && subscription.trialDaysLeft > 0 && (
-                  <span className="block mt-1 font-medium">
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${subscription.trialDaysLeft <= 1 ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}`}>
+                    <span className="mr-1">⏰</span>
                     {subscription.trialDaysLeft} day{subscription.trialDaysLeft !== 1 ? 's' : ''} remaining
-                  </span>
+                  </div>
                 )}
-              </p>
+                {subscription.trialExpired && (
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 ml-2">
+                    <span className="mr-1">❌</span>
+                    Trial Expired
+                  </div>
+                )}
+              </div>
             </div>
             <button
               onClick={() => window.location.hash = 'pricing'}
-              className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors"
+              className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors ${
+                subscription.isInTrial 
+                  ? 'bg-orange-600 text-white hover:bg-orange-700' 
+                  : 'bg-red-600 text-white hover:bg-red-700'
+              }`}
             >
-              Upgrade Now
+              {subscription.isInTrial ? 'Upgrade Now' : 'Upgrade to Continue'}
             </button>
           </div>
         </div>

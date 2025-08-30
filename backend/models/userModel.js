@@ -306,7 +306,9 @@ userSchema.methods.checkUsageLimit = function(feature) {
     case 'apiCalls':
       return (this.customPermissions?.apiCallLimit || -1) === -1 || (currentUsage.apiCallsUsed || 0) < (this.customPermissions?.apiCallLimit || 0);
     case 'seoTools':
-      return true; // Allow unlimited SEO tools usage for now
+      // Enforce SEO tools limits for all users except enterprise
+      if (this.subscription === 'enterprise') return true;
+      return limits.tools === -1 || (currentUsage.seoToolsUsed || 0) < limits.tools;
     default:
       return true;
   }
