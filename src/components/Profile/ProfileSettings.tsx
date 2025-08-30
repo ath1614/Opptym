@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { BASE_URL } from '../../lib/api';
+// Remove BASE_URL import - use relative paths like other components
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import SubscriptionStatus from '../Subscription/SubscriptionStatus';
 import { 
@@ -82,7 +82,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${BASE_URL}/auth/profile`, profileForm, {
+      const response = await axios.put(`/api/auth/profile`, profileForm, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -121,7 +121,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${BASE_URL}/auth/password`, {
+      const response = await axios.put(`/api/auth/password`, {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       }, {
@@ -165,7 +165,7 @@ export default function ProfileSettings() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${BASE_URL}/auth/export`, {
+      const response = await axios.get(`/api/auth/export`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -194,7 +194,7 @@ export default function ProfileSettings() {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`${BASE_URL}/auth/account`, {
+        await axios.delete(`/api/auth/account`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

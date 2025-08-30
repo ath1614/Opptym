@@ -12,7 +12,7 @@ import {
   Headphones
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { BASE_URL } from '../../lib/api';
+// Remove BASE_URL import - use relative paths like other components
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 
@@ -201,7 +201,7 @@ export default function PricingPlans() {
     }
     
     try {
-      const res = await axios.post(`${BASE_URL}/payment/create-checkout-session`, {
+      const res = await axios.post(`/api/payment/create-checkout-session`, {
         plan: planId,
         userId: user.id,
         email: user.email,

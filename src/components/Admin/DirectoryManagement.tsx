@@ -18,7 +18,7 @@ import {
   TrendingUp,
   Loader2
 } from 'lucide-react';
-import { BASE_URL } from '../../lib/api';
+// Remove BASE_URL import - use relative paths like other components
 import axios from 'axios';
 
 interface Directory {
@@ -123,7 +123,7 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${BASE_URL}/admin/directories`, {
+      const response = await axios.get('/api/admin/directories', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDirectories(response.data);
@@ -139,7 +139,7 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.post(`${BASE_URL}/admin/directories`, formData, {
+      await axios.post(`/api/admin/directories`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -162,7 +162,7 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.put(`${BASE_URL}/admin/directories/${editingDirectory._id}`, formData, {
+      await axios.put(`/api/admin/directories/${editingDirectory._id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -186,7 +186,7 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.delete(`${BASE_URL}/admin/directories/${directoryId}`, {
+      await axios.delete(`/api/admin/directories/${directoryId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
