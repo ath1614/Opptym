@@ -215,6 +215,9 @@ function App() {
     console.log('🚀 APP LOADED - DEPLOYMENT VERIFICATION SUCCESSFUL');
     console.log('📅 Current time:', new Date().toISOString());
     console.log('🔄 Cache bust:', (window as any).__CACHE_BUST__);
+    
+    // Change the document title to be immediately visible
+    document.title = '🚀 OPPTYM - DEPLOYMENT SUCCESSFUL v3.0 - ' + new Date().toLocaleString();
   }, []);
 
   // If user is not authenticated, show landing/login/register
