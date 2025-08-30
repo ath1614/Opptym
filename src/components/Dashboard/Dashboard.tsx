@@ -213,10 +213,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
-      {/* DEPLOYMENT VERIFICATION BANNER - This should be clearly visible */}
-      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-4 text-center font-bold text-lg shadow-lg">
-        🚀 NEW DEPLOYMENT LOADED - Version 3.0 - {new Date().toLocaleString()} 🚀
-      </div>
+
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -327,10 +324,7 @@ export default function Dashboard() {
         {/* Subscription Status */}
         {subscription && (
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white backdrop-blur-lg rounded-3xl shadow-glass border-4 border-yellow-400 p-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            {/* DEPLOYMENT VERIFICATION - This should be impossible to miss */}
-            <div className="bg-yellow-400 text-black p-3 rounded-lg mb-4 text-center font-bold text-lg">
-              🎯 DEPLOYMENT SUCCESSFUL - SUBSCRIPTION STATUS UPDATED! 🎯
-            </div>
+
             {/* Trial Status Banner for Free Users */}
             {subscription.subscription === 'free' && (
               <div className={`mb-6 p-4 rounded-xl border ${
@@ -451,35 +445,24 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-white/80">Projects Created</span>
-                  <span className="text-sm font-semibold text-white">
-                    {subscription.currentUsage?.projectsCreated || 0} / {subscription.limits?.projects || 50}
-                  </span>
-                </div>
-                <div className="w-full bg-white/20 rounded-full h-2">
-                  <div 
-                    className="bg-white h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.currentUsage?.projectsCreated || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
+
               
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-primary-600 dark:text-primary-400">Next Billing</span>
-                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                    {new Date(subscription.nextBillingDate).toLocaleDateString()}
-                  </span>
+              {subscription.nextBillingDate && (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-white/80">Next Billing</span>
+                    <span className="text-sm font-semibold text-white">
+                      {new Date(subscription.nextBillingDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="w-full bg-white/20 rounded-full h-2">
+                    <div 
+                      className="bg-white h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(0, 100 - ((new Date(subscription.nextBillingDate).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1000)) * 100)}%` }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
-                  <div 
-                    className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.max(0, 100 - ((new Date(subscription.nextBillingDate).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1000)) * 100)}%` }}
-                  ></div>
-                </div>
-              </div>
+              )}
             </div>
             
             <div className="mt-6 pt-6 border-t border-primary-200 dark:border-primary-700">
