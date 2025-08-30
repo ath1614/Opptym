@@ -58,8 +58,26 @@ const checkUsageLimit = (feature) => {
 
       // Check usage limits
       if (!user.checkUsageLimit(feature)) {
-        const currentUsage = user.usage[feature] || 0;
-        const limit = user.planLimits[feature] || 0;
+        // Map feature names to actual field names
+        const usageMap = {
+          submissions: 'submissionsUsed',
+          projects: 'projectsUsed',
+          seoTools: 'seoToolsUsed',
+          apiCalls: 'apiCallsUsed'
+        };
+        
+        const limitMap = {
+          submissions: 'submissions',
+          projects: 'projects',
+          seoTools: 'tools',
+          apiCalls: 'apiCalls'
+        };
+        
+        const usageField = usageMap[feature];
+        const limitField = limitMap[feature];
+        
+        const currentUsage = user.usage[usageField] || 0;
+        const limit = user.planLimits[limitField] || 0;
         
         return res.status(429).json({
           error: 'Usage limit exceeded',
@@ -74,11 +92,28 @@ const checkUsageLimit = (feature) => {
       }
 
       // Attach usage info to request
+      const usageMap = {
+        submissions: 'submissionsUsed',
+        projects: 'projectsUsed',
+        seoTools: 'seoToolsUsed',
+        apiCalls: 'apiCallsUsed'
+      };
+      
+      const limitMap = {
+        submissions: 'submissions',
+        projects: 'projects',
+        seoTools: 'tools',
+        apiCalls: 'apiCalls'
+      };
+      
+      const usageField = usageMap[feature];
+      const limitField = limitMap[feature];
+      
       req.usageInfo = {
         feature,
-        currentUsage: user.usage[feature] || 0,
-        limit: user.planLimits[feature] || 0,
-        remaining: user.planLimits[feature] === -1 ? -1 : Math.max(0, (user.planLimits[feature] || 0) - (user.usage[feature] || 0))
+        currentUsage: user.usage[usageField] || 0,
+        limit: user.planLimits[limitField] || 0,
+        remaining: user.planLimits[limitField] === -1 ? -1 : Math.max(0, (user.planLimits[limitField] || 0) - (user.usage[usageField] || 0))
       };
 
       next();

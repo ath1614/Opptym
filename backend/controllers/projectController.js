@@ -32,14 +32,14 @@ const createProject = async (req, res) => {
     // Ensure user has basic permissions - all authenticated users should be able to create projects
     let hasPermission = false;
     try {
-      hasPermission = user.hasPermission('canCreateProjects');
+      hasPermission = user.hasFeatureAccess('projects');
     } catch (error) {
       console.log('🔍 Error checking permissions, using fallback:', error.message);
       // Fallback: allow project creation for all authenticated users
       hasPermission = true;
     }
     
-    console.log('🔍 Has canCreateProjects permission:', hasPermission);
+    console.log('🔍 Has projects feature access:', hasPermission);
     
     if (!hasPermission) {
       return res.status(403).json({ error: 'You do not have permission to create projects' });
