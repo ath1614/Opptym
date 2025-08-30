@@ -19,8 +19,8 @@ const createProject = async (req, res) => {
     }
 
     console.log('🔍 User subscription:', user.subscription);
-    console.log('🔍 Current usage:', user.currentUsage);
-    console.log('🔍 Subscription limits:', user.subscriptionLimits);
+    console.log('🔍 Current usage:', user.usage);
+    console.log('🔍 Subscription limits:', user.planLimits);
 
     // Check if user can create projects
     console.log('🔍 Checking user permissions...');
@@ -50,11 +50,11 @@ const createProject = async (req, res) => {
     console.log('🔍 Can create project:', canCreate);
     
     if (!canCreate) {
-      const limits = user.subscriptionLimits;
+      const limits = user.planLimits;
       return res.status(403).json({ 
         error: 'Project creation limit exceeded',
         limit: limits.projects,
-        current: user.currentUsage.projectsCreated,
+        current: user.usage.projectsUsed,
         subscription: user.subscription,
         details: 'Please upgrade your subscription to create more projects'
       });
