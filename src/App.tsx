@@ -14,6 +14,7 @@ import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
+import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
 import TestChanges from './components/TestChanges';
 
@@ -470,19 +471,22 @@ function App() {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
         </div>
 
-        <div className="relative z-10 flex h-screen">
-          <Sidebar 
-            activeTab={activeTab} 
-            setActiveTab={updateActiveTab}
-            isCollapsed={sidebarCollapsed}
-            setIsCollapsed={setSidebarCollapsed}
-          />
-          <div className="flex-1 flex flex-col min-w-0">
-            <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
-            <main className="flex-1 p-6 overflow-auto">
-              {renderContent()}
-            </main>
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <div className="flex flex-1">
+            <Sidebar 
+              activeTab={activeTab} 
+              setActiveTab={updateActiveTab}
+              isCollapsed={sidebarCollapsed}
+              setIsCollapsed={setSidebarCollapsed}
+            />
+            <div className="flex-1 flex flex-col min-w-0">
+              <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
+              <main className="flex-1 p-6 overflow-auto">
+                {renderContent()}
+              </main>
+            </div>
           </div>
+          <Footer />
         </div>
       </div>
     </AuthContext.Provider>

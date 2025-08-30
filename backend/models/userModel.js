@@ -1,180 +1,267 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// Role-based permissions schema
-const permissionSchema = new mongoose.Schema({
-  // SEO Tools Access
-  canUseSeoTools: { type: Boolean, default: false },
-  canUseAdvancedTools: { type: Boolean, default: false },
-  canExportReports: { type: Boolean, default: false },
-  
-  // Project Management
-  canCreateProjects: { type: Boolean, default: false },
-  canEditProjects: { type: Boolean, default: false },
-  canDeleteProjects: { type: Boolean, default: false },
-  canViewAllProjects: { type: Boolean, default: false },
-  
-  // Directory Submissions
-  canSubmitToDirectories: { type: Boolean, default: false },
-  canViewSubmissionReports: { type: Boolean, default: false },
-  canManageSubmissions: { type: Boolean, default: false },
-  
-  // User Management (for team leads)
-  canManageTeamMembers: { type: Boolean, default: false },
-  canViewTeamReports: { type: Boolean, default: false },
-  canAssignTasks: { type: Boolean, default: false },
-  
-  // Admin Features
-  canAccessAdminPanel: { type: Boolean, default: false },
-  canManageUsers: { type: Boolean, default: false },
-  canViewAnalytics: { type: Boolean, default: false },
-  canManageBilling: { type: Boolean, default: false },
-  
-  // API Access
-  canUseAPI: { type: Boolean, default: false },
-  apiCallLimit: { type: Number, default: 0 },
-  
-  // Custom Limits
-  maxProjects: { type: Number, default: 0 },
-  maxSubmissionsPerMonth: { type: Number, default: 0 },
-  maxTeamMembers: { type: Number, default: 0 }
-});
-
-// Employee role schema
-const employeeRoleSchema = new mongoose.Schema({
-  roleId: { type: String, required: false, default: 'default' },
-  roleName: { type: String, required: false, default: 'Default Role' },
-  description: { type: String },
-  permissions: { type: permissionSchema, default: () => ({}) },
-  isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now }
-});
-
-// Team member schema
-const teamMemberSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  role: { type: String, required: false, default: 'member' },
-  permissions: { type: permissionSchema, default: () => ({}) },
-  addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  addedAt: { type: Date, default: Date.now },
-  isActive: { type: Boolean, default: true }
-});
-
-// Subscription usage tracking
-const usageSchema = new mongoose.Schema({
-  month: { type: String }, // YYYY-MM format, made optional
-  projectsCreated: { type: Number, default: 0 },
-  submissionsMade: { type: Number, default: 0 },
-  apiCallsUsed: { type: Number, default: 0 },
-  seoToolsUsed: { type: Number, default: 0 },
-  lastReset: { type: Date, default: Date.now }
-});
-
 const userSchema = new mongoose.Schema({
-  // Basic Info
   username: {
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    minlength: 3,
+    maxlength: 30
   },
   email: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    lowercase: true
+    lowercase: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6
   },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  },
-  status: {
+  firstName: {
     type: String,
-    enum: ['pending', 'active', 'suspended'],
-    default: 'pending'
+    required: true,
+    trim: true,
+    maxlength: 50
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 50
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   },
   subscription: {
     type: String,
     enum: ['free', 'starter', 'pro', 'business', 'enterprise'],
     default: 'free'
   },
-  subscriptionExpiresAt: {
-    type: Date
+  subscriptionStatus: {
+    type: String,
+    enum: ['active', 'inactive', 'cancelled', 'past_due'],
+    default: 'active'
   },
-  // Trial period fields
+  subscriptionExpiresAt: {
+    type: Date,
+    default: null
+  },
+  // Trial management
   trialStartDate: {
     type: Date,
-    default: Date.now
+    default: null
   },
   trialEndDate: {
-    type: Date
-  },
-  // Email verification fields
-  isEmailVerified: {
-    type: Boolean,
-    default: true // Set to true by default, no verification needed
-  },
-  createdAt: {
     type: Date,
-    default: Date.now
+    default: null
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  // Usage tracking
+  usage: {
+    submissionsUsed: { type: Number, default: 0 },
+    projectsUsed: { type: Number, default: 0 },
+    seoToolsUsed: { type: Number, default: 0 },
+    apiCallsUsed: { type: Number, default: 0 }
   },
-  // Current usage tracking
-  currentUsage: {
-    type: usageSchema,
-    default: () => ({
-      month: new Date().toISOString().slice(0, 7),
-      projectsCreated: 0,
-      submissionsMade: 0,
-      apiCallsUsed: 0,
-      seoToolsUsed: 0,
-      lastReset: new Date()
-    })
+  // Plan limits (cached for performance)
+  planLimits: {
+    submissions: { type: Number, default: 5 },
+    projects: { type: Number, default: 2 },
+    tools: { type: Number, default: 10 },
+    apiCalls: { type: Number, default: 20 }
   },
-  // Role and permissions
-  role: {
+  // Feature flags
+  features: {
+    canCreateProjects: { type: Boolean, default: true },
+    canSubmitDirectories: { type: Boolean, default: true },
+    canUseSeoTools: { type: Boolean, default: true },
+    canAccessAnalytics: { type: Boolean, default: false },
+    canAccessAdmin: { type: Boolean, default: false }
+  },
+  // Stripe integration
+  stripeCustomerId: {
     type: String,
-    enum: ['owner', 'manager', 'analyst', 'viewer', 'employee'],
-    default: 'employee'
+    default: null
   },
-  customPermissions: {
-    type: permissionSchema,
-    default: () => ({})
+  stripeSubscriptionId: {
+    type: String,
+    default: null
   },
-  isOwner: {
+  // Metadata
+  isEmailVerified: {
     type: Boolean,
     default: false
   },
-  // Team management
-  teamMembers: [teamMemberSchema],
-  employeeRole: {
-    type: employeeRoleSchema,
-    required: false,
-    default: () => ({
-      roleId: 'default',
-      roleName: 'Default Role',
-      description: 'Default user role',
-      permissions: {},
-      isActive: true,
-      createdAt: new Date()
-    })
+  lastLoginAt: {
+    type: Date,
+    default: null
+  },
+  preferences: {
+    theme: { type: String, enum: ['light', 'dark', 'auto'], default: 'auto' },
+    language: { type: String, default: 'en' },
+    notifications: { type: Boolean, default: true }
   }
+}, {
+  timestamps: true
 });
 
-// Hash password before saving
+// Indexes for performance
+userSchema.index({ email: 1 });
+userSchema.index({ username: 1 });
+userSchema.index({ subscription: 1 });
+userSchema.index({ 'trialEndDate': 1 });
+
+// Pre-save middleware to set trial dates for free users
+userSchema.pre('save', function(next) {
+  if (this.isNew && this.subscription === 'free') {
+    if (!this.trialStartDate) {
+      this.trialStartDate = new Date();
+    }
+    if (!this.trialEndDate) {
+      this.trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000); // 3 days
+    }
+  }
+  
+  // Update plan limits based on subscription
+  this.updatePlanLimits();
+  
+  next();
+});
+
+// Instance methods
+userSchema.methods.updatePlanLimits = function() {
+  const limits = {
+    free: { submissions: 5, projects: 2, tools: 10, apiCalls: 20 },
+    starter: { submissions: 150, projects: 5, tools: 100, apiCalls: 500 },
+    pro: { submissions: 750, projects: 15, tools: 500, apiCalls: 2000 },
+    business: { submissions: 1500, projects: 50, tools: 1000, apiCalls: 5000 },
+    enterprise: { submissions: -1, projects: -1, tools: -1, apiCalls: -1 } // Unlimited
+  };
+  
+  this.planLimits = limits[this.subscription] || limits.free;
+};
+
+userSchema.methods.isInTrialPeriod = function() {
+  if (this.subscription !== 'free') return false;
+  
+  if (!this.trialEndDate) {
+    this.trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    this.save();
+  }
+  
+  return new Date() < this.trialEndDate;
+};
+
+userSchema.methods.getTrialDaysLeft = function() {
+  if (!this.isInTrialPeriod()) return 0;
+  
+  const now = new Date();
+  const end = new Date(this.trialEndDate);
+  const diffTime = end - now;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return Math.max(0, diffDays);
+};
+
+userSchema.methods.hasFeatureAccess = function(feature) {
+  // Admin has access to everything
+  if (this.role === 'admin') return true;
+  
+  // Check if trial is expired
+  if (this.subscription === 'free' && !this.isInTrialPeriod()) {
+    return false;
+  }
+  
+  // Check feature flags
+  return this.features[feature] || false;
+};
+
+userSchema.methods.checkUsageLimit = function(feature) {
+  // Admin has unlimited access
+  if (this.role === 'admin') return true;
+  
+  // Check if trial is expired
+  if (this.subscription === 'free' && !this.isInTrialPeriod()) {
+    return false;
+  }
+  
+  const limits = {
+    submissions: this.planLimits.submissions,
+    projects: this.planLimits.projects,
+    seoTools: this.planLimits.tools,
+    apiCalls: this.planLimits.apiCalls
+  };
+  
+  const usage = {
+    submissions: this.usage.submissionsUsed,
+    projects: this.usage.projectsUsed,
+    seoTools: this.usage.seoToolsUsed,
+    apiCalls: this.usage.apiCallsUsed
+  };
+  
+  const limit = limits[feature];
+  const used = usage[feature];
+  
+  // Unlimited (-1) or within limits
+  return limit === -1 || used < limit;
+};
+
+userSchema.methods.incrementUsage = function(feature) {
+  const usageMap = {
+    submissions: 'submissionsUsed',
+    projects: 'projectsUsed',
+    seoTools: 'seoToolsUsed',
+    apiCalls: 'apiCallsUsed'
+  };
+  
+  const field = usageMap[feature];
+  if (field) {
+    this.usage[field] += 1;
+  }
+  
+  return this.save();
+};
+
+userSchema.methods.getSubscriptionDetails = function() {
+  const isInTrial = this.isInTrialPeriod();
+  const trialDaysLeft = this.getTrialDaysLeft();
+  
+  return {
+    subscription: this.subscription,
+    status: this.subscriptionStatus,
+    isInTrial,
+    trialDaysLeft,
+    trialEndDate: this.trialEndDate,
+    trialExpired: this.subscription === 'free' && !isInTrial,
+    nextBillingDate: this.subscriptionExpiresAt,
+    currentUsage: this.usage,
+    limits: this.planLimits,
+    features: this.features
+  };
+};
+
+// Static methods
+userSchema.statics.findByEmail = function(email) {
+  return this.findOne({ email: email.toLowerCase() });
+};
+
+userSchema.statics.findByUsername = function(username) {
+  return this.findOne({ username: username.toLowerCase() });
+};
+
+// Password hashing middleware
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
   try {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
@@ -182,187 +269,23 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Update timestamp on save
-userSchema.pre('save', function(next) {
-  this.updatedAt = new Date();
-  next();
-});
-
-// Method to compare password
+// Password comparison method
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  try {
-    // If password is not hashed (plain text), hash it first for comparison
-    if (!this.password.startsWith('$2a$') && !this.password.startsWith('$2b$')) {
-      console.log('⚠️ Password appears to be plain text, hashing for comparison');
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-      await this.save();
-    }
-    
-    return bcrypt.compare(candidatePassword, this.password);
-  } catch (error) {
-    console.error('Error comparing password:', error);
-    return false;
-  }
+  return bcrypt.compare(candidatePassword, this.password);
 };
-
-
 
 // Virtual for full name
 userSchema.virtual('fullName').get(function() {
-  return `${this.firstName || ''} ${this.lastName || ''}`.trim() || this.username;
+  return `${this.firstName} ${this.lastName}`;
 });
 
-// Virtual for subscription limits
-userSchema.virtual('subscriptionLimits').get(function() {
-  const limits = {
-    free: { projects: 2, submissions: 5, tools: 10, teamMembers: 0, trialDays: 3 },
-    starter: { projects: 5, submissions: 150, tools: 100, teamMembers: 0 }, // 999 package
-    pro: { projects: 15, submissions: 750, tools: 500, teamMembers: 3 }, // 3999 package
-    business: { projects: 50, submissions: 1500, tools: 1000, teamMembers: 10 }, // 8999 package
-    enterprise: { projects: -1, submissions: -1, tools: -1, teamMembers: -1 }
-  };
-  return limits[this.subscription] || limits.free;
+// Ensure virtual fields are serialized
+userSchema.set('toJSON', {
+  virtuals: true,
+  transform: function(doc, ret) {
+    delete ret.password;
+    return ret;
+  }
 });
-
-// Method to check if user has permission
-userSchema.methods.hasPermission = function(permission) {
-  // Admin and owner have all permissions
-  if (this.isAdmin || this.isOwner) return true;
-  
-  // Check custom permissions first
-  if (this.customPermissions && this.customPermissions[permission]) return true;
-  
-  // Basic permissions for all authenticated users
-  const basicPermissions = ['canCreateProjects', 'canUseSeoTools', 'canSubmitToDirectories'];
-  if (basicPermissions.includes(permission)) return true;
-  
-  // Check role-based permissions
-  const rolePermissions = {
-    manager: ['canUseSeoTools', 'canCreateProjects', 'canEditProjects', 'canSubmitToDirectories', 'canViewSubmissionReports', 'canManageTeamMembers', 'canViewTeamReports'],
-    analyst: ['canUseSeoTools', 'canCreateProjects', 'canEditProjects', 'canSubmitToDirectories', 'canViewSubmissionReports'],
-    viewer: ['canUseSeoTools', 'canViewSubmissionReports'],
-    employee: ['canUseSeoTools', 'canCreateProjects', 'canSubmitToDirectories']
-  };
-  
-  return rolePermissions[this.role || 'employee']?.includes(permission) || false;
-};
-
-// Method to check if user is in trial period
-userSchema.methods.isInTrialPeriod = function() {
-  if (this.subscription !== 'free') return false;
-  
-  // Set trial dates if not set
-  if (!this.trialStartDate) {
-    this.trialStartDate = this.createdAt || new Date();
-  }
-  
-  if (!this.trialEndDate) {
-    this.trialEndDate = new Date(this.trialStartDate.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days
-  }
-  
-  return new Date() <= this.trialEndDate;
-};
-
-// Method to check usage limits
-userSchema.methods.checkUsageLimit = function(feature) {
-  const limits = this.subscriptionLimits;
-  const currentUsage = this.currentUsage || {
-    projectsCreated: 0,
-    submissionsMade: 0,
-    apiCallsUsed: 0,
-    seoToolsUsed: 0
-  };
-  
-  // If user is in trial period, use trial limits
-  if (this.isInTrialPeriod()) {
-    const trialLimits = {
-      projects: 2,
-      submissions: 5,
-      apiCalls: 20,
-      seoTools: 10
-    };
-    
-    switch(feature) {
-      case 'projects':
-        return trialLimits.projects === -1 || (currentUsage.projectsCreated || 0) < trialLimits.projects;
-      case 'submissions':
-        return trialLimits.submissions === -1 || (currentUsage.submissionsMade || 0) < trialLimits.submissions;
-      case 'apiCalls':
-        return trialLimits.apiCalls === -1 || (currentUsage.apiCallsUsed || 0) < trialLimits.apiCalls;
-      case 'seoTools':
-        return trialLimits.seoTools === -1 || (currentUsage.seoToolsUsed || 0) < trialLimits.seoTools;
-      default:
-        return true;
-    }
-  }
-  
-  // Regular subscription limits
-  switch(feature) {
-    case 'projects':
-      return limits.projects === -1 || (currentUsage.projectsCreated || 0) < limits.projects;
-    case 'submissions':
-      return limits.submissions === -1 || (currentUsage.submissionsMade || 0) < limits.submissions;
-    case 'apiCalls':
-      return (this.customPermissions?.apiCallLimit || -1) === -1 || (currentUsage.apiCallsUsed || 0) < (this.customPermissions?.apiCallLimit || 0);
-    case 'seoTools':
-      // Enforce SEO tools limits for all users except enterprise
-      if (this.subscription === 'enterprise') return true;
-      return limits.tools === -1 || (currentUsage.seoToolsUsed || 0) < limits.tools;
-    default:
-      return true;
-  }
-};
-
-// Method to increment usage
-userSchema.methods.incrementUsage = function(feature, amount = 1) {
-  // Ensure currentUsage exists and has proper structure
-  if (!this.currentUsage) {
-    this.currentUsage = {
-      month: new Date().toISOString().slice(0, 7),
-      projectsCreated: 0,
-      submissionsMade: 0,
-      apiCallsUsed: 0,
-      seoToolsUsed: 0,
-      lastReset: new Date()
-    };
-  }
-  
-  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-  if (this.currentUsage.month !== currentMonth) {
-    // Reset usage for new month
-    this.currentUsage = {
-      month: currentMonth,
-      projectsCreated: 0,
-      submissionsMade: 0,
-      apiCallsUsed: 0,
-      seoToolsUsed: 0,
-      lastReset: new Date()
-    };
-  }
-  
-  // Ensure all properties exist
-  if (typeof this.currentUsage.projectsCreated !== 'number') this.currentUsage.projectsCreated = 0;
-  if (typeof this.currentUsage.submissionsMade !== 'number') this.currentUsage.submissionsMade = 0;
-  if (typeof this.currentUsage.apiCallsUsed !== 'number') this.currentUsage.apiCallsUsed = 0;
-  if (typeof this.currentUsage.seoToolsUsed !== 'number') this.currentUsage.seoToolsUsed = 0;
-  
-  switch(feature) {
-    case 'projects':
-      this.currentUsage.projectsCreated += amount;
-      break;
-    case 'submissions':
-      this.currentUsage.submissionsMade += amount;
-      break;
-    case 'apiCalls':
-      this.currentUsage.apiCallsUsed += amount;
-      break;
-    case 'seoTools':
-      this.currentUsage.seoToolsUsed += amount;
-      break;
-  }
-  
-  return this.save();
-};
 
 module.exports = mongoose.model('User', userSchema);

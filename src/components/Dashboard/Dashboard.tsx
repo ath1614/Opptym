@@ -399,25 +399,48 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-primary-600 dark:text-primary-400">Submissions Used</span>
-                  <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                    {subscription.currentUsage?.submissionsMade || 0} / {subscription.limits?.submissions || 100}
+                  <span className="text-sm text-white/80">Submissions Used</span>
+                  <span className="text-sm font-semibold text-white">
+                    {subscription.currentUsage?.submissionsUsed || 0} / {subscription.limits?.submissions || 100}
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
+                <div className="w-full bg-white/20 rounded-full h-2">
                   <div 
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.currentUsage?.submissionsMade || 0) / (subscription.limits?.submissions || 100) * 100, 100)}%` }}
+                    className="bg-white h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.currentUsage?.submissionsUsed || 0) / (subscription.limits?.submissions || 100) * 100, 100)}%` }}
                   ></div>
                 </div>
               </div>
               
-                                <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-primary-600 dark:text-primary-400">Projects Used</span>
-                      <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                        {subscription.currentUsage?.projectsCreated || 0} / {subscription.limits?.projects || 50}
-                      </span>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/80">Projects Used</span>
+                  <span className="text-sm font-semibold text-white">
+                    {subscription.currentUsage?.projectsUsed || 0} / {subscription.limits?.projects || 50}
+                  </span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div 
+                    className="bg-white h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.currentUsage?.projectsUsed || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/80">SEO Tools Used</span>
+                  <span className="text-sm font-semibold text-white">
+                    {subscription.currentUsage?.seoToolsUsed || 0} / {subscription.limits?.tools || 100}
+                  </span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div 
+                    className="bg-white h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.currentUsage?.seoToolsUsed || 0) / (subscription.limits?.tools || 100) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
                       <div 

@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 OPPTYM - DEPLOYMENT SUCCESSFUL v3.0 - <?php echo date('Y-m-d H:i:s'); ?></title>
+    <title>🚀 OPPTYM - DEPLOYMENT SUCCESSFUL v3.0 - <script>document.write(new Date().toLocaleString())</script></title>
     <meta name="description" content="Submit your business to multiple directories with ease">
     
     <!-- Aggressive Cache Control -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Surrogate-Control" content="no-store">
     
     <!-- Force Cache Busting -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=<?php echo time(); ?>&cb=<?php echo uniqid(); ?>">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=<script>document.write(Date.now())</script>">
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="/src/main.tsx?v=<?php echo time(); ?>&cb=<?php echo uniqid(); ?>" as="script">
+    <link rel="preload" href="/src/main.tsx?v=<script>document.write(Date.now())</script>" as="script">
     
     <style>
         /* Loading spinner */
@@ -39,9 +40,34 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Deployment verification banner */
+        .deployment-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 9999;
+            animation: rainbow 2s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
     </style>
 </head>
 <body>
+    <!-- Deployment Verification Banner -->
+    <div class="deployment-banner">
+        🚀 DEPLOYMENT VERIFICATION: Version 3.0 - <script>document.write(new Date().toLocaleString())</script> 🚀
+    </div>
+    
     <div id="root">
         <div class="loading-spinner">
             <div>
@@ -92,10 +118,13 @@
             const uniqueId = Math.random().toString(36).substring(7);
             window.__CACHE_BUST__ = { timestamp, uniqueId };
             console.log('✅ Cache busting complete:', { timestamp, uniqueId });
+            
+            // Show deployment verification
+            console.log('🚀 DEPLOYMENT VERIFICATION: HTML loaded at', new Date().toISOString());
         })();
     </script>
 
     <!-- Main App Script with Cache Busting -->
-    <script type="module" src="/src/main.tsx?v=<?php echo time(); ?>&cb=<?php echo uniqid(); ?>"></script>
+    <script type="module" src="/src/main.tsx?v=<script>document.write(Date.now())</script>"></script>
 </body>
 </html>

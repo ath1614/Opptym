@@ -159,6 +159,20 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Version endpoint for deployment verification
+app.get('/api/health/version', (req, res) => {
+  const version = {
+    commit: process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
+    buildTime: new Date().toISOString(),
+    version: process.env.npm_package_version || '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime(),
+    timestamp: Date.now()
+  };
+  
+  res.json(version);
+});
+
 // Test CORS endpoint
 app.get('/api/test-cors', (req, res) => {
   res.status(200).json({ 
