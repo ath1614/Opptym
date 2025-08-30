@@ -112,16 +112,7 @@ if (isEmailConfigured) {
   transporter = createMockTransporter();
 }
 
-function createMockTransporter() {
-  transporter = {
-    sendMail: async (mailOptions) => {
-      console.log('📧 Mock email sent:', mailOptions.to);
-      console.log('📧 Subject:', mailOptions.subject);
-      console.log('📧 Email content preview:', mailOptions.html ? mailOptions.html.substring(0, 100) + '...' : 'No HTML content');
-      return { messageId: 'mock-message-id-' + Date.now() };
-    }
-  };
-}
+
 
 // Email templates
 const emailTemplates = {

@@ -161,23 +161,24 @@ export const useAuthProvider = (): AuthContextType => {
         // Keep the user from token if profile fetch fails
         setUser(userFromToken);
       }
-    } catch (error: any) {
-      console.error('Error refreshing user data:', error);
-      
-      // If refresh fails with 401, clear the token and user
-      if (error.response?.status === 401) {
-        console.log('🔍 401 error during refresh, clearing token and user');
-        localStorage.removeItem('token');
-        setUser(null);
-      } else {
-        console.error('🔍 Non-401 error during refresh, keeping user from token');
-        // Keep the user from token if profile fetch fails
-        const userFromToken = decodeUser(token);
-        if (userFromToken) {
-          setUser(userFromToken);
+          } catch (error: any) {
+        console.error('Error refreshing user data:', error);
+        
+        // If refresh fails with 401, clear the token and user
+        if (error.response?.status === 401) {
+          console.log('🔍 401 error during refresh, clearing token and user');
+          localStorage.removeItem('token');
+          setUser(null);
+        } else {
+          console.error('🔍 Non-401 error during refresh, keeping user from token');
+          // Keep the user from token if profile fetch fails
+          const token = localStorage.getItem('token');
+          const userFromToken = decodeUser(token);
+          if (userFromToken) {
+            setUser(userFromToken);
+          }
         }
       }
-    }
   };
 
   const login = async (email: string, password: string) => {

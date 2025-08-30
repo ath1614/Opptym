@@ -16,7 +16,7 @@ import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
-import TestChanges from './components/TestChanges';
+
 
 import { BookOpen, Settings } from 'lucide-react';
 import { showPopup } from './utils/popup';
@@ -447,7 +447,7 @@ function App() {
       case 'admin':
         return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
       case 'test':
-        return <TestChanges />;
+        return <div>Test route removed</div>;
       default:
         return <Dashboard />;
     }
