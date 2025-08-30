@@ -206,6 +206,17 @@ function App() {
     }
   }, [activeTab]);
 
+  // DEPLOYMENT VERIFICATION - This will show immediately when app loads
+  useEffect(() => {
+    // Show an alert that's impossible to miss
+    alert('🚀 DEPLOYMENT VERIFICATION: App loaded successfully! Version 3.0 - ' + new Date().toLocaleString());
+    
+    // Also log to console
+    console.log('🚀 APP LOADED - DEPLOYMENT VERIFICATION SUCCESSFUL');
+    console.log('📅 Current time:', new Date().toISOString());
+    console.log('🔄 Cache bust:', (window as any).__CACHE_BUST__);
+  }, []);
+
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
     return (
