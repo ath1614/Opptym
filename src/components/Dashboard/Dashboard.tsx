@@ -441,14 +441,21 @@ export default function Dashboard() {
                   ></div>
                 </div>
               </div>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min((subscription.currentUsage?.projectsCreated || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
-                      ></div>
-                    </div>
-                  </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/80">Projects Created</span>
+                  <span className="text-sm font-semibold text-white">
+                    {subscription.currentUsage?.projectsCreated || 0} / {subscription.limits?.projects || 50}
+                  </span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div 
+                    className="bg-white h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((subscription.currentUsage?.projectsCreated || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
