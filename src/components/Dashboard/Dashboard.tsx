@@ -208,15 +208,20 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
+      {/* DEPLOYMENT VERIFICATION BANNER - This should be clearly visible */}
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-4 text-center font-bold text-lg shadow-lg">
+        🚀 NEW DEPLOYMENT LOADED - Version 3.0 - {new Date().toLocaleString()} 🚀
+      </div>
+      
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-800 to-accent-600 dark:from-primary-200 dark:to-accent-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold text-primary-800 dark:text-primary-200 mb-2">
               Welcome back, {user?.username || user?.firstName || 'User'}! 👋
             </h1>
-            <p className="text-primary-600 dark:text-primary-400 mt-2">
+            <p className="text-lg text-primary-600 dark:text-primary-400">
               Here's what's happening with your SEO campaigns today
             </p>
           </div>
@@ -317,7 +322,11 @@ export default function Dashboard() {
 
         {/* Subscription Status */}
         {subscription && (
-          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white backdrop-blur-lg rounded-3xl shadow-glass border-4 border-yellow-400 p-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            {/* DEPLOYMENT VERIFICATION - This should be impossible to miss */}
+            <div className="bg-yellow-400 text-black p-3 rounded-lg mb-4 text-center font-bold text-lg">
+              🎯 DEPLOYMENT SUCCESSFUL - SUBSCRIPTION STATUS UPDATED! 🎯
+            </div>
             {/* Trial Status Banner for Free Users */}
             {subscription.subscription === 'free' && (
               <div className={`mb-6 p-4 rounded-xl border ${
@@ -369,19 +378,19 @@ export default function Dashboard() {
 
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-glow">
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white shadow-glow">
                   <Crown className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-200">Subscription Status</h3>
-                  <p className="text-sm text-primary-600 dark:text-primary-400">Your current plan and usage</p>
+                  <h3 className="text-xl font-semibold text-white">Subscription Status</h3>
+                  <p className="text-sm text-white/80">Your current plan and usage</p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-primary-800 dark:text-primary-200 capitalize">
+                <div className="text-2xl font-bold text-white capitalize">
                   {subscription.subscription === 'free' ? 'Free Trial (3 Days)' : subscription.subscription}
                 </div>
-                <div className="text-sm text-success-600 dark:text-success-400 font-medium">
+                <div className="text-sm text-green-300 font-medium">
                   {subscription.status}
                 </div>
               </div>
