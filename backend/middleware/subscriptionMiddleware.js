@@ -8,18 +8,18 @@ const canCreateProject = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const limits = user.subscriptionLimits;
-    const currentUsage = user.currentUsage || {};
+    const limits = user.planLimits;
+    const currentUsage = user.usage || {};
 
     if (limits.projects === -1) {
       return next(); // Unlimited
     }
 
-    if (currentUsage.projectsCreated >= limits.projects) {
+    if (currentUsage.projectsUsed >= limits.projects) {
       return res.status(403).json({ 
         error: 'Project limit reached',
         limit: limits.projects,
-        current: currentUsage.projectsCreated,
+        current: currentUsage.projectsUsed,
         subscription: user.subscription,
         upgradeRequired: true
       });
@@ -39,18 +39,18 @@ const canMakeSubmission = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const limits = user.subscriptionLimits;
-    const currentUsage = user.currentUsage || {};
+    const limits = user.planLimits;
+    const currentUsage = user.usage || {};
 
     if (limits.submissions === -1) {
       return next(); // Unlimited
     }
 
-    if (currentUsage.submissionsMade >= limits.submissions) {
+    if (currentUsage.submissionsUsed >= limits.submissions) {
       return res.status(403).json({ 
         error: 'Submission limit reached',
         limit: limits.submissions,
-        current: currentUsage.submissionsMade,
+        current: currentUsage.submissionsUsed,
         subscription: user.subscription,
         upgradeRequired: true
       });
@@ -70,7 +70,7 @@ const canUseSeoTools = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const limits = user.subscriptionLimits;
+    const limits = user.planLimits;
 
     if (!limits.tools) {
       return res.status(403).json({ 
@@ -119,7 +119,7 @@ const canAddTeamMember = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const limits = user.subscriptionLimits;
+    const limits = user.planLimits;
     const currentTeamSize = user.teamMembers?.length || 0;
 
     if (limits.teamMembers === -1) {
@@ -200,8 +200,8 @@ const getSubscriptionInfo = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const limits = user.subscriptionLimits;
-    const currentUsage = user.currentUsage || {};
+    const limits = user.planLimits;
+    const currentUsage = user.usage || {};
 
     req.subscriptionInfo = {
       subscription: user.subscription,
@@ -209,7 +209,7 @@ const getSubscriptionInfo = async (req, res, next) => {
       limits,
       currentUsage,
       canUpgrade: user.subscription !== 'enterprise',
-      nextBillingDate: user.subscriptionEndDate
+      nextBillingDate: user.subscriptionExpiresAt
     };
 
     next();

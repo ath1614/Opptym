@@ -179,8 +179,17 @@ userSchema.methods.hasFeatureAccess = function(feature) {
     return false;
   }
   
-  // Check feature flags
-  return this.features[feature] || false;
+  // Map feature names to feature flags
+  const featureMap = {
+    'projects': 'canCreateProjects',
+    'submissions': 'canSubmitDirectories',
+    'seoTools': 'canUseSeoTools',
+    'analytics': 'canAccessAnalytics',
+    'admin': 'canAccessAdmin'
+  };
+  
+  const featureFlag = featureMap[feature] || feature;
+  return this.features[featureFlag] || false;
 };
 
 userSchema.methods.hasPermission = function(permission) {
