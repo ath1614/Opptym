@@ -35,6 +35,8 @@ interface SubscriptionDetails {
   nextBillingDate?: string;
   trialEndDate?: string;
   isInTrial?: boolean;
+  trialDaysLeft?: number;
+  trialExpired?: boolean;
 }
 
 const SubscriptionStatus = () => {
@@ -193,6 +195,11 @@ const SubscriptionStatus = () => {
                   ? `Your trial ends on ${subscription.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'soon'}. Upgrade to continue using all features.`
                   : 'Your free trial has expired. Upgrade to continue using Opptym features.'
                 }
+                {subscription.trialDaysLeft !== undefined && subscription.trialDaysLeft > 0 && (
+                  <span className="block mt-1 font-medium">
+                    {subscription.trialDaysLeft} day{subscription.trialDaysLeft !== 1 ? 's' : ''} remaining
+                  </span>
+                )}
               </p>
             </div>
             <button

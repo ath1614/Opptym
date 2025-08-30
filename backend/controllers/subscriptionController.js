@@ -40,13 +40,36 @@ exports.getSubscriptionDetails = async (req, res) => {
     const limits = user.subscriptionLimits;
     const currentUsage = user.currentUsage || {};
     
+    // Calculate trial information for free users
+    let trialInfo = {};
+    if (user.subscription === 'free') {
+      const isInTrial = user.isInTrialPeriod();
+      
+      // Ensure trial dates are set
+      if (!user.trialEndDate && user.createdAt) {
+        user.trialEndDate = new Date(user.createdAt.getTime() + (3 * 24 * 60 * 60 * 1000));
+        await user.save();
+      }
+      
+      const trialEndDate = user.trialEndDate;
+      const trialDaysLeft = isInTrial && trialEndDate ? Math.ceil((trialEndDate - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+      
+      trialInfo = {
+        isInTrial,
+        trialEndDate: trialEndDate ? trialEndDate.toISOString() : null,
+        trialDaysLeft: Math.max(0, trialDaysLeft),
+        trialExpired: !isInTrial
+      };
+    }
+    
     res.json({
       subscription: user.subscription,
       status: user.subscriptionStatus,
       limits,
       currentUsage,
       canUpgrade: user.subscription !== 'enterprise',
-      nextBillingDate: user.subscriptionEndDate
+      nextBillingDate: user.subscriptionEndDate,
+      ...trialInfo
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

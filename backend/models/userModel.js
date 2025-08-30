@@ -106,6 +106,14 @@ const userSchema = new mongoose.Schema({
   subscriptionExpiresAt: {
     type: Date
   },
+  // Trial period fields
+  trialStartDate: {
+    type: Date,
+    default: Date.now
+  },
+  trialEndDate: {
+    type: Date
+  },
   // Email verification fields
   isEmailVerified: {
     type: Boolean,
@@ -244,10 +252,13 @@ userSchema.methods.hasPermission = function(permission) {
 userSchema.methods.isInTrialPeriod = function() {
   if (this.subscription !== 'free') return false;
   
-  // Set trial start date if not set
+  // Set trial dates if not set
   if (!this.trialStartDate) {
-    this.trialStartDate = this.createdAt;
-    this.trialEndDate = new Date(this.createdAt.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days
+    this.trialStartDate = this.createdAt || new Date();
+  }
+  
+  if (!this.trialEndDate) {
+    this.trialEndDate = new Date(this.trialStartDate.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days
   }
   
   return new Date() <= this.trialEndDate;
