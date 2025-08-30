@@ -41,52 +41,26 @@ export default function Dashboard() {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [subscription, setSubscription] = useState<any>(null);
 
-  useEffect(() => {
-    fetchDashboardData();
-    // Add deployment verification
-    console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v2.0');
-  }, []);
-
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
       
-      if (!token) {
-        console.error('No authentication token found');
-        return;
-      }
+      // Fetch projects
+      const projectsResponse = await axios.get('/api/projects', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setStats(prev => ({ ...prev, totalProjects: projectsResponse.data.length }));
       
-      // Fetch data in parallel for better performance
-      const [projectsResponse, submissionsResponse] = await Promise.all([
-        axios.get('/api/projects', {
-          headers: { Authorization: `Bearer ${token}` }
-        }).catch(error => {
-          console.error('Error fetching projects:', error);
-          return { data: [] };
-        }),
-        axios.get('/api/submissions', {
-          headers: { Authorization: `Bearer ${token}` }
-        }).catch(error => {
-          console.error('Error fetching submissions:', error);
-          return { data: [] };
-        })
-      ]);
-
-      const projects = projectsResponse.data || [];
-      const submissions = submissionsResponse.data || [];
-
-      // Fetch subscription details with real usage tracking
+      // Fetch subscription details
       try {
         const subscriptionResponse = await axios.get('/api/subscription/details', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-        console.log('📊 Dashboard subscription response:', subscriptionResponse.data);
+        console.log('📊 Subscription response:', subscriptionResponse.data);
         setSubscription(subscriptionResponse.data);
       } catch (error) {
-        console.error('❌ Error fetching subscription details:', error);
-        
-        // Fallback subscription data
+        console.log('⚠️ Could not fetch subscription details:', error);
+        // Set fallback subscription data
         const getPlanLimits = (plan: string) => {
           switch (plan) {
             case 'business':
@@ -108,8 +82,8 @@ export default function Dashboard() {
           status: 'active',
           nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           currentUsage: {
-            submissionsMade: submissions.length,
-            projectsCreated: projects.length,
+            submissionsMade: 0, // Placeholder, will be updated from submissions
+            projectsCreated: 0, // Placeholder, will be updated from projects
             seoToolsUsed: 0,
             apiCallsUsed: 0
           },
@@ -119,70 +93,104 @@ export default function Dashboard() {
         });
       }
 
-      // Calculate real stats from actual data
-      const successfulSubmissions = submissions.filter((s: any) => s.status === 'success' || s.status === 'completed');
-      const pendingSubmissions = submissions.filter((s: any) => s.status === 'pending' || s.status === 'processing');
-      const failedSubmissions = submissions.filter((s: any) => s.status === 'failed' || s.status === 'error');
-      
-      const calculatedStats: DashboardStats = {
-        totalProjects: projects.length,
-        totalSubmissions: submissions.length,
-        successRate: submissions.length > 0 ? Math.round((successfulSubmissions.length / submissions.length) * 100) : 0,
-        averageRanking: successfulSubmissions.length > 0 ? Math.round(successfulSubmissions.reduce((acc: number, s: any) => acc + (s.ranking || 0), 0) / successfulSubmissions.length) : 0,
-        backlinksGained: successfulSubmissions.length,
-        directoriesSubmitted: submissions.length
-      };
-
-      setStats(calculatedStats);
-      
-      // Generate real recent activity from actual data
-      const realActivity = [];
-      
-      // Add recent submissions
-      submissions.slice(0, 3).forEach((submission: any, index: number) => {
-        const timeAgo = submission.createdAt ? 
-          new Date(submission.createdAt).toLocaleDateString() : 
-          `${index + 1} day${index > 0 ? 's' : ''} ago`;
+      // Fetch recent submissions
+      try {
+        const submissionsResponse = await axios.get('/api/submissions', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        setStats(prev => ({ ...prev, totalSubmissions: submissionsResponse.data.length }));
+        const successfulSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'success' || s.status === 'completed');
+        const pendingSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'pending' || s.status === 'processing');
+        const failedSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'failed' || s.status === 'error');
         
-        realActivity.push({
-          id: `submission-${submission._id || index}`,
-          type: 'submission',
-          message: `Submission to ${submission.directoryName || 'Directory'} ${submission.status === 'success' ? 'completed' : submission.status === 'failed' ? 'failed' : 'is processing'}`,
-          time: timeAgo,
-          status: submission.status === 'success' ? 'success' : submission.status === 'failed' ? 'error' : 'pending'
+        const calculatedStats: DashboardStats = {
+          totalProjects: 0, // Placeholder, will be updated from projects
+          totalSubmissions: submissionsResponse.data.length,
+          successRate: submissionsResponse.data.length > 0 ? Math.round((successfulSubmissions.length / submissionsResponse.data.length) * 100) : 0,
+          averageRanking: successfulSubmissions.length > 0 ? Math.round(successfulSubmissions.reduce((acc: number, s: any) => acc + (s.ranking || 0), 0) / successfulSubmissions.length) : 0,
+          backlinksGained: successfulSubmissions.length,
+          directoriesSubmitted: submissionsResponse.data.length
+        };
+
+        setStats(calculatedStats);
+        
+        // Generate real recent activity from actual data
+        const realActivity = [];
+        
+        // Add recent submissions
+        submissionsResponse.data.slice(0, 3).forEach((submission: any, index: number) => {
+          const timeAgo = submission.createdAt ? 
+            new Date(submission.createdAt).toLocaleDateString() : 
+            `${index + 1} day${index > 0 ? 's' : ''} ago`;
+          
+          realActivity.push({
+            id: `submission-${submission._id || index}`,
+            type: 'submission',
+            message: `Submission to ${submission.directoryName || 'Directory'} ${submission.status === 'success' ? 'completed' : submission.status === 'failed' ? 'failed' : 'is processing'}`,
+            time: timeAgo,
+            status: submission.status === 'success' ? 'success' : submission.status === 'failed' ? 'error' : 'pending'
+          });
         });
-      });
-      
-      // Add recent projects
-      projects.slice(0, 2).forEach((project: any, index: number) => {
-        realActivity.push({
-          id: `project-${project._id || index}`,
-          type: 'project',
-          message: `Project: ${project.title || project.companyName || 'Untitled Project'}`,
-          time: project.createdAt ? new Date(project.createdAt).toLocaleDateString() : `${index + 1} day${index > 0 ? 's' : ''} ago`,
-          status: 'success'
+        
+        // Add recent projects
+        const projectsResponse = await axios.get('/api/projects', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-      });
-      
-      // If no real activity, show default message
-      if (realActivity.length === 0) {
-        realActivity.push({
-          id: 'welcome',
-          type: 'project',
-          message: 'Welcome to Opptym! Create your first project to get started.',
-          time: 'Just now',
-          status: 'success'
+        projectsResponse.data.slice(0, 2).forEach((project: any, index: number) => {
+          realActivity.push({
+            id: `project-${project._id || index}`,
+            type: 'project',
+            message: `Project: ${project.title || project.companyName || 'Untitled Project'}`,
+            time: project.createdAt ? new Date(project.createdAt).toLocaleDateString() : `${index + 1} day${index > 0 ? 's' : ''} ago`,
+            status: 'success'
+          });
         });
+        
+        // If no real activity, show default message
+        if (realActivity.length === 0) {
+          realActivity.push({
+            id: 'welcome',
+            type: 'project',
+            message: 'Welcome to Opptym! Create your first project to get started.',
+            time: 'Just now',
+            status: 'success'
+          });
+        }
+        
+        setRecentActivity(realActivity);
+
+      } catch (error) {
+        console.log('⚠️ Could not fetch recent submissions:', error);
+        setRecentActivity([]);
       }
       
-      setRecentActivity(realActivity);
-
+      // Fetch analytics
+      try {
+        const analyticsResponse = await axios.get('/api/analytics/overview', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        // setAnalytics(analyticsResponse.data || {}); // analytics state is not defined in this component
+      } catch (error) {
+        console.log('⚠️ Could not fetch analytics:', error);
+        // setAnalytics({}); // analytics state is not defined in this component
+      }
+      
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Dashboard data fetch error:', error);
+      // setError('Failed to load dashboard data'); // error state is not defined in this component
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // DEPLOYMENT VERIFICATION - This should be visible in browser console
+  console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v3.0');
+  console.log('🔄 Cache bust timestamp:', (window as any).__CACHE_BUST__);
+  console.log('📅 Current time:', new Date().toISOString());
 
   if (loading) {
     return (
