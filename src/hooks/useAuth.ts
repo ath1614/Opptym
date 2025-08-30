@@ -151,9 +151,9 @@ export const useAuthProvider = (): AuthContextType => {
         }
       });
 
-      if (response.data.user) {
+      if (response.data) {
         console.log('✅ User profile refreshed successfully');
-        setUser(response.data.user);
+        setUser(response.data);
       }
     } catch (error: any) {
       console.error('Error refreshing user data:', error);
