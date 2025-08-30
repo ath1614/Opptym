@@ -14,26 +14,9 @@ const app = express();
 // Trust proxy for rate limiting behind load balancers
 app.set('trust proxy', 1);
 
-// CORS configuration - production ready
-const allowedOrigins = [
-  'https://opptym.com',
-  'https://www.opptym.com',
-  'http://localhost:5173',
-  'http://localhost:3000'
-];
-
+// CORS configuration - production ready with bookmarklet support
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('🚫 CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins for now (we'll secure this later)
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -43,7 +26,8 @@ app.use(cors({
     'X-Requested-With', 
     'Origin', 
     'Accept',
-    'Cache-Control'
+    'Cache-Control',
+    'x-test-mode'
   ]
 }));
 
