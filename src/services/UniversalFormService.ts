@@ -332,82 +332,27 @@ export class UniversalFormService {
     return `${userId}_${timestamp}_${random}`;
   }
 
-  // Smart bookmarklet installation with user-friendly workflow
+  // Simple, automatic bookmarklet installation
   async installBookmarkletAutomatically(): Promise<BookmarkletResult> {
     const bookmarkletCode = await this.createUniversalBookmarklet();
     
     try {
-      // Method 1: Try browser extension API (if available and user has granted permissions)
-      if (typeof window.chrome !== 'undefined' && window.chrome?.bookmarks && window.chrome?.permissions) {
-        try {
-          // Check if we have bookmark permissions
-          const hasPermission = await window.chrome!.permissions!.contains({
-            permissions: ['bookmarks']
-          });
-          
-          if (hasPermission) {
-            const bookmark = await window.chrome!.bookmarks!.create({
-              title: 'OPPTYM Auto-Fill',
-              url: bookmarkletCode
-            });
-            
-            return {
-              success: true,
-              bookmarkletId: bookmark.id,
-              bookmarkletCode: bookmarkletCode,
-              fallbackInstructions: '✅ Bookmarklet installed automatically in Chrome!'
-            };
-          }
-        } catch (e) {
-          console.log('Chrome bookmarks API failed, trying alternative method');
-        }
-      }
-      
-      // Method 2: Try Firefox bookmarks API (if available)
-      if (typeof window.browser !== 'undefined' && window.browser?.bookmarks) {
-        try {
-          const bookmark = await window.browser!.bookmarks!.create({
-            title: 'OPPTYM Auto-Fill',
-            url: bookmarkletCode
-          });
-          
-          return {
-            success: true,
-            bookmarkletId: bookmark.id,
-            bookmarkletCode: bookmarkletCode,
-            fallbackInstructions: '✅ Bookmarklet installed automatically in Firefox!'
-          };
-        } catch (e) {
-          console.log('Firefox bookmarks API failed, trying alternative method');
-        }
-      }
-      
-      // Method 3: Try to create bookmark using keyboard shortcut simulation
-      const keyboardSuccess = await this.createBookmarkWithKeyboard(bookmarkletCode);
-      if (keyboardSuccess) {
-        return {
-          success: true,
-          bookmarkletCode: bookmarkletCode,
-          fallbackInstructions: '✅ Bookmarklet ready! Press Ctrl+D (or Cmd+D) to bookmark this page, then edit the bookmark URL with the provided code.'
-        };
-      }
-      
-      // Method 4: One-click bookmarklet creation (works on most browsers)
-      const success = await this.createOneClickBookmarklet(bookmarkletCode);
+      // Create a simple, automatic one-click bookmarklet
+      const success = await this.createSimpleOneClickBookmarklet(bookmarkletCode);
       
       if (success) {
         return {
           success: true,
           bookmarkletCode: bookmarkletCode,
-          fallbackInstructions: '✅ Bookmarklet created! Drag the green button to your bookmarks bar.'
+          fallbackInstructions: '✅ Bookmarklet ready! Click the green button to use immediately, or drag it to your bookmarks bar.'
         };
       }
       
-      // Method 5: Fallback to manual instructions with copy-paste
+      // Fallback: Simple manual instructions
       return {
         success: false,
         bookmarkletCode: bookmarkletCode,
-        fallbackInstructions: '📋 Copy the bookmarklet code and create a bookmark manually.'
+        fallbackInstructions: '📋 Quick Setup:\n1. Right-click the green button\n2. Select "Add to bookmarks"\n3. Done! Use it on any directory site.'
       };
       
     } catch (error: unknown) {
@@ -415,7 +360,7 @@ export class UniversalFormService {
       return {
         success: false,
         bookmarkletCode: bookmarkletCode,
-        fallbackInstructions: '📋 Copy the bookmarklet code and create a bookmark manually.',
+        fallbackInstructions: '❌ Installation failed. Please try manual installation.',
         error: error instanceof Error ? error.message : String(error)
       };
     }
@@ -498,7 +443,173 @@ export class UniversalFormService {
     }
   }
 
-  // Create one-click bookmarklet (draggable element)
+  // Create simple, automatic one-click bookmarklet
+  private async createSimpleOneClickBookmarklet(bookmarkletCode: string): Promise<boolean> {
+    try {
+      // Create a simple, user-friendly bookmarklet element
+      const bookmarkletElement = document.createElement('a');
+      bookmarkletElement.href = bookmarkletCode;
+      bookmarkletElement.textContent = '🚀 OPPTYM Auto-Fill';
+      bookmarkletElement.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        cursor: pointer;
+        user-select: none;
+        border: none;
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+      `;
+      
+      // Add hover effects
+      bookmarkletElement.addEventListener('mouseenter', () => {
+        bookmarkletElement.style.transform = 'scale(1.05)';
+        bookmarkletElement.style.boxShadow = '0 12px 35px rgba(16, 185, 129, 0.4)';
+      });
+      
+      bookmarkletElement.addEventListener('mouseleave', () => {
+        bookmarkletElement.style.transform = 'scale(1)';
+        bookmarkletElement.style.boxShadow = '0 8px 25px rgba(16, 185, 129, 0.3)';
+      });
+      
+      // Add click functionality (for immediate use)
+      bookmarkletElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Execute the bookmarklet immediately
+        eval(bookmarkletCode.replace('javascript:', ''));
+      });
+      
+      // Add drag functionality for bookmark bar
+      bookmarkletElement.draggable = true;
+      bookmarkletElement.addEventListener('dragstart', (e) => {
+        e.dataTransfer?.setData('text/plain', bookmarkletCode);
+        e.dataTransfer?.setData('text/html', bookmarkletElement.outerHTML);
+      });
+      
+      // Add to page
+      document.body.appendChild(bookmarkletElement);
+      
+      // Show simple instructions
+      const instructions = document.createElement('div');
+      instructions.style.cssText = `
+        position: fixed;
+        top: 90px;
+        right: 20px;
+        background: white;
+        border: 2px solid #10b981;
+        border-radius: 12px;
+        padding: 20px;
+        max-width: 320px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        animation: slideIn 0.5s ease;
+      `;
+      instructions.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 12px; color: #1f2937; font-size: 16px;">🎯 Ready to Auto-Fill!</div>
+        <div style="color: #6b7280; line-height: 1.5; margin-bottom: 16px;">
+          <div style="margin-bottom: 8px;">✅ <strong>Click</strong> the green button to use immediately</div>
+          <div style="margin-bottom: 8px;">✅ <strong>Drag</strong> to your bookmarks bar for later use</div>
+          <div style="margin-bottom: 8px;">✅ <strong>Right-click</strong> → "Add to bookmarks"</div>
+        </div>
+        <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #10b981;">
+          <div style="font-weight: 600; color: #166534; margin-bottom: 4px;">💡 Pro Tip:</div>
+          <div style="color: #166534; font-size: 13px;">Once installed, visit any directory website and click the bookmarklet to auto-fill forms instantly!</div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button id="closeInstructions" style="
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            transition: background 0.3s ease;
+          ">Close</button>
+          <button id="testBookmarklet" style="
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            transition: background 0.3s ease;
+          ">Test Now</button>
+        </div>
+      `;
+      
+      // Add CSS animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        #closeInstructions:hover { background: #4b5563 !important; }
+        #testBookmarklet:hover { background: #059669 !important; }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(instructions);
+      
+      // Close instructions
+      document.getElementById('closeInstructions')?.addEventListener('click', () => {
+        document.body.removeChild(instructions);
+        document.body.removeChild(bookmarkletElement);
+        document.head.removeChild(style);
+      });
+      
+      // Test bookmarklet
+      document.getElementById('testBookmarklet')?.addEventListener('click', () => {
+        // Execute the bookmarklet immediately
+        eval(bookmarkletCode.replace('javascript:', ''));
+        document.body.removeChild(instructions);
+        document.body.removeChild(bookmarkletElement);
+        document.head.removeChild(style);
+      });
+      
+      // Auto-remove after 60 seconds
+      setTimeout(() => {
+        if (instructions.parentNode) {
+          document.body.removeChild(instructions);
+        }
+        if (bookmarkletElement.parentNode) {
+          document.body.removeChild(bookmarkletElement);
+        }
+        if (style.parentNode) {
+          document.head.removeChild(style);
+        }
+      }, 60000);
+      
+      return true;
+    } catch (error) {
+      console.error('Simple one-click bookmarklet creation failed:', error);
+      return false;
+    }
+  }
+
+  // Create one-click bookmarklet (draggable element) - OLD VERSION
   private async createOneClickBookmarklet(bookmarkletCode: string): Promise<boolean> {
     try {
       // Create a draggable bookmarklet element
