@@ -16,7 +16,7 @@ app.set('trust proxy', 1);
 
 // CORS configuration - production ready with bookmarklet support
 app.use(cors({
-  origin: true, // Allow all origins for now (we'll secure this later)
+  origin: ['https://opptym.com', 'https://www.opptym.com', 'http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -35,6 +35,20 @@ console.log('🌐 CORS configured to allow all origins');
 
 // Handle preflight requests
 app.options('*', cors());
+
+// Add explicit CORS headers to all responses
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://opptym.com');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept, Cache-Control, x-test-mode');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Security middleware
 app.use(helmet({
@@ -581,3 +595,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+});
