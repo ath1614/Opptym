@@ -208,11 +208,11 @@ userSchema.virtual('fullName').get(function() {
 // Virtual for subscription limits
 userSchema.virtual('subscriptionLimits').get(function() {
   const limits = {
-    free: { projects: 10, submissions: 50, tools: true, teamMembers: 0, trialDays: 3 },
-    starter: { projects: 1, submissions: 150, tools: true, teamMembers: 0 }, // 999 package
-    pro: { projects: 5, submissions: 750, tools: true, teamMembers: 3 }, // 3999 package
-    business: { projects: 10, submissions: 1500, tools: true, teamMembers: 10 }, // 8999 package
-    enterprise: { projects: -1, submissions: -1, tools: true, teamMembers: -1 }
+    free: { projects: 2, submissions: 5, tools: 10, teamMembers: 0, trialDays: 3 },
+    starter: { projects: 5, submissions: 150, tools: 100, teamMembers: 0 }, // 999 package
+    pro: { projects: 15, submissions: 750, tools: 500, teamMembers: 3 }, // 3999 package
+    business: { projects: 50, submissions: 1500, tools: 1000, teamMembers: 10 }, // 8999 package
+    enterprise: { projects: -1, submissions: -1, tools: -1, teamMembers: -1 }
   };
   return limits[this.subscription] || limits.free;
 });
@@ -266,10 +266,10 @@ userSchema.methods.checkUsageLimit = function(feature) {
   // If user is in trial period, use trial limits
   if (this.isInTrialPeriod()) {
     const trialLimits = {
-      projects: 10,
-      submissions: 50,
-      apiCalls: 100,
-      seoTools: 50
+      projects: 2,
+      submissions: 5,
+      apiCalls: 20,
+      seoTools: 10
     };
     
     switch(feature) {

@@ -22,7 +22,7 @@ interface SubscriptionDetails {
   limits: {
     projects: number;
     submissions: number;
-    tools: boolean;
+    tools: number;
     teamMembers: number;
   };
   currentUsage: {
@@ -33,6 +33,8 @@ interface SubscriptionDetails {
   };
   canUpgrade: boolean;
   nextBillingDate?: string;
+  trialEndDate?: string;
+  isInTrial?: boolean;
 }
 
 const SubscriptionStatus = () => {
@@ -124,9 +126,9 @@ const SubscriptionStatus = () => {
       case 'starter':
         return 'Starter';
       case 'free':
-        return 'Free Trial';
+        return 'Free Trial (3 Days)';
       default:
-        return 'Free Trial';
+        return 'Free Trial (3 Days)';
     }
   };
 
@@ -177,6 +179,32 @@ const SubscriptionStatus = () => {
         </div>
       </div>
 
+      {/* Trial Status Banner for Free Users */}
+      {subscription.subscription === 'free' && (
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <AlertTriangle className="w-5 h-5 text-orange-600" />
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-orange-900 mb-1">
+                {subscription.isInTrial ? 'Free Trial Active' : 'Free Trial Expired'}
+              </h4>
+              <p className="text-xs text-orange-700">
+                {subscription.isInTrial 
+                  ? `Your trial ends on ${subscription.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'soon'}. Upgrade to continue using all features.`
+                  : 'Your free trial has expired. Upgrade to continue using Opptym features.'
+                }
+              </p>
+            </div>
+            <button
+              onClick={() => window.location.hash = 'pricing'}
+              className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors"
+            >
+              Upgrade Now
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Usage Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Projects */}
@@ -225,17 +253,17 @@ const SubscriptionStatus = () => {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">SEO Tools</span>
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {subscription.currentUsage.seoToolsUsed} used
+              {subscription.currentUsage.seoToolsUsed} / {subscription.limits.tools === -1 ? '∞' : subscription.limits.tools}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className={`h-2 rounded-full ${subscription.limits.tools ? 'bg-green-500' : 'bg-red-500'}`}
-              style={{ width: subscription.limits.tools ? '100%' : '0%' }}
+              className={`h-2 rounded-full ${getUsageColor(getUsagePercentage(subscription.currentUsage.seoToolsUsed, subscription.limits.tools))}`}
+              style={{ width: `${getUsagePercentage(subscription.currentUsage.seoToolsUsed, subscription.limits.tools)}%` }}
             ></div>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {subscription.limits.tools ? 'Available' : 'Not available'}
+            {subscription.limits.tools === -1 ? 'Unlimited' : `${subscription.limits.tools} uses per month`}
           </p>
         </div>
 

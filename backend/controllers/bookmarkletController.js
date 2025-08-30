@@ -47,6 +47,21 @@ const generateBookmarkletToken = async (req, res) => {
       });
     }
 
+    // Check if user has exceeded their submission limits
+    if (!user.checkUsageLimit('submissions')) {
+      const limits = user.subscriptionLimits;
+      const currentUsage = user.currentUsage || {};
+      
+      return res.status(429).json({
+        success: false,
+        message: 'Submission limit exceeded. Please upgrade your subscription to create more bookmarklets.',
+        limit: limits.submissions || 0,
+        current: currentUsage.submissionsMade || 0,
+        subscription: user.subscription,
+        trialExpired: user.subscription === 'free' && !user.isInTrialPeriod()
+      });
+    }
+
     // Prepare project data for bookmarklet
     const projectData = {
       name: project.name || project.title || '',
@@ -65,12 +80,27 @@ const generateBookmarkletToken = async (req, res) => {
     // Create token with subscription-based limits
     const tokenOptions = {
       expiresInHours: 24, // 24 hours default
-      maxUsage: 10, // 10 uses default
-      rateLimitSeconds: 1 // 1 second between uses (reduced from 5)
+      maxUsage: 5, // 5 uses default for free users
+      rateLimitSeconds: 5 // 5 seconds between uses for free users
     };
 
     // Adjust limits based on subscription tier
-    if (user.subscription === 'pro' || user.subscription === 'business') {
+    if (user.subscription === 'free') {
+      // Check if user is in trial period
+      if (user.isInTrialPeriod()) {
+        tokenOptions.maxUsage = 5; // 5 uses during trial
+        tokenOptions.expiresInHours = 24; // 24 hours
+        tokenOptions.rateLimitSeconds = 5; // 5 seconds between uses
+      } else {
+        tokenOptions.maxUsage = 1; // 1 use after trial
+        tokenOptions.expiresInHours = 1; // 1 hour
+        tokenOptions.rateLimitSeconds = 60; // 1 minute between uses
+      }
+    } else if (user.subscription === 'starter') {
+      tokenOptions.maxUsage = 20;
+      tokenOptions.expiresInHours = 48; // 2 days
+      tokenOptions.rateLimitSeconds = 2; // 2 seconds between uses
+    } else if (user.subscription === 'pro' || user.subscription === 'business') {
       tokenOptions.maxUsage = 50;
       tokenOptions.expiresInHours = 72; // 3 days
       tokenOptions.rateLimitSeconds = 0.5; // 0.5 seconds between uses
