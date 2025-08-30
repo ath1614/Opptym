@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 OPPTYM - DEPLOYMENT SUCCESSFUL v3.0 - <script>document.write(new Date().toLocaleString())</script></title>
+    <title>OPPTYM - AI Powered Automation</title>
     <meta name="description" content="Submit your business to multiple directories with ease">
     
     <!-- Aggressive Cache Control -->
@@ -41,32 +41,11 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Deployment verification banner */
-        .deployment-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
-            color: white;
-            text-align: center;
-            padding: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            z-index: 9999;
-            animation: rainbow 2s linear infinite;
-        }
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
+
     </style>
 </head>
 <body>
-    <!-- Deployment Verification Banner -->
-    <div class="deployment-banner">
-        🚀 DEPLOYMENT VERIFICATION: Version 3.0 - <script>document.write(new Date().toLocaleString())</script> 🚀
-    </div>
+
     
     <div id="root">
         <div class="loading-spinner">
@@ -77,50 +56,17 @@
         </div>
     </div>
 
-    <!-- Aggressive Cache Busting Script -->
+    <!-- Cache Busting Script -->
     <script>
         (function() {
-            console.log('🔄 Cache busting script executing...');
-            
-            // Clear all storage
-            try {
-                localStorage.clear();
-                sessionStorage.clear();
-                console.log('✅ Cleared localStorage and sessionStorage');
-            } catch (e) {
-                console.log('⚠️ Could not clear storage:', e);
-            }
-            
-            // Clear all caches
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
-                    for (let name of names) {
-                        caches.delete(name);
-                    }
-                    console.log('✅ Cleared all caches');
-                });
-            }
-            
-            // Clear cookies
-            document.cookie.split(";").forEach(function(c) { 
-                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-            });
-            console.log('✅ Cleared all cookies');
-            
-            // Force reload if this is a navigation
-            if (performance.navigation.type === 1) {
-                console.log('🔄 Navigation detected, forcing reload...');
-                window.location.reload(true);
-            }
+            console.log('🔄 OPPTYM App loading...');
             
             // Add timestamp to prevent caching
             const timestamp = Date.now();
-            const uniqueId = Math.random().toString(36).substring(7);
-            window.__CACHE_BUST__ = { timestamp, uniqueId };
-            console.log('✅ Cache busting complete:', { timestamp, uniqueId });
+            window.__CACHE_BUST__ = timestamp;
+            console.log('✅ Cache busting complete:', timestamp);
             
-            // Show deployment verification
-            console.log('🚀 DEPLOYMENT VERIFICATION: HTML loaded at', new Date().toISOString());
+            console.log('🚀 OPPTYM HTML loaded at', new Date().toISOString());
         })();
     </script>
 

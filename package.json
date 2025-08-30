@@ -19,7 +19,7 @@
     "build": "rm -rf dist && vite build",
     "build:clean": "rm -rf dist node_modules/.vite && npm ci && npm run build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

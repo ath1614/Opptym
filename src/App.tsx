@@ -18,7 +18,7 @@ import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
 import TestChanges from './components/TestChanges';
 
-import { BookOpen, Settings, Shield, Sparkles } from 'lucide-react';
+import { BookOpen, Settings } from 'lucide-react';
 import { showPopup } from './utils/popup';
 
 interface Project {
@@ -207,18 +207,11 @@ function App() {
     }
   }, [activeTab]);
 
-  // DEPLOYMENT VERIFICATION - This will show immediately when app loads
+  // Log deployment info to console only
   useEffect(() => {
-    // Show an alert that's impossible to miss
-    alert('🚀 DEPLOYMENT VERIFICATION: App loaded successfully! Version 3.0 - ' + new Date().toLocaleString());
-    
-    // Also log to console
-    console.log('🚀 APP LOADED - DEPLOYMENT VERIFICATION SUCCESSFUL');
+    console.log('🚀 OPPTYM App loaded successfully');
     console.log('📅 Current time:', new Date().toISOString());
     console.log('🔄 Cache bust:', (window as any).__CACHE_BUST__);
-    
-    // Change the document title to be immediately visible
-    document.title = '🚀 OPPTYM - DEPLOYMENT SUCCESSFUL v3.0 - ' + new Date().toLocaleString();
   }, []);
 
   // If user is not authenticated, show landing/login/register
@@ -307,7 +300,7 @@ function App() {
 
   const renderContent = () => {
     // Check if user is admin for admin-only routes
-    const isAdmin = authProvider.user?.isAdmin;
+    const isAdmin = authProvider.user?.role === 'admin';
     
     switch (activeTab) {
       case 'dashboard':
