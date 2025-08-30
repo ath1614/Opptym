@@ -60,24 +60,28 @@ const SubscriptionStatus = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       if (!token) {
+        console.log('❌ No token found in localStorage');
         setLoading(false);
-        return; // Silent fail - don't set error
+        return;
       }
 
+      console.log('🔍 Fetching subscription details...');
       const response = await axios.get('/api/subscription/details', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
+      console.log('📊 Subscription response:', response.data);
+      
       if (response.data) {
         setSubscription(response.data);
         setError(null);
       }
-      // Silent fail for any other case
     } catch (error: any) {
-      console.error('Error fetching subscription details:', error);
-      // Silent fail - don't set any errors
+      console.error('❌ Error fetching subscription details:', error);
+      console.error('❌ Error response:', error.response?.data);
+      setError(error.response?.data?.error || error.message);
     } finally {
       setLoading(false);
     }
@@ -147,13 +151,42 @@ const SubscriptionStatus = () => {
   };
 
   if (loading) {
-    // Don't show loading state - just return null
-    return null;
+    return (
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center space-x-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+          <span className="text-blue-800">Loading subscription details...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center space-x-2">
+          <XCircle className="w-5 h-5 text-red-600" />
+          <div>
+            <h4 className="text-red-800 font-medium">Error loading subscription</h4>
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!subscription) {
-    // Don't show anything if there's an error or no subscription data
-    return null;
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="flex items-center space-x-2">
+          <AlertTriangle className="w-5 h-5 text-yellow-600" />
+          <div>
+            <h4 className="text-yellow-800 font-medium">No subscription data</h4>
+            <p className="text-yellow-600 text-sm">Please check your authentication and try again.</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
