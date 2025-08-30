@@ -173,31 +173,6 @@ app.get('/api/health/version', (req, res) => {
   res.json(version);
 });
 
-// Health check endpoint for deployment
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    message: 'OPPTYM Backend is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    cors: 'enabled'
-  });
-});
-
-// Version endpoint for deployment verification
-app.get('/api/health/version', (req, res) => {
-  const version = {
-    commit: process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
-    buildTime: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    uptime: process.uptime(),
-    timestamp: Date.now()
-  };
-  
-  res.json(version);
-});
-
 // API Routes (load with error handling)
 try {
   app.use('/api/auth', require('./routes/authroutes'));
