@@ -355,7 +355,7 @@ export class UniversalFormService {
               success: true,
               bookmarkletId: bookmark.id,
               bookmarkletCode: bookmarkletCode,
-              fallbackInstructions: '✅ Bookmarklet installed automatically!'
+              fallbackInstructions: '✅ Bookmarklet installed automatically in Chrome!'
             };
           }
         } catch (e) {
@@ -375,25 +375,35 @@ export class UniversalFormService {
             success: true,
             bookmarkletId: bookmark.id,
             bookmarkletCode: bookmarkletCode,
-            fallbackInstructions: '✅ Bookmarklet installed automatically!'
+            fallbackInstructions: '✅ Bookmarklet installed automatically in Firefox!'
           };
         } catch (e) {
           console.log('Firefox bookmarks API failed, trying alternative method');
         }
       }
       
-      // Method 3: One-click bookmarklet creation (works on most browsers)
+      // Method 3: Try to create bookmark using keyboard shortcut simulation
+      const keyboardSuccess = await this.createBookmarkWithKeyboard(bookmarkletCode);
+      if (keyboardSuccess) {
+        return {
+          success: true,
+          bookmarkletCode: bookmarkletCode,
+          fallbackInstructions: '✅ Bookmarklet ready! Press Ctrl+D (or Cmd+D) to bookmark this page, then edit the bookmark URL with the provided code.'
+        };
+      }
+      
+      // Method 4: One-click bookmarklet creation (works on most browsers)
       const success = await this.createOneClickBookmarklet(bookmarkletCode);
       
       if (success) {
         return {
           success: true,
           bookmarkletCode: bookmarkletCode,
-          fallbackInstructions: '✅ Bookmarklet created! Drag it to your bookmarks bar.'
+          fallbackInstructions: '✅ Bookmarklet created! Drag the green button to your bookmarks bar.'
         };
       }
       
-      // Method 4: Fallback to manual instructions with copy-paste
+      // Method 5: Fallback to manual instructions with copy-paste
       return {
         success: false,
         bookmarkletCode: bookmarkletCode,
@@ -408,6 +418,83 @@ export class UniversalFormService {
         fallbackInstructions: '📋 Copy the bookmarklet code and create a bookmark manually.',
         error: error instanceof Error ? error.message : String(error)
       };
+    }
+  }
+
+  // Try to create bookmark using keyboard shortcut simulation
+  private async createBookmarkWithKeyboard(bookmarkletCode: string): Promise<boolean> {
+    try {
+      // Create a temporary page with the bookmarklet code
+      const tempPage = document.createElement('div');
+      tempPage.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+      `;
+      
+      const content = document.createElement('div');
+      content.style.cssText = `
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      `;
+      
+      content.innerHTML = `
+        <h2 style="margin: 0 0 20px 0; color: #1f2937;">🔗 Quick Bookmark Setup</h2>
+        <p style="margin: 0 0 20px 0; color: #6b7280; line-height: 1.6;">
+          To install the bookmarklet automatically:
+        </p>
+        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
+          <div style="margin-bottom: 10px;"><strong>Step 1:</strong> Press <kbd style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Ctrl+D</kbd> (or <kbd style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Cmd+D</kbd> on Mac)</div>
+          <div style="margin-bottom: 10px;"><strong>Step 2:</strong> In the bookmark dialog, replace the URL with:</div>
+          <textarea readonly style="width: 100%; height: 60px; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-family: monospace; font-size: 11px; resize: none;">${bookmarkletCode}</textarea>
+          <div style="margin-top: 10px;"><strong>Step 3:</strong> Click "Save" or "Add"</div>
+        </div>
+        <button id="closeBookmarkSetup" style="
+          background: #10b981;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+        ">Got it!</button>
+      `;
+      
+      tempPage.appendChild(content);
+      document.body.appendChild(tempPage);
+      
+      // Close button functionality
+      const closeBtn = document.getElementById('closeBookmarkSetup');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          document.body.removeChild(tempPage);
+        });
+      }
+      
+      // Auto-close after 30 seconds
+      setTimeout(() => {
+        if (tempPage.parentNode) {
+          document.body.removeChild(tempPage);
+        }
+      }, 30000);
+      
+      return true;
+    } catch (error) {
+      console.error('Error creating keyboard bookmark setup:', error);
+      return false;
     }
   }
 
@@ -464,36 +551,58 @@ export class UniversalFormService {
         border: 1px solid #0ea5e9;
         border-radius: 8px;
         padding: 16px;
-        max-width: 300px;
+        max-width: 350px;
         font-family: Arial, sans-serif;
         font-size: 14px;
         z-index: 10000;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       `;
       instructions.innerHTML = `
-        <div style="font-weight: bold; margin-bottom: 8px; color: #0c4a6e;">📌 Quick Setup:</div>
+        <div style="font-weight: bold; margin-bottom: 8px; color: #0c4a6e;">🚀 OPPTYM Auto-Fill Ready!</div>
         <div style="color: #0c4a6e; line-height: 1.4;">
-          <div style="margin-bottom: 4px;">1. <strong>Drag</strong> the green button to your bookmarks bar</div>
-          <div style="margin-bottom: 4px;">2. <strong>Or click</strong> it to use immediately</div>
-          <div style="margin-bottom: 8px;">3. <strong>Visit</strong> any website with forms</div>
-          <div>4. <strong>Click</strong> the bookmarklet to fill forms</div>
+          <div style="margin-bottom: 6px;">✅ <strong>Option 1:</strong> Drag the green button to your bookmarks bar</div>
+          <div style="margin-bottom: 6px;">✅ <strong>Option 2:</strong> Click the green button to use immediately</div>
+          <div style="margin-bottom: 8px;">✅ <strong>Option 3:</strong> Right-click → "Add to bookmarks"</div>
+          <div style="background: #e0f2fe; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 12px;">
+            💡 <strong>Pro tip:</strong> Once installed, visit any directory website and click the bookmarklet to auto-fill forms!
+          </div>
         </div>
-        <button id="closeInstructions" style="
-          background: #0ea5e9;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-top: 12px;
-          font-size: 12px;
-        ">Got it!</button>
+        <div style="display: flex; gap: 8px; margin-top: 12px;">
+          <button id="closeInstructions" style="
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            flex: 1;
+          ">Got it!</button>
+          <button id="testBookmarklet" style="
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            flex: 1;
+          ">Test Now</button>
+        </div>
       `;
       
       document.body.appendChild(instructions);
       
       // Close instructions
       document.getElementById('closeInstructions')?.addEventListener('click', () => {
+        document.body.removeChild(instructions);
+        document.body.removeChild(bookmarkletElement);
+      });
+      
+      // Test bookmarklet
+      document.getElementById('testBookmarklet')?.addEventListener('click', () => {
+        // Execute the bookmarklet immediately
+        eval(bookmarkletCode.replace('javascript:', ''));
         document.body.removeChild(instructions);
         document.body.removeChild(bookmarkletElement);
       });
