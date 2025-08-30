@@ -79,38 +79,41 @@ export default function Dashboard() {
         const subscriptionResponse = await axios.get('/api/subscription/details', {
           headers: { Authorization: `Bearer ${token}` }
         });
+        console.log('📊 Dashboard subscription response:', subscriptionResponse.data);
         setSubscription(subscriptionResponse.data);
       } catch (error) {
-        console.log('No subscription details available, using default');
+        console.error('❌ Error fetching subscription details:', error);
         
-        // Calculate real limits based on user's subscription
+        // Fallback subscription data
         const getPlanLimits = (plan: string) => {
           switch (plan) {
             case 'business':
-              return { submissions: 1500, projects: 10, tools: true };
+              return { submissions: 1500, projects: 50, tools: 1000 };
             case 'pro':
-              return { submissions: 750, projects: 5, tools: true };
+              return { submissions: 750, projects: 15, tools: 500 };
             case 'starter':
-              return { submissions: 150, projects: 1, tools: true };
+              return { submissions: 150, projects: 5, tools: 100 };
             case 'free':
             default:
-              return { submissions: 50, projects: 10, tools: true };
+              return { submissions: 5, projects: 2, tools: 10 };
           }
         };
         
         const limits = getPlanLimits(user?.subscription || 'free');
         
         setSubscription({
-          plan: user?.subscription || 'free',
+          subscription: user?.subscription || 'free',
           status: 'active',
-          nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          usage: {
-            submissions: submissions.length,
-            projects: projects.length,
-            limit: limits.submissions,
-            projectLimit: limits.projects
+          nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          currentUsage: {
+            submissionsMade: submissions.length,
+            projectsCreated: projects.length,
+            seoToolsUsed: 0,
+            apiCallsUsed: 0
           },
-          limits: limits
+          limits: limits,
+          isInTrial: user?.subscription === 'free',
+          trialDaysLeft: user?.subscription === 'free' ? 3 : 0
         });
       }
 
@@ -305,6 +308,55 @@ export default function Dashboard() {
         {/* Subscription Status */}
         {subscription && (
           <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            {/* Trial Status Banner for Free Users */}
+            {subscription.subscription === 'free' && (
+              <div className={`mb-6 p-4 rounded-xl border ${
+                subscription.isInTrial 
+                  ? 'bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200' 
+                  : 'bg-gradient-to-r from-red-50 to-pink-50 border-red-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    {subscription.isInTrial ? (
+                      <Clock className="w-5 h-5 text-orange-600" />
+                    ) : (
+                      <Crown className="w-5 h-5 text-red-600" />
+                    )}
+                    <div>
+                      <h4 className={`font-semibold ${
+                        subscription.isInTrial ? 'text-orange-900' : 'text-red-900'
+                      }`}>
+                        {subscription.isInTrial ? '🎉 Free Trial Active' : '⏰ Free Trial Expired'}
+                      </h4>
+                      <p className={`text-sm ${
+                        subscription.isInTrial ? 'text-orange-700' : 'text-red-700'
+                      }`}>
+                        {subscription.isInTrial 
+                          ? `Your trial ends on ${subscription.trialEndDate ? new Date(subscription.trialEndDate).toLocaleDateString() : 'soon'}.`
+                          : 'Your free trial has expired. Upgrade to continue using all features.'
+                        }
+                        {subscription.trialDaysLeft !== undefined && subscription.trialDaysLeft > 0 && (
+                          <span className="block mt-1 font-medium">
+                            {subscription.trialDaysLeft} day{subscription.trialDaysLeft !== 1 ? 's' : ''} remaining
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => window.location.hash = 'pricing'}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      subscription.isInTrial 
+                        ? 'bg-orange-600 text-white hover:bg-orange-700' 
+                        : 'bg-red-600 text-white hover:bg-red-700'
+                    }`}
+                  >
+                    {subscription.isInTrial ? 'Upgrade Now' : 'Upgrade to Continue'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-glow">
@@ -317,7 +369,7 @@ export default function Dashboard() {
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-primary-800 dark:text-primary-200 capitalize">
-                  {subscription.plan}
+                  {subscription.subscription === 'free' ? 'Free Trial (3 Days)' : subscription.subscription}
                 </div>
                 <div className="text-sm text-success-600 dark:text-success-400 font-medium">
                   {subscription.status}
@@ -330,13 +382,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-primary-600 dark:text-primary-400">Submissions Used</span>
                   <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                    {subscription.usage?.submissions || 0} / {subscription.usage?.limit || 100}
+                    {subscription.currentUsage?.submissionsMade || 0} / {subscription.limits?.submissions || 100}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
                   <div 
                     className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((subscription.usage?.submissions || 0) / (subscription.usage?.limit || 100) * 100, 100)}%` }}
+                    style={{ width: `${Math.min((subscription.currentUsage?.submissionsMade || 0) / (subscription.limits?.submissions || 100) * 100, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -345,13 +397,13 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-primary-600 dark:text-primary-400">Projects Used</span>
                       <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                        {subscription.usage?.projects || 0} / {subscription.limits?.projects || subscription.plan === 'business' ? 'Unlimited' : '50'}
+                        {subscription.currentUsage?.projectsCreated || 0} / {subscription.limits?.projects || 50}
                       </span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
                       <div 
                         className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min((subscription.usage?.projects || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
+                        style={{ width: `${Math.min((subscription.currentUsage?.projectsCreated || 0) / (subscription.limits?.projects || 50) * 100, 100)}%` }}
                       ></div>
                     </div>
                   </div>
@@ -360,13 +412,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-primary-600 dark:text-primary-400">Next Billing</span>
                   <span className="text-sm font-semibold text-primary-800 dark:text-primary-200">
-                    {new Date(subscription.nextBilling).toLocaleDateString()}
+                    {new Date(subscription.nextBillingDate).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-primary-700 rounded-full h-2">
                   <div 
                     className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.max(0, 100 - ((new Date(subscription.nextBilling).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1000)) * 100)}%` }}
+                    style={{ width: `${Math.max(0, 100 - ((new Date(subscription.nextBillingDate).getTime() - Date.now()) / (30 * 24 * 60 * 60 * 1000)) * 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -377,10 +429,10 @@ export default function Dashboard() {
                 <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl p-4">
                   <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Plan Features</h4>
                   <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                    <li>• {subscription.plan === 'business' ? 'Unlimited' : subscription.plan === 'pro' ? '500' : '100'} submissions per month</li>
-                    <li>• {subscription.plan === 'business' ? 'Unlimited' : '50'} projects</li>
-                    <li>• Advanced analytics</li>
-                    <li>• Priority support</li>
+                    <li>• {subscription.subscription === 'business' ? 'Unlimited' : subscription.subscription === 'pro' ? '750' : subscription.subscription === 'starter' ? '150' : '5'} submissions per month</li>
+                    <li>• {subscription.subscription === 'business' ? 'Unlimited' : subscription.subscription === 'pro' ? '15' : subscription.subscription === 'starter' ? '5' : '2'} projects</li>
+                    <li>• {subscription.subscription === 'free' ? 'Limited' : 'Advanced'} analytics</li>
+                    <li>• {subscription.subscription === 'free' ? 'Community' : 'Priority'} support</li>
                   </ul>
                 </div>
                 <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl p-4">
@@ -441,9 +493,9 @@ export default function Dashboard() {
             <div className="flex flex-col items-center space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary-800 dark:text-primary-200">
-                  {subscription?.plan === 'free' ? 'Free' : 
-                   subscription?.plan === 'starter' ? 'Starter' :
-                   subscription?.plan === 'pro' ? 'Pro' : 'Business'}
+                  {subscription?.subscription === 'free' ? 'Free' : 
+                   subscription?.subscription === 'starter' ? 'Starter' :
+                   subscription?.subscription === 'pro' ? 'Pro' : 'Business'}
                 </div>
                 <div className="text-sm text-primary-600 dark:text-primary-400">Current Plan</div>
               </div>
