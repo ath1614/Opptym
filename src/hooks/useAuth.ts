@@ -151,9 +151,15 @@ export const useAuthProvider = (): AuthContextType => {
         }
       });
 
-      if (response.data) {
+      console.log('🔍 Profile response:', response.data);
+      
+      if (response.data && response.data.id) {
         console.log('✅ User profile refreshed successfully');
         setUser(response.data);
+      } else {
+        console.error('❌ Invalid profile response structure:', response.data);
+        // Keep the user from token if profile fetch fails
+        setUser(userFromToken);
       }
     } catch (error: any) {
       console.error('Error refreshing user data:', error);
@@ -164,7 +170,12 @@ export const useAuthProvider = (): AuthContextType => {
         localStorage.removeItem('token');
         setUser(null);
       } else {
-        console.error('🔍 Non-401 error during refresh, keeping current state');
+        console.error('🔍 Non-401 error during refresh, keeping user from token');
+        // Keep the user from token if profile fetch fails
+        const userFromToken = decodeUser(token);
+        if (userFromToken) {
+          setUser(userFromToken);
+        }
       }
     }
   };
@@ -188,16 +199,25 @@ export const useAuthProvider = (): AuthContextType => {
         
         localStorage.setItem('token', token);
         
-        // Set user from token
-        setUser({
+        // Set user from token first
+        const userData = {
           ...userFromToken,
           isAdmin: loginResponse.data.user.isAdmin,
           subscription: loginResponse.data.user.subscription,
           email: loginResponse.data.user.email,
-        } as User);
+        } as User;
+        
+        setUser(userData);
+        console.log('🔍 User set from login response:', userData);
 
-        // Refresh user data from server
-        await refreshUser();
+        // Try to refresh user data from server (but don't fail if it doesn't work)
+        try {
+          await refreshUser();
+        } catch (error) {
+          console.log('⚠️ Profile refresh failed, but keeping user logged in:', error);
+          // Keep the user logged in even if profile refresh fails
+        }
+        
         showPopup('✅ Login successful!', 'success');
       } else {
         throw new Error(loginResponse.data.message || 'Login failed');
@@ -328,10 +348,16 @@ export const useAuthProvider = (): AuthContextType => {
           // Check if user data is valid
           if (userFromToken && userFromToken.id && userFromToken.email) {
             setUser(userFromToken);
+            console.log('🔍 User set from token during initialization:', userFromToken);
             
-            // Try to refresh user data from server
-            console.log('🔍 Refreshing user data from server...');
-            await refreshUser();
+            // Try to refresh user data from server (but don't fail if it doesn't work)
+            try {
+              console.log('🔍 Refreshing user data from server...');
+              await refreshUser();
+            } catch (error) {
+              console.log('⚠️ Profile refresh failed during initialization, but keeping user logged in:', error);
+              // Keep the user logged in even if profile refresh fails
+            }
           } else {
             console.log('🔍 Invalid user data from token, clearing...');
             localStorage.removeItem('token');
