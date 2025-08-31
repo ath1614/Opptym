@@ -69,10 +69,17 @@ const signup = async (req, res) => {
     // Create new user
     console.log('🔍 Creating new user with data:', { username, email, isEmailVerified: true, status: 'active' });
     
+    // Extract first and last name from username (fallback to username if no space)
+    const nameParts = username.split(' ');
+    const firstName = nameParts[0] || username;
+    const lastName = nameParts.slice(1).join(' ') || username;
+    
     const user = new User({
       username,
       email,
       password,
+      firstName,
+      lastName,
       isEmailVerified: true,
       status: 'active'
     });

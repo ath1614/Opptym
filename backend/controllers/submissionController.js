@@ -28,17 +28,17 @@ const createSubmission = async (req, res) => {
     }
 
     // Check if user can submit to directories
-    if (!user.hasPermission('canSubmitToDirectories')) {
+    if (!user.hasFeatureAccess('submissions')) {
       return res.status(403).json({ error: 'You do not have permission to submit to directories' });
     }
 
     // Check submission limit
     if (!user.checkUsageLimit('submissions')) {
-      const limits = user.subscriptionLimits;
+      const limits = user.planLimits;
       return res.status(403).json({ 
         error: 'Submission limit exceeded',
         limit: limits.submissions,
-        current: user.currentUsage.submissionsMade,
+        current: user.usage.submissionsUsed,
         subscription: user.subscription
       });
     }
