@@ -98,8 +98,50 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       onCreated();
       onClose();
     } catch (err: any) {
-      setError('Failed to create project. Please try again.');
-      console.error(err);
+      console.error('Project creation error:', err);
+      
+      // Parse error response to show specific messages
+      let errorMessage = 'Failed to create project. Please try again.';
+      
+      if (err.message && err.message.includes('API Error:')) {
+        try {
+          // Extract error body from API error message
+          const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
+          if (errorMatch) {
+            const errorBody = errorMatch[1];
+            try {
+              const errorData = JSON.parse(errorBody);
+              if (errorData.error === 'Usage limit exceeded') {
+                errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
+                // Show upgrade popup instead of error
+                setError('');
+                // Show upgrade modal
+                if (window.confirm('You have reached your project limit. Would you like to upgrade your plan to create more projects?')) {
+                  window.location.hash = '#pricing';
+                }
+                return;
+              } else if (errorData.error === 'Trial expired') {
+                errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
+                // Show upgrade popup
+                setError('');
+                if (window.confirm('Your trial has expired. Would you like to upgrade to continue using Opptym?')) {
+                  window.location.hash = '#pricing';
+                }
+                return;
+              } else if (errorData.message) {
+                errorMessage = errorData.message;
+              }
+            } catch (parseError) {
+              // If JSON parsing fails, use the raw error body
+              errorMessage = errorBody;
+            }
+          }
+        } catch (parseError) {
+          console.error('Error parsing API error:', parseError);
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

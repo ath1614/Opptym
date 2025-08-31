@@ -52,7 +52,8 @@ export default function Dashboard() {
       const projectsResponse = await axios.get('/api/projects', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      setStats(prev => ({ ...prev, totalProjects: projectsResponse.data.length }));
+      const totalProjects = projectsResponse.data.length;
+      console.log('📊 Total projects:', totalProjects);
       
       // Fetch subscription details
       try {
@@ -124,7 +125,7 @@ export default function Dashboard() {
         const failedSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'failed' || s.status === 'error');
         
         const calculatedStats: DashboardStats = {
-          totalProjects: 0, // Placeholder, will be updated from projects
+          totalProjects: totalProjects, // Use actual projects count
           totalSubmissions: submissionsResponse.data.length,
           successRate: submissionsResponse.data.length > 0 ? Math.round((successfulSubmissions.length / submissionsResponse.data.length) * 100) : 0,
           averageRanking: successfulSubmissions.length > 0 ? Math.round(successfulSubmissions.reduce((acc: number, s: any) => acc + (s.ranking || 0), 0) / successfulSubmissions.length) : 0,
@@ -184,15 +185,28 @@ export default function Dashboard() {
         setRecentActivity([]);
       }
       
-      // Fetch analytics
+      // Fetch analytics and update stats with real data
       try {
         const analyticsResponse = await axios.get('/api/analytics/overview', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-        // setAnalytics(analyticsResponse.data || {}); // analytics state is not defined in this component
+        console.log('📊 Analytics response:', analyticsResponse.data);
+        
+        // Update stats with analytics data
+        if (analyticsResponse.data) {
+          setStats(prev => ({
+            ...prev,
+            totalProjects: analyticsResponse.data.totalProjects || totalProjects,
+            totalSubmissions: analyticsResponse.data.totalSubmissions || prev.totalSubmissions,
+            successRate: analyticsResponse.data.successRate || prev.successRate,
+            averageRanking: analyticsResponse.data.averageRanking || prev.averageRanking,
+            backlinksGained: analyticsResponse.data.backlinksGained || prev.backlinksGained,
+            directoriesSubmitted: analyticsResponse.data.totalSubmissions || prev.directoriesSubmitted
+          }));
+        }
       } catch (error) {
         console.log('⚠️ Could not fetch analytics:', error);
-        // setAnalytics({}); // analytics state is not defined in this component
+        // Keep existing stats if analytics fails
       }
       
     } catch (error) {
