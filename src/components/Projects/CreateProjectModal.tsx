@@ -96,14 +96,31 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
 
       await createProject(payload);
       onCreated();
+      
+      // Refresh dashboard data if the function exists
+      if ((window as any).refreshDashboardData) {
+        (window as any).refreshDashboardData();
+      }
+      
       onClose();
     } catch (err: any) {
       console.error('Project creation error:', err);
+      console.error('Error message:', err.message);
+      console.error('Error response:', err.response);
+      console.error('Error status:', err.status);
       
       // Parse error response to show specific messages
       let errorMessage = 'Failed to create project. Please try again.';
+      let showUpgradePopup = false;
       
-      if (err.message && err.message.includes('API Error:')) {
+      // Check if it's a usage limit error
+      if (err.message && err.message.includes('Usage limit exceeded')) {
+        showUpgradePopup = true;
+        errorMessage = 'You have reached your project limit. Please upgrade your plan to create more projects.';
+      } else if (err.message && err.message.includes('Trial expired')) {
+        showUpgradePopup = true;
+        errorMessage = 'Your trial has expired. Please upgrade to continue.';
+      } else if (err.message && err.message.includes('API Error:')) {
         try {
           // Extract error body from API error message
           const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
@@ -112,22 +129,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
             try {
               const errorData = JSON.parse(errorBody);
               if (errorData.error === 'Usage limit exceeded') {
+                showUpgradePopup = true;
                 errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
-                // Show upgrade popup instead of error
-                setError('');
-                // Show upgrade modal
-                if (window.confirm('You have reached your project limit. Would you like to upgrade your plan to create more projects?')) {
-                  window.location.hash = '#pricing';
-                }
-                return;
               } else if (errorData.error === 'Trial expired') {
+                showUpgradePopup = true;
                 errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
-                // Show upgrade popup
-                setError('');
-                if (window.confirm('Your trial has expired. Would you like to upgrade to continue using Opptym?')) {
-                  window.location.hash = '#pricing';
-                }
-                return;
               } else if (errorData.message) {
                 errorMessage = errorData.message;
               }
@@ -141,7 +147,15 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
         }
       }
       
-      setError(errorMessage);
+      if (showUpgradePopup) {
+        setError('');
+        // Show upgrade modal
+        if (window.confirm(errorMessage + '\n\nWould you like to upgrade your plan?')) {
+          window.location.hash = '#pricing';
+        }
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

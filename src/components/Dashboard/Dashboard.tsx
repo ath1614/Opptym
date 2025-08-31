@@ -133,6 +133,7 @@ export default function Dashboard() {
           directoriesSubmitted: submissionsResponse.data.length
         };
 
+        // Update stats with calculated data
         setStats(calculatedStats);
         
         // Generate real recent activity from actual data
@@ -194,15 +195,20 @@ export default function Dashboard() {
         
         // Update stats with analytics data
         if (analyticsResponse.data) {
-          setStats(prev => ({
-            ...prev,
-            totalProjects: analyticsResponse.data.totalProjects || totalProjects,
-            totalSubmissions: analyticsResponse.data.totalSubmissions || prev.totalSubmissions,
-            successRate: analyticsResponse.data.successRate || prev.successRate,
-            averageRanking: analyticsResponse.data.averageRanking || prev.averageRanking,
-            backlinksGained: analyticsResponse.data.backlinksGained || prev.backlinksGained,
-            directoriesSubmitted: analyticsResponse.data.totalSubmissions || prev.directoriesSubmitted
-          }));
+          console.log('📊 Updating stats with analytics data:', analyticsResponse.data);
+          setStats(prev => {
+            const updatedStats = {
+              ...prev,
+              totalProjects: analyticsResponse.data.totalProjects || totalProjects,
+              totalSubmissions: analyticsResponse.data.totalSubmissions || prev.totalSubmissions,
+              successRate: analyticsResponse.data.successRate || prev.successRate,
+              averageRanking: analyticsResponse.data.averageRanking || prev.averageRanking,
+              backlinksGained: analyticsResponse.data.backlinksGained || prev.backlinksGained,
+              directoriesSubmitted: analyticsResponse.data.totalSubmissions || prev.directoriesSubmitted
+            };
+            console.log('📊 Updated stats:', updatedStats);
+            return updatedStats;
+          });
         }
       } catch (error) {
         console.log('⚠️ Could not fetch analytics:', error);
@@ -216,6 +222,16 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+
+  // Function to refresh dashboard data (can be called from other components)
+  const refreshDashboardData = () => {
+    fetchDashboardData();
+  };
+
+  // Expose refresh function globally for other components to use
+  useEffect(() => {
+    (window as any).refreshDashboardData = refreshDashboardData;
+  }, []);
 
   useEffect(() => {
     fetchDashboardData();
