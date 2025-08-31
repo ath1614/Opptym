@@ -37,6 +37,8 @@ interface Team {
   maxMembers: number;
   totalProjects: number;
   totalSubmissions: number;
+  description?: string;
+  memberCount?: number;
 }
 
 const EmployeeManagement = () => {
@@ -288,8 +290,13 @@ const EmployeeManagement = () => {
         <div className="bg-white dark:bg-primary-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Employees</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                {team?.description ? 'Total Users' : 'Total Employees'}
+              </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{members.length}</p>
+              {team?.description && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{team.description}</p>
+              )}
             </div>
             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />

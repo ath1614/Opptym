@@ -131,39 +131,100 @@ const getTeamManagement = async (req, res) => {
       return res.status(403).json({ error: 'Admin access required' });
     }
 
-    // Get all users for admin management
-    const users = await User.find({}, '-password').sort({ createdAt: -1 });
-    
-    // Transform users to team members format
-    const members = users.map(user => ({
-      id: user._id,
-      username: user.username || user.firstName || user.email,
-      email: user.email,
-      role: user.role || 'user',
-      status: user.status || 'active',
-      lastLogin: user.lastLoginAt,
-      permissions: user.customPermissions || {}
-    }));
+    // For admin users, show team management overview
+    // Get users with team management capabilities (business/enterprise)
+    const teamUsers = await User.find({
+      subscription: { $in: ['business', 'enterprise'] },
+      'teamMembers.0': { $exists: true }
+    }, '-password').sort({ createdAt: -1 });
 
-    const team = {
-      _id: 'admin-team',
-      name: 'Admin Team',
-      subscriptionPlan: 'admin',
-      memberCount: users.length
-    };
+    // Get all users for admin overview
+    const allUsers = await User.find({}, '-password').sort({ createdAt: -1 });
     
-    res.json({
-      team,
-      members,
-      totalUsers: users.length,
-      subscriptionBreakdown: {
-        free: users.filter(u => u.subscription === 'free').length,
-        starter: users.filter(u => u.subscription === 'starter').length,
-        pro: users.filter(u => u.subscription === 'pro').length,
-        business: users.filter(u => u.subscription === 'business').length,
-        enterprise: users.filter(u => u.subscription === 'enterprise').length
+    // Transform team users to show their team members
+    const teamMembers = [];
+    const teams = [];
+
+    teamUsers.forEach(teamUser => {
+      if (teamUser.teamMembers && teamUser.teamMembers.length > 0) {
+        // Add the team owner
+        teams.push({
+          _id: teamUser._id,
+          name: `${teamUser.firstName || teamUser.username}'s Team`,
+          subscriptionPlan: teamUser.subscription,
+          memberCount: teamUser.teamMembers.length + 1, // +1 for owner
+          owner: {
+            id: teamUser._id,
+            username: teamUser.username || teamUser.firstName,
+            email: teamUser.email,
+            role: 'owner'
+          }
+        });
+
+        // Add team members
+        teamUser.teamMembers.forEach(member => {
+          teamMembers.push({
+            id: member._id || member.userId,
+            username: member.username || member.firstName,
+            email: member.email,
+            role: member.role || 'employee',
+            status: member.status || 'active',
+            lastLogin: member.lastLoginAt,
+            permissions: member.permissions || {},
+            teamOwner: teamUser.username || teamUser.firstName
+          });
+        });
       }
     });
+
+    // If no teams found, show admin overview
+    if (teams.length === 0) {
+      const adminOverview = {
+        _id: 'admin-overview',
+        name: 'Admin Overview',
+        subscriptionPlan: 'admin',
+        memberCount: allUsers.length,
+        description: 'No team management found. This shows all users in the system.'
+      };
+      
+      const adminMembers = allUsers.map(user => ({
+        id: user._id,
+        username: user.username || user.firstName || user.email,
+        email: user.email,
+        role: user.role || 'user',
+        status: user.status || 'active',
+        lastLogin: user.lastLoginAt,
+        permissions: user.customPermissions || {},
+        teamOwner: 'System Admin'
+      }));
+
+      res.json({
+        team: adminOverview,
+        members: adminMembers,
+        totalUsers: allUsers.length,
+        subscriptionBreakdown: {
+          free: allUsers.filter(u => u.subscription === 'free').length,
+          starter: allUsers.filter(u => u.subscription === 'starter').length,
+          pro: allUsers.filter(u => u.subscription === 'pro').length,
+          business: allUsers.filter(u => u.subscription === 'business').length,
+          enterprise: allUsers.filter(u => u.subscription === 'enterprise').length
+        }
+      });
+    } else {
+      res.json({
+        team: teams[0], // Show first team for now
+        members: teamMembers,
+        totalUsers: allUsers.length,
+        teams: teams,
+        subscriptionBreakdown: {
+          free: allUsers.filter(u => u.subscription === 'free').length,
+          starter: allUsers.filter(u => u.subscription === 'starter').length,
+          pro: allUsers.filter(u => u.subscription === 'pro').length,
+          business: allUsers.filter(u => u.subscription === 'business').length,
+          enterprise: allUsers.filter(u => u.subscription === 'enterprise').length
+        }
+      });
+    }
   } catch (error) {
     console.error('Error getting team management:', error);
     res.status(500).json({ error: 'Failed to get team management' });
