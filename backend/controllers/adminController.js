@@ -84,7 +84,7 @@ exports.inviteTeamMember = async (req, res) => {
     // Create invitation (mock implementation)
     const invitation = {
       email,
-      role: role || 'employee',
+      role: role || 'user', // Changed from 'employee' to 'user'
       teamId: teamId || null,
       status: 'pending',
       invitedBy: req.userId,

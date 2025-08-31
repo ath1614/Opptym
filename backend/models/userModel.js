@@ -418,8 +418,9 @@ userSchema.pre('save', async function(next) {
     this.lastName = this.username || 'User';
   }
   
-  // Ensure role is valid
+  // Ensure role is valid - handle any invalid role values
   if (!this.role || !['user', 'admin'].includes(this.role)) {
+    console.log(`⚠️ Invalid role detected: ${this.role}, setting to 'user' for user: ${this.username || this.email}`);
     this.role = 'user';
   }
   
