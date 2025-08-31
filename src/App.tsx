@@ -16,6 +16,7 @@ import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
+import ProjectDetails from './components/Reports/ProjectDetails';
 
 
 import { BookOpen, Settings } from 'lucide-react';
@@ -268,8 +269,8 @@ function App() {
     setReportLoading(true);
     try {
       setSelectedProject(project);
-      // Show the project report directly
-      setShowProjectReport(true);
+      // Navigate to project details
+      updateActiveTab('project-details');
       
       // Simulate loading time for better UX
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -312,6 +313,22 @@ function App() {
         return <SEOTools />;
       case 'directory':
         return <SubmissionDashboard />;
+      case 'project-details':
+        return selectedProject ? (
+          <ProjectDetails project={selectedProject} />
+        ) : (
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-primary-800 mb-4">Project Not Found</h1>
+              <button 
+                onClick={() => updateActiveTab('reports')}
+                className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+              >
+                Back to Reports
+              </button>
+            </div>
+          </div>
+        );
       case 'reports':
         return (
           <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 p-6 relative overflow-hidden">

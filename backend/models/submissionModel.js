@@ -12,6 +12,7 @@ const submissionSchema = new mongoose.Schema({
     required: true,
   },
   siteName: { type: String, required: true },
+  status: { type: String, default: 'pending' },
   submittedAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 

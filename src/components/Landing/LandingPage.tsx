@@ -76,7 +76,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
     {
       icon: <Zap className="w-6 h-6" />,
       title: "AI-Powered Automation",
-      description: "Intelligent form filling and submission automation across 1000+ directories"
+      description: "Intelligent form filling and submission automation across 1 Lakh+ directories"
     },
     {
       icon: <Globe className="w-6 h-6" />,
@@ -96,7 +96,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
   ];
 
   const stats = [
-    { number: "1000+", label: "Directories" },
+    { number: "1 Lakh+", label: "Directories" },
     { number: "50K+", label: "Submissions" },
     { number: "99.9%", label: "Success Rate" },
     { number: "24/7", label: "Support" }
@@ -224,7 +224,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             </h1>
             
             <p className="text-xl md:text-2xl text-primary-600 dark:text-primary-400 mb-8 max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              Submit to 1000+ directories automatically with AI-powered form filling. 
+                              Submit to 1 Lakh+ directories automatically with AI-powered form filling. 
               Boost your backlinks and rankings in minutes, not months.
             </p>
           </div>
@@ -327,7 +327,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
               {
                 step: "02",
                 title: "Select Directories",
-                description: "Choose from 1000+ premium directories to submit to",
+                description: "Choose from 1 Lakh+ premium directories to submit to",
                 icon: <Globe className="w-8 h-8" />
               },
               {

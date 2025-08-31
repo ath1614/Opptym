@@ -599,38 +599,26 @@ const siteMap: Record<string, {
   }
 };
 
-// Dynamic siteMap that combines hardcoded and custom directories
+// Dynamic siteMap that uses database directories
 const getSiteMap = (directories: any[]) => {
-  // Convert custom directories from API to the same format as hardcoded ones
-  const customDirectorySites = directories.map(dir => ({
+  // Convert database directories to the same format as the original siteMap
+  const databaseDirectorySites = directories.map(dir => ({
     name: dir.name,
     url: dir.submissionUrl,
     description: dir.description || `${dir.classification} directory`,
     difficulty: dir.pageRank >= 7 ? 'hard' : dir.pageRank >= 4 ? 'medium' : 'easy',
-    isCustom: true,
+    isCustom: dir.isCustom || false,
     priority: dir.priority || 0,
     country: dir.country || 'Global',
     classification: dir.classification || 'General'
   }));
 
-  // Get the hardcoded directory sites from the siteMap
-  const hardcodedDirectorySites = siteMap.directory.sites.map(site => ({
-    ...site,
-    isCustom: false,
-    priority: 0,
-    country: 'Global',
-    classification: 'General'
-  }));
-
-  // Combine custom directories (at top) with hardcoded directories
-  const allDirectorySites = [...customDirectorySites, ...hardcodedDirectorySites];
-
-  // Return all categories from siteMap, but update the directory category with combined sites
+  // Return all categories from siteMap, but update the directory category with database sites
   return {
     ...siteMap,
     directory: {
       ...siteMap.directory,
-      sites: allDirectorySites
+      sites: databaseDirectorySites
     }
   };
 };
@@ -1342,7 +1330,7 @@ const SubmissionsDashboard = () => {
       // Track submission usage
       try {
         const token = localStorage.getItem('token');
-        await fetch('/api/submissions', {
+        const response = await fetch('/api/submissions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1355,11 +1343,14 @@ const SubmissionsDashboard = () => {
             status: 'completed'
           })
         });
-        console.log('✅ Submission usage tracked');
-        // Refresh usage data with delay
-        setTimeout(() => {
+        
+        if (response.ok) {
+          console.log('✅ Submission usage tracked');
+          // Refresh usage data immediately
           fetchUsageData();
-        }, 1000);
+        } else {
+          console.error('❌ Submission tracking failed:', response.status);
+        }
       } catch (error) {
         console.error('Error tracking submission usage:', error);
       }

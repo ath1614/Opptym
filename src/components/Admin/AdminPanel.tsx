@@ -30,6 +30,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Modal, Button, Input, Select } from 'antd';
 import EmployeeManagement from './EmployeeManagement';
 import DirectoryManagement from './DirectoryManagement';
+import CreateDirectoryModal from './CreateDirectoryModal';
 // Remove BASE_URL import - use relative paths like other components
 
 interface AdminUser {
@@ -82,6 +83,7 @@ export default function AdminPanel() {
   const [confirmAction, setConfirmAction] = useState<{ user: any; action: 'activate' | 'suspend' | 'ban' | 'delete' } | null>(null);
   const [showDirectoryModal, setShowDirectoryModal] = useState(false);
   const [newDirectory, setNewDirectory] = useState<any>({ name: '', domain: '', category: '', pageRank: 0, status: 'active' });
+  const [showCreateDirectoryModal, setShowCreateDirectoryModal] = useState(false);
 
   const openCreateUser = () => {
     setEditingUser(null);

@@ -31,12 +31,22 @@ const createSubmission = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // Ensure usage object is initialized
+    if (!user.usage) {
+      user.usage = {
+        submissionsUsed: 0,
+        projectsUsed: 0,
+        seoToolsUsed: 0,
+        apiCallsUsed: 0
+      };
+    }
+
     console.log('🔍 User found:', user.email);
     console.log('🔍 User subscription:', user.subscription);
     console.log('🔍 User features:', user.features);
 
     // Check if user can submit to directories
-    const canSubmit = user.hasFeatureAccess('canSubmitDirectories');
+    const canSubmit = user.hasFeatureAccess('submissions');
     console.log('🔍 Can submit to directories:', canSubmit);
     
     if (!canSubmit) {
@@ -62,6 +72,14 @@ const createSubmission = async (req, res) => {
     const { projectId, siteName, submissionType, status = 'pending' } = req.body;
     console.log('🔍 Creating submission with:', { projectId, siteName, submissionType, status });
 
+    // Verify project belongs to user
+    const Project = require('../models/projectModel');
+    const project = await Project.findOne({ _id: projectId, userId: req.userId });
+    if (!project) {
+      console.log('❌ Project not found or does not belong to user');
+      return res.status(404).json({ error: 'Project not found or access denied' });
+    }
+
     const submission = await Submission.create({
       userId: req.userId,
       projectId,
@@ -73,14 +91,20 @@ const createSubmission = async (req, res) => {
 
     console.log('✅ Submission created:', submission._id);
 
-    // Increment usage
-    await user.incrementUsage('submissions');
-    console.log('✅ Usage incremented');
+    // Increment usage (temporarily commented out to debug)
+    try {
+      await user.incrementUsage('submissions');
+      console.log('✅ Usage incremented');
+    } catch (usageError) {
+      console.error('❌ Usage increment failed:', usageError);
+      // Continue anyway, don't fail the submission
+    }
 
     res.status(201).json(submission);
   } catch (err) {
     console.error('❌ createSubmission error:', err);
     console.error('❌ Error details:', err.message);
+    console.error('❌ Error stack:', err.stack);
     res.status(400).json({ error: 'Submission creation failed', details: err.message });
   }
 };

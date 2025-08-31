@@ -140,7 +140,7 @@ userSchema.pre('save', function(next) {
 // Instance methods
 userSchema.methods.updatePlanLimits = function() {
   const limits = {
-    free: { submissions: 5, projects: 2, tools: 10, apiCalls: 20 },
+    free: { submissions: 5, projects: 1, tools: 10, apiCalls: 20 },
     starter: { submissions: 150, projects: 5, tools: 100, apiCalls: 500 },
     pro: { submissions: 750, projects: 15, tools: 500, apiCalls: 2000 },
     business: { submissions: 1500, projects: 50, tools: 1000, apiCalls: 5000 },
@@ -248,6 +248,16 @@ userSchema.methods.checkUsageLimit = function(feature) {
 };
 
 userSchema.methods.incrementUsage = function(feature) {
+  // Ensure usage object is initialized
+  if (!this.usage) {
+    this.usage = {
+      submissionsUsed: 0,
+      projectsUsed: 0,
+      seoToolsUsed: 0,
+      apiCallsUsed: 0
+    };
+  }
+  
   const usageMap = {
     submissions: 'submissionsUsed',
     projects: 'projectsUsed',
@@ -257,7 +267,7 @@ userSchema.methods.incrementUsage = function(feature) {
   
   const field = usageMap[feature];
   if (field) {
-    this.usage[field] += 1;
+    this.usage[field] = (this.usage[field] || 0) + 1;
   }
   
   return this.save();
