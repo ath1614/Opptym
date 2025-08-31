@@ -87,16 +87,24 @@ const createProject = async (req, res) => {
     }
 
     // Validate URL format
+    let processedUrl = url.trim();
+    if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
+      processedUrl = 'https://' + processedUrl;
+    }
+    
     try {
-      new URL(url);
+      new URL(processedUrl);
     } catch (error) {
-      return res.status(400).json({ error: 'Invalid URL format' });
+      return res.status(400).json({ 
+        error: 'Invalid URL format',
+        details: 'Please enter a valid website URL (e.g., example.com or https://example.com)'
+      });
     }
 
     // Sanitize inputs
     const sanitizedData = {
       title: title.trim().substring(0, 200),
-      url: url.trim(),
+      url: processedUrl, // Use the processed URL with protocol
       category: category ? category.trim().substring(0, 100) : undefined,
       email: email ? email.trim().substring(0, 100) : undefined,
       metaTitle: metaTitle ? metaTitle.trim().substring(0, 200) : undefined,

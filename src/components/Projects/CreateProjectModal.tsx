@@ -78,10 +78,17 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       return;
     }
     
+    // Preprocess URL to ensure it has proper protocol
+    let processedUrl = form.url.trim();
+    if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
+      processedUrl = 'https://' + processedUrl;
+    }
+    
     setLoading(true);
     try {
       const payload = {
         ...form,
+        url: processedUrl, // Use the processed URL
         keywords: form.keywords.split(',').map(k => k.trim()).filter(k => k),
         targetKeywords: form.targetKeywords.split(',').map(k => k.trim()).filter(k => k),
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
