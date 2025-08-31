@@ -1336,6 +1336,9 @@ const SubmissionsDashboard = () => {
         loadingModal.parentNode.removeChild(loadingModal);
       }
       
+      // Add delay to prevent rate limiting
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       // Track submission usage
       try {
         const token = localStorage.getItem('token');
@@ -1353,8 +1356,10 @@ const SubmissionsDashboard = () => {
           })
         });
         console.log('✅ Submission usage tracked');
-        // Refresh usage data
-        fetchUsageData();
+        // Refresh usage data with delay
+        setTimeout(() => {
+          fetchUsageData();
+        }, 1000);
       } catch (error) {
         console.error('Error tracking submission usage:', error);
       }

@@ -56,7 +56,7 @@ export const showPopup = (message: string, type: PopupType = 'info', duration: n
   document.body.appendChild(modal);
 
   // Close button handler
-  document.getElementById('closePopup')?.addEventListener('click', () => {
+  button.addEventListener('click', () => {
     if (modal.parentNode) {
       document.body.removeChild(modal);
     }
@@ -130,7 +130,7 @@ export const showConfirmPopup = (message: string, onConfirm: () => void, onCance
   document.body.appendChild(modal);
 
   // Confirm button handler
-  document.getElementById('confirmBtn')?.addEventListener('click', () => {
+  confirmBtn.addEventListener('click', () => {
     if (modal.parentNode) {
       document.body.removeChild(modal);
     }
@@ -138,7 +138,7 @@ export const showConfirmPopup = (message: string, onConfirm: () => void, onCance
   });
 
   // Cancel button handler
-  document.getElementById('cancelBtn')?.addEventListener('click', () => {
+  cancelBtn.addEventListener('click', () => {
     if (modal.parentNode) {
       document.body.removeChild(modal);
     }

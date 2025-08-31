@@ -72,6 +72,27 @@ export const apiRequest = async (endpoint: string, options: any = {}) => {
       headers: Object.fromEntries(response.headers.entries())
     });
     
+    // Handle rate limiting specifically
+    if (response.status === 429) {
+      const retryAfter = response.headers.get('Retry-After');
+      const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 5000;
+      
+      console.log(`⏰ Rate limited. Waiting ${waitTime}ms before retry...`);
+      
+      // Wait and retry once
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      
+      // Retry the request
+      const retryResponse = await fetch(url, {
+        ...options,
+        headers,
+      });
+      
+      if (retryResponse.ok) {
+        return retryResponse.json();
+      }
+    }
+    
     throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
   }
 

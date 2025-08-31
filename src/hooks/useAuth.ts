@@ -169,6 +169,14 @@ export const useAuthProvider = (): AuthContextType => {
           console.log('🔍 401 error during refresh, clearing token and user');
           localStorage.removeItem('token');
           setUser(null);
+        } else if (error.response?.status === 429) {
+          console.log('🔍 429 rate limit during refresh, keeping user from token');
+          // Keep the user from token if rate limited
+          const token = localStorage.getItem('token');
+          const userFromToken = decodeUser(token);
+          if (userFromToken) {
+            setUser(userFromToken);
+          }
         } else {
           console.error('🔍 Non-401 error during refresh, keeping user from token');
           // Keep the user from token if profile fetch fails
