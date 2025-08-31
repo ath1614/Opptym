@@ -1,40 +1,33 @@
 const mongoose = require('mongoose');
-const User = require('../models/userModel');
 require('dotenv').config();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const User = require('../models/userModel');
 
 async function makeUserAdmin(email) {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
-
     const user = await User.findOne({ email });
     if (!user) {
       console.log('User not found');
       return;
     }
-
+    
+    user.role = 'admin';
     user.isAdmin = true;
     await user.save();
     
-    console.log(`User ${email} is now an admin!`);
-    console.log('User details:', {
-      username: user.username,
-      email: user.email,
-      isAdmin: user.isAdmin
-    });
+    console.log(`✅ User ${email} is now an admin`);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error making user admin:', error);
   } finally {
-    await mongoose.disconnect();
+    mongoose.connection.close();
   }
 }
 
-// Usage: node makeAdmin.js user@example.com
-const email = process.argv[2];
-if (!email) {
-  console.log('Please provide an email address');
-  console.log('Usage: node makeAdmin.js user@example.com');
-  process.exit(1);
-}
-
-makeUserAdmin(email); 
+// Make the admin user admin
+makeUserAdmin('admin@example.com'); 

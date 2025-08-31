@@ -479,7 +479,6 @@ function App() {
               </main>
             </div>
           </div>
-          <Footer />
         </div>
       </div>
     </AuthContext.Provider>

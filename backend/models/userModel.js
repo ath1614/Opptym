@@ -454,6 +454,11 @@ userSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`;
 });
 
+// Virtual for isAdmin (for backward compatibility)
+userSchema.virtual('isAdmin').get(function() {
+  return this.role === 'admin';
+});
+
 // Ensure virtual fields are serialized
 userSchema.set('toJSON', {
   virtuals: true,

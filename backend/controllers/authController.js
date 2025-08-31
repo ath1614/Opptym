@@ -109,7 +109,8 @@ const signup = async (req, res) => {
     const tokenPayload = {
       userId: user._id.toString(),
       username: user.username || '',
-      isAdmin: user.isAdmin || false,
+      isAdmin: user.role === 'admin',
+      role: user.role || 'user',
       subscription: user.subscription || 'free',
       email: user.email
     };
@@ -124,7 +125,8 @@ const signup = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        isAdmin: user.isAdmin,
+        isAdmin: user.role === 'admin',
+        role: user.role || 'user',
         subscription: user.subscription
       }
     });
@@ -206,7 +208,8 @@ const login = async (req, res) => {
         const tokenPayload = {
           userId: user._id.toString(),
           username: user.username || '',
-          isAdmin: user.isAdmin || false,
+          isAdmin: user.role === 'admin',
+          role: user.role || 'user',
           subscription: user.subscription || 'free',
           email: user.email
         };
@@ -221,7 +224,8 @@ const login = async (req, res) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
-                isAdmin: user.isAdmin,
+                isAdmin: user.role === 'admin',
+                role: user.role || 'user',
                 subscription: user.subscription
             }
         });
