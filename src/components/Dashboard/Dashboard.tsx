@@ -274,7 +274,7 @@ export default function Dashboard() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
             <h1 className="text-4xl font-bold text-primary-800 dark:text-primary-200 mb-2">
-              Welcome back, {user?.username || user?.firstName || 'User'}! 👋
+              Dashboard Overview
             </h1>
             <p className="text-lg text-primary-600 dark:text-primary-400">
               Here's what's happening with your SEO campaigns today
