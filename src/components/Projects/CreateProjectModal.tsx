@@ -120,32 +120,52 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       } else if (err.message && err.message.includes('Trial expired')) {
         showUpgradePopup = true;
         errorMessage = 'Your trial has expired. Please upgrade to continue.';
-      } else if (err.message && err.message.includes('API Error:')) {
-        try {
-          // Extract error body from API error message
-          const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
-          if (errorMatch) {
-            const errorBody = errorMatch[1];
-            try {
-              const errorData = JSON.parse(errorBody);
-              if (errorData.error === 'Usage limit exceeded') {
-                showUpgradePopup = true;
-                errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
-              } else if (errorData.error === 'Trial expired') {
-                showUpgradePopup = true;
-                errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
-              } else if (errorData.message) {
-                errorMessage = errorData.message;
+      } else if (err.status === 429 || err.response?.status === 429) {
+        // Handle 429 Too Many Requests (usage limit exceeded)
+        showUpgradePopup = true;
+        errorMessage = 'You have reached your project limit. Please upgrade your plan to create more projects.';
+              } else if (err.message && err.message.includes('API Error:')) {
+          try {
+            // Extract error body from API error message
+            const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
+            if (errorMatch) {
+              const errorBody = errorMatch[1];
+              try {
+                const errorData = JSON.parse(errorBody);
+                if (errorData.error === 'Usage limit exceeded') {
+                  showUpgradePopup = true;
+                  errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
+                } else if (errorData.error === 'Trial expired') {
+                  showUpgradePopup = true;
+                  errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
+                } else if (errorData.message) {
+                  errorMessage = errorData.message;
+                }
+              } catch (parseError) {
+                // If JSON parsing fails, use the raw error body
+                errorMessage = errorBody;
               }
-            } catch (parseError) {
-              // If JSON parsing fails, use the raw error body
-              errorMessage = errorBody;
             }
+          } catch (parseError) {
+            console.error('Error parsing API error:', parseError);
           }
-        } catch (parseError) {
-          console.error('Error parsing API error:', parseError);
+        } else if (err.response?.data) {
+          // Handle axios error response data
+          try {
+            const errorData = err.response.data;
+            if (errorData.error === 'Usage limit exceeded') {
+              showUpgradePopup = true;
+              errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
+            } else if (errorData.error === 'Trial expired') {
+              showUpgradePopup = true;
+              errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
+            } else if (errorData.message) {
+              errorMessage = errorData.message;
+            }
+          } catch (parseError) {
+            console.error('Error parsing response data:', parseError);
+          }
         }
-      }
       
       if (showUpgradePopup) {
         setError('');
