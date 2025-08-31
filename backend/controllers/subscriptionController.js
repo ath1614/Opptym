@@ -134,8 +134,27 @@ const getTeamManagement = async (req, res) => {
     // Get all users for admin management
     const users = await User.find({}, '-password').sort({ createdAt: -1 });
     
+    // Transform users to team members format
+    const members = users.map(user => ({
+      id: user._id,
+      username: user.username || user.firstName || user.email,
+      email: user.email,
+      role: user.role || 'user',
+      status: user.status || 'active',
+      lastLogin: user.lastLoginAt,
+      permissions: user.customPermissions || {}
+    }));
+
+    const team = {
+      _id: 'admin-team',
+      name: 'Admin Team',
+      subscriptionPlan: 'admin',
+      memberCount: users.length
+    };
+    
     res.json({
-      users,
+      team,
+      members,
       totalUsers: users.length,
       subscriptionBreakdown: {
         free: users.filter(u => u.subscription === 'free').length,
