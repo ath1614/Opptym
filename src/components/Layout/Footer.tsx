@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
   useEffect(() => {
     const fetchVersionInfo = async () => {
       try {
-        const response = await fetch('/api/health/version');
+        const response = await fetch('https://api.opptym.com/api/health/version');
         if (response.ok) {
           const data = await response.json();
           setVersionInfo(data);

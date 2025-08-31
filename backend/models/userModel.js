@@ -260,9 +260,63 @@ userSchema.methods.incrementUsage = function(feature) {
   return this.save();
 };
 
+userSchema.methods.setPlanLimits = function() {
+  const planLimits = {
+    free: {
+      submissions: 5,
+      projects: 2,
+      tools: 10,
+      apiCalls: 20
+    },
+    starter: {
+      submissions: 150,
+      projects: 5,
+      tools: 100,
+      apiCalls: 500
+    },
+    pro: {
+      submissions: 750,
+      projects: 15,
+      tools: 500,
+      apiCalls: 2000
+    },
+    business: {
+      submissions: 1500,
+      projects: 50,
+      tools: 1000,
+      apiCalls: 5000
+    },
+    enterprise: {
+      submissions: -1, // unlimited
+      projects: -1, // unlimited
+      tools: -1, // unlimited
+      apiCalls: -1 // unlimited
+    }
+  };
+
+  const limits = planLimits[this.subscription] || planLimits.free;
+  this.planLimits = limits;
+  
+  // Set feature flags based on subscription
+  this.features = {
+    canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canAccessAnalytics: ['pro', 'business', 'enterprise'].includes(this.subscription),
+    canAccessAdmin: this.role === 'admin'
+  };
+  
+  return this.save();
+};
+
 userSchema.methods.getSubscriptionDetails = function() {
   const isInTrial = this.isInTrialPeriod();
   const trialDaysLeft = this.getTrialDaysLeft();
+  
+  // Ensure plan limits are set correctly
+  if (!this.planLimits.submissions || this.planLimits.submissions === 5) {
+    this.setPlanLimits();
+  }
   
   return {
     subscription: this.subscription,
