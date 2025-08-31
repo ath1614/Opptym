@@ -15,6 +15,52 @@ if (isDevelopment) {
   axios.defaults.baseURL = 'https://api.opptym.com';
 }
 
+// Force cache refresh
+console.log('🔄 CACHE BUST INFO:', {
+  buildVersion: (window as any).__BUILD_VERSION__,
+  cacheBust: (window as any).__CACHE_BUST__,
+  timestamp: (window as any).__TIMESTAMP__,
+  commitSha: (window as any).__COMMIT_SHA__,
+  buildTime: (window as any).__BUILD_TIME__
+});
+
+// Force reload if cache is stale
+const lastBuildTime = localStorage.getItem('lastBuildTime');
+const currentBuildTime = (window as any).__BUILD_TIME__;
+if (lastBuildTime && lastBuildTime !== currentBuildTime) {
+  console.log('🔄 Cache is stale, forcing reload...');
+  localStorage.setItem('lastBuildTime', currentBuildTime);
+  window.location.reload();
+} else {
+  localStorage.setItem('lastBuildTime', currentBuildTime);
+}
+
+// Register service worker and clear cache
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then((registration) => {
+    console.log('🔄 Service Worker registered:', registration);
+    
+    // Clear cache on registration
+    if (registration.active) {
+      registration.active.postMessage({ type: 'CLEAR_CACHE' });
+    }
+  }).catch((error) => {
+    console.log('❌ Service Worker registration failed:', error);
+  });
+}
+
+// Clear browser cache
+if ('caches' in window) {
+  caches.keys().then((cacheNames) => {
+    return Promise.all(
+      cacheNames.map((cacheName) => {
+        console.log('🗑️ Deleting cache:', cacheName);
+        return caches.delete(cacheName);
+      })
+    );
+  });
+}
+
 
 
 // Add request interceptor to include token
