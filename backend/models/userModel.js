@@ -153,9 +153,10 @@ userSchema.methods.updatePlanLimits = function() {
 userSchema.methods.isInTrialPeriod = function() {
   if (this.subscription !== 'free') return false;
   
+  // If no trial end date, calculate it but don't save (avoid async issues)
   if (!this.trialEndDate) {
-    this.trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-    this.save();
+    const trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    return new Date() < trialEndDate;
   }
   
   return new Date() < this.trialEndDate;
@@ -422,6 +423,12 @@ userSchema.pre('save', async function(next) {
   if (!this.role || !['user', 'admin'].includes(this.role)) {
     console.log(`⚠️ Invalid role detected: ${this.role}, setting to 'user' for user: ${this.username || this.email}`);
     this.role = 'user';
+  }
+  
+  // Ensure trial end date is set for free users
+  if (this.subscription === 'free' && !this.trialEndDate) {
+    this.trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    console.log(`📅 Set trial end date for user ${this.username || this.email}: ${this.trialEndDate}`);
   }
   
   // Hash password if modified

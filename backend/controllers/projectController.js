@@ -22,41 +22,45 @@ const createProject = async (req, res) => {
     console.log('🔍 Current usage:', user.usage);
     console.log('🔍 Subscription limits:', user.planLimits);
 
+    // Check trial status for free users
+    if (user.subscription === 'free' && !user.isInTrialPeriod()) {
+      return res.status(403).json({
+        error: 'Trial expired',
+        message: 'Your free trial has expired. Please upgrade to continue creating projects.',
+        trialExpired: true,
+        subscription: user.subscription,
+        trialEndDate: user.trialEndDate
+      });
+    }
+
     // Check if user can create projects
     console.log('🔍 Checking user permissions...');
     console.log('🔍 User role:', user.role);
-    console.log('🔍 User isAdmin:', user.isAdmin);
-    console.log('🔍 User isOwner:', user.isOwner);
-    console.log('🔍 User customPermissions:', user.customPermissions);
+    console.log('🔍 User subscription:', user.subscription);
+    console.log('🔍 User is in trial:', user.isInTrialPeriod());
     
-    // Ensure user has basic permissions - all authenticated users should be able to create projects
-    let hasPermission = false;
-    try {
-      hasPermission = user.hasFeatureAccess('projects');
-    } catch (error) {
-      console.log('🔍 Error checking permissions, using fallback:', error.message);
-      // Fallback: allow project creation for all authenticated users
-      hasPermission = true;
-    }
-    
-    console.log('🔍 Has projects feature access:', hasPermission);
-    
-    if (!hasPermission) {
-      return res.status(403).json({ error: 'You do not have permission to create projects' });
+    // Check feature access
+    if (!user.hasFeatureAccess('projects')) {
+      return res.status(403).json({ 
+        error: 'Feature access denied',
+        message: 'You do not have permission to create projects with your current subscription.',
+        subscription: user.subscription,
+        upgradeRequired: true
+      });
     }
 
     // Check project creation limit
-    const canCreate = user.checkUsageLimit('projects');
-    console.log('🔍 Can create project:', canCreate);
-    
-    if (!canCreate) {
+    if (!user.checkUsageLimit('projects')) {
       const limits = user.planLimits;
-      return res.status(403).json({ 
-        error: 'Project creation limit exceeded',
+      return res.status(429).json({ 
+        error: 'Usage limit exceeded',
+        message: `You have reached your projects limit (${user.usage.projectsUsed}/${limits.projects}). Please upgrade your plan for more usage.`,
+        feature: 'projects',
+        currentUsage: user.usage.projectsUsed,
         limit: limits.projects,
-        current: user.usage.projectsUsed,
+        remaining: 0,
         subscription: user.subscription,
-        details: 'Please upgrade your subscription to create more projects'
+        requiresUpgrade: true
       });
     }
 

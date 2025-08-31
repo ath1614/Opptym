@@ -48,7 +48,12 @@ const protect = async (req, res, next) => {
     // Check if user subscription is active or if they're a free user in trial
     if (user.subscriptionStatus !== 'active' && !(user.subscription === 'free' && user.isInTrialPeriod())) {
       console.log('🔍 User subscription not active:', user.subscriptionStatus, 'subscription:', user.subscription);
-      return res.status(401).json({ error: 'Not authorized, subscription not active' });
+      return res.status(401).json({ 
+        error: 'Not authorized, subscription not active',
+        subscription: user.subscription,
+        subscriptionStatus: user.subscriptionStatus,
+        trialExpired: user.subscription === 'free' && !user.isInTrialPeriod()
+      });
     }
 
     req.userId = decoded.userId;
