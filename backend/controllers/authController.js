@@ -91,8 +91,7 @@ const signup = async (req, res) => {
       isEmailVerified: user.isEmailVerified,
       status: user.status,
       subscription: user.subscription,
-      role: user.role,
-      employeeRole: user.employeeRole
+      role: user.role
     });
     
     await user.save();

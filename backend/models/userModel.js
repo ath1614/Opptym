@@ -25,15 +25,17 @@ const userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
-    maxlength: 50
+    maxlength: 50,
+    default: ''
   },
   lastName: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
-    maxlength: 50
+    maxlength: 50,
+    default: ''
   },
   role: {
     type: String,
@@ -406,17 +408,32 @@ userSchema.statics.findByUsername = function(username) {
   return this.findOne({ username: username.toLowerCase() });
 };
 
-// Password hashing middleware
+// User data validation and cleanup middleware
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+  // Ensure firstName and lastName are set
+  if (!this.firstName || this.firstName.trim() === '') {
+    this.firstName = this.username || 'User';
   }
+  if (!this.lastName || this.lastName.trim() === '') {
+    this.lastName = this.username || 'User';
+  }
+  
+  // Ensure role is valid
+  if (!this.role || !['user', 'admin'].includes(this.role)) {
+    this.role = 'user';
+  }
+  
+  // Hash password if modified
+  if (this.isModified('password')) {
+    try {
+      const salt = await bcrypt.genSalt(12);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  
+  next();
 });
 
 // Password comparison method
