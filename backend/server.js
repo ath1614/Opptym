@@ -268,6 +268,14 @@ try {
   console.error('❌ Error loading analytics routes:', error);
 }
 
+// Load health routes
+try {
+  app.use('/api/health', require('./routes/healthRoutes'));
+  console.log('✅ Health routes loaded');
+} catch (error) {
+  console.error('❌ Error loading health routes:', error);
+}
+
 // Load email verification routes after basic setup
 try {
   app.use('/api/email-verification', require('./routes/emailVerificationRoutes'));
