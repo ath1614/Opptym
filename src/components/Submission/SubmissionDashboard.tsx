@@ -30,7 +30,8 @@ import {
   Loader,
   Filter,
   Tag,
-  AlertCircle
+  AlertCircle,
+  BarChart3
 } from 'lucide-react';
 import { JSX } from 'react/jsx-runtime';
 
@@ -656,6 +657,7 @@ const SubmissionsDashboard = () => {
     classifications: [],
     categories: []
   });
+  const [usageData, setUsageData] = useState<any>(null);
 
   const fetchProjects = async () => {
     try {
@@ -691,10 +693,23 @@ const SubmissionsDashboard = () => {
     }
   };
 
+  const fetchUsageData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/subscription/details', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsageData(response.data);
+    } catch (error) {
+      console.error('Error fetching usage data:', error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
     fetchDirectories();
     fetchAvailableFilters();
+    fetchUsageData();
   }, []);
 
   // Restore selected project from localStorage when projects are loaded
@@ -1212,10 +1227,34 @@ const SubmissionsDashboard = () => {
 
   // One-Button "Fill Form" Function - Universal Automation
   const handleFillForm = async (url: string) => {
-          if (!selectedProject) {
-        showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
-        return;
+    if (!selectedProject) {
+      showPopup(`⚠️ ${t('submissions.selectProject')}`, 'warning');
+      return;
+    }
+
+    // Check submission limits before proceeding
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/subscription/details', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const subscriptionData = await response.json();
+        const currentUsage = subscriptionData.currentUsage?.submissionsUsed || 0;
+        const limit = subscriptionData.limits?.submissions || 5;
+        
+        if (limit !== -1 && currentUsage >= limit) {
+          // Show upgrade popup
+          if (window.confirm('You have reached your submission limit. Would you like to upgrade your plan to continue?')) {
+            window.location.hash = '#pricing';
+          }
+          return;
+        }
       }
+    } catch (error) {
+      console.error('Error checking submission limits:', error);
+    }
 
     setLoading(true);
     
@@ -1295,6 +1334,29 @@ const SubmissionsDashboard = () => {
       // Remove loading modal
       if (loadingModal.parentNode) {
         loadingModal.parentNode.removeChild(loadingModal);
+      }
+      
+      // Track submission usage
+      try {
+        const token = localStorage.getItem('token');
+        await fetch('/api/submissions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            projectId: selectedProject._id,
+            siteName: 'Universal Form Fill',
+            submissionType: 'bookmarklet',
+            status: 'completed'
+          })
+        });
+        console.log('✅ Submission usage tracked');
+        // Refresh usage data
+        fetchUsageData();
+      } catch (error) {
+        console.error('Error tracking submission usage:', error);
       }
       
       // Show success modal with instructions
@@ -2438,6 +2500,48 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                 </div>
               )}
             </div>
+
+            {/* Usage Display */}
+            {usageData && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700/30 rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <BarChart3 className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-blue-800 dark:text-blue-200">Current Usage</h3>
+                      <p className="text-sm text-blue-600 dark:text-blue-400">
+                        Submissions: {usageData.currentUsage?.submissionsUsed || 0} / {usageData.limits?.submissions === -1 ? '∞' : usageData.limits?.submissions || 5}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                      {usageData.subscription === 'free' ? 'Free Trial' : usageData.subscription}
+                    </div>
+                    {usageData.limits?.submissions !== -1 && (
+                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                        {Math.round(((usageData.currentUsage?.submissionsUsed || 0) / (usageData.limits?.submissions || 1)) * 100)}% used
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {usageData.limits?.submissions !== -1 && (usageData.currentUsage?.submissionsUsed || 0) >= (usageData.limits?.submissions || 0) && (
+                  <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/30 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-red-700 dark:text-red-400 font-medium">Limit reached!</span>
+                      <button
+                        onClick={() => window.location.hash = '#pricing'}
+                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        Upgrade Now
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Loading and Error States */}
             {projectsLoading && (
