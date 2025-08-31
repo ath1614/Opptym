@@ -7,7 +7,7 @@ const submissionSchema = new mongoose.Schema({
     type: String,
     enum: [
       'directory', 'article', 'bookmark', 'classified',
-      'forum', 'social', 'local', 'citation', 'web2', 'qa'
+      'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet'
     ],
     required: true,
   },

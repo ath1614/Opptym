@@ -21,20 +21,36 @@ const getSubmissions = async (req, res) => {
 // @access  Private
 const createSubmission = async (req, res) => {
   try {
+    console.log('🔍 createSubmission called with:', req.body);
+    console.log('🔍 userId:', req.userId);
+    
     // Check subscription limits
     const user = await User.findById(req.userId);
     if (!user) {
+      console.log('❌ User not found');
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('🔍 User found:', user.email);
+    console.log('🔍 User subscription:', user.subscription);
+    console.log('🔍 User features:', user.features);
+
     // Check if user can submit to directories
-    if (!user.hasFeatureAccess('canSubmitDirectories')) {
+    const canSubmit = user.hasFeatureAccess('canSubmitDirectories');
+    console.log('🔍 Can submit to directories:', canSubmit);
+    
+    if (!canSubmit) {
+      console.log('❌ No permission to submit to directories');
       return res.status(403).json({ error: 'You do not have permission to submit to directories' });
     }
 
     // Check submission limit
-    if (!user.checkUsageLimit('submissions')) {
+    const withinLimit = user.checkUsageLimit('submissions');
+    console.log('🔍 Within submission limit:', withinLimit);
+    
+    if (!withinLimit) {
       const limits = user.planLimits;
+      console.log('❌ Submission limit exceeded');
       return res.status(403).json({ 
         error: 'Submission limit exceeded',
         limit: limits.submissions,
@@ -44,6 +60,7 @@ const createSubmission = async (req, res) => {
     }
 
     const { projectId, siteName, submissionType, status = 'pending' } = req.body;
+    console.log('🔍 Creating submission with:', { projectId, siteName, submissionType, status });
 
     const submission = await Submission.create({
       userId: req.userId,
@@ -54,13 +71,17 @@ const createSubmission = async (req, res) => {
       submittedAt: new Date()
     });
 
+    console.log('✅ Submission created:', submission._id);
+
     // Increment usage
     await user.incrementUsage('submissions');
+    console.log('✅ Usage incremented');
 
     res.status(201).json(submission);
   } catch (err) {
     console.error('❌ createSubmission error:', err);
-    res.status(400).json({ error: 'Submission creation failed' });
+    console.error('❌ Error details:', err.message);
+    res.status(400).json({ error: 'Submission creation failed', details: err.message });
   }
 };
 
