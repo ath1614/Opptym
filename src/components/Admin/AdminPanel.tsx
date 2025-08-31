@@ -446,11 +446,11 @@ export default function AdminPanel() {
                       <Users className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">Last active: {formatDate(user.lastActive)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName || user.username || 'Unknown'}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Last active: {formatDate(user.lastLoginAt || user.lastActive || user.createdAt)}</p>
                     </div>
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                      {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                      {user.status ? user.status.charAt(0).toUpperCase() + user.status.slice(1) : 'Unknown'}
                     </span>
                   </div>
                 ))}
@@ -621,29 +621,29 @@ export default function AdminPanel() {
                             <Users className="w-5 h-5 text-white" />
                           </div>
                           <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName || user.username || 'Unknown'}</div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSubscriptionColor(user.subscription)}`}>
-                          {user.subscription.charAt(0).toUpperCase() + user.subscription.slice(1)}
+                          {user.subscription ? user.subscription.charAt(0).toUpperCase() + user.subscription.slice(1) : 'Unknown'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                          {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                          {user.status ? user.status.charAt(0).toUpperCase() + user.status.slice(1) : 'Unknown'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {user.projectsCount}
+                        {user.currentUsage?.projectsCreated || user.projectsCount || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {user.submissionsCount}
+                        {user.currentUsage?.submissionsMade || user.submissionsCount || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {formatDate(user.joinDate)}
+                        {formatDate(user.createdAt || user.joinDate)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="relative group">
