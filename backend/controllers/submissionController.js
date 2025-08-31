@@ -28,7 +28,7 @@ const createSubmission = async (req, res) => {
     }
 
     // Check if user can submit to directories
-    if (!user.hasFeatureAccess('submissions')) {
+    if (!user.hasFeatureAccess('canSubmitDirectories')) {
       return res.status(403).json({ error: 'You do not have permission to submit to directories' });
     }
 

@@ -335,7 +335,8 @@ const getProfile = async (req, res) => {
       timezone: user.timezone,
       bio: user.bio,
       subscription: user.subscription,
-      isAdmin: user.isAdmin,
+      isAdmin: user.role === 'admin',
+      role: user.role || 'user',
       status: user.status
     });
   } catch (err) {
@@ -373,7 +374,8 @@ const exportUserData = async (req, res) => {
         timezone: user.timezone,
         bio: user.bio,
         subscription: user.subscription,
-        isAdmin: user.isAdmin,
+        isAdmin: user.role === 'admin',
+        role: user.role || 'user',
         status: user.status,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
