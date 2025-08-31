@@ -11,7 +11,7 @@ interface User {
   bio?: string;
   subscription?: 'free' | 'starter' | 'pro' | 'business' | 'enterprise';
   status?: 'active' | 'inactive' | 'suspended' | 'banned' | 'pending';
-  role?: 'owner' | 'admin' | 'manager' | 'analyst' | 'viewer' | 'employee';
+  role?: 'user' | 'admin';
   isAdmin?: boolean;
   isOwner?: boolean;
   isEmployee?: boolean;
