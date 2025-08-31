@@ -6,7 +6,14 @@ import './index.css'
 import axios from 'axios'
 
 // Set base URL for axios
-axios.defaults.baseURL = 'https://api.opptym.com';
+const isDevelopment = import.meta.env.DEV;
+const isProduction = import.meta.env.PROD;
+
+if (isDevelopment) {
+  axios.defaults.baseURL = 'http://localhost:3000';
+} else {
+  axios.defaults.baseURL = 'https://api.opptym.com';
+}
 
 
 
