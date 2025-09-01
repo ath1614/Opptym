@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
   },
   subscription: {
     type: String,
-    enum: ['free', 'starter', 'pro', 'business', 'enterprise'],
+    enum: ['free', 'test', 'starter', 'pro', 'business', 'enterprise'],
     default: 'free'
   },
   subscriptionStatus: {
@@ -281,52 +281,8 @@ userSchema.methods.setPlanLimits = function() {
       tools: 10,
       apiCalls: 20
     },
-    starter: {
-      submissions: 150,
-      projects: 5,
-      tools: 100,
-      apiCalls: 500
-    },
-    pro: {
-      submissions: 750,
-      projects: 15,
-      tools: 500,
-      apiCalls: 2000
-    },
-    business: {
-      submissions: 1500,
-      projects: 50,
-      tools: 1000,
-      apiCalls: 5000
-    },
-    enterprise: {
-      submissions: -1, // unlimited
-      projects: -1, // unlimited
-      tools: -1, // unlimited
-      apiCalls: -1 // unlimited
-    }
-  };
-
-  const limits = planLimits[this.subscription] || planLimits.free;
-  this.planLimits = limits;
-  
-  // Set feature flags based on subscription
-  this.features = {
-    canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canAccessAnalytics: ['pro', 'business', 'enterprise'].includes(this.subscription),
-    canAccessAdmin: this.role === 'admin'
-  };
-  
-  return this.save();
-};
-
-// Synchronous version for getSubscriptionDetails
-userSchema.methods.setPlanLimitsSync = function() {
-  const planLimits = {
-    free: {
-      submissions: 5,
+    test: {
+      submissions: 10,
       projects: 1,
       tools: 10,
       apiCalls: 20
@@ -365,7 +321,63 @@ userSchema.methods.setPlanLimitsSync = function() {
     canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
     canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
     canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canAccessAnalytics: ['pro', 'business', 'enterprise'].includes(this.subscription),
+    canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
+    canAccessAdmin: this.role === 'admin'
+  };
+  
+  return this.save();
+};
+
+// Synchronous version for getSubscriptionDetails
+userSchema.methods.setPlanLimitsSync = function() {
+  const planLimits = {
+    free: {
+      submissions: 5,
+      projects: 1,
+      tools: 10,
+      apiCalls: 20
+    },
+    test: {
+      submissions: 10,
+      projects: 1,
+      tools: 10,
+      apiCalls: 20
+    },
+    starter: {
+      submissions: 150,
+      projects: 5,
+      tools: 100,
+      apiCalls: 500
+    },
+    pro: {
+      submissions: 750,
+      projects: 15,
+      tools: 500,
+      apiCalls: 2000
+    },
+    business: {
+      submissions: 1500,
+      projects: 50,
+      tools: 1000,
+      apiCalls: 5000
+    },
+    enterprise: {
+      submissions: -1, // unlimited
+      projects: -1, // unlimited
+      tools: -1, // unlimited
+      apiCalls: -1 // unlimited
+    }
+  };
+
+  const limits = planLimits[this.subscription] || planLimits.free;
+  this.planLimits = limits;
+  
+  // Set feature flags based on subscription
+  this.features = {
+    canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+    canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
     canAccessAdmin: this.role === 'admin'
   };
   

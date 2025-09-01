@@ -63,6 +63,30 @@ const plans: PricingPlan[] = [
     gradient: 'from-green-400 to-emerald-500'
   },
   {
+    id: 'test',
+    name: 'Test Plan',
+    price: 10,
+    period: 'month',
+    description: 'Test payment functionality with ₹10',
+    features: [
+      'All Features',
+      '1 SEO Project',
+      'Test Payment',
+      'Email Support',
+      'Basic Analytics',
+      'Payment Testing'
+    ],
+    limits: {
+      projects: 1,
+      submissions: 10,
+      tools: true,
+      support: 'Email'
+    },
+    icon: Gift,
+    color: 'text-orange-600',
+    gradient: 'from-orange-400 to-red-500'
+  },
+  {
     id: 'starter',
     name: 'Starter Pack',
     price: 999,
@@ -144,10 +168,12 @@ const plans: PricingPlan[] = [
 // Stripe price ID mapping
 const priceIdMap: Record<string, string> = {
   // Monthly
+  'test_monthly': 'price_test_10_rs', // Test price ID for ₹10
   'starter_monthly': 'price_1Ro1LgCD7oezJBDYCEE71gAc',
   'pro_monthly': 'price_1Ro1MYCD7oezJBDYgAXVoUw6',
   'business_monthly': 'price_1Ro1NQCD7oezJBDYE4IX9qPE',
   // Yearly
+  'test_yearly': 'price_test_10_rs_yearly', // Test yearly price ID
   'starter_yearly': 'price_1Ro1LgCD7oezJBDYCEE71gAc', // update if you have a yearly price for starter
   'pro_yearly': 'price_1Ro1RGCD7oezJBDY2yHsrEur',
   'business_yearly': 'price_1Ro1TBCD7oezJBDYEEJGaA75',
@@ -194,7 +220,7 @@ export default function PricingPlans() {
     }
     
     const priceId = getStripePriceId(planId, billingCycle);
-    if (!priceId) {
+    if (!priceId && planId !== 'test') {
       showPopup('No Stripe price ID found for this plan.', 'error');
       setSelectedPlan(null);
       return;
@@ -253,9 +279,10 @@ export default function PricingPlans() {
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {user.subscription === 'free' ? 'Free forever plan with basic features' :
-             user.subscription === 'starter' ? '1 project, 100 submissions per month' :
-             user.subscription === 'pro' ? '5 projects, 500 submissions per month' :
-             user.subscription === 'business' ? '10 projects, 1000 submissions per month' :
+             user.subscription === 'test' ? 'Test plan - ₹10 payment testing' :
+             user.subscription === 'starter' ? '1 project, 150 submissions per month' :
+             user.subscription === 'pro' ? '5 projects, 750 submissions per month' :
+             user.subscription === 'business' ? '10 projects, 1500 submissions per month' :
              'Unlimited projects and submissions'}
           </p>
         </div>
