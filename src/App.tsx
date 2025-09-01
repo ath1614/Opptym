@@ -55,7 +55,7 @@ function App() {
   const getInitialTab = () => {
     // Check URL hash first
     const hash = window.location.hash.replace('#', '');
-    if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin'].includes(hash)) {
+    if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
       return hash;
     }
     // Fall back to localStorage
@@ -87,7 +87,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin'].includes(hash)) {
+      if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
         setActiveTab(hash);
         localStorage.setItem('activeTab', hash);
       }

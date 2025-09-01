@@ -130,6 +130,10 @@ export default function DirectoryManagement() {
     fetchClassifications();
   }, []);
 
+  useEffect(() => {
+    fetchDirectories();
+  }, [selectedClassification, selectedCategory, selectedStatus, searchTerm]);
+
   const fetchDirectories = async () => {
     try {
       setLoading(true);
@@ -160,6 +164,7 @@ export default function DirectoryManagement() {
       const response = await axios.get('/api/admin/directories/classifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('🔍 Classifications data:', response.data);
       setClassifications(response.data);
     } catch (error) {
       console.error('Error fetching classifications:', error);
@@ -365,6 +370,20 @@ export default function DirectoryManagement() {
                 className="input-modern pl-10"
               />
             </div>
+          </div>
+          <div className="md:w-48">
+            <select
+              value={selectedClassification}
+              onChange={(e) => setSelectedClassification(e.target.value)}
+              className="select-modern"
+            >
+              <option value="all">All Classifications</option>
+              {classificationOptions.map(classification => (
+                <option key={classification} value={classification}>
+                  {classification}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="md:w-48">
             <select

@@ -237,6 +237,37 @@ export default function Dashboard() {
     fetchDashboardData();
   }, []);
 
+  // Refresh dashboard data when the component becomes visible (user returns to dashboard)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('🔄 Dashboard visible - refreshing data');
+        fetchDashboardData();
+      }
+    };
+
+    const handleFocus = () => {
+      console.log('🔄 Window focused - refreshing dashboard data');
+      fetchDashboardData();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
+  // Also refresh when user object changes (indicating auth state change)
+  useEffect(() => {
+    if (user) {
+      console.log('🔄 User changed - refreshing dashboard data');
+      fetchDashboardData();
+    }
+  }, [user]);
+
   // DEPLOYMENT VERIFICATION - This should be visible in browser console
   console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v3.0');
   console.log('🔄 Cache bust timestamp:', (window as any).__CACHE_BUST__);

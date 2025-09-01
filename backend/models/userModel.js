@@ -75,7 +75,7 @@ const userSchema = new mongoose.Schema({
   // Plan limits (cached for performance)
   planLimits: {
     submissions: { type: Number, default: 5 },
-    projects: { type: Number, default: 2 },
+    projects: { type: Number, default: 1 },
     tools: { type: Number, default: 10 },
     apiCalls: { type: Number, default: 20 }
   },
@@ -277,7 +277,7 @@ userSchema.methods.setPlanLimits = function() {
   const planLimits = {
     free: {
       submissions: 5,
-      projects: 2,
+      projects: 1,
       tools: 10,
       apiCalls: 20
     },
@@ -327,7 +327,7 @@ userSchema.methods.setPlanLimitsSync = function() {
   const planLimits = {
     free: {
       submissions: 5,
-      projects: 2,
+      projects: 1,
       tools: 10,
       apiCalls: 20
     },

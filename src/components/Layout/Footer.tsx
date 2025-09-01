@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
 interface VersionInfo {
+  name: string;
   commit: string;
+  commitShort: string;
   buildTime: string;
+  deployTime: string;
   version: string;
   environment: string;
   uptime: number;
+  uptimeFormatted: string;
   timestamp: number;
+  nodeVersion: string;
+  platform: string;
+  arch: string;
+  branch: string;
 }
 
 const Footer: React.FC = () => {
@@ -16,7 +24,12 @@ const Footer: React.FC = () => {
   useEffect(() => {
     const fetchVersionInfo = async () => {
       try {
-        const response = await fetch('https://api.opptym.com/api/health/version');
+        // Try local API first, fallback to production API
+        const apiUrl = process.env.NODE_ENV === 'development' 
+          ? 'http://localhost:3000/api/health/version'
+          : '/api/health/version';
+        
+        const response = await fetch(apiUrl);
         if (response.ok) {
           const data = await response.json();
           setVersionInfo(data);
@@ -94,16 +107,29 @@ const Footer: React.FC = () => {
                 <span>Loading build info...</span>
               ) : versionInfo ? (
                 <>
-                  <span>Build: {versionInfo.commit.substring(0, 8)}</span>
-                  <span>Version: {versionInfo.version}</span>
-                  <span>Env: {versionInfo.environment}</span>
-                  <span>Built: {new Date(versionInfo.buildTime).toLocaleString()}</span>
+                  <span title={`Full commit: ${versionInfo.commit}`}>
+                    Build: {versionInfo.commitShort}
+                  </span>
+                  <span>v{versionInfo.version}</span>
+                  <span className={`px-2 py-1 rounded text-xs ${
+                    versionInfo.environment === 'production' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-yellow-600 text-white'
+                  }`}>
+                    {versionInfo.environment}
+                  </span>
+                  <span title={`Server uptime: ${versionInfo.uptimeFormatted}`}>
+                    Uptime: {versionInfo.uptimeFormatted}
+                  </span>
+                  <span title={`Branch: ${versionInfo.branch} | Platform: ${versionInfo.platform}/${versionInfo.arch}`}>
+                    Built: {new Date(versionInfo.buildTime).toLocaleDateString()}
+                  </span>
                 </>
               ) : (
                 <>
-                  <span>Build: {(window as any).__COMMIT_SHA__?.substring(0, 8) || 'unknown'}</span>
-                  <span>Version: {(window as any).__BUILD_VERSION__ || 'unknown'}</span>
-                  <span>Built: {(window as any).__BUILD_TIME__ ? new Date((window as any).__BUILD_TIME__).toLocaleString() : 'unknown'}</span>
+                  <span>Build: {(window as any).__COMMIT_SHA__?.substring(0, 8) || 'dev'}</span>
+                  <span>Version: {(window as any).__BUILD_VERSION__ || '3.0.0'}</span>
+                  <span className="px-2 py-1 rounded text-xs bg-gray-600 text-white">local</span>
                 </>
               )}
             </div>

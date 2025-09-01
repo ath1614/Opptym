@@ -16,6 +16,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/set-build-info.js",
     "build": "rm -rf dist && vite build",
     "build:clean": "rm -rf dist node_modules/.vite && npm ci && npm run build",
     "preview": "vite preview",

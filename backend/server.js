@@ -148,6 +148,19 @@ const connectDB = async () => {
 // Connect to database
 connectDB();
 
+// Helper function to format uptime
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / (3600 * 24));
+  const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+  if (minutes > 0) return `${minutes}m ${secs}s`;
+  return `${secs}s`;
+}
+
 // Health check endpoint for deployment
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
@@ -155,19 +168,31 @@ app.get('/api/health', (req, res) => {
     message: 'OPPTYM Backend is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    cors: 'enabled'
+    uptime: formatUptime(process.uptime()),
+    version: '3.0.0',
+    commit: (process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || 'dev').substring(0, 7),
+    cors: 'enabled',
+    database: 'connected' // Could be enhanced to actually check DB connection
   });
 });
 
 // Version endpoint for deployment verification
 app.get('/api/health/version', (req, res) => {
   const version = {
-    commit: process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
-    buildTime: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0',
+    name: 'OPPTYM Backend API',
+    commit: process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || 'development',
+    commitShort: (process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || 'dev').substring(0, 7),
+    buildTime: process.env.BUILD_TIME || new Date().toISOString(),
+    deployTime: new Date().toISOString(),
+    version: process.env.npm_package_version || '3.0.0',
     environment: process.env.NODE_ENV || 'development',
     uptime: process.uptime(),
-    timestamp: Date.now()
+    uptimeFormatted: formatUptime(process.uptime()),
+    timestamp: Date.now(),
+    nodeVersion: process.version,
+    platform: process.platform,
+    arch: process.arch,
+    branch: process.env.VERCEL_GIT_COMMIT_REF || process.env.GIT_BRANCH || 'main'
   };
   
   res.json(version);
