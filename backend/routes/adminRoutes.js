@@ -390,13 +390,63 @@ router.get('/users/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
-// Get all directories (admin only)
+// Get all directories (admin only) with filtering
 router.get('/directories', protect, adminOnly, async (req, res) => {
   try {
-    const directories = await Directory.find({}).sort({ createdAt: -1 });
+    const { classification, category, status, search } = req.query;
+    
+    let filter = {};
+    
+    // Add filters if provided
+    if (classification && classification !== 'all') {
+      filter.classification = classification;
+    }
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { domain: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const directories = await Directory.find(filter).sort({ 
+      isCustom: -1, // Custom directories first
+      priority: -1, // Then by priority
+      pageRank: -1, // Then by page rank
+      createdAt: -1 // Then by creation date
+    });
+    
     res.json(directories);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch directories' });
+  }
+});
+
+// Get directory classifications (admin only)
+router.get('/directories/classifications', protect, adminOnly, async (req, res) => {
+  try {
+    const classifications = await Directory.distinct('classification');
+    const countByClassification = await Directory.aggregate([
+      { $group: { _id: '$classification', count: { $sum: 1 } } }
+    ]);
+    
+    const classificationStats = classifications.map(classification => {
+      const stat = countByClassification.find(c => c._id === classification);
+      return {
+        name: classification,
+        count: stat ? stat.count : 0
+      };
+    });
+    
+    res.json(classificationStats);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch classifications' });
   }
 });
 

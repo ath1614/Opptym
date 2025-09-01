@@ -38,11 +38,17 @@ interface Directory {
   requiresApproval: boolean;
   submissionUrl: string;
   contactEmail?: string;
+  submissionGuidelines?: string;
   totalSubmissions: number;
   successfulSubmissions: number;
   rejectionRate: number;
   isCustom: boolean;
   priority: number;
+  freeUserLimit: number;
+  starterUserLimit: number;
+  proUserLimit: number;
+  businessUserLimit: number;
+  enterpriseUserLimit: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -79,15 +85,18 @@ const countries = [
   'Global', 'USA', 'UK', 'Canada', 'Australia', 'Germany', 'France', 'India', 'Japan', 'Brazil', 'Mexico', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Switzerland', 'Austria', 'Belgium', 'Ireland', 'New Zealand', 'Singapore', 'South Korea', 'China', 'Russia', 'South Africa', 'Nigeria', 'Egypt', 'Kenya', 'Ghana', 'Morocco', 'Tunisia', 'Algeria', 'Libya', 'Sudan', 'Ethiopia', 'Uganda', 'Tanzania', 'Zambia', 'Zimbabwe', 'Botswana', 'Namibia', 'Mozambique', 'Angola', 'Congo', 'Cameroon', 'Gabon', 'Chad', 'Niger', 'Mali', 'Burkina Faso', 'Senegal', 'Guinea', 'Sierra Leone', 'Liberia', 'Ivory Coast', 'Togo', 'Benin', 'Central African Republic', 'Equatorial Guinea', 'Sao Tome and Principe', 'Cape Verde', 'Mauritania', 'Gambia', 'Guinea-Bissau', 'Comoros', 'Seychelles', 'Mauritius', 'Madagascar', 'Malawi', 'Lesotho', 'Eswatini', 'Other'
 ];
 
-const classifications = [
-  'General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Other'
+const classificationOptions = [
+  'General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Article Submission', 'Web2.0', 'Social', 'Local', 'Review', 'Other'
 ];
 
 export default function DirectoryManagement() {
   const [directories, setDirectories] = useState<Directory[]>([]);
+  const [classifications, setClassifications] = useState<{name: string, count: number}[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedClassification, setSelectedClassification] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingDirectory, setEditingDirectory] = useState<Directory | null>(null);
@@ -118,13 +127,22 @@ export default function DirectoryManagement() {
 
   useEffect(() => {
     fetchDirectories();
+    fetchClassifications();
   }, []);
 
   const fetchDirectories = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/admin/directories', {
+      
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (selectedClassification !== 'all') params.append('classification', selectedClassification);
+      if (selectedCategory !== 'all') params.append('category', selectedCategory);
+      if (selectedStatus !== 'all') params.append('status', selectedStatus);
+      if (searchTerm) params.append('search', searchTerm);
+      
+      const response = await axios.get(`/api/admin/directories?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDirectories(response.data);
@@ -133,6 +151,18 @@ export default function DirectoryManagement() {
       setErrorMessage('Failed to fetch directories');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchClassifications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/admin/directories/classifications', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setClassifications(response.data);
+    } catch (error) {
+      console.error('Error fetching classifications:', error);
     }
   };
 
@@ -208,6 +238,8 @@ export default function DirectoryManagement() {
       domain: '',
       description: '',
       category: 'business',
+      country: 'Global',
+      classification: 'General',
       pageRank: 0,
       daScore: 0,
       spamScore: 0,
@@ -220,7 +252,8 @@ export default function DirectoryManagement() {
       starterUserLimit: 5,
       proUserLimit: 20,
       businessUserLimit: 50,
-      enterpriseUserLimit: -1
+      enterpriseUserLimit: -1,
+      priority: 0
     });
   };
 
@@ -231,6 +264,8 @@ export default function DirectoryManagement() {
       domain: directory.domain,
       description: directory.description || '',
       category: directory.category,
+      country: directory.country || 'Global',
+      classification: directory.classification || 'General',
       pageRank: directory.pageRank,
       daScore: directory.daScore,
       spamScore: directory.spamScore,
@@ -238,12 +273,13 @@ export default function DirectoryManagement() {
       requiresApproval: directory.requiresApproval,
       submissionUrl: directory.submissionUrl,
       contactEmail: directory.contactEmail || '',
-      submissionGuidelines: '',
-      freeUserLimit: 0,
-      starterUserLimit: 5,
-      proUserLimit: 20,
-      businessUserLimit: 50,
-      enterpriseUserLimit: -1
+      submissionGuidelines: directory.submissionGuidelines || '',
+      freeUserLimit: directory.freeUserLimit || 0,
+      starterUserLimit: directory.starterUserLimit || 5,
+      proUserLimit: directory.proUserLimit || 20,
+      businessUserLimit: directory.businessUserLimit || 50,
+      enterpriseUserLimit: directory.enterpriseUserLimit || -1,
+      priority: directory.priority || 0
     });
     setShowEditModal(true);
   };
