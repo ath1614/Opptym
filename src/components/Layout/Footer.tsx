@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
     const fetchVersionInfo = async () => {
       try {
         // Try local API first, fallback to production API
-        const apiUrl = process.env.NODE_ENV === 'development' 
+        const apiUrl = import.meta.env.DEV 
           ? 'http://localhost:3000/api/health/version'
           : '/api/health/version';
         
