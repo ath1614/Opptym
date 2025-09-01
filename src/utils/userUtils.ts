@@ -9,7 +9,7 @@ interface User {
   website?: string;
   timezone?: string;
   bio?: string;
-  subscription?: 'free' | 'starter' | 'pro' | 'business' | 'enterprise';
+  subscription?: 'free' | 'test' | 'starter' | 'pro' | 'business' | 'enterprise';
   status?: 'active' | 'inactive' | 'suspended' | 'banned' | 'pending';
   role?: 'user' | 'admin';
   isAdmin?: boolean;

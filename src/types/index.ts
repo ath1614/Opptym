@@ -4,7 +4,7 @@ export interface User {
   firstName?: string;
   lastName?: string;
   email: string;
-  subscription?: 'free' | 'starter' | 'pro' | 'business' | 'enterprise';
+  subscription?: 'free' | 'test' | 'starter' | 'pro' | 'business' | 'enterprise';
   status?: 'active' | 'inactive' | 'suspended' | 'banned' | 'pending';
   role?: 'owner' | 'admin' | 'manager' | 'analyst' | 'viewer' | 'employee';
   isAdmin?: boolean;
