@@ -165,13 +165,18 @@ export default function DirectoryManagement() {
       const response = await axios.get('/api/admin/directories/classifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('📊 Classifications API response:', response.data);
       // Convert objects to strings for the dropdown
-      const classificationStrings = response.data.map((item: any) => item.name);
+      const classificationStrings = response.data.map((item: any) => 
+        typeof item === 'string' ? item : (item.name || 'Unknown')
+      );
+      console.log('📝 Classification strings for dropdown:', classificationStrings);
       setClassifications(response.data); // Keep original for stats if needed
       setClassificationStrings(classificationStrings); // Set strings for dropdown
     } catch (error) {
       console.error('Error fetching classifications:', error);
       // Fallback to static classifications if API fails
+      console.log('🔄 Using fallback classifications');
       setClassificationStrings([
         'General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Article Submission', 'Web2.0', 'Social', 'Local', 'Classified', 'Q&A', 'Press Release', 'Review', 'Other'
       ]);
@@ -182,7 +187,13 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.post(`/api/admin/directories`, formData, {
+      // Ensure all form data is properly formatted
+      const cleanFormData = {
+        ...formData,
+        classification: typeof formData.classification === 'string' ? formData.classification : 'General'
+      };
+      console.log('🏗️ Creating directory with data:', cleanFormData);
+      await axios.post(`/api/admin/directories`, cleanFormData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -205,7 +216,13 @@ export default function DirectoryManagement() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.put(`/api/admin/directories/${editingDirectory._id}`, formData, {
+      // Ensure all form data is properly formatted
+      const cleanFormData = {
+        ...formData,
+        classification: typeof formData.classification === 'string' ? formData.classification : 'General'
+      };
+      console.log('✏️ Updating directory with data:', cleanFormData);
+      await axios.put(`/api/admin/directories/${editingDirectory._id}`, cleanFormData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
