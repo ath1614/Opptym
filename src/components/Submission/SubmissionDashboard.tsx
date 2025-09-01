@@ -1327,33 +1327,8 @@ const SubmissionsDashboard = () => {
       // Add delay to prevent rate limiting
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Track submission usage
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/submissions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            projectId: selectedProject._id,
-            siteName: 'Universal Form Fill',
-            submissionType: 'bookmarklet',
-            status: 'completed'
-          })
-        });
-        
-        if (response.ok) {
-          console.log('✅ Submission usage tracked');
-          // Refresh usage data immediately
-          fetchUsageData();
-        } else {
-          console.error('❌ Submission tracking failed:', response.status);
-        }
-      } catch (error) {
-        console.error('Error tracking submission usage:', error);
-      }
+      // Note: Submission usage will be tracked when bookmarklet is actually used
+      // (not when it's created) to ensure accurate dashboard counts
       
       // Show success modal with instructions
       showOneButtonSuccessModal(url, projectData, result);

@@ -210,6 +210,42 @@ const validateBookmarkletToken = async (req, res) => {
     // Increment usage and get updated token
     await bookmarkletToken.incrementUsage(clientIP, userAgent);
 
+    // Also increment user's submission usage for dashboard tracking
+    try {
+      const User = require('../models/userModel');
+      const Submission = require('../models/submissionModel');
+      const user = await User.findById(bookmarkletToken.userId);
+      if (user) {
+        // Ensure usage object is initialized
+        if (!user.usage) {
+          user.usage = {
+            submissionsUsed: 0,
+            projectsUsed: 0,
+            seoToolsUsed: 0,
+            apiCallsUsed: 0
+          };
+        }
+        
+        // Increment submission usage
+        await user.incrementUsage('submissions');
+        console.log('✅ User submission usage incremented for dashboard');
+        
+        // Create a submission record for tracking
+        await Submission.create({
+          userId: bookmarkletToken.userId,
+          projectId: bookmarkletToken.projectId,
+          siteName: 'Bookmarklet Form Fill',
+          submissionType: 'bookmarklet',
+          status: 'completed',
+          submittedAt: new Date()
+        });
+        console.log('✅ Submission record created for bookmarklet usage');
+      }
+    } catch (usageError) {
+      console.error('❌ Failed to increment user submission usage:', usageError);
+      // Don't fail the bookmarklet validation if usage tracking fails
+    }
+
     console.log('✅ Bookmarklet token validated:', {
       token: token.substring(0, 8) + '...',
       usageCount: bookmarkletToken.usageCount + 1,
