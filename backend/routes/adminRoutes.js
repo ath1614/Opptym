@@ -403,24 +403,61 @@ router.get('/directories', protect, adminOnly, async (req, res) => {
 // Create new directory (admin only)
 router.post('/directories', protect, adminOnly, async (req, res) => {
   try {
-    const { name, domain, category, pageRank, status, description, submissionUrl, requirements } = req.body;
+    const {
+      name,
+      domain,
+      description,
+      category,
+      country,
+      classification,
+      pageRank,
+      daScore,
+      spamScore,
+      isPremium,
+      requiresApproval,
+      submissionUrl,
+      contactEmail,
+      submissionGuidelines,
+      requiredFields,
+      freeUserLimit,
+      starterUserLimit,
+      proUserLimit,
+      businessUserLimit,
+      enterpriseUserLimit,
+      priority
+    } = req.body;
 
-    // Check if directory already exists
-    const existingDirectory = await Directory.findOne({ $or: [{ name }, { domain }] });
+    // Check if directory with same name already exists
+    const existingDirectory = await Directory.findOne({ name });
     if (existingDirectory) {
-      return res.status(400).json({ error: 'Directory with this name or domain already exists' });
+      return res.status(400).json({ error: 'Directory with this name already exists' });
     }
 
-    // Create new directory
+    // Create new directory with proper schema
     const directory = new Directory({
       name,
       domain,
-      category: category || 'general',
-      pageRank: pageRank || 1,
-      status: status || 'active',
       description: description || '',
-      submissionUrl: submissionUrl || '',
-      requirements: requirements || []
+      category: category || 'business',
+      country: country || 'Global',
+      classification: classification || 'General',
+      pageRank: pageRank || 0,
+      daScore: daScore || 0,
+      spamScore: spamScore || 0,
+      isPremium: isPremium || false,
+      requiresApproval: requiresApproval !== undefined ? requiresApproval : true,
+      submissionUrl,
+      contactEmail: contactEmail || '',
+      submissionGuidelines: submissionGuidelines || '',
+      requiredFields: requiredFields || [],
+      freeUserLimit: freeUserLimit || 0,
+      starterUserLimit: starterUserLimit || 5,
+      proUserLimit: proUserLimit || 20,
+      businessUserLimit: businessUserLimit || 50,
+      enterpriseUserLimit: enterpriseUserLimit || -1,
+      priority: priority || 0,
+      isCustom: true, // Mark as custom directory
+      createdBy: req.userId // Required field
     });
 
     await directory.save();
@@ -428,7 +465,7 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     res.status(201).json(directory);
   } catch (error) {
     console.error('Error creating directory:', error);
-    res.status(500).json({ error: 'Failed to create directory' });
+    res.status(500).json({ error: 'Failed to create directory', details: error.message });
   }
 });
 
@@ -436,29 +473,28 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
 router.put('/directories/:directoryId', protect, adminOnly, async (req, res) => {
   try {
     const { directoryId } = req.params;
-    const { name, domain, category, pageRank, status, description, submissionUrl, requirements } = req.body;
+    const updateFields = req.body;
+    
+    // Remove fields that shouldn't be updated
+    delete updateFields.createdBy;
+    delete updateFields.createdAt;
+    delete updateFields._id;
 
     const directory = await Directory.findById(directoryId);
     if (!directory) {
       return res.status(404).json({ error: 'Directory not found' });
     }
 
-    // Update fields if provided
-    if (name) directory.name = name;
-    if (domain) directory.domain = domain;
-    if (category) directory.category = category;
-    if (pageRank !== undefined) directory.pageRank = pageRank;
-    if (status) directory.status = status;
-    if (description !== undefined) directory.description = description;
-    if (submissionUrl !== undefined) directory.submissionUrl = submissionUrl;
-    if (requirements) directory.requirements = requirements;
+    // Update all provided fields
+    Object.assign(directory, updateFields);
+    directory.updatedAt = new Date();
 
     await directory.save();
     
     res.json(directory);
   } catch (error) {
     console.error('Error updating directory:', error);
-    res.status(500).json({ error: 'Failed to update directory' });
+    res.status(500).json({ error: 'Failed to update directory', details: error.message });
   }
 });
 
