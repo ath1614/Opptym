@@ -1,100 +1,51 @@
-#!/usr/bin/env node
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-/**
- * Script to inject build information into the frontend
- * This runs during the build process to capture commit SHA and build time
- */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-
-function getBuildInfo() {
-  let commit = 'development';
-  let branch = 'main';
-  
+const getGitCommit = () => {
   try {
-    // Try to get git commit SHA
-    commit = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
-  } catch (error) {
-    console.log('⚠️ Could not get git commit SHA:', error.message);
+    return execSync('git rev-parse HEAD').toString().trim();
+  } catch (e) {
+    return 'unknown';
   }
-  
+};
+
+const getGitBranch = () => {
   try {
-    // Try to get git branch
-    branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
-  } catch (error) {
-    console.log('⚠️ Could not get git branch:', error.message);
+    return execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
+  } catch (e) {
+    return 'unknown';
   }
+};
 
-  const buildInfo = {
-    commit: commit,
-    commitShort: commit.substring(0, 7),
-    buildTime: new Date().toISOString(),
-    timestamp: Date.now(),
-    version: '3.0.0',
-    branch: branch,
-    nodeVersion: process.version
-  };
+const commitSha = process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || getGitCommit();
+const buildTime = new Date().toISOString();
+const buildVersion = process.env.npm_package_version || '3.0.0';
+const gitBranch = process.env.VERCEL_GIT_COMMIT_REF || getGitBranch();
 
-  return buildInfo;
-}
+const indexPath = path.resolve(__dirname, '../index.html');
+let indexContent = fs.readFileSync(indexPath, 'utf8');
 
-function injectBuildInfo() {
-  const buildInfo = getBuildInfo();
-  
-  console.log('🔧 Injecting build information:');
-  console.log(`   Commit: ${buildInfo.commitShort} (${buildInfo.commit})`);
-  console.log(`   Branch: ${buildInfo.branch}`);
-  console.log(`   Build Time: ${buildInfo.buildTime}`);
-  console.log(`   Version: ${buildInfo.version}`);
+const scriptToInject = `
+    <script>
+      window.__COMMIT_SHA__ = '${commitSha}';
+      window.__BUILD_TIME__ = '${buildTime}';
+      window.__BUILD_VERSION__ = '${buildVersion}';
+      window.__GIT_BRANCH__ = '${gitBranch}';
+    </script>
+`;
 
-  // Create build info script to inject into HTML
-  const buildScript = `
-<script>
-  window.__COMMIT_SHA__ = '${buildInfo.commit}';
-  window.__COMMIT_SHORT__ = '${buildInfo.commitShort}';
-  window.__BUILD_TIME__ = '${buildInfo.buildTime}';
-  window.__BUILD_VERSION__ = '${buildInfo.version}';
-  window.__BUILD_BRANCH__ = '${buildInfo.branch}';
-  window.__TIMESTAMP__ = ${buildInfo.timestamp};
-  console.log('🚀 Build Info:', {
-    commit: '${buildInfo.commitShort}',
-    version: '${buildInfo.version}',
-    buildTime: '${buildInfo.buildTime}',
-    branch: '${buildInfo.branch}'
-  });
-</script>`;
+// Inject before the main app script
+indexContent = indexContent.replace('<!-- Main App Script -->', `${scriptToInject}\n    <!-- Main App Script -->`);
 
-  // Read index.html template
-  const indexPath = path.join(__dirname, '../index.html');
-  let indexContent = '';
-  
-  try {
-    indexContent = fs.readFileSync(indexPath, 'utf8');
-  } catch (error) {
-    console.error('❌ Could not read index.html:', error.message);
-    return;
-  }
+fs.writeFileSync(indexPath, indexContent, 'utf8');
 
-  // Inject build script before closing head tag
-  const updatedContent = indexContent.replace(
-    '</head>',
-    `  ${buildScript}\n  </head>`
-  );
-
-  // Write updated index.html
-  try {
-    fs.writeFileSync(indexPath, updatedContent);
-    console.log('✅ Build info injected into index.html');
-  } catch (error) {
-    console.error('❌ Could not write index.html:', error.message);
-  }
-}
-
-// Run if called directly
-if (require.main === module) {
-  injectBuildInfo();
-}
-
-module.exports = { getBuildInfo, injectBuildInfo };
+console.log('✅ Injected build info into index.html');
+console.log(`   Commit: ${commitSha.substring(0, 8)}`);
+console.log(`   Version: ${buildVersion}`);
+console.log(`   Build Time: ${buildTime}`);
+console.log(`   Branch: ${gitBranch}`);
