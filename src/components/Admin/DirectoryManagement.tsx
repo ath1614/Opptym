@@ -92,6 +92,7 @@ const classificationOptions = [
 export default function DirectoryManagement() {
   const [directories, setDirectories] = useState<Directory[]>([]);
   const [classifications, setClassifications] = useState<{name: string, count: number}[]>([]);
+  const [classificationStrings, setClassificationStrings] = useState<string[]>(['General', 'Business', 'Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Sports', 'Travel', 'Food', 'Lifestyle', 'News', 'Shopping', 'Real Estate', 'Automotive', 'Fashion', 'Beauty', 'Home & Garden', 'Pets', 'Books', 'Music', 'Movies', 'Gaming', 'Software', 'Web Development', 'Marketing', 'SEO', 'Design', 'Photography', 'Video', 'Podcasting', 'Blogging', 'Social Media', 'E-commerce', 'B2B', 'B2C', 'Non-profit', 'Government', 'Legal', 'Medical', 'Dental', 'Veterinary', 'Fitness', 'Yoga', 'Meditation', 'Cooking', 'Recipes', 'Restaurants', 'Hotels', 'Vacation', 'Adventure', 'Outdoor', 'Fishing', 'Hunting', 'Gardening', 'DIY', 'Crafts', 'Art', 'Photography', 'Videography', 'Music Production', 'Writing', 'Translation', 'Consulting', 'Coaching', 'Training', 'Tutoring', 'Article Submission', 'Web2.0', 'Social', 'Local', 'Classified', 'Q&A', 'Press Release', 'Review', 'Other']);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -164,8 +165,10 @@ export default function DirectoryManagement() {
       const response = await axios.get('/api/admin/directories/classifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('🔍 Classifications data:', response.data);
-      setClassifications(response.data);
+      // Convert objects to strings for the dropdown
+      const classificationStrings = response.data.map((item: any) => item.name);
+      setClassifications(response.data); // Keep original for stats if needed
+      setClassificationStrings(classificationStrings); // Set strings for dropdown
     } catch (error) {
       console.error('Error fetching classifications:', error);
     }
@@ -378,7 +381,7 @@ export default function DirectoryManagement() {
               className="select-modern"
             >
               <option value="all">All Classifications</option>
-              {classificationOptions.map(classification => (
+              {classificationStrings.map(classification => (
                 <option key={classification} value={classification}>
                   {classification}
                 </option>
