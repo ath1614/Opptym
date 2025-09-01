@@ -16,7 +16,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     description: '',
     category: 'business',
     country: 'Global',
-    classification: 'Business',
+    classification: 'Article Submission',
     pageRank: 3,
     daScore: 30,
     spamScore: 2,
@@ -25,7 +25,12 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     submissionUrl: '',
     contactEmail: '',
     submissionGuidelines: '',
-    priority: 10
+    priority: 10,
+    freeUserLimit: 0,
+    starterUserLimit: 5,
+    proUserLimit: 20,
+    businessUserLimit: 50,
+    enterpriseUserLimit: -1
   });
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +51,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         description: '',
         category: 'business',
         country: 'Global',
-        classification: 'Business',
+        classification: 'Article Submission',
         pageRank: 3,
         daScore: 30,
         spamScore: 2,
@@ -55,7 +60,12 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         submissionUrl: '',
         contactEmail: '',
         submissionGuidelines: '',
-        priority: 10
+        priority: 10,
+        freeUserLimit: 0,
+        starterUserLimit: 5,
+        proUserLimit: 20,
+        businessUserLimit: 50,
+        enterpriseUserLimit: -1
       });
       onCreated();
       onClose();
@@ -186,6 +196,13 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   onChange={(e) => setForm({ ...form, classification: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white"
                 >
+                  <option value="Article Submission">Article Submission</option>
+                  <option value="Web2.0">Web2.0</option>
+                  <option value="Social">Social</option>
+                  <option value="Local">Local</option>
+                  <option value="Classified">Classified</option>
+                  <option value="Q&A">Q&A</option>
+                  <option value="Press Release">Press Release</option>
                   <option value="Business">Business</option>
                   <option value="Technology">Technology</option>
                   <option value="Health">Health</option>

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 // Remove BASE_URL import - use relative paths like other components
 import axios from 'axios';
-import CreateDirectoryModal from './CreateDirectoryModal';
+// CreateDirectoryModal import removed - using inline modal
 
 interface Directory {
   _id: string;
@@ -852,15 +852,7 @@ export default function DirectoryManagement() {
         </div>
       )}
 
-      {/* Create Directory Modal */}
-      <CreateDirectoryModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onCreated={() => {
-          fetchDirectories();
-          setShowCreateModal(false);
-        }}
-      />
+      {/* Create Directory Modal - Using inline modal instead of imported component */}
     </div>
   );
 } 
