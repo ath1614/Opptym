@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TrendingUp, Search, BarChart3, Target, Lightbulb, Download, AlertCircle, CheckCircle, TrendingDown } from 'lucide-react';
 import { getProjects, runKeywordResearcher } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
+import { exportKeywordResearch } from '../../utils/csvExport';
 
 interface KeywordData {
   keyword: string;
@@ -83,14 +84,16 @@ const KeywordResearcherTool: React.FC = () => {
 
   const handleExport = () => {
     if (!result) return;
-    const dataStr = JSON.stringify(result, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `keyword-research-${result.seedKeyword}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    
+    // Prepare data for CSV export
+    const allKeywords = [
+      ...result.keywords.main.map(k => ({ ...k, type: 'Main' })),
+      ...result.keywords.longTail.map(k => ({ ...k, type: 'Long Tail' })),
+      ...result.keywords.questions.map(k => ({ ...k, type: 'Question' }))
+    ];
+    
+    // Export to CSV
+    exportKeywordResearch(allKeywords);
   };
 
   const getTrendIcon = (trend: string) => {
@@ -421,7 +424,7 @@ const KeywordResearcherTool: React.FC = () => {
               className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              Export Results
+              Export CSV
             </button>
           </div>
         </>

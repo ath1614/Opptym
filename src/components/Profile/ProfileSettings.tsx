@@ -145,17 +145,51 @@ export default function ProfileSettings() {
     }
   };
 
-  const handlePhotoUpload = () => {
+  const handlePhotoUpload = async () => {
     // Create file input
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // Handle file upload logic here
-        setSuccessMessage('Profile photo updated successfully!');
-        setTimeout(() => setSuccessMessage(''), 3000);
+        try {
+          setLoading(true);
+          
+          // For now, we'll use a simple approach - convert to base64
+          // In production, you'd want to upload to a cloud service like AWS S3
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            const photoUrl = event.target?.result as string;
+            
+            try {
+              const token = localStorage.getItem('token');
+              const response = await axios.put('/api/auth/photo', {
+                photoUrl
+              }, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+              
+              // Update the user object with the new photo
+              if (refreshUser) {
+                await refreshUser();
+              }
+              
+              setSuccessMessage('Profile photo updated successfully!');
+              setTimeout(() => setSuccessMessage(''), 3000);
+            } catch (error: any) {
+              setErrorMessage(error.response?.data?.error || 'Failed to update profile photo');
+            }
+          };
+          
+          reader.readAsDataURL(file);
+        } catch (error: any) {
+          setErrorMessage('Failed to process image file');
+        } finally {
+          setLoading(false);
+        }
       }
     };
     input.click();
@@ -254,13 +288,23 @@ export default function ProfileSettings() {
             <div className="card-modern p-6">
               <div className="flex items-center space-x-6">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-2xl font-bold">{getUserInitials(user)}</span>
-                  </div>
+                  {user?.profilePhoto ? (
+                    <div className="w-24 h-24 rounded-2xl shadow-lg overflow-hidden">
+                      <img 
+                        src={user.profilePhoto} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                      <span className="text-white text-2xl font-bold">{getUserInitials(user)}</span>
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={handlePhotoUpload}
-                    className="absolute bottom-0 right-0 bg-white dark:bg-primary-700 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-primary-600 transition-colors"
+                    className="absolute bottom-0 right-0 bg-white dark:bg-primary-700 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-400 dark:hover:bg-primary-600 transition-colors"
                   >
                     <Camera className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   </button>

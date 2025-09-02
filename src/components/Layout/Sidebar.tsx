@@ -106,10 +106,10 @@ export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCol
     },
     {
       id: 'directory',
-      label: t('submissions.directory'),
+      label: t('sidebar.seoTasks'),
       icon: Globe,
       color: 'from-orange-500 to-orange-600',
-      description: t('submissions.title')
+      description: t('sidebar.seoTasks')
     },
     {
       id: 'reports',

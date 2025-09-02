@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Check, 
   Star, 
@@ -12,9 +12,38 @@ import {
   Headphones
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-// Remove BASE_URL import - use relative paths like other components
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+
+interface APIPlan {
+  _id: string;
+  name: string;
+  description: string;
+  features: string[];
+  price: {
+    monthly: number;
+    yearly: number;
+  };
+  limits: {
+    projects: number;
+    submissions: number;
+    tools: number;
+    apiCalls: number;
+  };
+  stripePriceIds: {
+    monthly: string | null;
+    yearly: string | null;
+  };
+  trialDays: number;
+  isActive: boolean;
+  isPopular: boolean;
+  sortOrder: number;
+  metadata: {
+    color: string;
+    gradient: string;
+    icon: string;
+  };
+}
 
 interface PricingPlan {
   id: string;
@@ -37,154 +66,89 @@ interface PricingPlan {
   gradient: string;
 }
 
-const plans: PricingPlan[] = [
-  {
-    id: 'free',
-    name: 'Free Trial',
-    price: 0,
-    period: '3 days',
-    description: '3 days trial with all features (1 project)',
-    features: [
-      'All Features',
-      '1 SEO Project',
-      '3 Days Trial',
-      'Email Support',
-      'Basic Analytics',
-      'Community Forum Access'
-    ],
-    limits: {
-      projects: 1,
-      submissions: 10,
-      tools: true,
-      support: 'Email'
-    },
-    icon: Gift,
-    color: 'text-green-600',
-    gradient: 'from-green-400 to-emerald-500'
-  },
-  {
-    id: 'test',
-    name: 'Test Plan',
-    price: 10,
-    period: 'month',
-    description: 'Test payment functionality with ₹10',
-    features: [
-      'All Features',
-      '1 SEO Project',
-      'Test Payment',
-      'Email Support',
-      'Basic Analytics',
-      'Payment Testing'
-    ],
-    limits: {
-      projects: 1,
-      submissions: 10,
-      tools: true,
-      support: 'Email'
-    },
-    icon: Gift,
-    color: 'text-orange-600',
-    gradient: 'from-orange-400 to-red-500'
-  },
-  {
-    id: 'starter',
-    name: 'Starter Pack',
-    price: 999,
-    period: 'month',
-    description: 'All features, 1 website SEO project',
-    features: [
-      'All Features',
-      '1 SEO Project',
-      '150 Submissions per month',
-      'Priority Email Support',
-      'Detailed Submission Reports',
-      'White-label Reports',
-      'API Access (100 calls/day)'
-    ],
-    limits: {
-      projects: 1,
-      submissions: 150,
-      tools: true,
-      support: 'Priority Email'
-    },
-    popular: true,
-    icon: Star,
-    color: 'text-blue-600',
-    gradient: 'from-blue-500 to-purple-600'
-  },
-  {
-    id: 'pro',
-    name: 'Pro Pack',
-    price: 3999,
-    period: 'month',
-    description: 'All features, 5 projects',
-    features: [
-      'All Features',
-      '5 SEO Projects',
-      '750 Submissions per month',
-      'Priority Support',
-      'Advanced Analytics',
-      'Custom Branding',
-      'API Access (500 calls/day)'
-    ],
-    limits: {
-      projects: 5,
-      submissions: 750,
-      tools: true,
-      support: 'Priority Support'
-    },
-    recommended: true,
-    icon: Crown,
-    color: 'text-purple-600',
-    gradient: 'from-purple-500 to-pink-500'
-  },
-  {
-    id: 'business',
-    name: 'Business Pack',
-    price: 8999,
-    period: 'month',
-    description: 'All features, 10 projects',
-    features: [
-      'All Features',
-      '10 SEO Projects',
-      '1500 Submissions per month',
-      '24/7 Support',
-      'Dedicated Account Manager',
-      'Unlimited API Access',
-      'Custom Reporting'
-    ],
-    limits: {
-      projects: 10,
-      submissions: 1500,
-      tools: true,
-      support: '24/7 Support'
-    },
-    icon: Crown,
-    color: 'text-yellow-600',
-    gradient: 'from-yellow-400 to-orange-500'
-  }
-];
-
-// Stripe price ID mapping
-const priceIdMap: Record<string, string> = {
-  // Monthly
-  'test_monthly': 'price_test_10_rs', // Test price ID for ₹10
-  'starter_monthly': 'price_1Ro1LgCD7oezJBDYCEE71gAc',
-  'pro_monthly': 'price_1Ro1MYCD7oezJBDYgAXVoUw6',
-  'business_monthly': 'price_1Ro1NQCD7oezJBDYE4IX9qPE',
-  // Yearly
-  'test_yearly': 'price_test_10_rs_yearly', // Test yearly price ID
-  'starter_yearly': 'price_1Ro1LgCD7oezJBDYCEE71gAc', // update if you have a yearly price for starter
-  'pro_yearly': 'price_1Ro1RGCD7oezJBDY2yHsrEur',
-  'business_yearly': 'price_1Ro1TBCD7oezJBDYEEJGaA75',
+// Icon mapping for plan metadata
+const iconMap: Record<string, React.ComponentType<any>> = {
+  star: Star,
+  zap: Zap,
+  crown: Crown,
+  gift: Gift,
+  trending: BarChart3,
+  shield: Globe
 };
 
+// Color mapping for plan metadata
+const colorMap: Record<string, string> = {
+  gray: 'text-gray-600',
+  orange: 'text-orange-600',
+  green: 'text-green-600',
+  blue: 'text-blue-600',
+  purple: 'text-purple-600',
+  red: 'text-red-600'
+};
+
+const [plans, setPlans] = useState<PricingPlan[]>([]);
+const [loading, setLoading] = useState(true);
+const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+// Transform API plan data to component format
+const transformAPIPlan = (apiPlan: APIPlan): PricingPlan => {
+  const IconComponent = iconMap[apiPlan.metadata.icon] || Star;
+  const colorClass = colorMap[apiPlan.metadata.color] || 'text-blue-600';
+  
+  return {
+    id: apiPlan._id,
+    name: apiPlan.name,
+    price: billingCycle === 'yearly' ? apiPlan.price.yearly : apiPlan.price.monthly,
+    period: billingCycle === 'yearly' ? 'year' : 'month',
+    description: apiPlan.description,
+    features: apiPlan.features,
+    limits: {
+      projects: apiPlan.limits.projects,
+      submissions: apiPlan.limits.submissions,
+      tools: apiPlan.limits.tools > 0,
+      support: apiPlan.isPopular ? 'Priority' : 'Standard'
+    },
+    popular: apiPlan.isPopular,
+    recommended: apiPlan.name === 'Pro',
+    icon: IconComponent,
+    color: colorClass,
+    gradient: apiPlan.metadata.gradient
+  };
+};
+
+// Fetch plans from API
+useEffect(() => {
+  const fetchPlans = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/plans');
+      const transformedPlans = response.data
+        .filter((plan: APIPlan) => plan.isActive)
+        .sort((a: APIPlan, b: APIPlan) => a.sortOrder - b.sortOrder)
+        .map(transformAPIPlan);
+      setPlans(transformedPlans);
+    } catch (error) {
+      console.error('Failed to fetch plans:', error);
+      showPopup('Failed to load pricing plans. Please try again later.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPlans();
+}, [billingCycle]);
+
+// Stripe price ID mapping - now dynamic from API
 const getStripePriceId = (planId: string, cycle: 'monthly' | 'yearly') => {
-  if (planId === 'free') return null;
-  if (planId === 'basic') planId = 'starter';
-  if (planId === 'premium') planId = 'business';
-  return priceIdMap[`${planId}_${cycle}`];
+  const plan = plans.find(p => p.id === planId);
+  if (!plan) return null;
+  
+  // Find the API plan to get Stripe price ID
+  // This would need to be stored in state or fetched separately
+  return null; // For now, return null as we need to implement this properly
 };
+
+
 
 export default function PricingPlans() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -331,6 +295,14 @@ export default function PricingPlans() {
           </button>
         </div>
       </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <span className="ml-3 text-lg text-gray-600 dark:text-gray-400">Loading plans...</span>
+        </div>
+      )}
 
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">

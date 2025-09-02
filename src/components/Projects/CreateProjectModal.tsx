@@ -10,6 +10,16 @@ type ProjectFormFields = {
   [key: string]: string;
 };
 
+type CustomField = {
+  id: string;
+  name: string;
+  type: 'text' | 'select' | 'textarea' | 'number' | 'url' | 'email';
+  required: boolean;
+  options?: string[]; // For select fields
+  placeholder?: string;
+  validation?: string; // Custom validation rule
+};
+
 const initialFormState: ProjectFormFields = {
   title: '',
   url: '',
@@ -58,24 +68,78 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
   const [form, setForm] = useState<ProjectFormFields>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [customFields, setCustomFields] = useState<CustomField[]>([]);
+  const [showCustomFieldForm, setShowCustomFieldForm] = useState(false);
+  const [newCustomField, setNewCustomField] = useState<Omit<CustomField, 'id'>>({
+    name: '',
+    type: 'text',
+    required: false,
+    placeholder: '',
+    validation: ''
+  });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const addCustomField = () => {
+    if (!newCustomField.name.trim()) return;
+    
+    const field: CustomField = {
+      id: `custom_${Date.now()}`,
+      ...newCustomField
+    };
+    
+    setCustomFields(prev => [...prev, field]);
+    setForm(prev => ({ ...prev, [field.id]: '' }));
+    setNewCustomField({
+      name: '',
+      type: 'text',
+      required: false,
+      placeholder: '',
+      validation: ''
+    });
+    setShowCustomFieldForm(false);
+  };
+
+  const removeCustomField = (fieldId: string) => {
+    setCustomFields(prev => prev.filter(f => f.id !== fieldId));
+    setForm(prev => {
+      const newForm = { ...prev };
+      delete newForm[fieldId];
+      return newForm;
+    });
   };
 
   const handleSubmit = async () => {
     setError('');
     
     // Validate required fields
-    if (!form.title.trim()) {
-      setError('Project title is required');
-      return;
+    const requiredFields = [
+      { key: 'title', label: 'Project title' },
+      { key: 'url', label: 'Website URL' },
+      { key: 'email', label: 'Business email' },
+      { key: 'companyName', label: 'Company name' },
+      { key: 'businessPhone', label: 'Business phone' },
+      { key: 'city', label: 'City' },
+      { key: 'state', label: 'State' },
+      { key: 'country', label: 'Country' }
+    ];
+
+    for (const field of requiredFields) {
+      if (!form[field.key]?.trim()) {
+        setError(`${field.label} is required`);
+        return;
+      }
     }
-    
-    if (!form.url.trim()) {
-      setError('Website URL is required');
-      return;
+
+    // Validate custom required fields
+    for (const customField of customFields) {
+      if (customField.required && !form[customField.id]?.trim()) {
+        setError(`${customField.name} is required`);
+        return;
+      }
     }
     
     // Preprocess URL to ensure it has proper protocol
@@ -272,31 +336,169 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
             <h3 className="text-lg font-semibold mb-2 text-gray-700">{group.title}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.fields.map(({ key, label, type = 'text' }) => {
-                const isRequired = key === 'title' || key === 'url';
+                const isRequired = ['title', 'url', 'email', 'companyName', 'businessPhone', 'city', 'state', 'country'].includes(key);
                 return type === 'textarea' ? (
-                  <textarea
-                    key={key}
-                    name={key}
-                    value={form[key]}
-                    onChange={handleChange}
-                    placeholder={isRequired ? `${label} *` : label}
-                    className={`w-full border rounded px-3 py-2 h-24 resize-none ${isRequired && !form[key].trim() ? 'border-red-300' : ''}`}
-                  />
+                  <div key={key} className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {label} {isRequired && <span className="text-red-500">*</span>}
+                    </label>
+                    <textarea
+                      name={key}
+                      value={form[key]}
+                      onChange={handleChange}
+                      placeholder={label}
+                      className={`w-full border rounded px-3 py-2 h-24 resize-none ${isRequired && !form[key].trim() ? 'border-red-300' : 'border-gray-300'}`}
+                    />
+                  </div>
                 ) : (
-                  <input
-                    key={key}
-                    type={type}
-                    name={key}
-                    value={form[key]}
-                    onChange={handleChange}
-                    placeholder={isRequired ? `${label} *` : label}
-                    className={`w-full border rounded px-3 py-2 ${isRequired && !form[key].trim() ? 'border-red-300' : ''}`}
-                  />
+                  <div key={key} className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {label} {isRequired && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type={type}
+                      name={key}
+                      value={form[key]}
+                      onChange={handleChange}
+                      placeholder={label}
+                      className={`w-full border rounded px-3 py-2 ${isRequired && !form[key].trim() ? 'border-red-300' : 'border-gray-300'}`}
+                    />
+                  </div>
                 );
               })}
             </div>
           </div>
         ))}
+
+        {/* Custom Fields Section */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-700">🔧 Custom Fields</h3>
+            <button
+              onClick={() => setShowCustomFieldForm(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              + Add Custom Field
+            </button>
+          </div>
+
+          {/* Custom Fields Form */}
+          {showCustomFieldForm && (
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Field Name"
+                  value={newCustomField.name}
+                  onChange={(e) => setNewCustomField(prev => ({ ...prev, name: e.target.value }))}
+                  className="border rounded px-3 py-2"
+                />
+                <select
+                  value={newCustomField.type}
+                  onChange={(e) => setNewCustomField(prev => ({ ...prev, type: e.target.value as any }))}
+                  className="border rounded px-3 py-2"
+                >
+                  <option value="text">Text</option>
+                  <option value="textarea">Textarea</option>
+                  <option value="number">Number</option>
+                  <option value="url">URL</option>
+                  <option value="email">Email</option>
+                  <option value="select">Select</option>
+                </select>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={newCustomField.required}
+                    onChange={(e) => setNewCustomField(prev => ({ ...prev, required: e.target.checked }))}
+                    className="rounded"
+                  />
+                  <span className="text-sm">Required</span>
+                </label>
+              </div>
+              
+              {newCustomField.type === 'select' && (
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Options (comma-separated)"
+                    value={newCustomField.options?.join(', ') || ''}
+                    onChange={(e) => setNewCustomField(prev => ({ 
+                      ...prev, 
+                      options: e.target.value.split(',').map(opt => opt.trim()).filter(opt => opt)
+                    }))}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+              )}
+
+              <div className="flex space-x-2">
+                <button
+                  onClick={addCustomField}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                >
+                  Add Field
+                </button>
+                <button
+                  onClick={() => setShowCustomFieldForm(false)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Display Custom Fields */}
+          {customFields.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {customFields.map(field => (
+                <div key={field.id} className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700">
+                      {field.name} {field.required && <span className="text-red-500">*</span>}
+                    </label>
+                    <button
+                      onClick={() => removeCustomField(field.id)}
+                      className="text-red-500 hover:text-red-700 text-sm"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      name={field.id}
+                      value={form[field.id] || ''}
+                      onChange={handleChange}
+                      placeholder={field.placeholder || field.name}
+                      className={`w-full border rounded px-3 py-2 h-24 resize-none ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
+                    />
+                  ) : field.type === 'select' ? (
+                    <select
+                      name={field.id}
+                      value={form[field.id] || ''}
+                      onChange={handleChange}
+                      className={`w-full border rounded px-3 py-2 ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
+                    >
+                      <option value="">Select {field.name}</option>
+                      {field.options?.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      name={field.id}
+                      value={form[field.id] || ''}
+                      onChange={handleChange}
+                      placeholder={field.placeholder || field.name}
+                      className={`w-full border rounded px-3 py-2 ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="flex justify-end mt-4 gap-3">
           <button onClick={onClose} className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">

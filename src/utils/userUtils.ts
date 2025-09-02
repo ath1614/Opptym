@@ -19,13 +19,13 @@ interface User {
 
 /**
  * Get the display name for a user
- * Priority: firstName + lastName > username > email > 'User'
+ * Priority: firstName + lastName > firstName > username > email > 'User'
  */
 export const getUserDisplayName = (user: User | null): string => {
   if (!user) return 'User';
   
-  // Try full name first
-  if (user.firstName && user.lastName) {
+  // Try full name first (only if both firstName and lastName exist and are different)
+  if (user.firstName && user.lastName && user.firstName.trim() !== user.lastName.trim()) {
     return `${user.firstName} ${user.lastName}`;
   }
   
@@ -76,20 +76,34 @@ export const getUserShortName = (user: User | null): string => {
 export const getUserInitials = (user: User | null): string => {
   if (!user) return 'U';
   
-  if (user.firstName && user.lastName) {
+  // If both firstName and lastName exist and are different, use both initials
+  if (user.firstName && user.lastName && user.firstName.trim() !== user.lastName.trim()) {
     return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
   }
   
+  // If only firstName exists, use first two letters if available
   if (user.firstName) {
+    if (user.firstName.length >= 2) {
+      return user.firstName.substring(0, 2).toUpperCase();
+    }
     return user.firstName[0].toUpperCase();
   }
   
+  // If username exists, use first two letters if available
   if (user.username) {
+    if (user.username.length >= 2) {
+      return user.username.substring(0, 2).toUpperCase();
+    }
     return user.username[0].toUpperCase();
   }
   
+  // If email exists, use first two letters if available
   if (user.email) {
-    return user.email[0].toUpperCase();
+    const emailPrefix = user.email.split('@')[0];
+    if (emailPrefix.length >= 2) {
+      return emailPrefix.substring(0, 2).toUpperCase();
+    }
+    return emailPrefix[0].toUpperCase();
   }
   
   return 'U';

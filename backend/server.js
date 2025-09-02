@@ -277,6 +277,14 @@ try {
   console.error('❌ Error loading pricing routes:', error);
 }
 
+// Load plan routes
+try {
+  app.use('/api/plans', require('./routes/planRoutes'));
+  console.log('✅ Plan routes loaded');
+} catch (error) {
+  console.error('❌ Error loading plan routes:', error);
+}
+
 // Load bookmarklet routes
 try {
   app.use('/api/bookmarklet', require('./routes/bookmarkletRoutes'));

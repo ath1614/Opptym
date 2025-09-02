@@ -70,9 +70,10 @@ const signup = async (req, res) => {
     console.log('🔍 Creating new user with data:', { username, email, isEmailVerified: true, status: 'active' });
     
     // Extract first and last name from username (fallback to username if no space)
-    const nameParts = username.split(' ');
+    const nameParts = username.split(' ').filter(part => part.trim() !== '');
     const firstName = nameParts[0] || username;
-    const lastName = nameParts.slice(1).join(' ') || username;
+    // Only set lastName if there are actually different parts
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
     
     const user = new User({
       username,
@@ -389,6 +390,36 @@ const exportUserData = async (req, res) => {
   } catch (err) {
     console.error('Export user data error:', err);
     res.status(400).json({ error: err.message || 'Failed to export user data' });
+  }
+};
+
+// Upload profile photo
+const uploadProfilePhoto = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { photoUrl } = req.body;
+
+    if (!photoUrl) {
+      return res.status(400).json({ error: 'Photo URL is required' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { profilePhoto: photoUrl },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      message: 'Profile photo updated successfully',
+      profilePhoto: user.profilePhoto
+    });
+  } catch (err) {
+    console.error('Profile photo upload error:', err);
+    res.status(500).json({ error: 'Failed to update profile photo' });
   }
 };
 

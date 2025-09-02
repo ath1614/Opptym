@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runMetaTagAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { FileText, CheckCircle, XCircle, AlertTriangle, Edit3, Target, TrendingUp } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, AlertTriangle, Edit3, Target, TrendingUp, Download } from 'lucide-react';
+import { exportMetaAnalysis } from '../../utils/csvExport';
 
 type Project = {
   _id: string;
@@ -71,6 +72,23 @@ const MetaAnalyzer = () => {
         icon: <FileText className="w-4 h-4" />
       }
     ];
+  };
+
+  const handleExport = () => {
+    if (!report) return;
+    
+    // Prepare data for CSV export
+    const exportData = [{
+      URL: report.url || 'N/A',
+      'Meta Title': report.title || 'N/A',
+      'Meta Description': report.description || 'N/A',
+      'Title Length': report.titleLength || 0,
+      'Description Length': report.descriptionLength || 0,
+      'Issues': report.issues?.join('; ') || 'None'
+    }];
+    
+    // Export to CSV
+    exportMetaAnalysis(exportData);
   };
 
   const getDetails = () => {
@@ -234,16 +252,29 @@ const MetaAnalyzer = () => {
       </div>
 
       {report && (
-        <ResultsDisplay
-          title="Meta Tag Analysis Results"
-          success={report.success}
-          data={report}
-          suggestions={report.suggestions || []}
-          icon={<FileText className="w-6 h-6 text-purple-600" />}
-          metrics={getMetrics()}
-          details={getDetails()}
-          improvementGuide={getImprovementGuide()}
-        />
+        <>
+          <ResultsDisplay
+            title="Meta Tag Analysis Results"
+            success={report.success}
+            data={report}
+            suggestions={report.suggestions || []}
+            icon={<FileText className="w-6 h-6 text-purple-600" />}
+            metrics={getMetrics()}
+            details={getDetails()}
+            improvementGuide={getImprovementGuide()}
+          />
+
+          {/* Export Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleExport}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

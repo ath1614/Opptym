@@ -204,10 +204,6 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   <option value="Q&A">Q&A</option>
                   <option value="Press Release">Press Release</option>
                   <option value="Business">Business</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Health">Health</option>
-                  <option value="Education">Education</option>
-                  <option value="Finance">Finance</option>
                 </select>
               </div>
             </div>

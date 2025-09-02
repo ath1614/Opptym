@@ -42,15 +42,15 @@ class LandingPageErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-accent-50">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-primary-800 mb-4">Something went wrong</h1>
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-            >
-              Reload Page
-            </button>
-          </div>
+                  <div className="text-center">
+          <h1 className="text-2xl font-bold text-primary-800 mb-4">{t('errors.somethingWentWrong')}</h1>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+          >
+            {t('common.refresh')}
+          </button>
+        </div>
         </div>
       );
     }
@@ -75,31 +75,31 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "AI-Powered Automation",
-      description: "Intelligent form filling and submission automation across 1 Lakh+ directories"
+      title: t('landing.features.aiAutomation'),
+      description: t('landing.features.aiAutomationDesc')
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      title: "Global Directory Network",
-      description: "Access to premium directories worldwide for maximum SEO impact"
+      title: t('landing.features.globalNetwork'),
+      description: t('landing.features.globalNetworkDesc')
     },
     {
       icon: <BarChart3 className="w-6 h-6" />,
-      title: "Advanced Analytics",
-      description: "Comprehensive SEO reports and performance tracking"
+      title: t('landing.features.analytics'),
+      description: t('landing.features.analyticsDesc')
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "Secure & Reliable",
-      description: "Enterprise-grade security with 99.9% uptime guarantee"
+      title: t('landing.features.security'),
+      description: t('landing.features.securityDesc')
     }
   ];
 
   const stats = [
-    { number: "1 Lakh+", label: "Directories" },
-    { number: "50K+", label: "Submissions" },
-    { number: "99.9%", label: "Success Rate" },
-    { number: "24/7", label: "Support" }
+    { number: "1 Lakh+", label: t('landing.stats.directories') },
+    { number: "50K+", label: t('landing.stats.submissions') },
+    { number: "99.9%", label: t('landing.stats.successRate') },
+    { number: "24/7", label: t('landing.stats.users') }
   ];
 
   const testimonials = [
@@ -406,6 +406,275 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="relative z-10 px-6 py-20 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-primary-900 dark:via-primary-800 dark:to-accent-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary-800 dark:text-primary-200 mb-6">
+              {t('landing.pricing.title')}
+            </h2>
+            <p className="text-xl text-primary-600 dark:text-primary-400 max-w-3xl mx-auto">
+              {t('landing.pricing.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Free Plan */}
+            <div className="p-8 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 hover:shadow-glass-lg transition-all duration-300">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-gray-400 to-gray-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  {t('landing.pricing.free').charAt(0)}
+                </div>
+                <h3 className="text-2xl font-bold text-primary-800 dark:text-primary-200 mb-2">
+                  {t('landing.pricing.free')}
+                </h3>
+                <div className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+                  ₹0
+                </div>
+                <p className="text-primary-600 dark:text-primary-400 mb-6">
+                  Perfect for getting started
+                </p>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    1 Project
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    5 Submissions/month
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Basic SEO Tools
+                  </li>
+                </ul>
+                <button
+                  onClick={onRegisterClick}
+                  className="w-full px-6 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors"
+                >
+                  {t('landing.pricing.startFree')}
+                </button>
+              </div>
+            </div>
+
+            {/* Starter Plan */}
+            <div className="p-8 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-accent-200 dark:border-accent-700 hover:shadow-glass-lg transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  {t('landing.pricing.starter').charAt(0)}
+                </div>
+                <h3 className="text-2xl font-bold text-primary-800 dark:text-primary-200 mb-2">
+                  {t('landing.pricing.starter')}
+                </h3>
+                <div className="text-4xl font-bold text-accent-600 mb-2">
+                  ₹999
+                  <span className="text-lg text-primary-600 dark:text-primary-400">
+                    {t('landing.pricing.monthly')}
+                  </span>
+                </div>
+                <p className="text-primary-600 dark:text-primary-400 mb-6">
+                  For growing businesses
+                </p>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    5 Projects
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    150 Submissions/month
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Advanced SEO Tools
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Priority Support
+                  </li>
+                </ul>
+                <button
+                  onClick={onRegisterClick}
+                  className="w-full px-6 py-3 bg-accent-500 text-white rounded-xl font-semibold hover:bg-accent-600 transition-colors"
+                >
+                  {t('landing.pricing.upgrade')}
+                </button>
+              </div>
+            </div>
+
+            {/* Pro Plan */}
+            <div className="p-8 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-blue-200 dark:border-blue-700 hover:shadow-glass-lg transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  {t('landing.pricing.pro').charAt(0)}
+                </div>
+                <h3 className="text-2xl font-bold text-primary-800 dark:text-primary-200 mb-2">
+                  {t('landing.pricing.pro')}
+                </h3>
+                <div className="text-4xl font-bold text-blue-600 mb-2">
+                  ₹1999
+                  <span className="text-lg text-primary-600 dark:text-primary-400">
+                    {t('landing.pricing.monthly')}
+                  </span>
+                </div>
+                <p className="text-primary-600 dark:text-primary-400 mb-6">
+                  For established businesses
+                </p>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    15 Projects
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    750 Submissions/month
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    All SEO Tools
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Analytics & Reports
+                  </li>
+                </ul>
+                <button
+                  onClick={onRegisterClick}
+                  className="w-full px-6 py-3 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-colors"
+                >
+                  {t('landing.pricing.upgrade')}
+                </button>
+              </div>
+            </div>
+
+            {/* Business Plan */}
+            <div className="p-8 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-purple-200 dark:border-purple-700 hover:shadow-glass-lg transition-all duration-300 transform hover:-translate-y-1">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                  {t('landing.pricing.business').charAt(0)}
+                </div>
+                <h3 className="text-2xl font-bold text-primary-800 dark:text-primary-200 mb-2">
+                  {t('landing.pricing.business')}
+                </h3>
+                <div className="text-4xl font-bold text-purple-600 mb-2">
+                  ₹3999
+                  <span className="text-lg text-primary-600 dark:text-primary-400">
+                    {t('landing.pricing.monthly')}
+                  </span>
+                </div>
+                <p className="text-primary-600 dark:text-primary-400 mb-6">
+                  For large enterprises
+                </p>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    50 Projects
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    1500 Submissions/month
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Enterprise Features
+                  </li>
+                  <li className="flex items-center text-primary-700 dark:text-primary-300">
+                    <CheckCircle className="w-5 h-5 text-success-500 mr-3" />
+                    Dedicated Support
+                  </li>
+                </ul>
+                <button
+                  onClick={onRegisterClick}
+                  className="w-full px-6 py-3 bg-purple-500 text-white rounded-xl font-semibold hover:bg-purple-600 transition-colors"
+                >
+                  {t('landing.pricing.upgrade')}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={onRegisterClick}
+              className="px-8 py-4 bg-accent-500 text-white rounded-2xl font-semibold text-lg hover:bg-accent-600 transition-colors"
+            >
+              {t('landing.pricing.viewPlans')}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Knowledge Base Section */}
+      <section className="relative z-10 px-6 py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-primary-800 dark:text-primary-200 mb-6">
+              {t('landing.knowledge.title')}
+            </h2>
+            <p className="text-xl text-primary-600 dark:text-primary-400 max-w-3xl mx-auto">
+              {t('landing.knowledge.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: <BookOpen className="w-8 h-8" />,
+                title: t('landing.knowledge.guides'),
+                description: "Step-by-step guides and video tutorials to get you started quickly"
+              },
+              {
+                icon: <Database className="w-8 h-8" />,
+                title: t('landing.knowledge.apiDocs'),
+                description: "Comprehensive API documentation for developers and integrations"
+              },
+              {
+                icon: <Target className="w-8 h-8" />,
+                title: t('landing.knowledge.bestPractices'),
+                description: "SEO best practices and optimization strategies from experts"
+              },
+              {
+                icon: <HelpCircle className="w-8 h-8" />,
+                title: t('landing.knowledge.faq'),
+                description: "Answers to common questions and troubleshooting guides"
+              }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="p-8 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 hover:shadow-glass-lg transition-all duration-300 animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center text-white mb-6 mx-auto">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold text-primary-800 dark:text-primary-200 mb-4 text-center">
+                  {item.title}
+                </h3>
+                <p className="text-primary-600 dark:text-primary-400 text-center leading-relaxed">
+                  {item.description}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <div className="inline-flex items-center space-x-4 p-6 bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-800 dark:to-accent-800 rounded-2xl">
+              <div className="w-12 h-12 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center text-white">
+                <Users className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <h4 className="font-semibold text-primary-800 dark:text-primary-200">
+                  {t('landing.knowledge.support')}
+                </h4>
+                <p className="text-sm text-primary-600 dark:text-primary-400">
+                  {t('landing.knowledge.community')}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

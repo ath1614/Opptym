@@ -105,6 +105,40 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // Profile fields
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+    default: ''
+  },
+  phone: {
+    type: String,
+    trim: true,
+    maxlength: 20,
+    default: ''
+  },
+  company: {
+    type: String,
+    trim: true,
+    maxlength: 100,
+    default: ''
+  },
+  website: {
+    type: String,
+    trim: true,
+    maxlength: 200,
+    default: ''
+  },
+  timezone: {
+    type: String,
+    default: 'UTC'
+  },
+  profilePhoto: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   preferences: {
     theme: { type: String, enum: ['light', 'dark', 'auto'], default: 'auto' },
     language: { type: String, default: 'en' },

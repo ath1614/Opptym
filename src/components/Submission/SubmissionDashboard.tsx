@@ -56,6 +56,10 @@ type SiteEntry = {
   url: string;
   description?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
+  classification?: string;
+  isCustom?: boolean;
+  priority?: number;
+  country?: string;
 };
 
 // This will be defined after siteMap
@@ -613,14 +617,41 @@ const getSiteMap = (directories: any[]) => {
     classification: dir.classification || 'General'
   }));
 
+  // Group directories by classification for proper filtering
+  const classificationGroups: Record<string, any> = {};
+  
+  databaseDirectorySites.forEach(site => {
+    const classification = site.classification || 'General';
+    if (!classificationGroups[classification]) {
+      classificationGroups[classification] = [];
+    }
+    classificationGroups[classification].push(site);
+  });
+
   // Return all categories from siteMap, but update the directory category with database sites
-  return {
+  // and create separate classification-based categories
+  const result: Record<string, any> = {
     ...siteMap,
     directory: {
       ...siteMap.directory,
       sites: databaseDirectorySites
     }
   };
+
+  // Add classification-specific categories
+  Object.entries(classificationGroups).forEach(([classification, sites]) => {
+    if (classification !== 'General') {
+      result[`${classification.toLowerCase().replace(/\s+/g, '-')}`] = {
+        icon: <MapPin className="w-5 h-5" />,
+        color: 'text-blue-600',
+        gradient: 'from-blue-500 to-indigo-600',
+        description: `${classification} platforms and directories`,
+        sites: sites
+      };
+    }
+  });
+
+  return result;
 };
 
 const SubmissionsDashboard = () => {
@@ -2699,7 +2730,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
               
               {/* Platform List */}
               <div className="p-6 space-y-3">
-                {(expandedCategories.has(category) ? sites : sites.slice(0, 5)).map((site) => (
+                {(expandedCategories.has(category) ? sites : sites.slice(0, 5)).map((site: SiteEntry) => (
                   <div key={site.name} className="bg-gray-50/50 dark:bg-primary-900/50 rounded-xl p-4 hover:bg-gray-100/50 dark:hover:bg-primary-800/50 transition-all border border-gray-100 dark:border-primary-700/30 group">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -2727,7 +2758,7 @@ console.log('✅ Auto-fill script executed for:', projectData.companyName || pro
                           {site.classification && site.classification !== 'General' && (
                             <span className="flex items-center space-x-1">
                               <Tag className="w-3 h-3" />
-                              <span>{typeof site.classification === 'string' ? site.classification : site.classification.name || 'Unknown'}</span>
+                              <span>{site.classification}</span>
                             </span>
                           )}
                         </div>

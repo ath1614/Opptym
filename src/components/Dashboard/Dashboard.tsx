@@ -27,6 +27,15 @@ interface DashboardStats {
   directoriesSubmitted: number;
 }
 
+interface DashboardDelta {
+  totalProjects: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+  totalSubmissions: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+  successRate: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+  averageRanking: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+  backlinksGained: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+  directoriesSubmitted: { value: number; delta: number; direction: 'increase' | 'decrease' | 'stable' };
+}
+
 export default function Dashboard() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -38,11 +47,37 @@ export default function Dashboard() {
     backlinksGained: 0,
     directoriesSubmitted: 0
   });
+  const [deltas, setDeltas] = useState<DashboardDelta>({
+    totalProjects: { value: 0, delta: 0, direction: 'stable' },
+    totalSubmissions: { value: 0, delta: 0, direction: 'stable' },
+    successRate: { value: 0, delta: 0, direction: 'stable' },
+    averageRanking: { value: 0, delta: 0, direction: 'stable' },
+    backlinksGained: { value: 0, delta: 0, direction: 'stable' },
+    directoriesSubmitted: { value: 0, delta: 0, direction: 'stable' }
+  });
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [subscription, setSubscription] = useState<any>(null);
   const [showTrialModal, setShowTrialModal] = useState(false);
   const [trialModalType, setTrialModalType] = useState<'trial_expired' | 'subscription_expired' | 'trial_ending'>('trial_expired');
+
+  // Calculate delta percentage between two values
+  const calculateDelta = (current: number, previous: number): { delta: number; direction: 'increase' | 'decrease' | 'stable' } => {
+    if (previous === 0) {
+      return { delta: 0, direction: 'stable' };
+    }
+    
+    const deltaPercent = ((current - previous) / previous) * 100;
+    
+    if (Math.abs(deltaPercent) < 1) {
+      return { delta: 0, direction: 'stable' };
+    }
+    
+    return {
+      delta: Math.abs(deltaPercent),
+      direction: deltaPercent > 0 ? 'increase' : 'decrease'
+    };
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -135,6 +170,18 @@ export default function Dashboard() {
 
         // Update stats with calculated data
         setStats(calculatedStats);
+        
+        // Calculate deltas
+        const newDeltas: DashboardDelta = {
+          totalProjects: { ...calculateDelta(calculatedStats.totalProjects, stats.totalProjects), value: calculatedStats.totalProjects },
+          totalSubmissions: { ...calculateDelta(calculatedStats.totalSubmissions, stats.totalSubmissions), value: calculatedStats.totalSubmissions },
+          successRate: { ...calculateDelta(calculatedStats.successRate, stats.successRate), value: calculatedStats.successRate },
+          averageRanking: { ...calculateDelta(calculatedStats.averageRanking, stats.averageRanking), value: calculatedStats.averageRanking },
+          backlinksGained: { ...calculateDelta(calculatedStats.backlinksGained, stats.backlinksGained), value: calculatedStats.backlinksGained },
+          directoriesSubmitted: { ...calculateDelta(calculatedStats.directoriesSubmitted, stats.directoriesSubmitted), value: calculatedStats.directoriesSubmitted }
+        };
+        
+        setDeltas(newDeltas);
         
         // Generate real recent activity from actual data
         const realActivity = [];
@@ -333,48 +380,48 @@ export default function Dashboard() {
               value: stats.totalProjects,
               icon: <Target className="w-6 h-6" />,
               color: 'from-blue-500 to-blue-600',
-              change: '+12%',
-              changeType: 'increase'
+              change: deltas.totalProjects.direction === 'stable' ? '0%' : `${deltas.totalProjects.direction === 'increase' ? '+' : '-'}${deltas.totalProjects.delta.toFixed(1)}%`,
+              changeType: deltas.totalProjects.direction
             },
             {
               title: 'Submissions',
               value: stats.totalSubmissions,
               icon: <Globe className="w-6 h-6" />,
               color: 'from-green-500 to-green-600',
-              change: '+8%',
-              changeType: 'increase'
+              change: deltas.totalSubmissions.direction === 'stable' ? '0%' : `${deltas.totalSubmissions.direction === 'increase' ? '+' : '-'}${deltas.totalSubmissions.delta.toFixed(1)}%`,
+              changeType: deltas.totalSubmissions.direction
             },
             {
               title: 'Success Rate',
               value: `${stats.successRate}%`,
               icon: <CheckCircle className="w-6 h-6" />,
               color: 'from-success-500 to-success-600',
-              change: '+5%',
-              changeType: 'increase'
+              change: deltas.successRate.direction === 'stable' ? '0%' : `${deltas.successRate.direction === 'increase' ? '+' : '-'}${deltas.successRate.delta.toFixed(1)}%`,
+              changeType: deltas.successRate.direction
             },
             {
               title: 'Backlinks Gained',
               value: stats.backlinksGained,
               icon: <TrendingUp className="w-6 h-6" />,
               color: 'from-purple-500 to-purple-600',
-              change: '+23%',
-              changeType: 'increase'
+              change: deltas.backlinksGained.direction === 'stable' ? '0%' : `${deltas.backlinksGained.direction === 'increase' ? '+' : '-'}${deltas.backlinksGained.delta.toFixed(1)}%`,
+              changeType: deltas.backlinksGained.direction
             },
             {
               title: 'Directories Submitted',
               value: stats.directoriesSubmitted,
               icon: <FileText className="w-6 h-6" />,
               color: 'from-orange-500 to-orange-600',
-              change: '+15%',
-              changeType: 'increase'
+              change: deltas.directoriesSubmitted.direction === 'stable' ? '0%' : `${deltas.directoriesSubmitted.direction === 'increase' ? '+' : '-'}${deltas.directoriesSubmitted.delta.toFixed(1)}%`,
+              changeType: deltas.directoriesSubmitted.direction
             },
             {
               title: 'Average Ranking',
               value: `#${stats.averageRanking}`,
               icon: <BarChart3 className="w-6 h-6" />,
               color: 'from-red-500 to-red-600',
-              change: '-3%',
-              changeType: 'decrease'
+              change: deltas.averageRanking.direction === 'stable' ? '0%' : `${deltas.averageRanking.direction === 'increase' ? '+' : '-'}${deltas.averageRanking.delta.toFixed(1)}%`,
+              changeType: deltas.averageRanking.direction
             }
           ].map((stat, index) => (
             <div

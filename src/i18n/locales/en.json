@@ -134,14 +134,34 @@
     "help": "Help",
     "support": "Support"
   },
+  "navbar": {
+    "welcomeBack": "Welcome back",
+    "search": "Search...",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Logout",
+    "notifications": "Notifications"
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "projects": "Projects",
     "tools": "SEO Tools",
     "directory": "Submissions",
+    "seoTasks": "SEO Tasks",
     "reports": "Reports",
     "pricing": "Pricing",
     "profile": "Profile"
+  },
+  "pageTitles": {
+    "dashboard": "Dashboard",
+    "projects": "My Projects",
+    "tools": "SEO Tools",
+    "directory": "Submissions",
+    "reports": "Submission Reports",
+    "pricing": "Pricing Plans",
+    "profile": "Profile Settings",
+    "admin": "Admin Panel"
   },
   "settings": {
     "title": "Settings",
@@ -154,6 +174,67 @@
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
     "autoMode": "Auto Mode"
+  },
+  "landing": {
+    "hero": {
+      "title": "Your SEO Success Starts Here",
+      "subtitle": "Automate directory submissions across 1 Lakh+ premium directories with AI-powered intelligence",
+      "cta": "Get Started Free",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "aiAutomation": "AI-Powered Automation",
+      "aiAutomationDesc": "Intelligent form filling and submission automation across 1 Lakh+ directories",
+      "globalNetwork": "Global Directory Network",
+      "globalNetworkDesc": "Access to premium directories worldwide for maximum SEO impact",
+      "analytics": "Advanced Analytics",
+      "analyticsDesc": "Comprehensive SEO reports and performance tracking",
+      "security": "Secure & Reliable",
+      "securityDesc": "Enterprise-grade security with 99.9% uptime guarantee"
+    },
+    "stats": {
+      "directories": "Directories",
+      "submissions": "Submissions",
+      "users": "Users",
+      "successRate": "Success Rate"
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Choose the plan that fits your SEO needs",
+      "viewPlans": "View All Plans",
+      "free": "Free",
+      "starter": "Starter",
+      "pro": "Pro",
+      "business": "Business",
+      "monthly": "/month",
+      "yearly": "/year",
+      "startFree": "Start Free",
+      "upgrade": "Upgrade"
+    },
+    "knowledge": {
+      "title": "Knowledge Base & Resources",
+      "subtitle": "Everything you need to succeed with OPPTYM",
+      "guides": "Guides & Tutorials",
+      "apiDocs": "API Documentation",
+      "bestPractices": "Best Practices",
+      "faq": "Frequently Asked Questions",
+      "support": "24/7 Support",
+      "community": "Community Forum"
+    },
+    "limits": {
+      "upgradeRequired": "Upgrade Required for {{feature}}",
+      "usageExceeded": "You have reached your {{feature}} limit ({{current}}/{{limit}}). Please upgrade your plan to continue.",
+      "upgradeNow": "Upgrade Now",
+      "currentUsage": "Current: {{current}}/{{limit}}",
+      "upgradeTitle": "Upgrade Your Plan",
+      "upgradeMessage": "You've reached your {{feature}} limit. Upgrade to unlock more {{feature}} and other premium features.",
+      "features": {
+        "projects": "Projects",
+        "submissions": "Submissions",
+        "tools": "SEO Tools",
+        "apiCalls": "API Calls"
+      }
+    }
   },
   "errors": {
     "somethingWentWrong": "Something went wrong",

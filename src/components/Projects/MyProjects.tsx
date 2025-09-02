@@ -12,6 +12,7 @@ import {
 import CreateProjectModal from './CreateProjectModal';
 import EditProjectModal from './EditProjectModal';
 import ProjectDetails from '../Reports/ProjectDetails';
+import LimitGate from '../Common/LimitGate';
 
 type Project = {
   _id: string;
@@ -87,6 +88,27 @@ const MyProjects = () => {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [editProject, setEditProject] = useState<Project | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [userLimits, setUserLimits] = useState({ projects: 1, submissions: 5 });
+  const [userUsage, setUserUsage] = useState({ projectsUsed: 0, submissionsUsed: 0 });
+
+  // Fetch user limits and usage
+  const fetchUserLimits = async () => {
+    try {
+      const response = await fetch('/api/subscription/details', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUserLimits(data.planLimits || { projects: 1, submissions: 5 });
+        setUserUsage(data.usage || { projectsUsed: 0, submissionsUsed: 0 });
+      }
+    } catch (error) {
+      console.error('Error fetching user limits:', error);
+    }
+  };
 
   // Fetch projects with proper error handling
   const fetchProjects = async () => {
@@ -143,6 +165,7 @@ const MyProjects = () => {
 
   // Load projects on component mount
   useEffect(() => {
+    fetchUserLimits();
     fetchProjects();
   }, []);
 
@@ -197,6 +220,11 @@ const MyProjects = () => {
   }
 
   // Error state
+  const handleUpgrade = () => {
+    // Navigate to pricing page
+    window.location.href = '/pricing';
+  };
+
   if (error) {
     return (
       <div className="p-6">
@@ -227,13 +255,23 @@ const MyProjects = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Projects</h2>
           <p className="text-gray-600 dark:text-gray-300">Manage your SEO projects and track their performance</p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 shadow-sm"
+        <LimitGate
+          isLimited={userUsage.projectsUsed >= userLimits.projects}
+          currentUsage={userUsage.projectsUsed}
+          limit={userLimits.projects}
+          feature="projects"
+          onUpgrade={() => setShowUpgradeModal(true)}
+          showUpgradeModal={showUpgradeModal}
+          onCloseUpgradeModal={() => setShowUpgradeModal(false)}
         >
-          <Plus className="w-4 h-4" />
-          <span>New Project</span>
-        </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Project</span>
+          </button>
+        </LimitGate>
       </div>
 
       {/* Filters */}
@@ -285,13 +323,23 @@ const MyProjects = () => {
             }
           </p>
           {projects.length === 0 && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 mx-auto"
+            <LimitGate
+              isLimited={userUsage.projectsUsed >= userLimits.projects}
+              currentUsage={userUsage.projectsUsed}
+              limit={userLimits.projects}
+              feature="projects"
+              onUpgrade={() => setShowUpgradeModal(true)}
+              showUpgradeModal={showUpgradeModal}
+              onCloseUpgradeModal={() => setShowUpgradeModal(false)}
             >
-              <Plus className="w-4 h-4" />
-              <span>Create Your First Project</span>
-            </button>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 mx-auto"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Your First Project</span>
+              </button>
+            </LimitGate>
           )}
         </div>
       )}

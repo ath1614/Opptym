@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Bell, User, LogOut, Search, Settings, HelpCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getUserDisplayName, getUserShortName, getUserInitials } from '../../utils/userUtils';
@@ -12,6 +13,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -53,16 +55,16 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
   const getPageTitle = (tab: string) => {
     const titles: Record<string, string> = {
-      dashboard: 'Dashboard',
-      projects: 'My Projects',
-      tools: 'SEO Tools',
-      directory: 'Submissions',
-      reports: 'Submission Reports',
-      pricing: 'Pricing Plans',
-      profile: 'Profile Settings',
-      admin: 'Admin Panel'
+      dashboard: t('pageTitles.dashboard'),
+      projects: t('pageTitles.projects'),
+      tools: t('pageTitles.tools'),
+      directory: t('pageTitles.directory'),
+      reports: t('pageTitles.reports'),
+      pricing: t('pageTitles.pricing'),
+      profile: t('pageTitles.profile'),
+      admin: t('pageTitles.admin')
     };
-    return titles[tab] || 'Dashboard';
+    return titles[tab] || t('pageTitles.dashboard');
   };
 
   const formatSubscriptionName = (subscription?: string) => {
@@ -122,7 +124,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                     {getPageTitle(activeTab)}
                   </h1>
                   <p className="text-sm text-primary-600 font-medium">
-                    Welcome back, <span className="text-accent-600 font-semibold">{getUserDisplayName(user)}</span>
+                    {t('navbar.welcomeBack')}, <span className="text-accent-600 font-semibold">{getUserShortName(user)}</span>
                   </p>
                 </div>
               </div>
@@ -146,7 +148,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
               </div>
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('navbar.search')}
                 className="block w-64 pl-10 pr-3 py-2 border border-primary-200 rounded-xl bg-white/50 backdrop-blur-sm text-primary-900 placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all shadow-soft hover:shadow-medium"
               />
             </div>
@@ -186,21 +188,21 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
                       className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
                     >
                       <User className="mr-3 h-4 w-4" />
-                      Profile
+                      {t('navbar.profile')}
                     </button>
                     <button
                       onClick={handleSettingsClick}
                       className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
                     >
                       <Settings className="mr-3 h-4 w-4" />
-                      Settings
+                      {t('navbar.settings')}
                     </button>
                     <button
                       onClick={handleHelpClick}
                       className="flex items-center w-full px-4 py-2 text-sm text-primary-700 hover:bg-accent-50 hover:text-accent-700 transition-colors duration-200"
                     >
                       <HelpCircle className="mr-3 h-4 w-4" />
-                      Help & Support
+                      {t('navbar.help')}
                     </button>
                   </div>
                   
