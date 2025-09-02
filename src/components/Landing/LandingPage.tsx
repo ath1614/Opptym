@@ -656,7 +656,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
                 </h3>
                 <p className="text-primary-600 dark:text-primary-400 text-center leading-relaxed">
                   {item.description}
-                </div>
+                </p>
               </div>
             ))}
           </div>
