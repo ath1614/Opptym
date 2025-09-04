@@ -149,21 +149,21 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             w-full flex items-center justify-between px-4 py-3 text-left rounded-xl transition-all duration-200
             ${depth > 0 ? 'ml-4 pl-8' : ''}
             ${isActive
-              ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-glow'
-              : 'text-primary-700 hover:bg-primary-50 hover:text-primary-900'
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+              : 'text-slate-300 hover:bg-slate-700 hover:text-white'
             }
           `}
         >
           <div className="flex items-center space-x-3">
-            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
           </div>
           {hasChildren && !isCollapsed && (
             <div className="flex items-center">
               {isExpanded ? (
-                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
               ) : (
-                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
               )}
             </div>
           )}
@@ -180,28 +180,28 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className={`bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass h-screen sticky top-0 flex flex-col animate-fade-in-left transition-all duration-300 ${
+    <aside className={`bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 ${
       isCollapsed ? 'w-16' : 'w-64'
     }`}>
       {/* Sidebar Header */}
-      <div className="p-6 border-b border-primary-100">
+      <div className="p-6 border-b border-slate-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <svg className={`transition-all duration-300 ${
               isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
             }`} viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="18" fill="none" stroke="#3B82F6" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
-              <circle cx="26" cy="14" r="3" fill="#3B82F6"/>
-              <path d="M 26 14 A 18 18 0 0 1 20 2" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
-              <circle cx="14" cy="26" r="3" fill="#1E40AF"/>
-              <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#1E40AF" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#60A5FA" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
+              <circle cx="26" cy="14" r="3" fill="#60A5FA"/>
+              <path d="M 26 14 A 18 18 0 0 1 20 2" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="14" cy="26" r="3" fill="#3B82F6"/>
+              <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             {!isCollapsed && (
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
                   OPPTYM
                 </h1>
-                <p className="text-xs text-primary-600 font-medium">
+                <p className="text-xs text-slate-300 font-medium">
                   SEO Automation Platform
                 </p>
               </div>
@@ -209,12 +209,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 rounded-md hover:bg-primary-50 transition-colors"
+            className="p-1 rounded-md hover:bg-slate-700 transition-colors"
           >
             {isCollapsed ? (
-              <Menu className="h-5 w-5 text-primary-600" />
+              <Menu className="h-5 w-5 text-slate-300" />
             ) : (
-              <X className="h-5 w-5 text-primary-600" />
+              <X className="h-5 w-5 text-slate-300" />
             )}
           </button>
         </div>

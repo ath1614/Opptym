@@ -9,6 +9,9 @@ import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
 import SubmissionDashboard from './components/Submission/SubmissionDashboard';
+import DirectorySubmissions from './components/Submissions/DirectorySubmissions';
+import ArticlePlatforms from './components/Submissions/ArticlePlatforms';
+import PressRelease from './components/Submissions/PressRelease';
 import PricingPlans from './components/Pricing/PricingPlans';
 import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
@@ -55,7 +58,7 @@ function App() {
   const getInitialTab = () => {
     // Check URL hash first
     const hash = window.location.hash.replace('#', '');
-    if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
+    if (hash && ['dashboard', 'projects', 'tools', 'directory', 'article', 'press', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
       return hash;
     }
     // Fall back to localStorage
@@ -87,7 +90,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['dashboard', 'projects', 'tools', 'directory', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
+      if (hash && ['dashboard', 'projects', 'tools', 'directory', 'article', 'press', 'reports', 'pricing', 'profile', 'admin', 'project-details'].includes(hash)) {
         setActiveTab(hash);
         localStorage.setItem('activeTab', hash);
       }
@@ -312,7 +315,11 @@ function App() {
       case 'tools':
         return <SEOTools />;
       case 'directory':
-        return <SubmissionDashboard />;
+        return <DirectorySubmissions />;
+      case 'article':
+        return <ArticlePlatforms />;
+      case 'press':
+        return <PressRelease />;
       case 'project-details':
         return selectedProject ? (
           <ProjectDetails project={selectedProject} />
@@ -485,7 +492,9 @@ function App() {
               activeTab={activeTab} 
               setActiveTab={updateActiveTab}
             />
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
+              activeTab === 'dashboard' ? 'ml-64' : 'ml-64'
+            }`}>
               <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
               <main className="flex-1 p-6 overflow-auto">
                 {renderContent()}
