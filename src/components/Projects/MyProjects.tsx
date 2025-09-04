@@ -151,7 +151,8 @@ const MyProjects = () => {
 
   // Safe status color function
   const getStatusColor = (status: string = '') => {
-    switch (status.toLowerCase()) {
+    const safeStatus = (status || '').toLowerCase();
+    switch (safeStatus) {
       case 'active':
         return 'bg-green-100 text-green-800';
       case 'paused':

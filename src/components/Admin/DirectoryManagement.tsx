@@ -334,8 +334,13 @@ export default function DirectoryManagement() {
   };
 
   const filteredDirectories = directories.filter(directory => {
-    const matchesSearch = directory.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         directory.domain.toLowerCase().includes(searchTerm.toLowerCase());
+    // Safe search with null checks
+    const name = directory.name || '';
+    const domain = directory.domain || '';
+    const searchLower = searchTerm.toLowerCase();
+    
+    const matchesSearch = name.toLowerCase().includes(searchLower) ||
+                         domain.toLowerCase().includes(searchLower);
     const matchesCategory = selectedCategory === 'all' || directory.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });

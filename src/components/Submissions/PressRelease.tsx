@@ -67,10 +67,28 @@ export default function PressRelease() {
       const response = await axios.get('/api/submissions?classification=press', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSubmissions(response.data);
+      
+      // Ensure all submissions have required fields with fallbacks
+      const safeSubmissions = response.data.map((submission: any) => ({
+        _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
+        projectId: submission.projectId || '',
+        projectName: submission.projectName || 'Unnamed Project',
+        platformName: submission.platformName || 'Unnamed Platform',
+        platformUrl: submission.platformUrl || '',
+        pressReleaseTitle: submission.pressReleaseTitle || 'Untitled Press Release',
+        pressReleaseContent: submission.pressReleaseContent || '',
+        status: submission.status || 'draft',
+        submittedAt: submission.submittedAt || new Date().toISOString(),
+        publishedAt: submission.publishedAt,
+        publishedUrl: submission.publishedUrl,
+        notes: submission.notes || ''
+      }));
+      
+      setSubmissions(safeSubmissions);
     } catch (error) {
       console.error('Error fetching press release submissions:', error);
       showPopup('Failed to load press release submissions', 'error');
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
@@ -88,10 +106,15 @@ export default function PressRelease() {
     }
   };
 
-  const filteredSubmissions = submissions.filter(submission =>
-    submission.platformName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    submission.pressReleaseTitle.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSubmissions = submissions.filter(submission => {
+    // Safe search with null checks
+    const platformName = submission.platformName || '';
+    const pressReleaseTitle = submission.pressReleaseTitle || '';
+    const searchLower = searchTerm.toLowerCase();
+    
+    return platformName.toLowerCase().includes(searchLower) ||
+           pressReleaseTitle.toLowerCase().includes(searchLower);
+  });
 
   const getStatusIcon = (status: string) => {
     switch (status) {

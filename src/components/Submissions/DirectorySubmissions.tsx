@@ -73,10 +73,28 @@ export default function DirectorySubmissions() {
       const response = await axios.get('/api/submissions', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSubmissions(response.data);
+      
+      // Ensure all submissions have required fields with fallbacks
+      const safeSubmissions = response.data.map((submission: any) => ({
+        _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
+        projectId: submission.projectId || '',
+        projectName: submission.projectName || 'Unnamed Project',
+        directoryName: submission.directoryName || 'Unnamed Directory',
+        directoryUrl: submission.directoryUrl || '',
+        classification: submission.classification || 'directory',
+        category: submission.category || 'general',
+        status: submission.status || 'pending',
+        submittedAt: submission.submittedAt || new Date().toISOString(),
+        approvedAt: submission.approvedAt,
+        backlinkUrl: submission.backlinkUrl,
+        notes: submission.notes || ''
+      }));
+      
+      setSubmissions(safeSubmissions);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       showPopup('Failed to load submissions', 'error');
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
@@ -96,8 +114,15 @@ export default function DirectorySubmissions() {
 
   const filteredSubmissions = submissions.filter(submission => {
     const matchesClassification = selectedClassification === 'all' || submission.classification === selectedClassification;
-    const matchesSearch = submission.directoryName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         submission.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Safe search with null checks
+    const directoryName = submission.directoryName || '';
+    const projectName = submission.projectName || '';
+    const searchLower = searchTerm.toLowerCase();
+    
+    const matchesSearch = directoryName.toLowerCase().includes(searchLower) ||
+                         projectName.toLowerCase().includes(searchLower);
+    
     return matchesClassification && matchesSearch;
   });
 
