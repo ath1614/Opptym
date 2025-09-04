@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
 import { useAuthProvider, AuthContext } from './hooks/useAuth';
+import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -20,6 +21,7 @@ import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
 import ProjectDetails from './components/Reports/ProjectDetails';
+
 
 
 import { BookOpen, Settings } from 'lucide-react';
@@ -221,7 +223,8 @@ function App() {
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
     return (
-      <AuthContext.Provider value={authProvider}>
+      <ThemeProvider>
+        <AuthContext.Provider value={authProvider}>
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 relative overflow-hidden">
           {/* Animated Background Elements */}
           <div className="absolute inset-0 overflow-hidden">
@@ -249,7 +252,8 @@ function App() {
             updateActiveTab('pricing');
           }}
         />
-      </AuthContext.Provider>
+        </AuthContext.Provider>
+      </ThemeProvider>
     );
   }
 
@@ -468,17 +472,19 @@ function App() {
         return <PricingPlans />;
       case 'profile':
         return <ProfileSettings />;
-                  case 'admin':
-              return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
-            default:
-              return <Dashboard />;
+                        case 'admin':
+        return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
+
+      default:
+        return <Dashboard />;
     }
   };
 
   // If user is authenticated, show main app
   return (
-    <AuthContext.Provider value={authProvider}>
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden">
+    <ThemeProvider>
+      <AuthContext.Provider value={authProvider}>
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-900 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
@@ -503,8 +509,9 @@ function App() {
           </div>
         </div>
       </div>
-    </AuthContext.Provider>
-  );
-}
+        </AuthContext.Provider>
+      </ThemeProvider>
+    );
+  }
 
 export default App;

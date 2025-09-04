@@ -155,9 +155,16 @@ export default function Dashboard() {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setStats(prev => ({ ...prev, totalSubmissions: submissionsResponse.data.length }));
-        const successfulSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'success' || s.status === 'completed');
-        const pendingSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'pending' || s.status === 'processing');
-        const failedSubmissions = submissionsResponse.data.filter((s: any) => s.status === 'failed' || s.status === 'error');
+        // Map submission statuses correctly
+        const successfulSubmissions = submissionsResponse.data.filter((s: any) => 
+          s.status === 'success' || s.status === 'completed' || s.status === 'approved' || s.status === 'published'
+        );
+        const pendingSubmissions = submissionsResponse.data.filter((s: any) => 
+          s.status === 'pending' || s.status === 'processing' || s.status === 'submitted' || s.status === 'draft'
+        );
+        const failedSubmissions = submissionsResponse.data.filter((s: any) => 
+          s.status === 'failed' || s.status === 'error' || s.status === 'rejected'
+        );
         
         const calculatedStats: DashboardStats = {
           totalProjects: totalProjects, // Use actual projects count
@@ -171,14 +178,20 @@ export default function Dashboard() {
         // Update stats with calculated data
         setStats(calculatedStats);
         
-        // Calculate deltas
+        // Store previous values for delta calculation
+        const previousStats = { ...stats };
+        
+        // Update stats first
+        setStats(calculatedStats);
+        
+        // Calculate deltas with previous values
         const newDeltas: DashboardDelta = {
-          totalProjects: { ...calculateDelta(calculatedStats.totalProjects, stats.totalProjects), value: calculatedStats.totalProjects },
-          totalSubmissions: { ...calculateDelta(calculatedStats.totalSubmissions, stats.totalSubmissions), value: calculatedStats.totalSubmissions },
-          successRate: { ...calculateDelta(calculatedStats.successRate, stats.successRate), value: calculatedStats.successRate },
-          averageRanking: { ...calculateDelta(calculatedStats.averageRanking, stats.averageRanking), value: calculatedStats.averageRanking },
-          backlinksGained: { ...calculateDelta(calculatedStats.backlinksGained, stats.backlinksGained), value: calculatedStats.backlinksGained },
-          directoriesSubmitted: { ...calculateDelta(calculatedStats.directoriesSubmitted, stats.directoriesSubmitted), value: calculatedStats.directoriesSubmitted }
+          totalProjects: { ...calculateDelta(calculatedStats.totalProjects, previousStats.totalProjects), value: calculatedStats.totalProjects },
+          totalSubmissions: { ...calculateDelta(calculatedStats.totalSubmissions, previousStats.totalSubmissions), value: calculatedStats.totalSubmissions },
+          successRate: { ...calculateDelta(calculatedStats.successRate, previousStats.successRate), value: calculatedStats.successRate },
+          averageRanking: { ...calculateDelta(calculatedStats.averageRanking, previousStats.averageRanking), value: calculatedStats.averageRanking },
+          backlinksGained: { ...calculateDelta(calculatedStats.backlinksGained, previousStats.backlinksGained), value: calculatedStats.backlinksGained },
+          directoriesSubmitted: { ...calculateDelta(calculatedStats.directoriesSubmitted, previousStats.directoriesSubmitted), value: calculatedStats.directoriesSubmitted }
         };
         
         setDeltas(newDeltas);

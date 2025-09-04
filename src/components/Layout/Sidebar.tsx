@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../contexts/ThemeContext';
 import {
   Home,
   FolderOpen,
@@ -30,6 +31,7 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
   const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -151,20 +153,22 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'}
             ${isActive
               ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
-              : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+              : isDark
+                ? 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
             }
           `}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
-            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
             {!isCollapsed && <span className="font-medium truncate">{item.label}</span>}
           </div>
           {hasChildren && !isCollapsed && (
             <div className="flex items-center flex-shrink-0">
               {isExpanded ? (
-                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
               ) : (
-                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
               )}
             </div>
           )}
@@ -181,12 +185,18 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className={`bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden ${
+    <aside className={`h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden ${
       isCollapsed ? 'w-16' : 'w-64'
+    } ${
+      isDark 
+        ? 'bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700' 
+        : 'bg-gradient-to-b from-white to-gray-50 border-r border-gray-200'
     }`}>
       {/* Sidebar Header */}
-      <div className={`border-b border-slate-700 flex-shrink-0 ${
+      <div className={`border-b flex-shrink-0 ${
         isCollapsed ? 'p-4' : 'p-6'
+      } ${
+        isDark ? 'border-slate-700' : 'border-gray-200'
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -201,10 +211,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             </svg>
             {!isCollapsed && (
               <div className="min-w-0">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent truncate">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent truncate">
                   OPPTYM
                 </h1>
-                <p className="text-xs text-slate-300 font-medium truncate">
+                <p className={`text-xs font-medium truncate ${
+                  isDark ? 'text-slate-300' : 'text-gray-600'
+                }`}>
                   SEO Automation Platform
                 </p>
               </div>
@@ -212,21 +224,31 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`p-1 rounded-md hover:bg-slate-700 transition-colors flex-shrink-0 ${
+            className={`p-1 rounded-md transition-colors flex-shrink-0 ${
               isCollapsed ? 'mx-auto' : ''
+            } ${
+              isDark 
+                ? 'hover:bg-slate-700' 
+                : 'hover:bg-gray-100'
             }`}
           >
             {isCollapsed ? (
-              <Menu className="h-5 w-5 text-slate-300" />
+              <Menu className={`h-5 w-5 ${
+                isDark ? 'text-slate-300' : 'text-gray-600'
+              }`} />
             ) : (
-              <X className="h-5 w-5 text-slate-300" />
+              <X className={`h-5 w-5 ${
+                isDark ? 'text-slate-300' : 'text-gray-600'
+              }`} />
             )}
           </button>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
+      <nav className={`flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-track-transparent ${
+        isDark ? 'scrollbar-thumb-slate-600' : 'scrollbar-thumb-gray-400'
+      }`}>
         <div className={`space-y-2 ${
           isCollapsed ? 'px-2' : 'px-4'
         }`}>
