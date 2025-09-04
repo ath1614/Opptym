@@ -282,7 +282,7 @@ export default function DirectorySubmissions() {
                       <div>
                         <div className="text-sm font-medium text-gray-900">{submission.projectName}</div>
                         <div className="text-sm text-gray-500">
-                          {typeof submission.projectId === 'object' ? submission.projectId._id || 'N/A' : submission.projectId || 'N/A'}
+                          {submission.projectId || 'N/A'}
                         </div>
                       </div>
                     </td>
