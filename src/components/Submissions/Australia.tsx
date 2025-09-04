@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import DirectoryGrid from './DirectoryGrid';
 
 interface AustraliaSubmission {
   _id: string;
@@ -317,6 +318,21 @@ export default function Australia() {
           </div>
         </div>
       </div>
+
+      {/* Available Australia Directories */}
+      <DirectoryGrid
+        directories={directories}
+        loading={loading}
+        onBookmarkletClick={() => setShowBookmarkletModal(true)}
+        theme={{
+          primary: 'bg-red-600',
+          primaryHover: 'hover:bg-red-700',
+          primaryBg: 'bg-red-100',
+          primaryText: 'text-red-800'
+        }}
+        title="Available Australia Directories"
+        emptyMessage="No Australia directories found"
+      />
 
       {/* Search and Submissions */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">

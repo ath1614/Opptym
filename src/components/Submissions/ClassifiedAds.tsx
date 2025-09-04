@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import DirectoryGrid from './DirectoryGrid';
 
 interface ClassifiedSubmission {
   _id: string;
@@ -305,6 +306,21 @@ export default function ClassifiedAds() {
           </div>
         </div>
       </div>
+
+      {/* Available Classified Ad Platforms */}
+      <DirectoryGrid
+        directories={directories}
+        loading={loading}
+        onBookmarkletClick={() => setShowBookmarkletModal(true)}
+        theme={{
+          primary: 'bg-indigo-600',
+          primaryHover: 'hover:bg-indigo-700',
+          primaryBg: 'bg-indigo-100',
+          primaryText: 'text-indigo-800'
+        }}
+        title="Available Classified Ad Platforms"
+        emptyMessage="No classified ad platforms found"
+      />
 
       {/* Search and Submissions */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">

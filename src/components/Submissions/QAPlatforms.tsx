@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import DirectoryGrid from './DirectoryGrid';
 
 interface QASubmission {
   _id: string;
@@ -295,6 +296,21 @@ export default function QAPlatforms() {
           </div>
         </div>
       </div>
+
+      {/* Available Q&A Platforms */}
+      <DirectoryGrid
+        directories={directories}
+        loading={loading}
+        onBookmarkletClick={() => setShowBookmarkletModal(true)}
+        theme={{
+          primary: 'bg-pink-600',
+          primaryHover: 'hover:bg-pink-700',
+          primaryBg: 'bg-pink-100',
+          primaryText: 'text-pink-800'
+        }}
+        title="Available Q&A Platforms"
+        emptyMessage="No Q&A platforms found"
+      />
 
       {/* Search and Submissions */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">

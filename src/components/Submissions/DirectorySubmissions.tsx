@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import DirectoryGrid from './DirectoryGrid';
 
 interface Submission {
   _id: string;
@@ -317,74 +318,19 @@ export default function DirectorySubmissions() {
       </div>
 
       {/* Available Directories */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Available Directory Platforms</h3>
-            <p className="text-gray-600 text-sm">Click "Fill Form" to get the bookmarklet for each directory</p>
-          </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
-            <span>Total Directories: {filteredDirectories.length}</span>
-            <span>Your Submissions: {filteredSubmissions.length}</span>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-2">Loading directories...</p>
-          </div>
-        ) : filteredDirectories.length === 0 ? (
-          <div className="text-center py-8">
-            <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No directory platforms available</p>
-            <p className="text-sm text-gray-500">Contact admin to add directory platforms</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredDirectories.map((directory) => (
-              <div key={directory._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 mb-1">{directory.name}</h4>
-                    <p className="text-sm text-gray-600 mb-2">{directory.domain}</p>
-                    {directory.description && (
-                      <p className="text-xs text-gray-500 line-clamp-2">{directory.description}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-end space-y-1">
-                    {directory.pageRank && (
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PR {directory.pageRank}</span>
-                    )}
-                    {directory.daScore && (
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">DA {directory.daScore}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex space-x-2">
-                    <a
-                      href={directory.domain}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 text-sm flex items-center"
-                    >
-                      <ExternalLink className="w-3 h-3 mr-1" />
-                      Visit
-                    </a>
-                  </div>
-                  <button
-                    onClick={() => setShowBookmarkletModal(true)}
-                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors"
-                  >
-                    Fill Form
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <DirectoryGrid
+        directories={directories}
+        loading={loading}
+        onBookmarkletClick={() => setShowBookmarkletModal(true)}
+        theme={{
+          primary: 'bg-green-600',
+          primaryHover: 'hover:bg-green-700',
+          primaryBg: 'bg-green-100',
+          primaryText: 'text-green-800'
+        }}
+        title="Available Directory Platforms"
+        emptyMessage="No directory platforms available"
+      />
 
       {/* Search and Stats */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">

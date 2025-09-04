@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import DirectoryGrid from './DirectoryGrid';
 
 interface LocalBusinessSubmission {
   _id: string;
@@ -354,44 +355,19 @@ export default function LocalBusiness() {
       </div>
 
       {/* Available Local Business Platforms */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Available Local Business Platforms</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredDirectories.map((directory) => (
-            <div key={directory._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium text-gray-900 truncate">{directory.name}</h3>
-                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                  DA: {directory.daScore}
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">{directory.description}</p>
-              <div className="flex items-center justify-between">
-                <a
-                  href={directory.submissionUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-yellow-600 hover:text-yellow-800 flex items-center"
-                >
-                  Visit <ExternalLink className="w-3 h-3 ml-1" />
-                </a>
-                <button
-                  onClick={() => setShowBookmarkletModal(true)}
-                  className="text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition-colors"
-                >
-                  Fill Form
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        {filteredDirectories.length === 0 && (
-          <div className="text-center py-8">
-            <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No local business platforms found</p>
-          </div>
-        )}
-      </div>
+      <DirectoryGrid
+        directories={directories}
+        loading={loading}
+        onBookmarkletClick={() => setShowBookmarkletModal(true)}
+        theme={{
+          primary: 'bg-yellow-600',
+          primaryHover: 'hover:bg-yellow-700',
+          primaryBg: 'bg-yellow-100',
+          primaryText: 'text-yellow-800'
+        }}
+        title="Available Local Business Platforms"
+        emptyMessage="No local business platforms found"
+      />
 
       {/* Search and Submissions */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
