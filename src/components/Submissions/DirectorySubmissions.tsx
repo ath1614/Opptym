@@ -49,6 +49,22 @@ export default function DirectorySubmissions() {
   const [selectedClassification, setSelectedClassification] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formData, setFormData] = useState({
+    projectId: '',
+    directoryName: '',
+    directoryUrl: '',
+    classification: '',
+    category: 'general',
+    businessName: '',
+    businessUrl: '',
+    email: '',
+    phone: '',
+    description: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    notes: ''
+  });
 
   const classifications = [
     { id: 'all', name: 'All Classifications', icon: Globe, color: 'bg-blue-500' },
@@ -169,6 +185,71 @@ export default function DirectorySubmissions() {
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.projectId) {
+      showPopup('Please select a project', 'error');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const submissionData = {
+        projectId: formData.projectId,
+        directoryName: formData.directoryName,
+        directoryUrl: formData.directoryUrl,
+        classification: formData.classification,
+        category: formData.category,
+        businessName: formData.businessName,
+        businessUrl: formData.businessUrl,
+        email: formData.email,
+        phone: formData.phone,
+        description: formData.description,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+        notes: formData.notes,
+        status: 'pending'
+      };
+
+      await axios.post('/api/submissions', submissionData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      showPopup('Directory submission created successfully!', 'success');
+      setShowCreateForm(false);
+      setFormData({
+        projectId: '',
+        directoryName: '',
+        directoryUrl: '',
+        classification: '',
+        category: 'general',
+        businessName: '',
+        businessUrl: '',
+        email: '',
+        phone: '',
+        description: '',
+        address: '',
+        city: '',
+        zipCode: '',
+        notes: ''
+      });
+      fetchSubmissions(); // Refresh the submissions list
+    } catch (error) {
+      console.error('Error creating submission:', error);
+      showPopup('Failed to create submission', 'error');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -334,26 +415,306 @@ export default function DirectorySubmissions() {
         )}
       </div>
 
-      {/* Create Submission Form Modal would go here */}
+      {/* Create Submission Form Modal */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Create New Submission</h2>
-            {/* Form content would go here */}
-            <div className="flex justify-end space-x-3 mt-6">
-              <button
-                onClick={() => setShowCreateForm(false)}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Create Submission
-              </button>
-            </div>
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Directory Submission</h2>
+            
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              {/* Project Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Project *
+                </label>
+                <select
+                  name="projectId"
+                  value={formData.projectId}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="">Choose a project...</option>
+                  {projects.map((project) => (
+                    <option key={project._id} value={project._id}>
+                      {project.title} ({project.url})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Directory Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Directory Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="directoryName"
+                    value={formData.directoryName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., Google My Business"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Directory URL *
+                  </label>
+                  <input
+                    type="url"
+                    name="directoryUrl"
+                    value={formData.directoryUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://business.google.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Classification and Category */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Classification *
+                  </label>
+                  <select
+                    name="classification"
+                    value={formData.classification}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select classification...</option>
+                    <option value="directory">Directory Platforms</option>
+                    <option value="article">Article Platforms</option>
+                    <option value="press">Press Release</option>
+                    <option value="australia">Australia</option>
+                    <option value="classified">Classified Ads</option>
+                    <option value="qa">Q&A Platforms</option>
+                    <option value="social">Social Media</option>
+                    <option value="local">Local Business</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Category
+                  </label>
+                  <select 
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="general">General</option>
+                    <option value="business">Business</option>
+                    <option value="local">Local</option>
+                    <option value="professional">Professional</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Business Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Business Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Your business name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Business URL *
+                  </label>
+                  <input
+                    type="url"
+                    name="businessUrl"
+                    value={formData.businessUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://yourwebsite.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="contact@yourbusiness.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Description *
+                </label>
+                <textarea
+                  rows={4}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Describe your business, services, and what makes you unique..."
+                  required
+                />
+              </div>
+
+              {/* Address Information */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Street Address
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="123 Main St"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="New York"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ZIP Code
+                  </label>
+                  <input
+                    type="text"
+                    name="zipCode"
+                    value={formData.zipCode}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="10001"
+                  />
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Notes
+                </label>
+                <textarea
+                  rows={3}
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Any additional information or special instructions..."
+                />
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create Submission</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
+
+      {/* Bookmarklet Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Submission Bookmarklet</h3>
+            <p className="text-gray-600 text-sm">
+              Drag the button below to your bookmarks bar for instant directory submissions
+            </p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <a
+              href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              onClick={(e) => e.preventDefault()}
+            >
+              📌 Opptym Bookmarklet
+            </a>
+            <button
+              onClick={() => {
+                const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();`;
+                navigator.clipboard.writeText(bookmarkletCode);
+                showPopup('Bookmarklet code copied to clipboard!', 'success');
+              }}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Copy Code
+            </button>
+          </div>
+        </div>
+        
+        <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
+          <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
+          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+            <li>Drag the bookmarklet button to your browser's bookmarks bar</li>
+            <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
+            <li>Click the bookmarklet to auto-fill the submission form</li>
+            <li>Review and submit your listing</li>
+          </ol>
+        </div>
+      </div>
     </div>
   );
 }
