@@ -30,10 +30,15 @@ const Navbar: React.FC<NavbarProps> = ({ onNotificationClick }) => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <img
-                className="h-8 w-auto"
+                className="h-10 w-auto"
                 src="/opptym.png"
                 alt="OPPTYM"
               />
+            </div>
+            <div className="ml-3">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                OPPTYM
+              </h1>
             </div>
           </div>
 

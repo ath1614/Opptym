@@ -11,7 +11,9 @@ import {
   Shield,
   ChevronDown,
   ChevronRight,
-  CheckSquare
+  CheckSquare,
+  Menu,
+  X
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -29,6 +31,7 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const { t } = useTranslation();
   const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const sidebarItems: SidebarItem[] = [
     {
@@ -53,27 +56,42 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       children: [
         {
           id: 'directory',
-          label: t('submissions.directorySubmissions'),
+          label: 'Directory Platforms',
+          icon: FileText
+        },
+        {
+          id: 'article',
+          label: 'Article Platforms',
+          icon: FileText
+        },
+        {
+          id: 'press',
+          label: 'Press Release',
+          icon: FileText
+        },
+        {
+          id: 'australia',
+          label: 'Australia',
+          icon: FileText
+        },
+        {
+          id: 'classified',
+          label: 'Classified Ads',
+          icon: FileText
+        },
+        {
+          id: 'qa',
+          label: 'Q&A Platforms',
           icon: FileText
         },
         {
           id: 'social',
-          label: t('submissions.social'),
-          icon: FileText
-        },
-        {
-          id: 'review',
-          label: t('submissions.review'),
+          label: 'Social Media',
           icon: FileText
         },
         {
           id: 'local',
-          label: t('submissions.local'),
-          icon: FileText
-        },
-        {
-          id: 'other',
-          label: t('submissions.other'),
+          label: 'Local Business',
           icon: FileText
         }
       ]
@@ -132,9 +150,9 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         >
           <div className="flex items-center space-x-3">
             <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-primary-600'}`} />
-            <span className="font-medium">{item.label}</span>
+            {!isCollapsed && <span className="font-medium">{item.label}</span>}
           </div>
-          {hasChildren && (
+          {hasChildren && !isCollapsed && (
             <div className="flex items-center">
               {isExpanded ? (
                 <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-primary-600'}`} />
@@ -146,7 +164,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         </button>
 
         {/* Render children if expanded */}
-        {hasChildren && isExpanded && (
+        {hasChildren && isExpanded && !isCollapsed && (
           <div className="mt-1 space-y-1">
             {item.children?.map(child => renderSidebarItem(child, depth + 1))}
           </div>
@@ -156,54 +174,41 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className="w-64 bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass h-screen sticky top-0 flex flex-col animate-fade-in-left">
+    <aside className={`bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass h-screen sticky top-0 flex flex-col animate-fade-in-left transition-all duration-300 ${
+      isCollapsed ? 'w-16' : 'w-64'
+    }`}>
       {/* Sidebar Header */}
       <div className="p-6 border-b border-primary-100">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 relative">
-            <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
-              <circle
-                cx="20"
-                cy="20"
-                r="18"
-                fill="none"
-                stroke="url(#blueGradient)"
-                strokeWidth="2"
-                strokeDasharray="4,4"
-                strokeLinecap="round"
-              />
-              <circle cx="26" cy="14" r="3" fill="#3B82F6" />
-              <path
-                d="M 26 14 A 18 18 0 0 1 20 2"
-                fill="none"
-                stroke="#3B82F6"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <circle cx="14" cy="26" r="3" fill="#1E40AF" />
-              <path
-                d="M 14 26 A 18 18 0 0 1 20 38"
-                fill="none"
-                stroke="#1E40AF"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <defs>
-                <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3B82F6" />
-                  <stop offset="100%" stopColor="#1E40AF" />
-                </linearGradient>
-              </defs>
-            </svg>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <img
+              src="/opptym.png"
+              alt="OPPTYM"
+              className={`transition-all duration-300 ${
+                isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
+              }`}
+            />
+            {!isCollapsed && (
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+                  OPPTYM
+                </h1>
+                <p className="text-xs text-primary-600 font-medium">
+                  SEO Automation Platform
+                </p>
+              </div>
+            )}
           </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
-              OPPTYM
-            </h1>
-            <p className="text-xs text-primary-600 font-medium">
-              SEO Automation Platform
-            </p>
-          </div>
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1 rounded-md hover:bg-primary-50 transition-colors"
+          >
+            {isCollapsed ? (
+              <Menu className="h-5 w-5 text-primary-600" />
+            ) : (
+              <X className="h-5 w-5 text-primary-600" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -211,6 +216,8 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {sidebarItems.map(item => renderSidebarItem(item))}
       </nav>
+      
+
     </aside>
   );
 }

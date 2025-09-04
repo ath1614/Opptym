@@ -239,6 +239,7 @@
       "monthly": "/month",
       "yearly": "/year",
       "startFree": "Start Free",
+      "currentPlan": "Current Plan",
       "upgrade": "Upgrade"
     },
     "knowledge": {

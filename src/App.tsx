@@ -63,7 +63,7 @@ function App() {
   };
   
   const [activeTab, setActiveTab] = useState(getInitialTab);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 
   // Move all project-related state to the top
   const [projects, setProjects] = useState<Project[]>([]);
@@ -484,8 +484,6 @@ function App() {
             <Sidebar 
               activeTab={activeTab} 
               setActiveTab={updateActiveTab}
-              isCollapsed={sidebarCollapsed}
-              setIsCollapsed={setSidebarCollapsed}
             />
             <div className="flex-1 flex flex-col min-w-0">
               <Navbar activeTab={activeTab} setActiveTab={updateActiveTab} />
