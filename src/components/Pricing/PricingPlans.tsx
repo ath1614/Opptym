@@ -88,7 +88,7 @@ const colorMap: Record<string, string> = {
 
 
 // Transform API plan data to component format
-const transformAPIPlan = (apiPlan: APIPlan): PricingPlan => {
+const transformAPIPlan = (apiPlan: APIPlan, billingCycle: 'monthly' | 'yearly'): PricingPlan => {
   const IconComponent = iconMap[apiPlan.metadata.icon] || Star;
   const colorClass = colorMap[apiPlan.metadata.color] || 'text-blue-600';
   
@@ -143,7 +143,7 @@ export default function PricingPlans() {
           .sort((a: APIPlan, b: APIPlan) => a.sortOrder - b.sortOrder);
         
         setApiPlans(activePlans);
-        const transformedPlans = activePlans.map(transformAPIPlan);
+        const transformedPlans = activePlans.map(plan => transformAPIPlan(plan, billingCycle));
         setPlans(transformedPlans);
       } catch (error) {
         console.error('Failed to fetch plans:', error);

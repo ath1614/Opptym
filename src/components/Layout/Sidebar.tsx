@@ -125,7 +125,13 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     if (hasChildren) {
       toggleExpanded(itemId);
     } else {
-      setActiveTab(itemId);
+      // Handle SEO task classifications - they should go to submissions with the classification
+      if (['directory', 'article', 'press', 'australia', 'classified', 'qa', 'social', 'local'].includes(itemId)) {
+        setActiveTab('directory'); // Go to submissions page
+        // You can add logic here to filter by classification if needed
+      } else {
+        setActiveTab(itemId);
+      }
     }
   };
 
@@ -181,13 +187,15 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       <div className="p-6 border-b border-primary-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <img
-              src="/opptym.png"
-              alt="OPPTYM"
-              className={`transition-all duration-300 ${
-                isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
-              }`}
-            />
+            <svg className={`transition-all duration-300 ${
+              isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
+            }`} viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#3B82F6" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
+              <circle cx="26" cy="14" r="3" fill="#3B82F6"/>
+              <path d="M 26 14 A 18 18 0 0 1 20 2" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="14" cy="26" r="3" fill="#1E40AF"/>
+              <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#1E40AF" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
             {!isCollapsed && (
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">

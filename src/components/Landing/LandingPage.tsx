@@ -160,11 +160,13 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
       <nav className="relative z-10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <img
-              src="/opptym.png"
-              alt="OPPTYM"
-              className="h-10 w-auto"
-            />
+            <svg className="h-10 w-10" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#3B82F6" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
+              <circle cx="26" cy="14" r="3" fill="#3B82F6"/>
+              <path d="M 26 14 A 18 18 0 0 1 20 2" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="14" cy="26" r="3" fill="#1E40AF"/>
+              <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#1E40AF" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
             <span className="text-2xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent">
               OPPTYM
             </span>
@@ -689,11 +691,13 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img
-                src="/opptym.png"
-                alt="OPPTYM"
-                className="h-8 w-auto"
-              />
+              <svg className="h-8 w-8" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18" fill="none" stroke="#3B82F6" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
+                <circle cx="26" cy="14" r="3" fill="#3B82F6"/>
+                <path d="M 26 14 A 18 18 0 0 1 20 2" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="14" cy="26" r="3" fill="#1E40AF"/>
+                <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#1E40AF" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
               <span className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 dark:from-primary-300 dark:to-accent-400 bg-clip-text text-transparent">
                 OPPTYM
               </span>
