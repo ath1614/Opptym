@@ -11,7 +11,8 @@ import {
   Clock,
   AlertCircle,
   ExternalLink,
-  HelpCircle
+  HelpCircle,
+  X
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
