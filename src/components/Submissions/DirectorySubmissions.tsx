@@ -12,7 +12,9 @@ import {
   Trash2,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  ExternalLink,
+  X
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
@@ -45,15 +47,16 @@ export default function DirectorySubmissions() {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [directories, setDirectories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedClassification, setSelectedClassification] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
   const [formData, setFormData] = useState({
     projectId: '',
     directoryName: '',
     directoryUrl: '',
-    classification: '',
+    classification: 'directory',
     category: 'general',
     businessName: '',
     businessUrl: '',
@@ -66,27 +69,19 @@ export default function DirectorySubmissions() {
     notes: ''
   });
 
-  const classifications = [
-    { id: 'all', name: 'All Classifications', icon: Globe, color: 'bg-blue-500' },
-    { id: 'directory', name: 'Directory Platforms', icon: FileText, color: 'bg-green-500' },
-    { id: 'article', name: 'Article Platforms', icon: FileText, color: 'bg-purple-500' },
-    { id: 'press', name: 'Press Release', icon: FileText, color: 'bg-orange-500' },
-    { id: 'australia', name: 'Australia', icon: FileText, color: 'bg-red-500' },
-    { id: 'classified', name: 'Classified Ads', icon: FileText, color: 'bg-indigo-500' },
-    { id: 'qa', name: 'Q&A Platforms', icon: FileText, color: 'bg-pink-500' },
-    { id: 'social', name: 'Social Media', icon: FileText, color: 'bg-teal-500' },
-    { id: 'local', name: 'Local Business', icon: FileText, color: 'bg-yellow-500' }
-  ];
+  // Directory Submissions only shows directory classification
+  const classification = 'directory';
 
   useEffect(() => {
     fetchSubmissions();
     fetchProjects();
+    fetchDirectories();
   }, []);
 
   const fetchSubmissions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/submissions', {
+      const response = await axios.get(`/api/submissions?classification=${classification}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -151,9 +146,23 @@ export default function DirectorySubmissions() {
     }
   };
 
+  const fetchDirectories = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      // Map frontend classification to database classification
+      const dbClassification = 'Business'; // directory maps to Business in database
+      const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setDirectories(response.data);
+    } catch (error) {
+      console.error('Error fetching directories:', error);
+      setDirectories([]);
+    }
+  };
+
   const filteredSubmissions = submissions.filter(submission => {
-    const matchesClassification = selectedClassification === 'all' || submission.classification === selectedClassification;
-    
     // Safe search with null checks
     const directoryName = submission.directoryName || '';
     const projectName = submission.projectName || '';
@@ -162,7 +171,14 @@ export default function DirectorySubmissions() {
     const matchesSearch = directoryName.toLowerCase().includes(searchLower) ||
                          projectName.toLowerCase().includes(searchLower);
     
-    return matchesClassification && matchesSearch;
+    return matchesSearch;
+  });
+
+  const filteredDirectories = directories.filter(directory => {
+    const directoryName = directory.name || '';
+    const searchLower = searchTerm.toLowerCase();
+    
+    return directoryName.toLowerCase().includes(searchLower);
   });
 
   const getStatusIcon = (status: string) => {
@@ -229,7 +245,7 @@ export default function DirectorySubmissions() {
         projectId: '',
         directoryName: '',
         directoryUrl: '',
-        classification: '',
+        classification: 'directory',
         category: 'general',
         businessName: '',
         businessUrl: '',
@@ -279,44 +295,95 @@ export default function DirectorySubmissions() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Directory Submissions</h1>
-          <p className="text-gray-600 mt-2">Manage and track your directory submissions across all platforms</p>
+          <h1 className="text-3xl font-bold text-gray-900">Directory Platforms</h1>
+          <p className="text-gray-600 mt-2">Submit your business to directory platforms and track your submissions</p>
         </div>
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>New Submission</span>
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setShowBookmarkletModal(true)}
+            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+          >
+            <Globe className="w-5 h-5" />
+            <span>Fill Form Bookmarklet</span>
+          </button>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>New Submission</span>
+          </button>
+        </div>
       </div>
 
-      {/* Classification Filter */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filter by Classification</h3>
-        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
-          {classifications.map((classification) => {
-            const Icon = classification.icon;
-            return (
-              <button
-                key={classification.id}
-                onClick={() => setSelectedClassification(classification.id)}
-                className={`p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
-                  selectedClassification === classification.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                <div className={`w-8 h-8 rounded-full ${classification.color} flex items-center justify-center`}>
-                  <Icon className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 text-center">
-                  {classification.name}
-                </span>
-              </button>
-            );
-          })}
+      {/* Available Directories */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Available Directory Platforms</h3>
+            <p className="text-gray-600 text-sm">Click "Fill Form" to get the bookmarklet for each directory</p>
+          </div>
+          <div className="flex items-center space-x-4 text-sm text-gray-600">
+            <span>Total Directories: {filteredDirectories.length}</span>
+            <span>Your Submissions: {filteredSubmissions.length}</span>
+          </div>
         </div>
+
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-2">Loading directories...</p>
+          </div>
+        ) : filteredDirectories.length === 0 ? (
+          <div className="text-center py-8">
+            <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No directory platforms available</p>
+            <p className="text-sm text-gray-500">Contact admin to add directory platforms</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredDirectories.map((directory) => (
+              <div key={directory._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 mb-1">{directory.name}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{directory.domain}</p>
+                    {directory.description && (
+                      <p className="text-xs text-gray-500 line-clamp-2">{directory.description}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end space-y-1">
+                    {directory.pageRank && (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PR {directory.pageRank}</span>
+                    )}
+                    {directory.daScore && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">DA {directory.daScore}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex space-x-2">
+                    <a
+                      href={directory.domain}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm flex items-center"
+                    >
+                      <ExternalLink className="w-3 h-3 mr-1" />
+                      Visit
+                    </a>
+                  </div>
+                  <button
+                    onClick={() => setShowBookmarkletModal(true)}
+                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors"
+                  >
+                    Fill Form
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Search and Stats */}
@@ -503,23 +570,13 @@ export default function DirectorySubmissions() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Classification *
                   </label>
-                  <select
+                  <input
+                    type="text"
                     name="classification"
-                    value={formData.classification}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  >
-                    <option value="">Select classification...</option>
-                    <option value="directory">Directory Platforms</option>
-                    <option value="article">Article Platforms</option>
-                    <option value="press">Press Release</option>
-                    <option value="australia">Australia</option>
-                    <option value="classified">Classified Ads</option>
-                    <option value="qa">Q&A Platforms</option>
-                    <option value="social">Social Media</option>
-                    <option value="local">Local Business</option>
-                  </select>
+                    value="directory"
+                    readOnly
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -697,63 +754,81 @@ export default function DirectorySubmissions() {
         </div>
       )}
 
-      {/* Bookmarklet Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Submission Bookmarklet</h3>
-            <p className="text-gray-600 text-sm">
-              Drag the button below to your bookmarks bar for instant directory submissions
-            </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <a
-              href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-move"
-              draggable="true"
-              onDragStart={(e) => {
-                e.dataTransfer.setData('text/plain', e.currentTarget.href);
-                e.dataTransfer.effectAllowed = 'copy';
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                showPopup('Drag this button to your bookmarks bar!', 'info');
-              }}
-            >
-              📌 Opptym Bookmarklet
-            </a>
-            <button
-              onClick={() => {
-                const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();`;
-                navigator.clipboard.writeText(bookmarkletCode).then(() => {
-                  showPopup('Bookmarklet code copied to clipboard!', 'success');
-                }).catch(() => {
-                  showPopup('Failed to copy to clipboard', 'error');
-                });
-              }}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-            >
-              Copy Code
-            </button>
+      {/* Bookmarklet Modal */}
+      {showBookmarkletModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Fill Form Bookmarklet</h2>
+              <button
+                onClick={() => setShowBookmarkletModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Submission Bookmarklet</h3>
+                    <p className="text-gray-600 text-sm">
+                      Drag the button below to your bookmarks bar for instant directory submissions
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <a
+                      href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-move"
+                      draggable="true"
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', e.currentTarget.href);
+                        e.dataTransfer.effectAllowed = 'copy';
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showPopup('Drag this button to your bookmarks bar!', 'info');
+                      }}
+                    >
+                      📌 Opptym Bookmarklet
+                    </a>
+                    <button
+                      onClick={() => {
+                        const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();`;
+                        navigator.clipboard.writeText(bookmarkletCode).then(() => {
+                          showPopup('Bookmarklet code copied to clipboard!', 'success');
+                        }).catch(() => {
+                          showPopup('Failed to copy to clipboard', 'error');
+                        });
+                      }}
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      Copy Code
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
+                  <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
+                  <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                    <li>Drag the "📌 Opptym Bookmarklet" button to your browser's bookmarks bar</li>
+                    <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
+                    <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
+                    <li>Review and submit your listing</li>
+                  </ol>
+                  
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Note:</strong> The bookmarklet will automatically detect form fields on directory websites and fill them with your business information.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
-          <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
-          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-            <li>Drag the "📌 Opptym Bookmarklet" button to your browser's bookmarks bar</li>
-            <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
-            <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
-            <li>Review and submit your listing</li>
-          </ol>
-          
-          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Note:</strong> The bookmarklet will automatically detect form fields on directory websites and fill them with your business information.
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
