@@ -11,7 +11,8 @@ import {
   Clock,
   AlertCircle,
   ExternalLink,
-  MapPin
+  MapPin,
+  X
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
@@ -50,9 +51,11 @@ export default function Australia() {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<AustraliaSubmission[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [directories, setDirectories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
   const [formData, setFormData] = useState({
     projectId: '',
     platformName: '',
