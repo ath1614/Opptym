@@ -238,6 +238,8 @@ const SitemapRobotsTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.sitemaps || []}
+          exportType="sitemapValidator"
         />
       )}
     </div>

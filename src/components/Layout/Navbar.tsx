@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Bell, Search, User, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
@@ -13,13 +12,12 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onNotificationClick }) => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    window.location.href = '/';
   };
 
   const userDisplayName = user ? getUserDisplayName(user) : '';
@@ -106,26 +104,26 @@ const Navbar: React.FC<NavbarProps> = ({ onNotificationClick }) => {
               {/* Profile dropdown menu */}
               {showProfileMenu && (
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <button
-                    onClick={() => {
-                      navigate('/profile');
-                      setShowProfileMenu(false);
-                    }}
-                    className="flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    <User className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    {t('navbar.profile')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/settings');
-                      setShowProfileMenu(false);
-                    }}
-                    className="flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    <Settings className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                    {t('navbar.settings')}
-                  </button>
+                                     <button
+                     onClick={() => {
+                       window.location.hash = 'profile';
+                       setShowProfileMenu(false);
+                     }}
+                     className="flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                   >
+                     <User className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                     {t('navbar.profile')}
+                   </button>
+                   <button
+                     onClick={() => {
+                       window.location.hash = 'profile';
+                       setShowProfileMenu(false);
+                     }}
+                     className="flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                   >
+                     <Settings className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                     {t('navbar.settings')}
+                   </button>
                   <button
                     onClick={handleLogout}
                     className="flex w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"

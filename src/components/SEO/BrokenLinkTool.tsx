@@ -452,6 +452,8 @@ const BrokenLinkTool = () => {
             metrics={getMetrics()}
             details={getDetails()}
             improvementGuide={getImprovementGuide()}
+            exportData={report.brokenLinks || []}
+            exportType="brokenLinkFinder"
           />
 
           {/* Category Breakdown */}

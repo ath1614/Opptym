@@ -258,6 +258,8 @@ const PageSpeedTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.pages || []}
+          exportType="pageSpeed"
         />
       )}
     </div>

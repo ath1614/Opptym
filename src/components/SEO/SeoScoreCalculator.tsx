@@ -148,6 +148,8 @@ const SeoScoreCalculator = () => {
           icon={<BarChart className="w-6 h-6 text-indigo-600" />}
           metrics={getMetrics()}
           details={getDetails()}
+          exportData={report.scores || []}
+          exportType="seoScoreCalculator"
         />
       )}
     </div>

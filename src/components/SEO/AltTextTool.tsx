@@ -269,6 +269,8 @@ const AltTextTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.images || []}
+          exportType="altTextAnalyzer"
         />
       )}
     </div>

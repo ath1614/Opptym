@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckCircle, XCircle, AlertTriangle, Info, TrendingUp, TrendingDown, Clock, Zap, Smartphone, Globe, Code, Image, Link2, Lightbulb, BookOpen } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Info, TrendingUp, TrendingDown, Clock, Zap, Smartphone, Globe, Code, Image, Link2, Lightbulb, BookOpen, Download } from 'lucide-react';
+import { SEOToolExporters } from '../../utils/csvExport';
 
 interface ResultsDisplayProps {
   title: string;
@@ -24,6 +25,8 @@ interface ResultsDisplayProps {
     steps: string[];
     icon?: React.ReactNode;
   }>;
+  exportData?: any[];
+  exportType?: keyof typeof SEOToolExporters;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -34,8 +37,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   icon,
   metrics = [],
   details = [],
-  improvementGuide = []
+  improvementGuide = [],
+  exportData = [],
+  exportType
 }) => {
+  const handleExport = () => {
+    if (exportData && exportData.length > 0 && exportType && SEOToolExporters[exportType]) {
+      SEOToolExporters[exportType](exportData);
+    } else {
+      // Fallback to generic export
+      const { exportToCSV } = require('../../utils/csvExport');
+      exportToCSV(exportData.length > 0 ? exportData : [data], {
+        filename: title.toLowerCase().replace(/\s+/g, '-')
+      });
+    }
+  };
   const getStatusIcon = (status?: 'good' | 'warning' | 'error') => {
     switch (status) {
       case 'good':
@@ -65,21 +81,34 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center space-x-3">
-        {icon && <div className="text-2xl">{icon}</div>}
-        <div>
-          <h3 className="text-xl font-bold text-gray-800">{title}</h3>
-          <div className="flex items-center space-x-2 mt-1">
-            {success ? (
-              <CheckCircle className="w-5 h-5 text-green-500" />
-            ) : (
-              <XCircle className="w-5 h-5 text-red-500" />
-            )}
-            <span className={`text-sm font-medium ${success ? 'text-green-600' : 'text-red-600'}`}>
-              {success ? 'Analysis Complete' : 'Analysis Failed'}
-            </span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          {icon && <div className="text-2xl">{icon}</div>}
+          <div>
+            <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+            <div className="flex items-center space-x-2 mt-1">
+              {success ? (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              ) : (
+                <XCircle className="w-5 h-5 text-red-500" />
+              )}
+              <span className={`text-sm font-medium ${success ? 'text-green-600' : 'text-red-600'}`}>
+                {success ? 'Analysis Complete' : 'Analysis Failed'}
+              </span>
+            </div>
           </div>
         </div>
+        
+        {/* Export Button */}
+        {(exportData.length > 0 || data) && (
+          <button
+            onClick={handleExport}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export CSV</span>
+          </button>
+        )}
       </div>
 
       {/* Metrics Grid */}

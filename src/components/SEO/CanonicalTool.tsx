@@ -256,6 +256,8 @@ const CanonicalTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.pages || []}
+          exportType="canonicalChecker"
         />
       )}
     </div>

@@ -343,6 +343,8 @@ const KeywordTrackerTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.keywords || []}
+          exportType="keywordResearch"
         />
       )}
     </div>

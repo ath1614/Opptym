@@ -258,6 +258,8 @@ const BacklinkTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.backlinks || []}
+          exportType="backlinkChecker"
         />
       )}
     </div>

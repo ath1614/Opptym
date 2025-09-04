@@ -240,6 +240,8 @@ const SchemaValidatorTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.schemas || []}
+          exportType="schemaValidator"
         />
       )}
     </div>

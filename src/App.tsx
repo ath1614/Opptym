@@ -461,12 +461,10 @@ function App() {
         return <PricingPlans />;
       case 'profile':
         return <ProfileSettings />;
-      case 'admin':
-        return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
-      case 'test':
-        return <div>Test route removed</div>;
-      default:
-        return <Dashboard />;
+                  case 'admin':
+              return isAdmin ? <AdminPanel /> : <div>Access Denied</div>;
+            default:
+              return <Dashboard />;
     }
   };
 

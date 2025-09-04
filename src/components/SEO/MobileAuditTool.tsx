@@ -273,6 +273,8 @@ const MobileAuditTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.pages || []}
+          exportType="mobileAudit"
         />
       )}
     </div>

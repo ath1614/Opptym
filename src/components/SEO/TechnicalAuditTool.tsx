@@ -281,6 +281,8 @@ const TechnicalAuditTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.issues || []}
+          exportType="technicalAudit"
         />
       )}
     </div>

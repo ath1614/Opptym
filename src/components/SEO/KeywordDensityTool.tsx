@@ -238,6 +238,8 @@ const KeywordDensityTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.keywords || []}
+          exportType="keywordDensity"
         />
       )}
     </div>

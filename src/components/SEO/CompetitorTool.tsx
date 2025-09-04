@@ -254,6 +254,8 @@ const CompetitorTool = () => {
           metrics={getMetrics()}
           details={getDetails()}
           improvementGuide={getImprovementGuide()}
+          exportData={report.competitors || []}
+          exportType="competitorAnalysis"
         />
       )}
     </div>

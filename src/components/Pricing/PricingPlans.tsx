@@ -86,9 +86,6 @@ const colorMap: Record<string, string> = {
   red: 'text-red-600'
 };
 
-const [plans, setPlans] = useState<PricingPlan[]>([]);
-const [loading, setLoading] = useState(true);
-const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
 // Transform API plan data to component format
 const transformAPIPlan = (apiPlan: APIPlan): PricingPlan => {
@@ -116,44 +113,48 @@ const transformAPIPlan = (apiPlan: APIPlan): PricingPlan => {
   };
 };
 
-// Fetch plans from API
-useEffect(() => {
-  const fetchPlans = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/api/plans');
-      const transformedPlans = response.data
-        .filter((plan: APIPlan) => plan.isActive)
-        .sort((a: APIPlan, b: APIPlan) => a.sortOrder - b.sortOrder)
-        .map(transformAPIPlan);
-      setPlans(transformedPlans);
-    } catch (error) {
-      console.error('Failed to fetch plans:', error);
-      showPopup('Failed to load pricing plans. Please try again later.', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchPlans();
-}, [billingCycle]);
-
-// Stripe price ID mapping - now dynamic from API
-const getStripePriceId = (planId: string, cycle: 'monthly' | 'yearly') => {
-  const plan = plans.find(p => p.id === planId);
-  if (!plan) return null;
-  
-  // Find the API plan to get Stripe price ID
-  // This would need to be stored in state or fetched separately
-  return null; // For now, return null as we need to implement this properly
-};
 
 
 
 export default function PricingPlans() {
+  const [plans, setPlans] = useState<PricingPlan[]>([]);
+  const [apiPlans, setApiPlans] = useState<APIPlan[]>([]);
+  const [loading, setLoading] = useState(true);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const { user } = useAuth();
+
+  // Stripe price ID mapping - now dynamic from API
+  const getStripePriceId = (planId: string, cycle: 'monthly' | 'yearly') => {
+    const apiPlan = apiPlans.find(p => p._id === planId);
+    if (!apiPlan) return null;
+    
+    return cycle === 'monthly' ? apiPlan.stripePriceIds.monthly : apiPlan.stripePriceIds.yearly;
+  };
+
+  // Fetch plans from API
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/plans');
+        const activePlans = response.data
+          .filter((plan: APIPlan) => plan.isActive)
+          .sort((a: APIPlan, b: APIPlan) => a.sortOrder - b.sortOrder);
+        
+        setApiPlans(activePlans);
+        const transformedPlans = activePlans.map(transformAPIPlan);
+        setPlans(transformedPlans);
+      } catch (error) {
+        console.error('Failed to fetch plans:', error);
+        showPopup('Failed to load pricing plans. Please try again later.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, [billingCycle]);
 
   const getDiscountedPrice = (price: number, planId: string) => {
     // 10% discount for yearly on Pro/Business
