@@ -11,7 +11,8 @@ import {
   Clock,
   AlertCircle,
   ExternalLink,
-  Share2
+  Share2,
+  X
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
@@ -45,9 +46,11 @@ export default function SocialMedia() {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<SocialMediaSubmission[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [directories, setDirectories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
   const [formData, setFormData] = useState({
     projectId: '',
     platformName: '',
@@ -56,24 +59,25 @@ export default function SocialMedia() {
     postContent: '',
     postType: '',
     hashtags: '',
-    notes: ''
+    notes: '',
+    classification: 'social'
   });
 
   useEffect(() => {
     fetchSubmissions();
     fetchProjects();
+    fetchDirectories();
   }, []);
 
   const fetchSubmissions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/submissions', {
+      const response = await axios.get('/api/submissions?classification=social', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Filter for social media submissions and ensure all have required fields
       const socialSubmissions = response.data
-        .filter((submission: any) => submission.classification === 'social')
         .map((submission: any) => {
           let projectId = '';
           let projectName = 'Unnamed Project';
@@ -130,6 +134,15 @@ export default function SocialMedia() {
     }
   };
 
+  const fetchDirectories = async () => {
+    try {
+      const response = await axios.get('/api/directories?classification=Social');
+      setDirectories(response.data);
+    } catch (error) {
+      console.error('Error fetching social media directories:', error);
+    }
+  };
+
   const filteredSubmissions = submissions.filter(submission => {
     const platformName = submission.platformName || '';
     const postTitle = submission.postTitle || '';
@@ -137,6 +150,12 @@ export default function SocialMedia() {
     
     return platformName.toLowerCase().includes(searchLower) ||
            postTitle.toLowerCase().includes(searchLower);
+  });
+
+  const filteredDirectories = directories.filter(directory => {
+    const name = directory.name || '';
+    const searchLower = searchTerm.toLowerCase();
+    return name.toLowerCase().includes(searchLower);
   });
 
   const getStatusIcon = (status: string) => {
@@ -224,16 +243,25 @@ export default function SocialMedia() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Social Media</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Social Media Platforms</h1>
           <p className="text-gray-600 mt-2">Submit and manage your social media content across various platforms</p>
         </div>
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>New Social Media Post</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setShowBookmarkletModal(true)}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+          >
+            <Share2 className="w-5 h-5" />
+            <span>Fill Form Bookmarklet</span>
+          </button>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors flex items-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>New Submission</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -288,6 +316,46 @@ export default function SocialMedia() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Available Social Media Platforms */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Available Social Media Platforms</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredDirectories.map((directory) => (
+            <div key={directory._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-medium text-gray-900 truncate">{directory.name}</h3>
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                  DA: {directory.daScore}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-3 line-clamp-2">{directory.description}</p>
+              <div className="flex items-center justify-between">
+                <a
+                  href={directory.submissionUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-purple-600 hover:text-purple-800 flex items-center"
+                >
+                  Visit <ExternalLink className="w-3 h-3 ml-1" />
+                </a>
+                <button
+                  onClick={() => setShowBookmarkletModal(true)}
+                  className="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition-colors"
+                >
+                  Fill Form
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {filteredDirectories.length === 0 && (
+          <div className="text-center py-8">
+            <Share2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No social media platforms found</p>
+          </div>
+        )}
       </div>
 
       {/* Search and Submissions */}
@@ -568,6 +636,109 @@ export default function SocialMedia() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bookmarklet Modal */}
+      {showBookmarkletModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Social Media Form Bookmarklet</h2>
+              <button
+                onClick={() => setShowBookmarkletModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <h3 className="font-semibold text-purple-900 mb-2">🚀 Quick Form Filling</h3>
+                <p className="text-purple-800 text-sm">
+                  Drag the bookmarklet below to your browser's bookmarks bar. When you visit any social media platform, 
+                  click the bookmarklet to automatically fill forms with your project data.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Drag this bookmarklet to your bookmarks bar:
+                  </label>
+                  <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                    <div className="bg-purple-600 text-white px-4 py-2 rounded inline-block cursor-move select-none">
+                      📝 Fill Social Media Form
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">Drag this button to your bookmarks bar</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Or copy this JavaScript code:
+                  </label>
+                  <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                    <code>
+                      {`javascript:(function(){
+  const data = {
+    projectName: '${projects[0]?.title || 'Your Project'}',
+    businessName: '${user?.username || 'Your Business'}',
+    description: 'Professional social media content for ${projects[0]?.title || 'your project'}',
+    url: '${projects[0]?.url || 'https://yourwebsite.com'}',
+    email: '${user?.email || 'your@email.com'}',
+    phone: '${user?.phone || '+1234567890'}',
+    address: '${user?.address || 'Your Address'}'
+  };
+  
+  // Auto-fill common form fields
+  const fields = {
+    'input[name*="name"], input[name*="title"], input[id*="name"], input[id*="title"]': data.businessName,
+    'input[name*="email"], input[id*="email"]': data.email,
+    'input[name*="phone"], input[id*="phone"]': data.phone,
+    'input[name*="url"], input[name*="website"], input[id*="url"], input[id*="website"]': data.url,
+    'textarea[name*="description"], textarea[id*="description"]': data.description,
+    'input[name*="address"], textarea[name*="address"]': data.address
+  };
+  
+  Object.entries(fields).forEach(([selector, value]) => {
+    document.querySelectorAll(selector).forEach(field => {
+      if (field && !field.value) {
+        field.value = value;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  });
+  
+  alert('✅ Social media form filled successfully!');
+})();`}
+                    </code>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-900 mb-2">💡 How to use:</h4>
+                  <ol className="text-blue-800 text-sm space-y-1 list-decimal list-inside">
+                    <li>Drag the bookmarklet to your browser's bookmarks bar</li>
+                    <li>Visit any social media platform submission page</li>
+                    <li>Click the bookmarklet in your bookmarks bar</li>
+                    <li>The form will be automatically filled with your project data</li>
+                    <li>Review and submit the form</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => setShowBookmarkletModal(false)}
+                  className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
