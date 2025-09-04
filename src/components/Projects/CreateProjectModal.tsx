@@ -122,9 +122,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       { key: 'email', label: 'Business email' },
       { key: 'companyName', label: 'Company name' },
       { key: 'businessPhone', label: 'Business phone' },
+      { key: 'description', label: 'Business description' },
+      { key: 'address1', label: 'Address' },
       { key: 'city', label: 'City' },
       { key: 'state', label: 'State' },
-      { key: 'country', label: 'Country' }
+      { key: 'country', label: 'Country' },
+      { key: 'pincode', label: 'Pincode' }
     ];
 
     for (const field of requiredFields) {

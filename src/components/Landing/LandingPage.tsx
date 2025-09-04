@@ -15,7 +15,10 @@ import {
   TrendingUp,
   Clock,
   Target,
-  Rocket
+  Rocket,
+  BookOpen,
+  Database,
+  HelpCircle
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -24,13 +27,21 @@ interface LandingPageProps {
 }
 
 // Add error boundary component
-class LandingPageErrorBoundary extends React.Component {
-  constructor(props: any) {
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+class LandingPageErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: any): ErrorBoundaryState {
     return { hasError: true };
   }
 
@@ -42,15 +53,15 @@ class LandingPageErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-accent-50">
-                  <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary-800 mb-4">{t('errors.somethingWentWrong')}</h1>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-          >
-            {t('common.refresh')}
-          </button>
-        </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-primary-800 mb-4">Something went wrong</h1>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+            >
+              Refresh
+            </button>
+          </div>
         </div>
       );
     }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TrendingUp, Search, BarChart3, Target, Lightbulb, Download, AlertCircle, CheckCircle, TrendingDown } from 'lucide-react';
 import { getProjects, runKeywordResearcher } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
-import { exportKeywordResearch } from '../../utils/csvExport';
+import { SEOToolExporters } from '../../utils/csvExport';
 
 interface KeywordData {
   keyword: string;
@@ -93,7 +93,7 @@ const KeywordResearcherTool: React.FC = () => {
     ];
     
     // Export to CSV
-    exportKeywordResearch(allKeywords);
+    SEOToolExporters.keywordResearch(allKeywords);
   };
 
   const getTrendIcon = (trend: string) => {

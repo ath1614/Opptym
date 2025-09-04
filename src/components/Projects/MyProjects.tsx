@@ -263,10 +263,13 @@ const MyProjects = () => {
           onUpgrade={() => setShowUpgradeModal(true)}
           showUpgradeModal={showUpgradeModal}
           onCloseUpgradeModal={() => setShowUpgradeModal(false)}
+          autoShowModal={true}
+          disableButton={true}
         >
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 shadow-sm"
+            disabled={userUsage.projectsUsed >= userLimits.projects}
           >
             <Plus className="w-4 h-4" />
             <span>New Project</span>

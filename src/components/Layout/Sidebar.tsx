@@ -1,407 +1,216 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../hooks/useAuth';
-import { 
-  Home, 
-  FolderOpen, 
-  BarChart3, 
-  Globe, 
-  FileText, 
-  Settings, 
-  User, 
-  Crown,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Zap,
-  Target,
-  TrendingUp,
-  Shield,
-  Users,
-  Database,
-  Activity,
-  Award,
-  BookOpen,
-  Megaphone,
+import {
+  Home,
+  FolderOpen,
+  Search,
+  FileText,
+  BarChart3,
   CreditCard,
-  LogOut
+  User,
+  Shield,
+  ChevronDown,
+  ChevronRight,
+  CheckSquare
 } from 'lucide-react';
+
+interface SidebarItem {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  children?: SidebarItem[];
+}
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
 
-  // Close mobile menu when screen size changes
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const getUserInitials = (user: any) => {
-    if (!user) return 'U';
-    const name = user.username || user.firstName || user.email || '';
-    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
-  };
-
-  const getUserDisplayName = (user: any) => {
-    if (!user) return 'User';
-    return user.username || user.firstName || user.email?.split('@')[0] || 'User';
-  };
-
-  const getUserSubscription = (user: any) => {
-    if (!user?.subscription) return 'Free';
-    return user.subscription.charAt(0).toUpperCase() + user.subscription.slice(1);
-  };
-
-  const getSubscriptionColor = (subscription: string) => {
-    switch (subscription.toLowerCase()) {
-      case 'business':
-        return 'from-purple-500 to-purple-600';
-      case 'pro':
-        return 'from-blue-500 to-blue-600';
-      case 'starter':
-        return 'from-green-500 to-green-600';
-      case 'enterprise':
-        return 'from-red-500 to-red-600';
-      default:
-        return 'from-gray-500 to-gray-600';
-    }
-  };
-
-  const menuItems = [
+  const sidebarItems: SidebarItem[] = [
     {
       id: 'dashboard',
-      label: t('submissions.dashboard'),
-      icon: Home,
-      color: 'from-blue-500 to-blue-600',
-      description: t('dashboard.title')
+      label: t('sidebar.dashboard'),
+      icon: Home
     },
     {
       id: 'projects',
-      label: t('submissions.projects'),
-      icon: FolderOpen,
-      color: 'from-green-500 to-green-600',
-      description: t('projects.title')
+      label: t('sidebar.projects'),
+      icon: FolderOpen
     },
     {
       id: 'tools',
-      label: t('submissions.seoTools'),
-      icon: BarChart3,
-      color: 'from-purple-500 to-purple-600',
-      description: t('submissions.tools')
+      label: t('sidebar.tools'),
+      icon: Search
     },
     {
-      id: 'directory',
+      id: 'seoTasks',
       label: t('sidebar.seoTasks'),
-      icon: Globe,
-      color: 'from-orange-500 to-orange-600',
-      description: t('sidebar.seoTasks')
+      icon: CheckSquare,
+      children: [
+        {
+          id: 'directory',
+          label: t('submissions.directorySubmissions'),
+          icon: FileText
+        },
+        {
+          id: 'social',
+          label: t('submissions.social'),
+          icon: FileText
+        },
+        {
+          id: 'review',
+          label: t('submissions.review'),
+          icon: FileText
+        },
+        {
+          id: 'local',
+          label: t('submissions.local'),
+          icon: FileText
+        },
+        {
+          id: 'other',
+          label: t('submissions.other'),
+          icon: FileText
+        }
+      ]
     },
     {
       id: 'reports',
-      label: t('submissions.submissionReports'),
-      icon: FileText,
-      color: 'from-red-500 to-red-600',
-      description: t('submissions.reports')
-    }
-  ];
-
-  const secondaryMenuItems = [
+      label: t('sidebar.reports'),
+      icon: BarChart3
+    },
     {
       id: 'pricing',
-      label: t('submissions.pricingPlans'),
-      icon: CreditCard,
-      color: 'from-yellow-500 to-yellow-600',
-      description: t('submissions.pricing')
+      label: t('sidebar.pricing'),
+      icon: CreditCard
     },
     {
       id: 'profile',
-      label: t('submissions.profileSettings'),
-      icon: User,
-      color: 'from-indigo-500 to-indigo-600',
-      description: t('submissions.profile')
+      label: t('sidebar.profile'),
+      icon: User
     }
   ];
 
-  // Admin-only items
-  const adminMenuItems = user?.isAdmin ? [
-    {
-      id: 'admin',
-      label: t('submissions.adminPanel'),
-      icon: Shield,
-      color: 'from-red-500 to-red-600',
-      description: 'System Administration'
+  const toggleExpanded = (itemId: string) => {
+    setExpandedItems(prev =>
+      prev.includes(itemId)
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    );
+  };
+
+  const handleItemClick = (itemId: string, hasChildren: boolean) => {
+    if (hasChildren) {
+      toggleExpanded(itemId);
+    } else {
+      setActiveTab(itemId);
     }
-  ] : [];
+  };
 
-  const allMenuItems = [...menuItems, ...secondaryMenuItems, ...adminMenuItems];
+  const renderSidebarItem = (item: SidebarItem, depth = 0) => {
+    const isActive = activeTab === item.id;
+    const isExpanded = expandedItems.includes(item.id);
+    const hasChildren = item.children && item.children.length > 0;
+    const Icon = item.icon;
 
-  const handleLogout = () => {
-    logout();
+    return (
+      <div key={item.id}>
+        <button
+          onClick={() => handleItemClick(item.id, hasChildren || false)}
+          className={`
+            w-full flex items-center justify-between px-4 py-3 text-left rounded-xl transition-all duration-200
+            ${depth > 0 ? 'ml-4 pl-8' : ''}
+            ${isActive
+              ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-glow'
+              : 'text-primary-700 hover:bg-primary-50 hover:text-primary-900'
+            }
+          `}
+        >
+          <div className="flex items-center space-x-3">
+            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+            <span className="font-medium">{item.label}</span>
+          </div>
+          {hasChildren && (
+            <div className="flex items-center">
+              {isExpanded ? (
+                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+              ) : (
+                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : 'text-primary-600'}`} />
+              )}
+            </div>
+          )}
+        </button>
+
+        {/* Render children if expanded */}
+        {hasChildren && isExpanded && (
+          <div className="mt-1 space-y-1">
+            {item.children?.map(child => renderSidebarItem(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`
-        relative z-50
-        h-full
-        transform transition-all duration-300 ease-in-out
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        ${isCollapsed ? 'w-20' : 'w-72'}
-        bg-white/90 dark:bg-primary-900/90 backdrop-blur-xl border-r border-white/30 dark:border-primary-700/30 shadow-glass-lg
-        flex flex-col
-        flex-shrink-0
-      `}>
-        
-        {/* Header */}
-        <div className={`flex items-center ${!isCollapsed ? 'space-x-3' : 'justify-center'} p-4 border-b border-primary-200 dark:border-primary-700 relative`}>
-          {!isCollapsed ? (
-            <>
-              <div className="flex items-center space-x-3">
-                {/* Opptym Logo */}
-                <div className="relative">
-                  <div className="w-10 h-10 relative">
-                    {/* Circular dashed outline */}
-                    <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
-                      <circle
-                        cx="20"
-                        cy="20"
-                        r="18"
-                        fill="none"
-                        stroke="url(#blueGradient)"
-                        strokeWidth="2"
-                        strokeDasharray="4,4"
-                        strokeLinecap="round"
-                      />
-                      {/* Bright blue circle and curve */}
-                      <circle cx="26" cy="14" r="3" fill="#3B82F6" />
-                      <path
-                        d="M 26 14 A 18 18 0 0 1 20 2"
-                        fill="none"
-                        stroke="#3B82F6"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      {/* Dark blue circle and curve */}
-                      <circle cx="14" cy="26" r="3" fill="#1E40AF" />
-                      <path
-                        d="M 14 26 A 18 18 0 0 1 20 38"
-                        fill="none"
-                        stroke="#1E40AF"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <defs>
-                        <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#3B82F6" />
-                          <stop offset="100%" stopColor="#1E40AF" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col">
-                  <h1 className="text-xl font-bold text-primary-800 dark:text-primary-200 leading-tight">
-                    OPPTYM
-                  </h1>
-                  <p className="text-xs text-primary-600 dark:text-primary-400 leading-tight">
-                    AI ENABLED INTELLIGENCE
-                  </p>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => setIsCollapsed(true)}
-                className="ml-auto p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-            </>
-          ) : (
-            <>
-              {/* Collapsed Logo */}
-              <div className="w-10 h-10 relative">
-                <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
-                  <circle
-                    cx="20"
-                    cy="20"
-                    r="18"
-                    fill="none"
-                    stroke="url(#blueGradient)"
-                    strokeWidth="2"
-                    strokeDasharray="4,4"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="26" cy="14" r="3" fill="#3B82F6" />
-                  <path
-                    d="M 26 14 A 18 18 0 0 1 20 2"
-                    fill="none"
-                    stroke="#3B82F6"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="14" cy="26" r="3" fill="#1E40AF" />
-                  <path
-                    d="M 14 26 A 18 18 0 0 1 20 38"
-                    fill="none"
-                    stroke="#1E40AF"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#1E40AF" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-              
-              {/* Expand button positioned absolutely */}
-              <button
-                onClick={() => setIsCollapsed(false)}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-lg text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* User Info */}
-        <div className="p-4 border-b border-white/20 dark:border-primary-700/20">
-          {!isCollapsed ? (
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <span className="text-white font-semibold text-sm">{getUserInitials(user)}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-primary-800 dark:text-primary-200 truncate">
-                  {getUserDisplayName(user)}
-                </p>
-                <p className="text-xs text-primary-600 dark:text-primary-400 truncate">{user?.email}</p>
-                <div className="flex items-center space-x-1 mt-1">
-                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${getSubscriptionColor(getUserSubscription(user))}`}></div>
-                  <span className="text-xs text-primary-600 dark:text-primary-400">
-                    {getUserSubscription(user)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center shadow-glow">
-                <span className="text-white font-semibold text-sm">{getUserInitials(user)}</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-transparent">
-          {allMenuItems.map((item, index) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setIsMobileOpen(false);
-                }}
-                className={`
-                  w-full flex items-center ${!isCollapsed ? 'space-x-3' : 'justify-center'} px-3 py-3 rounded-xl transition-all duration-200 group relative
-                  ${isActive 
-                    ? 'bg-gradient-to-r ' + item.color + ' text-white shadow-glow' 
-                    : 'text-primary-700 dark:text-primary-300 hover:bg-white/50 dark:hover:bg-primary-800/50 hover:text-accent-600 dark:hover:text-accent-400'
-                  }
-                `}
-                style={{ animationDelay: `${index * 0.1}s` }}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <div className={`
-                  ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-xl flex items-center justify-center transition-all duration-200
-                  ${isActive 
-                    ? 'bg-white/20' 
-                    : 'bg-gradient-to-r ' + item.color + ' group-hover:shadow-glow'
-                  }
-                `}>
-                  <Icon className={`${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
-                </div>
-                
-                {!isCollapsed && (
-                  <div className="flex-1 text-left">
-                    <div className="font-medium">{item.label}</div>
-                    <div className="text-xs opacity-75">{item.description}</div>
-                  </div>
-                )}
-                
-                {isActive && !isCollapsed && (
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-white/20 dark:border-primary-700/20">
-          <button
-            onClick={handleLogout}
-            className={`
-              w-full flex items-center ${!isCollapsed ? 'space-x-3' : 'justify-center'} px-3 py-3 rounded-xl transition-all duration-200 group
-              text-primary-700 dark:text-primary-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400
-            `}
-            title={isCollapsed ? 'Logout' : undefined}
-          >
-            <div className={`
-              ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} rounded-xl flex items-center justify-center transition-all duration-200
-              bg-gradient-to-r from-red-500 to-red-600 group-hover:shadow-glow
-            `}>
-              <LogOut className={`${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
-            </div>
-            
-            {!isCollapsed && (
-              <span className="font-medium">Logout</span>
-            )}
-          </button>
+    <aside className="w-64 bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-glass h-screen sticky top-0 flex flex-col animate-fade-in-left">
+      {/* Sidebar Header */}
+      <div className="p-6 border-b border-primary-100">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 relative">
+            <svg className="w-10 h-10 absolute inset-0" viewBox="0 0 40 40">
+              <circle
+                cx="20"
+                cy="20"
+                r="18"
+                fill="none"
+                stroke="url(#blueGradient)"
+                strokeWidth="2"
+                strokeDasharray="4,4"
+                strokeLinecap="round"
+              />
+              <circle cx="26" cy="14" r="3" fill="#3B82F6" />
+              <path
+                d="M 26 14 A 18 18 0 0 1 20 2"
+                fill="none"
+                stroke="#3B82F6"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <circle cx="14" cy="26" r="3" fill="#1E40AF" />
+              <path
+                d="M 14 26 A 18 18 0 0 1 20 38"
+                fill="none"
+                stroke="#1E40AF"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <defs>
+                <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="#1E40AF" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">
+              OPPTYM
+            </h1>
+            <p className="text-xs text-primary-600 font-medium">
+              SEO Automation Platform
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden w-10 h-10 bg-white/90 dark:bg-primary-900/90 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 rounded-xl shadow-glass flex items-center justify-center text-primary-700 dark:text-primary-300"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </>
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        {sidebarItems.map(item => renderSidebarItem(item))}
+      </nav>
+    </aside>
   );
 }

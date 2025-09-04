@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getProjects, runMetaTagAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
 import { FileText, CheckCircle, XCircle, AlertTriangle, Edit3, Target, TrendingUp, Download } from 'lucide-react';
-import { exportMetaAnalysis } from '../../utils/csvExport';
+import { SEOToolExporters } from '../../utils/csvExport';
 
 type Project = {
   _id: string;
@@ -88,7 +88,7 @@ const MetaAnalyzer = () => {
     }];
     
     // Export to CSV
-    exportMetaAnalysis(exportData);
+    SEOToolExporters.metaAnalyzer(exportData);
   };
 
   const getDetails = () => {
