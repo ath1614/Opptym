@@ -146,20 +146,21 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         <button
           onClick={() => handleItemClick(item.id, hasChildren || false)}
           className={`
-            w-full flex items-center justify-between px-4 py-3 text-left rounded-xl transition-all duration-200
+            w-full flex items-center justify-between text-left rounded-xl transition-all duration-200
             ${depth > 0 ? 'ml-4 pl-8' : ''}
+            ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'}
             ${isActive
               ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
               : 'text-slate-300 hover:bg-slate-700 hover:text-white'
             }
           `}
         >
-          <div className="flex items-center space-x-3">
+          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
             <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-            {!isCollapsed && <span className="font-medium">{item.label}</span>}
+            {!isCollapsed && <span className="font-medium truncate">{item.label}</span>}
           </div>
           {hasChildren && !isCollapsed && (
-            <div className="flex items-center">
+            <div className="flex items-center flex-shrink-0">
               {isExpanded ? (
                 <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
               ) : (
@@ -180,14 +181,16 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className={`bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 ${
+    <aside className={`bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden ${
       isCollapsed ? 'w-16' : 'w-64'
     }`}>
       {/* Sidebar Header */}
-      <div className="p-6 border-b border-slate-700">
+      <div className={`border-b border-slate-700 flex-shrink-0 ${
+        isCollapsed ? 'p-4' : 'p-6'
+      }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <svg className={`transition-all duration-300 ${
+            <svg className={`transition-all duration-300 flex-shrink-0 ${
               isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
             }`} viewBox="0 0 40 40" fill="none">
               <circle cx="20" cy="20" r="18" fill="none" stroke="#60A5FA" strokeWidth="2" strokeDasharray="4,4" strokeLinecap="round"/>
@@ -197,11 +200,11 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             {!isCollapsed && (
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent truncate">
                   OPPTYM
                 </h1>
-                <p className="text-xs text-slate-300 font-medium">
+                <p className="text-xs text-slate-300 font-medium truncate">
                   SEO Automation Platform
                 </p>
               </div>
@@ -209,7 +212,9 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 rounded-md hover:bg-slate-700 transition-colors"
+            className={`p-1 rounded-md hover:bg-slate-700 transition-colors flex-shrink-0 ${
+              isCollapsed ? 'mx-auto' : ''
+            }`}
           >
             {isCollapsed ? (
               <Menu className="h-5 w-5 text-slate-300" />
@@ -221,8 +226,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {sidebarItems.map(item => renderSidebarItem(item))}
+      <nav className="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
+        <div className={`space-y-2 ${
+          isCollapsed ? 'px-2' : 'px-4'
+        }`}>
+          {sidebarItems.map(item => renderSidebarItem(item))}
+        </div>
       </nav>
       
 
