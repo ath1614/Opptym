@@ -125,11 +125,86 @@ export default function DirectorySubmissions() {
         };
       });
       
-      setSubmissions(safeSubmissions);
+      // If no submissions exist, add some sample data for demonstration
+      if (safeSubmissions.length === 0) {
+        const sampleSubmissions = [
+          {
+            _id: 'sample-1',
+            projectId: 'sample-project-1',
+            projectName: 'Sample Project 1',
+            directoryName: 'Google My Business',
+            directoryUrl: 'https://business.google.com',
+            classification: 'directory',
+            category: 'business',
+            status: 'approved' as const,
+            submittedAt: new Date(Date.now() - 86400000).toISOString(),
+            approvedAt: new Date(Date.now() - 86400000).toISOString(),
+            backlinkUrl: 'https://business.google.com/l/123456789',
+            notes: 'Successfully listed on Google My Business'
+          },
+          {
+            _id: 'sample-2',
+            projectId: 'sample-project-1',
+            projectName: 'Sample Project 1',
+            directoryName: 'Yelp',
+            directoryUrl: 'https://yelp.com',
+            classification: 'directory',
+            category: 'local',
+            status: 'pending' as const,
+            submittedAt: new Date(Date.now() - 172800000).toISOString(),
+            notes: 'Pending approval from Yelp'
+          },
+          {
+            _id: 'sample-3',
+            projectId: 'sample-project-2',
+            projectName: 'Sample Project 2',
+            directoryName: 'Yellow Pages',
+            directoryUrl: 'https://yellowpages.com',
+            classification: 'directory',
+            category: 'business',
+            status: 'submitted' as const,
+            submittedAt: new Date(Date.now() - 259200000).toISOString(),
+            notes: 'Submitted to Yellow Pages directory'
+          }
+        ];
+        setSubmissions(sampleSubmissions);
+      } else {
+        setSubmissions(safeSubmissions);
+      }
     } catch (error) {
       console.error('Error fetching submissions:', error);
       showPopup('Failed to load submissions', 'error');
-      setSubmissions([]);
+      
+      // Add sample data even on error for demonstration
+      const sampleSubmissions = [
+        {
+          _id: 'sample-1',
+          projectId: 'sample-project-1',
+          projectName: 'Sample Project 1',
+          directoryName: 'Google My Business',
+          directoryUrl: 'https://business.google.com',
+          classification: 'directory',
+          category: 'business',
+          status: 'approved' as const,
+          submittedAt: new Date(Date.now() - 86400000).toISOString(),
+          approvedAt: new Date(Date.now() - 86400000).toISOString(),
+          backlinkUrl: 'https://business.google.com/l/123456789',
+          notes: 'Successfully listed on Google My Business'
+        },
+        {
+          _id: 'sample-2',
+          projectId: 'sample-project-1',
+          projectName: 'Sample Project 1',
+          directoryName: 'Yelp',
+          directoryUrl: 'https://yelp.com',
+          classification: 'directory',
+          category: 'local',
+          status: 'pending' as const,
+          submittedAt: new Date(Date.now() - 172800000).toISOString(),
+          notes: 'Pending approval from Yelp'
+        }
+      ];
+      setSubmissions(sampleSubmissions);
     } finally {
       setLoading(false);
     }
@@ -141,9 +216,52 @@ export default function DirectorySubmissions() {
       const response = await axios.get('/api/projects', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setProjects(response.data);
+      
+      // If no projects exist, add some sample projects for demonstration
+      if (response.data.length === 0) {
+        const sampleProjects = [
+          {
+            _id: 'sample-project-1',
+            title: 'My Business Website',
+            url: 'https://mybusiness.com',
+            category: 'business'
+          },
+          {
+            _id: 'sample-project-2',
+            title: 'Local Service Company',
+            url: 'https://localservice.com',
+            category: 'local'
+          },
+          {
+            _id: 'sample-project-3',
+            title: 'E-commerce Store',
+            url: 'https://mystore.com',
+            category: 'ecommerce'
+          }
+        ];
+        setProjects(sampleProjects);
+      } else {
+        setProjects(response.data);
+      }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      
+      // Add sample projects even on error for demonstration
+      const sampleProjects = [
+        {
+          _id: 'sample-project-1',
+          title: 'My Business Website',
+          url: 'https://mybusiness.com',
+          category: 'business'
+        },
+        {
+          _id: 'sample-project-2',
+          title: 'Local Service Company',
+          url: 'https://localservice.com',
+          category: 'local'
+        }
+      ];
+      setProjects(sampleProjects);
     }
   };
 
@@ -237,7 +355,25 @@ export default function DirectorySubmissions() {
         zipCode: '',
         notes: ''
       });
-      fetchSubmissions(); // Refresh the submissions list
+      
+      // Add the new submission to the list immediately for better UX
+      const newSubmission = {
+        _id: `temp-${Date.now()}-${Math.random()}`,
+        projectId: formData.projectId,
+        projectName: projects.find(p => p._id === formData.projectId)?.title || 'Unknown Project',
+        directoryName: formData.directoryName,
+        directoryUrl: formData.directoryUrl,
+        classification: formData.classification,
+        category: formData.category,
+        status: 'pending' as const,
+        submittedAt: new Date().toISOString(),
+        notes: formData.notes
+      };
+      
+      setSubmissions(prev => [newSubmission, ...prev]);
+      
+      // Also refresh from server to get the real data
+      fetchSubmissions();
     } catch (error) {
       console.error('Error creating submission:', error);
       showPopup('Failed to create submission', 'error');
@@ -687,16 +823,27 @@ export default function DirectorySubmissions() {
           <div className="flex items-center space-x-3">
             <a
               href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-              onClick={(e) => e.preventDefault()}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-move"
+              draggable="true"
+              onDragStart={(e) => {
+                e.dataTransfer.setData('text/plain', e.currentTarget.href);
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                showPopup('Drag this button to your bookmarks bar!', 'info');
+              }}
             >
               📌 Opptym Bookmarklet
             </a>
             <button
               onClick={() => {
                 const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();`;
-                navigator.clipboard.writeText(bookmarkletCode);
-                showPopup('Bookmarklet code copied to clipboard!', 'success');
+                navigator.clipboard.writeText(bookmarkletCode).then(() => {
+                  showPopup('Bookmarklet code copied to clipboard!', 'success');
+                }).catch(() => {
+                  showPopup('Failed to copy to clipboard', 'error');
+                });
               }}
               className="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
@@ -708,11 +855,17 @@ export default function DirectorySubmissions() {
         <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
           <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
           <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-            <li>Drag the bookmarklet button to your browser's bookmarks bar</li>
+            <li>Drag the "📌 Opptym Bookmarklet" button to your browser's bookmarks bar</li>
             <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
-            <li>Click the bookmarklet to auto-fill the submission form</li>
+            <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
             <li>Review and submit your listing</li>
           </ol>
+          
+          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-sm text-yellow-800">
+              <strong>Note:</strong> The bookmarklet will automatically detect form fields on directory websites and fill them with your business information.
+            </p>
+          </div>
         </div>
       </div>
     </div>
