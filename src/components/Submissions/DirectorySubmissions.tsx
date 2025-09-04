@@ -125,86 +125,12 @@ export default function DirectorySubmissions() {
         };
       });
       
-      // If no submissions exist, add some sample data for demonstration
-      if (safeSubmissions.length === 0) {
-        const sampleSubmissions = [
-          {
-            _id: 'sample-1',
-            projectId: 'sample-project-1',
-            projectName: 'Sample Project 1',
-            directoryName: 'Google My Business',
-            directoryUrl: 'https://business.google.com',
-            classification: 'directory',
-            category: 'business',
-            status: 'approved' as const,
-            submittedAt: new Date(Date.now() - 86400000).toISOString(),
-            approvedAt: new Date(Date.now() - 86400000).toISOString(),
-            backlinkUrl: 'https://business.google.com/l/123456789',
-            notes: 'Successfully listed on Google My Business'
-          },
-          {
-            _id: 'sample-2',
-            projectId: 'sample-project-1',
-            projectName: 'Sample Project 1',
-            directoryName: 'Yelp',
-            directoryUrl: 'https://yelp.com',
-            classification: 'directory',
-            category: 'local',
-            status: 'pending' as const,
-            submittedAt: new Date(Date.now() - 172800000).toISOString(),
-            notes: 'Pending approval from Yelp'
-          },
-          {
-            _id: 'sample-3',
-            projectId: 'sample-project-2',
-            projectName: 'Sample Project 2',
-            directoryName: 'Yellow Pages',
-            directoryUrl: 'https://yellowpages.com',
-            classification: 'directory',
-            category: 'business',
-            status: 'submitted' as const,
-            submittedAt: new Date(Date.now() - 259200000).toISOString(),
-            notes: 'Submitted to Yellow Pages directory'
-          }
-        ];
-        setSubmissions(sampleSubmissions);
-      } else {
-        setSubmissions(safeSubmissions);
-      }
+      setSubmissions(safeSubmissions);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       showPopup('Failed to load submissions', 'error');
       
-      // Add sample data even on error for demonstration
-      const sampleSubmissions = [
-        {
-          _id: 'sample-1',
-          projectId: 'sample-project-1',
-          projectName: 'Sample Project 1',
-          directoryName: 'Google My Business',
-          directoryUrl: 'https://business.google.com',
-          classification: 'directory',
-          category: 'business',
-          status: 'approved' as const,
-          submittedAt: new Date(Date.now() - 86400000).toISOString(),
-          approvedAt: new Date(Date.now() - 86400000).toISOString(),
-          backlinkUrl: 'https://business.google.com/l/123456789',
-          notes: 'Successfully listed on Google My Business'
-        },
-        {
-          _id: 'sample-2',
-          projectId: 'sample-project-1',
-          projectName: 'Sample Project 1',
-          directoryName: 'Yelp',
-          directoryUrl: 'https://yelp.com',
-          classification: 'directory',
-          category: 'local',
-          status: 'pending' as const,
-          submittedAt: new Date(Date.now() - 172800000).toISOString(),
-          notes: 'Pending approval from Yelp'
-        }
-      ];
-      setSubmissions(sampleSubmissions);
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
@@ -217,51 +143,11 @@ export default function DirectorySubmissions() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // If no projects exist, add some sample projects for demonstration
-      if (response.data.length === 0) {
-        const sampleProjects = [
-          {
-            _id: 'sample-project-1',
-            title: 'My Business Website',
-            url: 'https://mybusiness.com',
-            category: 'business'
-          },
-          {
-            _id: 'sample-project-2',
-            title: 'Local Service Company',
-            url: 'https://localservice.com',
-            category: 'local'
-          },
-          {
-            _id: 'sample-project-3',
-            title: 'E-commerce Store',
-            url: 'https://mystore.com',
-            category: 'ecommerce'
-          }
-        ];
-        setProjects(sampleProjects);
-      } else {
-        setProjects(response.data);
-      }
+      setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
       
-      // Add sample projects even on error for demonstration
-      const sampleProjects = [
-        {
-          _id: 'sample-project-1',
-          title: 'My Business Website',
-          url: 'https://mybusiness.com',
-          category: 'business'
-        },
-        {
-          _id: 'sample-project-2',
-          title: 'Local Service Company',
-          url: 'https://localservice.com',
-          category: 'local'
-        }
-      ];
-      setProjects(sampleProjects);
+      setProjects([]);
     }
   };
 

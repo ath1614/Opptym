@@ -127,10 +127,9 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     if (hasChildren) {
       toggleExpanded(itemId);
     } else {
-      // Handle SEO task classifications - they should go to submissions with the classification
+      // Handle SEO task classifications - they should go to their respective components
       if (['directory', 'article', 'press', 'australia', 'classified', 'qa', 'social', 'local'].includes(itemId)) {
-        setActiveTab('directory'); // Go to submissions page
-        // You can add logic here to filter by classification if needed
+        setActiveTab(itemId); // Go to the specific classification component
       } else {
         setActiveTab(itemId);
       }
