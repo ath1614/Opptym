@@ -69,20 +69,39 @@ export default function PressRelease() {
       });
       
       // Ensure all submissions have required fields with fallbacks
-      const safeSubmissions = response.data.map((submission: any) => ({
-        _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
-        projectId: submission.projectId || '',
-        projectName: submission.projectName || 'Unnamed Project',
-        platformName: submission.platformName || 'Unnamed Platform',
-        platformUrl: submission.platformUrl || '',
-        pressReleaseTitle: submission.pressReleaseTitle || 'Untitled Press Release',
-        pressReleaseContent: submission.pressReleaseContent || '',
-        status: submission.status || 'draft',
-        submittedAt: submission.submittedAt || new Date().toISOString(),
-        publishedAt: submission.publishedAt,
-        publishedUrl: submission.publishedUrl,
-        notes: submission.notes || ''
-      }));
+      const safeSubmissions = response.data.map((submission: any) => {
+        // Handle projectId which might be an object or string
+        let projectId = '';
+        let projectName = 'Unnamed Project';
+        
+        if (submission.projectId) {
+          if (typeof submission.projectId === 'object') {
+            const projectObj = submission.projectId as { _id?: string; title?: string };
+            if (projectObj._id) {
+              projectId = projectObj._id;
+              projectName = projectObj.title || submission.projectName || 'Unnamed Project';
+            }
+          } else {
+            projectId = submission.projectId;
+            projectName = submission.projectName || 'Unnamed Project';
+          }
+        }
+        
+        return {
+          _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
+          projectId: projectId,
+          projectName: projectName,
+          platformName: submission.platformName || 'Unnamed Platform',
+          platformUrl: submission.platformUrl || '',
+          pressReleaseTitle: submission.pressReleaseTitle || 'Untitled Press Release',
+          pressReleaseContent: submission.pressReleaseContent || '',
+          status: submission.status || 'draft',
+          submittedAt: submission.submittedAt || new Date().toISOString(),
+          publishedAt: submission.publishedAt,
+          publishedUrl: submission.publishedUrl,
+          notes: submission.notes || ''
+        };
+      });
       
       setSubmissions(safeSubmissions);
     } catch (error) {

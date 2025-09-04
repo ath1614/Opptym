@@ -75,20 +75,39 @@ export default function DirectorySubmissions() {
       });
       
       // Ensure all submissions have required fields with fallbacks
-      const safeSubmissions = response.data.map((submission: any) => ({
-        _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
-        projectId: submission.projectId || '',
-        projectName: submission.projectName || 'Unnamed Project',
-        directoryName: submission.directoryName || 'Unnamed Directory',
-        directoryUrl: submission.directoryUrl || '',
-        classification: submission.classification || 'directory',
-        category: submission.category || 'general',
-        status: submission.status || 'pending',
-        submittedAt: submission.submittedAt || new Date().toISOString(),
-        approvedAt: submission.approvedAt,
-        backlinkUrl: submission.backlinkUrl,
-        notes: submission.notes || ''
-      }));
+      const safeSubmissions = response.data.map((submission: any) => {
+        // Handle projectId which might be an object or string
+        let projectId = '';
+        let projectName = 'Unnamed Project';
+        
+        if (submission.projectId) {
+          if (typeof submission.projectId === 'object') {
+            const projectObj = submission.projectId as { _id?: string; title?: string };
+            if (projectObj._id) {
+              projectId = projectObj._id;
+              projectName = projectObj.title || submission.projectName || 'Unnamed Project';
+            }
+          } else {
+            projectId = submission.projectId;
+            projectName = submission.projectName || 'Unnamed Project';
+          }
+        }
+        
+        return {
+          _id: submission._id || `temp-${Date.now()}-${Math.random()}`,
+          projectId: projectId,
+          projectName: projectName,
+          directoryName: submission.directoryName || 'Unnamed Directory',
+          directoryUrl: submission.directoryUrl || '',
+          classification: submission.classification || 'directory',
+          category: submission.category || 'general',
+          status: submission.status || 'pending',
+          submittedAt: submission.submittedAt || new Date().toISOString(),
+          approvedAt: submission.approvedAt,
+          backlinkUrl: submission.backlinkUrl,
+          notes: submission.notes || ''
+        };
+      });
       
       setSubmissions(safeSubmissions);
     } catch (error) {
@@ -262,7 +281,9 @@ export default function DirectorySubmissions() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{submission.projectName}</div>
-                        <div className="text-sm text-gray-500">{submission.projectId}</div>
+                        <div className="text-sm text-gray-500">
+                          {typeof submission.projectId === 'object' ? submission.projectId._id || 'N/A' : submission.projectId || 'N/A'}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
