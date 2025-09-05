@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ExternalLink, ChevronLeft, ChevronRight, Search, Filter, Grid, List } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Search, Filter, Grid, List, X } from 'lucide-react';
 
 interface Directory {
   _id: string;
@@ -42,6 +42,7 @@ export default function DirectoryGrid({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
 
   // Filter and sort directories
   const filteredAndSortedDirectories = useMemo(() => {
@@ -250,7 +251,7 @@ export default function DirectoryGrid({
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
-                        onClick={onBookmarkletClick}
+                        onClick={() => setShowBookmarkletModal(true)}
                         className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
@@ -285,7 +286,7 @@ export default function DirectoryGrid({
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
-                        onClick={onBookmarkletClick}
+                        onClick={() => setShowBookmarkletModal(true)}
                         className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
@@ -351,6 +352,76 @@ export default function DirectoryGrid({
             </div>
           )}
         </>
+      )}
+
+      {/* Bookmarklet Modal */}
+      {showBookmarkletModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">🚀 Opptym Bookmarklet</h3>
+              <button
+                onClick={() => setShowBookmarkletModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-4">
+                Drag the button below to your bookmarks bar for instant directory submissions
+              </p>
+              
+              <div className="flex items-center space-x-3">
+                <a
+                  href="javascript:(function(){var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js';document.head.appendChild(script);})();"
+                  className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move`}
+                  draggable="true"
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('text/plain', e.currentTarget.href);
+                    e.dataTransfer.effectAllowed = 'copy';
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert('Drag this button to your bookmarks bar!');
+                  }}
+                >
+                  📌 Opptym Bookmarklet
+                </a>
+                <button
+                  onClick={() => {
+                    const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js';document.head.appendChild(script);})();`;
+                    navigator.clipboard.writeText(bookmarkletCode).then(() => {
+                      alert('Bookmarklet code copied to clipboard!');
+                    }).catch(() => {
+                      alert('Failed to copy to clipboard');
+                    });
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Copy Code
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-white rounded-lg border border-blue-100">
+              <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
+              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                <li>Drag the "📌 Opptym Bookmarklet" button to your browser's bookmarks bar</li>
+                <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
+                <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
+                <li>Review and submit your listing</li>
+              </ol>
+              
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  <strong>Note:</strong> The bookmarklet will automatically detect form fields on directory websites and fill them with your business information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
