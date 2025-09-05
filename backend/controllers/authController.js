@@ -450,4 +450,4 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, updateProfile, changePassword, getProfile, exportUserData, deleteAccount };
+module.exports = { signup, login, updateProfile, changePassword, getProfile, exportUserData, deleteAccount, uploadProfilePhoto };

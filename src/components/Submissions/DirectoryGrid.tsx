@@ -43,6 +43,8 @@ export default function DirectoryGrid({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
+  const [bookmarkletToken, setBookmarkletToken] = useState<string | null>(null);
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false);
 
   // Filter and sort directories
   const filteredAndSortedDirectories = useMemo(() => {
@@ -94,6 +96,39 @@ export default function DirectoryGrid({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Generate unique bookmarklet token
+  const generateBookmarkletToken = async () => {
+    setIsGeneratingToken(true);
+    try {
+      // Generate a unique token with timestamp and random string
+      const timestamp = Date.now();
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const token = `${timestamp}_${randomString}_${Math.random().toString(36).substring(2, 15)}`;
+      
+      // Store token in sessionStorage (single-use, expires on browser close)
+      sessionStorage.setItem('opptym_bookmarklet_token', token);
+      sessionStorage.setItem('opptym_bookmarklet_used', 'false');
+      
+      setBookmarkletToken(token);
+    } catch (error) {
+      console.error('Error generating bookmarklet token:', error);
+      alert('Failed to generate bookmarklet token');
+    } finally {
+      setIsGeneratingToken(false);
+    }
+  };
+
+  // Check if bookmarklet has been used
+  const isBookmarkletUsed = () => {
+    return sessionStorage.getItem('opptym_bookmarklet_used') === 'true';
+  };
+
+  // Mark bookmarklet as used
+  const markBookmarkletAsUsed = () => {
+    sessionStorage.setItem('opptym_bookmarklet_used', 'true');
+    setBookmarkletToken(null);
   };
 
   const handleSort = (field: 'name' | 'daScore' | 'pageRank') => {
@@ -354,72 +389,125 @@ export default function DirectoryGrid({
         </>
       )}
 
-      {/* Bookmarklet Modal */}
+      {/* Secure Bookmarklet Modal */}
       {showBookmarkletModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">🚀 Opptym Bookmarklet</h3>
+              <h3 className="text-lg font-semibold text-gray-900">🔒 Secure Opptym Bookmarklet</h3>
               <button
-                onClick={() => setShowBookmarkletModal(false)}
+                onClick={() => {
+                  setShowBookmarkletModal(false);
+                  setBookmarkletToken(null);
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-4">
-                Drag the button below to your bookmarks bar for instant directory submissions
-              </p>
-              
-              <div className="flex items-center space-x-3">
-                <a
-                  href="javascript:(function(){var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js';document.head.appendChild(script);})();"
-                  className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move`}
-                  draggable="true"
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData('text/plain', e.currentTarget.href);
-                    e.dataTransfer.effectAllowed = 'copy';
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert('Drag this button to your bookmarks bar!');
-                  }}
-                >
-                  📌 Opptym Bookmarklet
-                </a>
+            {isBookmarkletUsed() ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🚫</span>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">Bookmarklet Already Used</h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  This bookmarklet has already been used and is no longer valid. Each bookmarklet can only be used once for security purposes.
+                </p>
                 <button
                   onClick={() => {
-                    const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js';document.head.appendChild(script);})();`;
-                    navigator.clipboard.writeText(bookmarkletCode).then(() => {
-                      alert('Bookmarklet code copied to clipboard!');
-                    }).catch(() => {
-                      alert('Failed to copy to clipboard');
-                    });
+                    sessionStorage.removeItem('opptym_bookmarklet_used');
+                    setShowBookmarkletModal(false);
                   }}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  Copy Code
+                  Close
                 </button>
               </div>
-            </div>
-            
-            <div className="p-4 bg-white rounded-lg border border-blue-100">
-              <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
-              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                <li>Drag the "📌 Opptym Bookmarklet" button to your browser's bookmarks bar</li>
-                <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
-                <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
-                <li>Review and submit your listing</li>
-              </ol>
-              
-              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
-                  <strong>Note:</strong> The bookmarklet will automatically detect form fields on directory websites and fill them with your business information.
+            ) : !bookmarkletToken ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🔐</span>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">Generate Secure Bookmarklet</h4>
+                <p className="text-sm text-gray-600 mb-6">
+                  Generate a secure, single-use bookmarklet for directory submissions. This bookmarklet can only be used once and will expire after use.
                 </p>
+                <button
+                  onClick={generateBookmarkletToken}
+                  disabled={isGeneratingToken}
+                  className={`${theme.primary} text-white px-6 py-3 rounded-lg hover:${theme.primaryHover} transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {isGeneratingToken ? 'Generating...' : 'Generate Bookmarklet'}
+                </button>
               </div>
-            </div>
+            ) : (
+              <div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    <strong>⚠️ Security Notice:</strong> This bookmarklet can only be used once and will expire after use. Drag it to your bookmarks bar now.
+                  </p>
+                  
+                  <div className="flex items-center space-x-3">
+                    <a
+                      href={`javascript:(function(){var token='${bookmarkletToken}';var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token;document.head.appendChild(script);})();`}
+                      className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move select-none`}
+                      style={{
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none',
+                        WebkitTouchCallout: 'none',
+                        WebkitTapHighlightColor: 'transparent'
+                      }}
+                      draggable="true"
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', e.currentTarget.href);
+                        e.dataTransfer.effectAllowed = 'copy';
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert('Drag this button to your bookmarks bar! This bookmarklet can only be used once.');
+                      }}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        alert('Right-clicking is disabled for security. Please drag the bookmarklet to your bookmarks bar.');
+                      }}
+                      onSelectStart={(e) => {
+                        e.preventDefault();
+                        return false;
+                      }}
+                      onMouseDown={(e) => {
+                        if (e.button === 2) { // Right click
+                          e.preventDefault();
+                          return false;
+                        }
+                      }}
+                    >
+                      🔒 Secure Bookmarklet
+                    </a>
+                  </div>
+                  
+                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">
+                      <strong>Security:</strong> Copying this bookmarklet is disabled. It can only be used once and will expire after use.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-white rounded-lg border border-blue-100">
+                  <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
+                  <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                    <li>Drag the "🔒 Secure Bookmarklet" button to your browser's bookmarks bar</li>
+                    <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
+                    <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
+                    <li>Review and submit your listing</li>
+                    <li><strong>Note:</strong> The bookmarklet will expire after one use</li>
+                  </ol>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

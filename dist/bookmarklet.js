@@ -5,6 +5,27 @@
   const API_BASE_URL = window.location.origin + '/api';
   const BOOKMARKLET_VERSION = '1.0.0';
   
+  // Get token from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  
+  // Validate token
+  if (!token) {
+    alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.');
+    return;
+  }
+  
+  // Check if this token has already been used
+  const usedTokens = JSON.parse(localStorage.getItem('opptym_used_tokens') || '[]');
+  if (usedTokens.includes(token)) {
+    alert('❌ This bookmarklet has already been used. Please generate a new one from Opptym.');
+    return;
+  }
+  
+  // Mark token as used immediately
+  usedTokens.push(token);
+  localStorage.setItem('opptym_used_tokens', JSON.stringify(usedTokens));
+  
   // Create the main bookmarklet interface
   function createBookmarkletInterface() {
     // Remove existing interface if it exists
@@ -285,39 +306,126 @@
     try {
       let filledFields = 0;
       
-      // Common field mappings
+      // Enhanced field mappings with more comprehensive selectors
       const fieldMappings = [
         // Business name fields
-        { selectors: ['input[name*="name"]', 'input[name*="business"]', 'input[name*="company"]', 'input[id*="name"]', 'input[id*="business"]', 'input[id*="company"]'], value: data.businessName },
+        { 
+          selectors: [
+            'input[name*="name"]', 'input[name*="business"]', 'input[name*="company"]', 'input[name*="title"]',
+            'input[id*="name"]', 'input[id*="business"]', 'input[id*="company"]', 'input[id*="title"]',
+            'input[placeholder*="name"]', 'input[placeholder*="business"]', 'input[placeholder*="company"]',
+            'input[class*="name"]', 'input[class*="business"]', 'input[class*="company"]'
+          ], 
+          value: data.businessName 
+        },
         // Email fields
-        { selectors: ['input[type="email"]', 'input[name*="email"]', 'input[id*="email"]'], value: data.businessEmail },
+        { 
+          selectors: [
+            'input[type="email"]', 'input[name*="email"]', 'input[id*="email"]', 
+            'input[placeholder*="email"]', 'input[class*="email"]'
+          ], 
+          value: data.businessEmail 
+        },
         // Phone fields
-        { selectors: ['input[type="tel"]', 'input[name*="phone"]', 'input[name*="tel"]', 'input[id*="phone"]', 'input[id*="tel"]'], value: data.businessPhone },
+        { 
+          selectors: [
+            'input[type="tel"]', 'input[name*="phone"]', 'input[name*="tel"]', 'input[name*="mobile"]',
+            'input[id*="phone"]', 'input[id*="tel"]', 'input[id*="mobile"]',
+            'input[placeholder*="phone"]', 'input[placeholder*="tel"]', 'input[placeholder*="mobile"]',
+            'input[class*="phone"]', 'input[class*="tel"]', 'input[class*="mobile"]'
+          ], 
+          value: data.businessPhone 
+        },
         // URL fields
-        { selectors: ['input[type="url"]', 'input[name*="url"]', 'input[name*="website"]', 'input[id*="url"]', 'input[id*="website"]'], value: data.businessUrl },
+        { 
+          selectors: [
+            'input[type="url"]', 'input[name*="url"]', 'input[name*="website"]', 'input[name*="web"]',
+            'input[id*="url"]', 'input[id*="website"]', 'input[id*="web"]',
+            'input[placeholder*="url"]', 'input[placeholder*="website"]', 'input[placeholder*="web"]',
+            'input[class*="url"]', 'input[class*="website"]', 'input[class*="web"]'
+          ], 
+          value: data.businessUrl 
+        },
         // Description fields
-        { selectors: ['textarea[name*="description"]', 'textarea[name*="about"]', 'textarea[id*="description"]', 'textarea[id*="about"]'], value: data.businessDescription },
+        { 
+          selectors: [
+            'textarea[name*="description"]', 'textarea[name*="about"]', 'textarea[name*="bio"]',
+            'textarea[id*="description"]', 'textarea[id*="about"]', 'textarea[id*="bio"]',
+            'textarea[placeholder*="description"]', 'textarea[placeholder*="about"]',
+            'textarea[class*="description"]', 'textarea[class*="about"]'
+          ], 
+          value: data.businessDescription 
+        },
         // Address fields
-        { selectors: ['input[name*="address"]', 'input[id*="address"]'], value: data.businessAddress }
+        { 
+          selectors: [
+            'input[name*="address"]', 'input[name*="street"]', 'input[name*="location"]',
+            'input[id*="address"]', 'input[id*="street"]', 'input[id*="location"]',
+            'input[placeholder*="address"]', 'input[placeholder*="street"]',
+            'input[class*="address"]', 'input[class*="street"]'
+          ], 
+          value: data.businessAddress 
+        }
       ];
       
+      // Try to fill fields
       fieldMappings.forEach(mapping => {
+        if (!mapping.value) return;
+        
         mapping.selectors.forEach(selector => {
-          const elements = document.querySelectorAll(selector);
-          elements.forEach(element => {
-            if (element && !element.disabled && !element.readOnly && mapping.value) {
-              element.value = mapping.value;
-              element.dispatchEvent(new Event('input', { bubbles: true }));
-              element.dispatchEvent(new Event('change', { bubbles: true }));
-              filledFields++;
-            }
-          });
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+              if (element && !element.disabled && !element.readOnly && !element.value) {
+                element.value = mapping.value;
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+                element.dispatchEvent(new Event('blur', { bubbles: true }));
+                filledFields++;
+              }
+            });
+          } catch (selectorError) {
+            console.warn('Selector error:', selector, selectorError);
+          }
         });
       });
       
-      // Show success message
+      // Also try to fill common form patterns
+      const commonPatterns = [
+        { pattern: /business|company|organization/i, value: data.businessName },
+        { pattern: /email|e-mail/i, value: data.businessEmail },
+        { pattern: /phone|telephone|mobile/i, value: data.businessPhone },
+        { pattern: /website|url|web/i, value: data.businessUrl },
+        { pattern: /description|about|bio/i, value: data.businessDescription },
+        { pattern: /address|street|location/i, value: data.businessAddress }
+      ];
+      
+      // Find all input and textarea elements
+      const allFormElements = document.querySelectorAll('input, textarea, select');
+      allFormElements.forEach(element => {
+        if (element.disabled || element.readOnly || element.value) return;
+        
+        const elementText = (element.name || element.id || element.placeholder || element.className || '').toLowerCase();
+        
+        commonPatterns.forEach(pattern => {
+          if (pattern.pattern.test(elementText) && pattern.value) {
+            element.value = pattern.value;
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+            element.dispatchEvent(new Event('change', { bubbles: true }));
+            filledFields++;
+          }
+        });
+      });
+      
+      // Show success message with count
       document.getElementById('opptym-form').style.display = 'none';
       document.getElementById('opptym-success').style.display = 'block';
+      
+      // Update success message with filled fields count
+      const successMessage = document.querySelector('#opptym-success p');
+      if (successMessage) {
+        successMessage.textContent = `Successfully filled ${filledFields} form fields with your business information.`;
+      }
       
       // Auto-close after 3 seconds
       setTimeout(closeInterface, 3000);

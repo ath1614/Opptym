@@ -5,6 +5,27 @@
   const API_BASE_URL = window.location.origin + '/api';
   const BOOKMARKLET_VERSION = '1.0.0';
   
+  // Get token from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  
+  // Validate token
+  if (!token) {
+    alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.');
+    return;
+  }
+  
+  // Check if this token has already been used
+  const usedTokens = JSON.parse(localStorage.getItem('opptym_used_tokens') || '[]');
+  if (usedTokens.includes(token)) {
+    alert('❌ This bookmarklet has already been used. Please generate a new one from Opptym.');
+    return;
+  }
+  
+  // Mark token as used immediately
+  usedTokens.push(token);
+  localStorage.setItem('opptym_used_tokens', JSON.stringify(usedTokens));
+  
   // Create the main bookmarklet interface
   function createBookmarkletInterface() {
     // Remove existing interface if it exists
