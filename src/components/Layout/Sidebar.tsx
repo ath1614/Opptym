@@ -123,7 +123,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       toggleExpanded(itemId);
     } else {
       // Handle SEO task classifications - they should go to their respective components
-      if (['directory', 'article', 'press', 'australia', 'classified', 'qa', 'social', 'local'].includes(itemId)) {
+      if (['directory-submission', 'article-submission', 'press-release', 'bookmarking', 'business-listing', 'classified', 'more-seo'].includes(itemId)) {
         setActiveTab(itemId); // Go to the specific classification component
       } else {
         setActiveTab(itemId);

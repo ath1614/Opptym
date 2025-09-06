@@ -109,13 +109,18 @@ const MoreSEO: React.FC = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await fetch('/api/submissions?classification=More SEO');
-        if (response.ok) {
-          const data = await response.json();
-          setSubmissions(data);
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/submissions', {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { classification: 'More SEO' }
+        });
+        
+        if (response.data) {
+          setSubmissions(response.data);
         }
       } catch (error) {
         console.error('Error fetching submissions:', error);
+        setSubmissions([]);
       } finally {
         setLoading(false);
       }
