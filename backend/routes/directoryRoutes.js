@@ -1,12 +1,17 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 const Directory = require('../models/directoryModel');
 const User = require('../models/userModel');
 
-// Get all directories (public - for users to see available directories)
-router.get('/', protect, async (req, res) => {
+// Get all directories (PUBLIC - no authentication required for users to see available directories)
+// This route must remain public so users can browse available directories
+router.get('/', async (req, res) => {
   try {
+    console.log('🔍 Directory route called with query:', req.query);
+    console.log('🔍 MongoDB connection state:', mongoose.connection.readyState);
+    
     const { country, classification, category } = req.query;
     
     let filter = { status: 'active' };
@@ -22,6 +27,8 @@ router.get('/', protect, async (req, res) => {
       filter.category = category;
     }
     
+    console.log('🔍 Filter applied:', filter);
+    
     const directories = await Directory.find(filter)
       .select('-requiredFields -submissionGuidelines')
       .sort({ 
@@ -31,9 +38,11 @@ router.get('/', protect, async (req, res) => {
         daScore: -1   // Then by DA score
       });
     
+    console.log('🔍 Found directories:', directories.length);
     res.json(directories);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch directories' });
+    console.error('❌ Directory fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch directories', details: error.message });
   }
 });
 

@@ -40,9 +40,11 @@ const Directory = mongoose.model('Directory', new mongoose.Schema({
 async function populateMoreSEO() {
   try {
     // Connect to MongoDB
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/opptym';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/opptym?retryWrites=true&w=majority&appName=opptym';
+    console.log('🔍 Connecting to MongoDB URI:', mongoUri);
     await mongoose.connect(mongoUri);
     console.log('✅ Connected to MongoDB');
+    console.log('🔍 Database name:', mongoose.connection.db.databaseName);
 
     // Read the More SEO data
     const dataPath = path.join(__dirname, '../../more_seo_classification.json');
@@ -94,8 +96,13 @@ async function populateMoreSEO() {
         updatedAt: new Date()
       }));
 
-      await Directory.insertMany(directoriesToInsert);
-      console.log(`📝 Inserted batch ${batchNumber}/${totalBatches}`);
+      try {
+        await Directory.insertMany(directoriesToInsert);
+        console.log(`📝 Inserted batch ${batchNumber}/${totalBatches}`);
+      } catch (error) {
+        console.error(`❌ Error inserting batch ${batchNumber}:`, error.message);
+        console.error(`❌ Sample data:`, directoriesToInsert[0]);
+      }
     }
 
     console.log(`✅ Successfully inserted ${moreSeoData.length} More SEO entries`);

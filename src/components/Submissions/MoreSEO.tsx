@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
 import DirectoryGrid from './DirectoryGrid';
 import { 
   TrendingUp, 
@@ -83,13 +84,21 @@ const MoreSEO: React.FC = () => {
   useEffect(() => {
     const fetchDirectories = async () => {
       try {
-        const response = await fetch('/api/directories?classification=More SEO');
-        if (response.ok) {
-          const data = await response.json();
-          setDirectories(data);
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/directories', {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { classification: 'More SEO' }
+        });
+        
+        if (response.data) {
+          setDirectories(response.data);
         }
       } catch (error) {
         console.error('Error fetching directories:', error);
+        setDirectories([]);
+      } finally {
+        setLoading(false);
       }
     };
 
