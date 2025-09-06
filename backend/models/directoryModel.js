@@ -17,7 +17,7 @@ const directorySchema = new mongoose.Schema({
   category: { 
     type: String, 
     required: true,
-    enum: ['business', 'technology', 'health', 'education', 'finance', 'entertainment', 'sports', 'travel', 'food', 'lifestyle', 'other']
+    enum: ['business', 'technology', 'health', 'education', 'finance', 'entertainment', 'sports', 'travel', 'food', 'lifestyle', 'other', 'Web 2.0 Submission', 'Q & A Websites', 'PDF Submission', 'PPT Submission', 'Video Submission', 'Event Submission', 'Podcast Submission', 'Photo Sharing', 'Search Engine Submission', 'Infographics Submission', 'RSS Submission', 'Ping Websites', 'Blog Commenting']
   },
   country: { 
     type: String, 
