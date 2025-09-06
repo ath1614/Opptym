@@ -26,8 +26,8 @@ const directorySchema = new mongoose.Schema({
   },
   classification: { 
     type: String, 
-    default: 'Article Submission',
-    enum: ['Article Submission', 'Web2.0', 'Social', 'Local', 'Classified', 'Q&A', 'Press Release', 'Business']
+    default: 'Directory Submission',
+    enum: ['Directory Submission', 'Article Submission', 'Press Release', 'BookMarking', 'Business Listing', 'Classified', 'More SEO']
   },
   isCustom: { 
     type: Boolean, 

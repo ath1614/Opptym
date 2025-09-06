@@ -57,43 +57,38 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       icon: CheckSquare,
       children: [
         {
-          id: 'directory',
-          label: 'Directory Platforms',
+          id: 'directory-submission',
+          label: 'Directory Submission',
           icon: FileText
         },
         {
-          id: 'article',
-          label: 'Article Platforms',
+          id: 'article-submission',
+          label: 'Article Submission',
           icon: FileText
         },
         {
-          id: 'press',
+          id: 'press-release',
           label: 'Press Release',
           icon: FileText
         },
         {
-          id: 'australia',
-          label: 'Australia',
+          id: 'bookmarking',
+          label: 'BookMarking',
+          icon: FileText
+        },
+        {
+          id: 'business-listing',
+          label: 'Business Listing',
           icon: FileText
         },
         {
           id: 'classified',
-          label: 'Classified Ads',
+          label: 'Classified',
           icon: FileText
         },
         {
-          id: 'qa',
-          label: 'Q&A Platforms',
-          icon: FileText
-        },
-        {
-          id: 'social',
-          label: 'Social Media',
-          icon: FileText
-        },
-        {
-          id: 'local',
-          label: 'Local Business',
+          id: 'more-seo',
+          label: 'More SEO',
           icon: FileText
         }
       ]

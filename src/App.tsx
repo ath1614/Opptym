@@ -10,14 +10,13 @@ import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
 import SubmissionDashboard from './components/Submission/SubmissionDashboard';
-import DirectorySubmissions from './components/Submissions/DirectorySubmissions';
-import ArticlePlatforms from './components/Submissions/ArticlePlatforms';
+import DirectorySubmission from './components/Submissions/DirectorySubmission';
+import ArticleSubmission from './components/Submissions/ArticleSubmission';
 import PressRelease from './components/Submissions/PressRelease';
-import Australia from './components/Submissions/Australia';
-import ClassifiedAds from './components/Submissions/ClassifiedAds';
-import QAPlatforms from './components/Submissions/QAPlatforms';
-import SocialMedia from './components/Submissions/SocialMedia';
-import LocalBusiness from './components/Submissions/LocalBusiness';
+import BookMarking from './components/Submissions/BookMarking';
+import BusinessListing from './components/Submissions/BusinessListing';
+import Classified from './components/Submissions/Classified';
+import MoreSEO from './components/Submissions/MoreSEO';
 import PricingPlans from './components/Pricing/PricingPlans';
 import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
@@ -323,22 +322,20 @@ function App() {
         return <MyProjects />;
       case 'tools':
         return <SEOTools />;
-      case 'directory':
-        return <DirectorySubmissions />;
-      case 'article':
-        return <ArticlePlatforms />;
-      case 'press':
+      case 'directory-submission':
+        return <DirectorySubmission />;
+      case 'article-submission':
+        return <ArticleSubmission />;
+      case 'press-release':
         return <PressRelease />;
-      case 'australia':
-        return <Australia />;
+      case 'bookmarking':
+        return <BookMarking />;
+      case 'business-listing':
+        return <BusinessListing />;
       case 'classified':
-        return <ClassifiedAds />;
-      case 'qa':
-        return <QAPlatforms />;
-      case 'social':
-        return <SocialMedia />;
-      case 'local':
-        return <LocalBusiness />;
+        return <Classified />;
+      case 'more-seo':
+        return <MoreSEO />;
       case 'project-details':
         return selectedProject ? (
           <ProjectDetails project={selectedProject} />
