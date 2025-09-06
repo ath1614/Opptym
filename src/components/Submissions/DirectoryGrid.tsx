@@ -16,31 +16,44 @@ interface Directory {
 
 interface DirectoryGridProps {
   directories: Directory[];
-  loading: boolean;
-  onBookmarkletClick: () => void;
-  theme: {
+  loading?: boolean;
+  onBookmarkletClick?: () => void;
+  theme?: {
     primary: string;
     primaryHover: string;
     primaryBg: string;
     primaryText: string;
   };
-  title: string;
-  emptyMessage: string;
+  title?: string;
+  emptyMessage?: string;
+  classification?: string;
+  onSubmissionCreated?: () => void;
+  submissions?: any[];
+  viewMode?: 'grid' | 'list';
 }
 
 export default function DirectoryGrid({ 
   directories, 
-  loading, 
+  loading = false, 
   onBookmarkletClick, 
-  theme, 
-  title, 
-  emptyMessage 
+  theme = {
+    primary: 'bg-blue-600',
+    primaryHover: 'hover:bg-blue-700',
+    primaryBg: 'bg-blue-50',
+    primaryText: 'text-blue-600'
+  }, 
+  title = 'Directories', 
+  emptyMessage = 'No directories found',
+  classification,
+  onSubmissionCreated,
+  submissions = [],
+  viewMode = 'grid'
 }: DirectoryGridProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'daScore' | 'pageRank'>('daScore');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [internalViewMode, setInternalViewMode] = useState<'grid' | 'list'>(viewMode);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
   const [bookmarkletToken, setBookmarkletToken] = useState<string | null>(null);
@@ -182,13 +195,13 @@ export default function DirectoryGrid({
         </div>
         <div className="flex items-center space-x-4">
           <button
-            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            onClick={() => setInternalViewMode(internalViewMode === 'grid' ? 'list' : 'grid')}
             className={`p-2 rounded-lg transition-colors ${
-              viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-100'
+              internalViewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-100'
             }`}
-            title={viewMode === 'grid' ? 'Switch to List View' : 'Switch to Grid View'}
+            title={internalViewMode === 'grid' ? 'Switch to List View' : 'Switch to Grid View'}
           >
-            {viewMode === 'grid' ? <List className="w-5 h-5" /> : <Grid className="w-5 h-5" />}
+            {internalViewMode === 'grid' ? <List className="w-5 h-5" /> : <Grid className="w-5 h-5" />}
           </button>
         </div>
       </div>
@@ -246,7 +259,7 @@ export default function DirectoryGrid({
       ) : (
         <>
           {/* Grid/List View */}
-          <div className={viewMode === 'grid' 
+          <div className={internalViewMode === 'grid' 
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' 
             : 'space-y-3'
           }>
@@ -254,10 +267,10 @@ export default function DirectoryGrid({
               <div
                 key={directory._id}
                 className={`border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
-                  viewMode === 'list' ? 'flex items-center justify-between' : ''
+                  internalViewMode === 'list' ? 'flex items-center justify-between' : ''
                 }`}
               >
-                {viewMode === 'grid' ? (
+                {internalViewMode === 'grid' ? (
                   <>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">

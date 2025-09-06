@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useAuth } from '../../hooks/useAuth';
 import DirectoryGrid from './DirectoryGrid';
 import { 
   TrendingUp, 
   CheckCircle, 
   Clock, 
   Star,
-  Filter,
   Search,
   Grid,
   List,
@@ -18,20 +15,21 @@ import {
 interface Directory {
   _id: string;
   name: string;
-  url: string;
-  description: string;
-  priority: number;
-  country: string;
+  domain: string;
+  description?: string;
+  pageRank?: number;
+  daScore?: number;
+  spamScore?: number;
+  submissionUrl: string;
   category: string;
-  daScore: number;
-  pageRank: number;
-  spamScore: number;
-  isPremium: boolean;
-  status: string;
-  totalSubmissions: number;
-  successfulSubmissions: number;
-  rejectionRate: number;
-  createdAt: string;
+  country: string;
+  priority?: number;
+  isPremium?: boolean;
+  status?: string;
+  totalSubmissions?: number;
+  successfulSubmissions?: number;
+  rejectionRate?: number;
+  createdAt?: string;
 }
 
 interface Submission {
@@ -45,8 +43,6 @@ interface Submission {
 }
 
 const Classified: React.FC = () => {
-  const { theme } = useTheme();
-  const { user } = useAuth();
   const [directories, setDirectories] = useState<Directory[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +94,7 @@ const Classified: React.FC = () => {
     const submitted = submissions.filter(s => s.status === 'submitted').length;
     const published = submissions.filter(s => s.status === 'published').length;
     const pending = submissions.filter(s => s.status === 'pending').length;
-    const highPriority = directories.filter(d => d.priority >= 75).length;
+    const highPriority = directories.filter(d => (d.priority || 0) >= 75).length;
 
     return {
       totalSubmissions,
@@ -117,9 +113,9 @@ const Classified: React.FC = () => {
                            dir.country.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesPriority = filterPriority === 'all' || 
-        (filterPriority === 'high' && dir.priority >= 75) ||
-        (filterPriority === 'medium' && dir.priority >= 50 && dir.priority < 75) ||
-        (filterPriority === 'low' && dir.priority < 50);
+        (filterPriority === 'high' && (dir.priority || 0) >= 75) ||
+        (filterPriority === 'medium' && (dir.priority || 0) >= 50 && (dir.priority || 0) < 75) ||
+        (filterPriority === 'low' && (dir.priority || 0) < 50);
 
       return matchesSearch && matchesPriority;
     });
@@ -134,20 +130,20 @@ const Classified: React.FC = () => {
           bValue = b.name.toLowerCase();
           break;
         case 'priority':
-          aValue = a.priority;
-          bValue = b.priority;
+          aValue = a.priority || 0;
+          bValue = b.priority || 0;
           break;
         case 'daScore':
-          aValue = a.daScore;
-          bValue = b.daScore;
+          aValue = a.daScore || 0;
+          bValue = b.daScore || 0;
           break;
         case 'totalSubmissions':
-          aValue = a.totalSubmissions;
-          bValue = b.totalSubmissions;
+          aValue = a.totalSubmissions || 0;
+          bValue = b.totalSubmissions || 0;
           break;
         default:
-          aValue = a.priority;
-          bValue = b.priority;
+          aValue = a.priority || 0;
+          bValue = b.priority || 0;
       }
 
       if (sortOrder === 'asc') {
@@ -196,7 +192,7 @@ const Classified: React.FC = () => {
 
         {/* Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700`}>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Submissions</p>
@@ -206,7 +202,7 @@ const Classified: React.FC = () => {
             </div>
           </div>
 
-          <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700`}>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Submitted</p>
@@ -216,7 +212,7 @@ const Classified: React.FC = () => {
             </div>
           </div>
 
-          <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700`}>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Published</p>
@@ -226,7 +222,7 @@ const Classified: React.FC = () => {
             </div>
           </div>
 
-          <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700`}>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
@@ -236,7 +232,7 @@ const Classified: React.FC = () => {
             </div>
           </div>
 
-          <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700`}>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">High Priority</p>
@@ -248,7 +244,7 @@ const Classified: React.FC = () => {
         </div>
 
         {/* Benefits Section */}
-        <div className={`${theme.card} p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8`}>
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
             🎯 Why Use Classified Platforms?
           </h2>
@@ -284,7 +280,7 @@ const Classified: React.FC = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className={`${theme.card} p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8`}>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
@@ -294,7 +290,7 @@ const Classified: React.FC = () => {
                 placeholder="Search classified platforms..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`${theme.input} pl-10 w-full`}
+                className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-10 w-full"
               />
             </div>
 
