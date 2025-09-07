@@ -41,6 +41,12 @@ export default function DirectoryGrid({
   console.log('🔍 DirectoryGrid received directories:', directories?.length || 0);
   console.log('🔍 DirectoryGrid loading state:', loading);
   console.log('🔍 DirectoryGrid classification:', classification);
+  console.log('🔍 DirectoryGrid directories array:', directories);
+  console.log('🔍 DirectoryGrid directories type:', typeof directories);
+  console.log('🔍 DirectoryGrid directories is array:', Array.isArray(directories));
+  if (directories && directories.length > 0) {
+    console.log('🔍 DirectoryGrid first directory:', directories[0]);
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'daScore' | 'pageRank'>('daScore');
@@ -53,6 +59,7 @@ export default function DirectoryGrid({
 
   // Filter and sort directories
   const filteredAndSortedDirectories = useMemo(() => {
+    console.log('🔍 DirectoryGrid filtering directories:', directories);
     let filtered = directories.filter(directory => {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -61,6 +68,7 @@ export default function DirectoryGrid({
         (directory.description && directory.description.toLowerCase().includes(searchLower))
       );
     });
+    console.log('🔍 DirectoryGrid filtered directories:', filtered);
 
     // Sort directories
     filtered.sort((a, b) => {
@@ -89,6 +97,7 @@ export default function DirectoryGrid({
       }
     });
 
+    console.log('🔍 DirectoryGrid final filtered and sorted directories:', filtered);
     return filtered;
   }, [directories, searchTerm, sortBy, sortOrder]);
 

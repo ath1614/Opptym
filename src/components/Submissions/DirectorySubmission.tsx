@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 import TestConfig from '../TestConfig';
 import DebugDirectories from '../DebugDirectories';
+import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
 import { 
   ExternalLink,
   Bookmark,
@@ -116,6 +117,9 @@ export default function DirectorySubmission() {
             </div>
           </div>
         </div>
+
+        {/* Debug Directories Flow */}
+        <DebugDirectoriesFlow />
 
         {/* Debug Directories */}
         <DebugDirectories />
