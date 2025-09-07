@@ -51,10 +51,28 @@ export default function DirectoryGrid({
   }
 
   // HARDCODED FALLBACK FOR TESTING
-  const hardcodedDirectories = [
-    { name: "Test Directory 1", url: "https://test1.com", classification: "Directory Submission" },
-    { name: "Test Directory 2", url: "https://test2.com", classification: "Directory Submission" },
-    { name: "Test Directory 3", url: "https://test3.com", classification: "Directory Submission" }
+  const hardcodedDirectories: Directory[] = [
+    { 
+      name: "Test Directory 1", 
+      url: "https://test1.com", 
+      description: "Test directory 1",
+      daScore: 50,
+      pageRank: 3
+    },
+    { 
+      name: "Test Directory 2", 
+      url: "https://test2.com", 
+      description: "Test directory 2",
+      daScore: 60,
+      pageRank: 4
+    },
+    { 
+      name: "Test Directory 3", 
+      url: "https://test3.com", 
+      description: "Test directory 3",
+      daScore: 70,
+      pageRank: 5
+    }
   ];
 
   const displayDirectories = directories?.length > 0 ? directories : hardcodedDirectories;
@@ -512,23 +530,19 @@ export default function DirectoryGrid({
                         WebkitTapHighlightColor: 'transparent'
                       }}
                       draggable="true"
-                      onDragStart={(e) => {
+                      onDragStart={(e: any) => {
                         e.dataTransfer.setData('text/plain', e.currentTarget.href);
                         e.dataTransfer.effectAllowed = 'copy';
                       }}
-                      onClick={(e) => {
+                      onClick={(e: any) => {
                         e.preventDefault();
                         alert('Drag this button to your bookmarks bar! This bookmarklet can only be used once.');
                       }}
-                      onContextMenu={(e) => {
+                      onContextMenu={(e: any) => {
                         e.preventDefault();
                         alert('Right-clicking is disabled for security. Please drag the bookmarklet to your bookmarks bar.');
                       }}
-                      onSelectStart={(e) => {
-                        e.preventDefault();
-                        return false;
-                      }}
-                      onMouseDown={(e) => {
+                      onMouseDown={(e: any) => {
                         if (e.button === 2) { // Right click
                           e.preventDefault();
                           return false;
