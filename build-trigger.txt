@@ -1,0 +1,4 @@
+FORCE_DEPLOY_TRIGGER
+BUILD_ID=v6.0-$(date +%s)
+TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+CACHE_BUST=true
