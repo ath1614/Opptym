@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig.js';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 import { 
   TrendingUp, 
   CheckCircle, 
