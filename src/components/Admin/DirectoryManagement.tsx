@@ -4,7 +4,7 @@ import {
   directoriesData, 
   getAllClassifications, 
   Directory 
-} from '../../config/directoriesConfig';
+} from '../../config/directoriesConfig.js';
 
 interface DirectoryManagementProps {
   onDirectoryUpdate?: () => void;
@@ -133,7 +133,7 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
 
       {/* Directories List */}
       <div className="space-y-6">
-        {filteredDirectories.map(([classification, dirs]) => (
+        {filteredDirectories.map(([classification, dirs]: [string, Directory[]]) => (
           <div key={classification} className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">{classification}</h3>
