@@ -253,6 +253,38 @@ router.get('/:id/can-submit', protect, async (req, res) => {
   }
 });
 
+// DEBUG ROUTE - Get all directories with full logging
+router.get('/debug/all', async (req, res) => {
+  try {
+    console.log('🔍 DEBUG: /api/directories/debug/all called');
+    
+    const allDirectories = await Directory.find({ status: 'active' });
+    console.log('🔍 DEBUG: Total directories in DB:', allDirectories.length);
+    
+    // Transform and log sample
+    const transformed = allDirectories.map(dir => ({
+      _id: dir._id,
+      name: dir.name,
+      url: dir.submissionUrl, // Map to url field
+      classification: dir.classification,
+      status: dir.status
+    }));
+    
+    console.log('🔍 DEBUG: Sample directory:', transformed[0]);
+    console.log('🔍 DEBUG: Classifications found:', [...new Set(transformed.map(d => d.classification))]);
+    
+    res.json({
+      total: transformed.length,
+      message: 'DIRECTORY FIX v3.1 - Backend has data',
+      directories: transformed.slice(0, 10), // First 10 for inspection
+      classifications: [...new Set(transformed.map(d => d.classification))]
+    });
+  } catch (error) {
+    console.error('❌ DEBUG: Error in debug route:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get directory statistics (admin only)
 router.get('/stats/overview', protect, adminOnly, async (req, res) => {
   try {

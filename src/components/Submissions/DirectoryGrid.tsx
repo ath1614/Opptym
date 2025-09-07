@@ -38,7 +38,7 @@ export default function DirectoryGrid({
   viewMode = 'grid'
 }: DirectoryGridProps) {
   // Debug logging
-  console.log('🔍 DirectoryGrid received directories:', directories?.length || 0);
+  console.log('🔍 DIRECTORY FIX v3.1 - DirectoryGrid received directories:', directories?.length || 0);
   console.log('🔍 DirectoryGrid loading state:', loading);
   console.log('🔍 DirectoryGrid classification:', classification);
   console.log('🔍 DirectoryGrid directories array:', directories);
@@ -47,6 +47,16 @@ export default function DirectoryGrid({
   if (directories && directories.length > 0) {
     console.log('🔍 DirectoryGrid first directory:', directories[0]);
   }
+
+  // HARDCODED FALLBACK FOR TESTING
+  const hardcodedDirectories = [
+    { name: "Test Directory 1", url: "https://test1.com", classification: "Directory Submission" },
+    { name: "Test Directory 2", url: "https://test2.com", classification: "Directory Submission" },
+    { name: "Test Directory 3", url: "https://test3.com", classification: "Directory Submission" }
+  ];
+
+  const displayDirectories = directories?.length > 0 ? directories : hardcodedDirectories;
+  console.log('🔍 DirectoryGrid using directories:', displayDirectories.length, displayDirectories === directories ? '(API data)' : '(HARDCODED FALLBACK)');
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'daScore' | 'pageRank'>('daScore');
@@ -59,8 +69,8 @@ export default function DirectoryGrid({
 
   // Filter and sort directories
   const filteredAndSortedDirectories = useMemo(() => {
-    console.log('🔍 DirectoryGrid filtering directories:', directories);
-    let filtered = directories.filter(directory => {
+    console.log('🔍 DirectoryGrid filtering directories:', displayDirectories);
+    let filtered = displayDirectories.filter(directory => {
       const searchLower = searchTerm.toLowerCase();
       return (
         directory.name.toLowerCase().includes(searchLower) ||
@@ -99,13 +109,21 @@ export default function DirectoryGrid({
 
     console.log('🔍 DirectoryGrid final filtered and sorted directories:', filtered);
     return filtered;
-  }, [directories, searchTerm, sortBy, sortOrder]);
+  }, [displayDirectories, searchTerm, sortBy, sortOrder]);
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedDirectories.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentDirectories = filteredAndSortedDirectories.slice(startIndex, endIndex);
+
+  // DEBUG: Show what we're about to render
+  console.log('🔍 DIRECTORY FIX v3.1 - About to render:', {
+    displayDirectories: displayDirectories.length,
+    filteredDirectories: filteredAndSortedDirectories.length,
+    currentDirectories: currentDirectories.length,
+    isUsingFallback: displayDirectories === hardcodedDirectories
+  });
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -186,6 +204,22 @@ export default function DirectoryGrid({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
+      {/* DEBUG INDICATOR */}
+      <div className={`p-4 rounded-lg border-2 mb-6 ${displayDirectories === hardcodedDirectories ? 'bg-red-100 border-red-300' : 'bg-green-100 border-green-300'}`}>
+        <h3 className={`text-lg font-semibold ${displayDirectories === hardcodedDirectories ? 'text-red-800' : 'text-green-800'}`}>
+          🔍 DIRECTORY FIX v3.1 - Debug Status
+        </h3>
+        <p className={`text-sm ${displayDirectories === hardcodedDirectories ? 'text-red-700' : 'text-green-700'}`}>
+          {displayDirectories === hardcodedDirectories 
+            ? `❌ Using HARDCODED FALLBACK (${displayDirectories.length} directories) - API data not available`
+            : `✅ Using API DATA (${displayDirectories.length} directories) - Backend connection working`
+          }
+        </p>
+        <p className="text-xs text-gray-600 mt-1">
+          Filtered: {filteredAndSortedDirectories.length} | Current Page: {currentDirectories.length}
+        </p>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

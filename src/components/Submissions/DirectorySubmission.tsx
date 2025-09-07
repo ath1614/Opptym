@@ -28,17 +28,28 @@ export default function DirectorySubmission() {
   const loadDirectories = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Loading Directory Submission directories from API...');
+      console.log('🔄 DIRECTORY FIX v3.1 - Loading Directory Submission directories from API...');
       
+      // First test the debug route
+      console.log('🔍 Testing debug route...');
+      const debugResponse = await axios.get('/api/directories/debug/all');
+      console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
+      console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
+      
+      // Now get filtered directories
       const response = await axios.get('/api/directories', {
         params: { classification: 'Directory Submission' }
       });
       
-      console.log('📊 API response:', response.data);
-      console.log('✅ Directory Submission directories loaded:', response.data.length);
-      setDirectories(response.data);
+      console.log('📊 API response for Directory Submission:', response.data);
+      console.log('📊 API response length:', response.data?.length);
+      console.log('📊 First directory:', response.data?.[0]);
+      console.log('✅ Directory Submission directories loaded:', response.data?.length || 0);
+      
+      setDirectories(response.data || []);
     } catch (error) {
       console.error('❌ Error loading directories:', error);
+      console.error('❌ Error details:', error.response?.data);
       // Fallback to config if API fails
       const configDirectories = getDirectoriesByClassification('Directory Submission');
       console.log('📊 Fallback to config directories:', configDirectories);
