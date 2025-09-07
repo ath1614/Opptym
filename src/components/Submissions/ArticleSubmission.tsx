@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import DirectoryGrid from './DirectoryGrid';
 import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
+import axios from 'axios';
 import { 
   Plus, 
   Search, 
@@ -62,9 +63,9 @@ export default function ArticleSubmission() {
         
         // Calculate stats
         const total = response.data.submissions.length;
-        const submitted = response.data.submissions.filter(s => s.status === 'submitted').length;
-        const approved = response.data.submissions.filter(s => s.status === 'approved' || s.status === 'published').length;
-        const pending = response.data.submissions.filter(s => s.status === 'pending').length;
+        const submitted = response.data.submissions.filter((s: any) => s.status === 'submitted').length;
+        const approved = response.data.submissions.filter((s: any) => s.status === 'approved' || s.status === 'published').length;
+        const pending = response.data.submissions.filter((s: any) => s.status === 'pending').length;
         
         setStats({ total, submitted, approved, pending, instantApproval: 23 }); // 23 instant approval platforms
       }
@@ -75,7 +76,7 @@ export default function ArticleSubmission() {
 
   useEffect(() => {
     loadDirectories();
-    loadSubmissions();
+    fetchSubmissions();
   }, []);
 
   return (
