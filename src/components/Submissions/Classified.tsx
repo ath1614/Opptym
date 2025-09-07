@@ -62,7 +62,7 @@ const Classified: React.FC = () => {
       setSubmissions([]);
     };
 
-    loadSubmissions();
+    fetchSubmissions();
   }, []);
 
   // Calculate stats

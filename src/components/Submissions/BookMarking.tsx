@@ -75,7 +75,7 @@ export default function BookMarking() {
 
   useEffect(() => {
     loadDirectories();
-    loadSubmissions();
+    fetchSubmissions();
   }, []);
 
   return (

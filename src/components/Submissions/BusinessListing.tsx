@@ -85,7 +85,7 @@ export default function BusinessListing() {
 
   useEffect(() => {
     loadDirectories();
-    loadSubmissions();
+    fetchSubmissions();
   }, []);
 
   // Filter directories by country
