@@ -4,7 +4,7 @@ import {
   directoriesData, 
   getAllClassifications, 
   Directory 
-} from '../../config/directoriesConfig';
+} from '@/config/directoriesConfig';
 
 interface DirectoryManagementProps {
   onDirectoryUpdate?: () => void;

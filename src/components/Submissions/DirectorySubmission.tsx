@@ -9,7 +9,7 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react';
-import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
+import { getDirectoriesByClassification, Directory } from '@/config/directoriesConfig';
 
 export default function DirectorySubmission() {
   const [loading, setLoading] = useState(true);

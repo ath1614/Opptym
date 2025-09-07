@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDirectoriesByClassification, getAllClassifications, getTotalDirectoriesCount } from '../config/directoriesConfig';
+import { getDirectoriesByClassification, getAllClassifications, getTotalDirectoriesCount } from '@/config/directoriesConfig';
 
 export default function TestConfig() {
   const testConfig = () => {
