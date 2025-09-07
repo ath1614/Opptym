@@ -13,6 +13,7 @@ import CreateProjectModal from './CreateProjectModal';
 import EditProjectModal from './EditProjectModal';
 import ProjectDetails from '../Reports/ProjectDetails';
 import LimitGate from '../Common/LimitGate';
+import DebugProjectLimits from '../DebugProjectLimits';
 
 type Project = {
   _id: string;
@@ -250,6 +251,9 @@ const MyProjects = () => {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Debug Project Limits */}
+      <DebugProjectLimits />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
