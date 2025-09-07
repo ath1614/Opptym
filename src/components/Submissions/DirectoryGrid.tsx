@@ -38,8 +38,9 @@ export default function DirectoryGrid({
   viewMode = 'grid'
 }: DirectoryGridProps) {
   // Debug logging
-  console.log('🔍 DIRECTORY FIX v4.0 - DirectoryGrid received directories:', directories?.length || 0);
-  console.log('🚀 CACHE BUST v4.0 - DirectoryGrid loaded at:', new Date().toISOString());
+  console.log('🔍 DIRECTORY FIX v5.0 - DirectoryGrid received directories:', directories?.length || 0);
+  console.log('🚀 CACHE BUST v5.0 - DirectoryGrid loaded at:', new Date().toISOString());
+  console.log('🚀 BUILD ID:', Math.random().toString(36).substring(2, 15));
   console.log('🔍 DirectoryGrid loading state:', loading);
   console.log('🔍 DirectoryGrid classification:', classification);
   console.log('🔍 DirectoryGrid directories array:', directories);
@@ -208,7 +209,7 @@ export default function DirectoryGrid({
       {/* DEBUG INDICATOR */}
       <div className={`p-4 rounded-lg border-2 mb-6 ${displayDirectories === hardcodedDirectories ? 'bg-red-100 border-red-300' : 'bg-green-100 border-green-300'}`}>
         <h3 className={`text-lg font-semibold ${displayDirectories === hardcodedDirectories ? 'text-red-800' : 'text-green-800'}`}>
-          🔍 DIRECTORY FIX v4.0 - Debug Status
+          🔍 DIRECTORY FIX v5.0 - Debug Status
         </h3>
         <p className={`text-sm ${displayDirectories === hardcodedDirectories ? 'text-red-700' : 'text-green-700'}`}>
           {displayDirectories === hardcodedDirectories 

@@ -3,7 +3,8 @@ import DirectoryGrid from './DirectoryGrid';
 
 // Test if DirectoryGrid is imported correctly
 console.log('🔍 DirectoryGrid import test:', DirectoryGrid);
-console.log('🚀 CACHE BUST v4.0 - Latest build loaded at:', new Date().toISOString());
+console.log('🚀 CACHE BUST v5.0 - Latest build loaded at:', new Date().toISOString());
+console.log('🚀 BUILD ID:', Math.random().toString(36).substring(2, 15));
 import axios from 'axios';
 import TestConfig from '../TestConfig';
 import DebugDirectories from '../DebugDirectories';
@@ -74,6 +75,11 @@ export default function DirectorySubmission() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+      {/* AGGRESSIVE CACHE BUST BANNER */}
+      <div className="bg-red-500 text-white p-4 text-center font-bold text-xl">
+        🚀 CACHE BUST v5.0 - BUILD {Math.random().toString(36).substring(2, 8).toUpperCase()} - {new Date().toLocaleTimeString()}
+      </div>
+      
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -157,7 +163,7 @@ export default function DirectorySubmission() {
 
         {/* Directory Grid */}
         <div className="bg-yellow-100 border-2 border-yellow-400 p-4 rounded-lg mb-4">
-          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status - CACHE BUST v4.0</h3>
+          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status - CACHE BUST v5.0</h3>
           <p className="text-yellow-700">Loading: {loading ? 'true' : 'false'}</p>
           <p className="text-yellow-700">Directories count: {directories.length}</p>
           <p className="text-yellow-700">Directories type: {typeof directories}</p>
