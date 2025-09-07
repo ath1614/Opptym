@@ -37,6 +37,10 @@ export default function DirectoryGrid({
   submissions = [],
   viewMode = 'grid'
 }: DirectoryGridProps) {
+  // Debug logging
+  console.log('🔍 DirectoryGrid received directories:', directories?.length || 0);
+  console.log('🔍 DirectoryGrid loading state:', loading);
+  console.log('🔍 DirectoryGrid classification:', classification);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'daScore' | 'pageRank'>('daScore');

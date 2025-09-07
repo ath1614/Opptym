@@ -24,11 +24,13 @@ export default function DirectorySubmission() {
   const loadDirectories = () => {
     try {
       setLoading(true);
+      console.log('🔄 Loading Directory Submission directories...');
       const configDirectories = getDirectoriesByClassification('Directory Submission');
-      setDirectories(configDirectories);
+      console.log('📊 Config directories received:', configDirectories);
       console.log('✅ Directory Submission directories loaded:', configDirectories.length);
+      setDirectories(configDirectories);
     } catch (error) {
-      console.error('Error loading directories:', error);
+      console.error('❌ Error loading directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);

@@ -33996,7 +33996,7 @@ export const getAllClassifications = (): string[] => {
 
 // Helper function to get total count of directories
 export const getTotalDirectoriesCount = (): number => {
-  return Object.values(directoriesData).reduce((total, directories) => total + directories.length, 0);
+  return Object.keys(directoriesData).reduce((total, key) => total + directoriesData[key].length, 0);
 };
 
 // Helper function to add a new directory (for admin panel)
