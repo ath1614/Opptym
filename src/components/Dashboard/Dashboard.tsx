@@ -17,6 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import TrialExpirationModal from '../Subscription/TrialExpirationModal';
+import DebugDashboard from '../DebugDashboard';
 
 interface DashboardStats {
   totalProjects: number;
@@ -175,13 +176,10 @@ export default function Dashboard() {
           directoriesSubmitted: submissionsResponse.data.length
         };
 
-        // Update stats with calculated data
-        setStats(calculatedStats);
-        
         // Store previous values for delta calculation
         const previousStats = { ...stats };
         
-        // Update stats first
+        // Update stats with calculated data
         setStats(calculatedStats);
         
         // Calculate deltas with previous values
@@ -214,10 +212,7 @@ export default function Dashboard() {
           });
         });
         
-        // Add recent projects
-        const projectsResponse = await axios.get('/api/projects', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        // Add recent projects (use already fetched data)
         projectsResponse.data.slice(0, 2).forEach((project: any, index: number) => {
           realActivity.push({
             id: `project-${project._id || index}`,
@@ -291,6 +286,11 @@ export default function Dashboard() {
   // Expose refresh function globally for other components to use
   useEffect(() => {
     (window as any).refreshDashboardData = refreshDashboardData;
+    
+    // Cleanup function to remove global reference
+    return () => {
+      delete (window as any).refreshDashboardData;
+    };
   }, []);
 
   useEffect(() => {
@@ -322,11 +322,11 @@ export default function Dashboard() {
 
   // Also refresh when user object changes (indicating auth state change)
   useEffect(() => {
-    if (user) {
+    if (user && user.id) {
       console.log('🔄 User changed - refreshing dashboard data');
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user?.id]); // Only depend on user.id to prevent infinite loops
 
   // DEPLOYMENT VERIFICATION - This should be visible in browser console
   console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v3.0');
@@ -361,6 +361,9 @@ export default function Dashboard() {
 
       
       <div className="container mx-auto px-4 py-8">
+        {/* Debug Dashboard */}
+        <DebugDashboard />
+
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
