@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import DirectoryGrid from './DirectoryGrid';
 import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
+import axios from 'axios';
 import { 
   Plus, 
   Search, 
@@ -75,7 +76,7 @@ export default function PressRelease() {
 
   useEffect(() => {
     loadDirectories();
-    loadSubmissions();
+    fetchSubmissions();
   }, []);
 
   return (

@@ -37,11 +37,17 @@ export default function DirectorySubmission() {
       
       // First test the debug route
       console.log('🔍 Testing debug route...');
-      const debugResponse = await axios.get('/api/directories/debug/all', {
-        params: { _cb: Date.now() } // Cache busting
-      });
-      console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
-      console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
+      try {
+        const debugResponse = await axios.get('/api/directories/debug/all', {
+          params: { _cb: Date.now() } // Cache busting
+        });
+        console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
+        console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
+        console.log('🔍 DEBUG: Sample directories:', debugResponse.data.directories);
+      } catch (debugError) {
+        console.error('❌ Debug route failed:', debugError);
+        console.error('❌ Debug route error details:', debugError.response?.data);
+      }
       
       // Now get filtered directories
       const response = await axios.get('/api/directories', {
