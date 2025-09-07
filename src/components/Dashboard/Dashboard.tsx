@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import TrialExpirationModal from '../Subscription/TrialExpirationModal';
 import DebugDashboard from '../DebugDashboard';
+import DebugI18n from '../DebugI18n';
 
 interface DashboardStats {
   totalProjects: number;
@@ -361,7 +362,8 @@ export default function Dashboard() {
 
       
       <div className="container mx-auto px-4 py-8">
-        {/* Debug Dashboard */}
+        {/* Debug Components */}
+        <DebugI18n />
         <DebugDashboard />
 
         {/* Header */}
