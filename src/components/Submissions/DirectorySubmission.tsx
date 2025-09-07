@@ -44,7 +44,7 @@ export default function DirectorySubmission() {
         console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
         console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
         console.log('🔍 DEBUG: Sample directories:', debugResponse.data.directories);
-      } catch (debugError) {
+      } catch (debugError: any) {
         console.error('❌ Debug route failed:', debugError);
         console.error('❌ Debug route error details:', debugError.response?.data);
       }
