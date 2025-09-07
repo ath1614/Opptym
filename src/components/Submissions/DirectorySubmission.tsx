@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
+
+// Test if DirectoryGrid is imported correctly
+console.log('🔍 DirectoryGrid import test:', DirectoryGrid);
 import axios from 'axios';
 import TestConfig from '../TestConfig';
 import DebugDirectories from '../DebugDirectories';
@@ -147,11 +150,25 @@ export default function DirectorySubmission() {
         <TestConfig />
 
         {/* Directory Grid */}
-        <DirectoryGrid
-          directories={directories}
-          loading={loading}
-          classification="Directory Submission"
-        />
+        <div className="bg-yellow-100 border-2 border-yellow-400 p-4 rounded-lg mb-4">
+          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status</h3>
+          <p className="text-yellow-700">Loading: {loading ? 'true' : 'false'}</p>
+          <p className="text-yellow-700">Directories count: {directories.length}</p>
+          <p className="text-yellow-700">Directories type: {typeof directories}</p>
+        </div>
+        
+        {DirectoryGrid ? (
+          <DirectoryGrid
+            directories={directories}
+            loading={loading}
+            classification="Directory Submission"
+          />
+        ) : (
+          <div className="bg-red-100 border-2 border-red-400 p-4 rounded-lg">
+            <h3 className="text-lg font-bold text-red-800">❌ DirectoryGrid Component Failed to Load</h3>
+            <p className="text-red-700">The DirectoryGrid component is not available</p>
+          </div>
+        )}
 
         {/* Info Section */}
         <div className="mt-12 bg-white dark:bg-slate-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-slate-700">
