@@ -27,6 +27,7 @@ import BacklinkTool from './BacklinkTool';
 import KeywordTrackerTool from './KeywordTrackerTool';
 import PageSpeedTool from './PageSpeedTool';
 import CompetitorTool from './CompetitorTool';
+import DebugSEOExport from '../DebugSEOExport';
 const tools = [
   {
     key: 'meta',
@@ -124,6 +125,9 @@ const SEOToolsDashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Debug SEO Export */}
+      <DebugSEOExport />
+
       {!selectedTool ? (
         <>
           <div className="flex items-center gap-3 mb-6">
