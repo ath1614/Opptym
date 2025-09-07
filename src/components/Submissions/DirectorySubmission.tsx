@@ -3,6 +3,7 @@ import DirectoryGrid from './DirectoryGrid';
 
 // Test if DirectoryGrid is imported correctly
 console.log('🔍 DirectoryGrid import test:', DirectoryGrid);
+console.log('🚀 CACHE BUST v4.0 - Latest build loaded at:', new Date().toISOString());
 import axios from 'axios';
 import TestConfig from '../TestConfig';
 import DebugDirectories from '../DebugDirectories';
@@ -35,13 +36,18 @@ export default function DirectorySubmission() {
       
       // First test the debug route
       console.log('🔍 Testing debug route...');
-      const debugResponse = await axios.get('/api/directories/debug/all');
+      const debugResponse = await axios.get('/api/directories/debug/all', {
+        params: { _cb: Date.now() } // Cache busting
+      });
       console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
       console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
       
       // Now get filtered directories
       const response = await axios.get('/api/directories', {
-        params: { classification: 'Directory Submission' }
+        params: { 
+          classification: 'Directory Submission',
+          _cb: Date.now() // Cache busting
+        }
       });
       
       console.log('📊 API response for Directory Submission:', response.data);
@@ -151,10 +157,11 @@ export default function DirectorySubmission() {
 
         {/* Directory Grid */}
         <div className="bg-yellow-100 border-2 border-yellow-400 p-4 rounded-lg mb-4">
-          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status</h3>
+          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status - CACHE BUST v4.0</h3>
           <p className="text-yellow-700">Loading: {loading ? 'true' : 'false'}</p>
           <p className="text-yellow-700">Directories count: {directories.length}</p>
           <p className="text-yellow-700">Directories type: {typeof directories}</p>
+          <p className="text-yellow-700">Build timestamp: {new Date().toISOString()}</p>
         </div>
         
         {DirectoryGrid ? (
