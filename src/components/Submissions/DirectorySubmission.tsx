@@ -33,7 +33,7 @@ export default function DirectorySubmission() {
   const loadDirectories = async () => {
     try {
       setLoading(true);
-      console.log('🔄 DIRECTORY FIX v3.1 - Loading Directory Submission directories from API...');
+      console.log('🔄 DIRECTORY FIX v6.3 - Loading Directory Submission directories from API...');
       
       // First test the debug route
       console.log('🔍 Testing debug route...');
@@ -60,9 +60,14 @@ export default function DirectorySubmission() {
     } catch (error: any) {
       console.error('❌ Error loading directories:', error);
       console.error('❌ Error details:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      console.error('❌ Error message:', error.message);
+      console.error('❌ Full error object:', error);
+      
       // Fallback to config if API fails
       const configDirectories = getDirectoriesByClassification('Directory Submission');
       console.log('📊 Fallback to config directories:', configDirectories);
+      console.log('📊 Config directories count:', configDirectories.length);
       setDirectories(configDirectories);
     } finally {
       setLoading(false);
