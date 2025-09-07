@@ -39,7 +39,18 @@ router.get('/', async (req, res) => {
       });
     
     console.log('🔍 Found directories:', directories.length);
-    res.json(directories);
+    
+    // Transform directories to match frontend expectations
+    const transformedDirectories = directories.map(dir => ({
+      ...dir.toObject(),
+      url: dir.submissionUrl, // Map submissionUrl to url for frontend
+      _id: dir._id
+    }));
+    
+    console.log('🔍 Transformed directories:', transformedDirectories.length);
+    console.log('🔍 Sample transformed directory:', transformedDirectories[0]);
+    
+    res.json(transformedDirectories);
   } catch (error) {
     console.error('❌ Directory fetch error:', error);
     res.status(500).json({ error: 'Failed to fetch directories', details: error.message });
