@@ -21,6 +21,10 @@ console.log('🚀 App starting with build info:', {
   timestamp: (window as any).__TIMESTAMP__
 });
 
+// DEPLOYMENT INDICATOR
+console.log('🚀 DEPLOYMENT v6.2 - BUILD_' + Date.now() + ' - ' + new Date().toLocaleString());
+console.log('🚀 FORCE DEPLOY TRIGGER - This should be visible in production!');
+
 
 
 // Add request interceptor to include token
