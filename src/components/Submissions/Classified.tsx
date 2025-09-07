@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
 import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 import { 
   TrendingUp, 
@@ -375,7 +374,6 @@ const Classified: React.FC = () => {
         </div>
 
         {/* Debug Directories Flow */}
-        <DebugDirectoriesFlow />
 
         {/* Directory Grid */}
         <DirectoryGrid

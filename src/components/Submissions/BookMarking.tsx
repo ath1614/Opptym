@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import DirectoryGrid from './DirectoryGrid';
-import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
 import { 
   Plus, 
   Search, 
@@ -165,7 +164,6 @@ export default function BookMarking() {
         </div>
 
         {/* Debug Directories Flow */}
-        <DebugDirectoriesFlow />
 
         {/* Directory Grid */}
         <DirectoryGrid 

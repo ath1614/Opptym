@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 
-// Test if DirectoryGrid is imported correctly
-console.log('🔍 DirectoryGrid import test:', DirectoryGrid);
-console.log('🚀 CACHE BUST v5.0 - Latest build loaded at:', new Date().toISOString());
-console.log('🚀 BUILD ID:', Math.random().toString(36).substring(2, 15));
 import axios from 'axios';
-import TestConfig from '../TestConfig';
-import DebugDirectories from '../DebugDirectories';
-import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
 import { 
   ExternalLink,
   Bookmark,
@@ -29,52 +22,16 @@ export default function DirectorySubmission() {
     pending: 0
   });
 
-  // Load directories from API
-  const loadDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      console.log('🔄 DIRECTORY FIX v6.3 - Loading Directory Submission directories from API...');
-      
-      // First test the debug route
-      console.log('🔍 Testing debug route...');
-      try {
-        const debugResponse = await axios.get('/api/directories/debug/all', {
-          params: { _cb: Date.now() } // Cache busting
-        });
-        console.log('🔍 DEBUG ROUTE RESPONSE:', debugResponse.data);
-        console.log('🔍 DEBUG: Total directories available:', debugResponse.data.total);
-        console.log('🔍 DEBUG: Sample directories:', debugResponse.data.directories);
-      } catch (debugError: any) {
-        console.error('❌ Debug route failed:', debugError);
-        console.error('❌ Debug route error details:', debugError.response?.data);
-      }
-      
-      // Now get filtered directories
-      const response = await axios.get('/api/directories', {
-        params: { 
-          classification: 'Directory Submission',
-          _cb: Date.now() // Cache busting
-        }
-      });
-      
-      console.log('📊 API response for Directory Submission:', response.data);
-      console.log('📊 API response length:', response.data?.length);
-      console.log('📊 First directory:', response.data?.[0]);
-      console.log('✅ Directory Submission directories loaded:', response.data?.length || 0);
-      
-      setDirectories(response.data || []);
-    } catch (error: any) {
-      console.error('❌ Error loading directories:', error);
-      console.error('❌ Error details:', error.response?.data);
-      console.error('❌ Error status:', error.response?.status);
-      console.error('❌ Error message:', error.message);
-      console.error('❌ Full error object:', error);
-      
-      // Fallback to config if API fails
       const configDirectories = getDirectoriesByClassification('Directory Submission');
-      console.log('📊 Fallback to config directories:', configDirectories);
-      console.log('📊 Config directories count:', configDirectories.length);
       setDirectories(configDirectories);
+      console.log('✅ Directory Submission directories loaded:', configDirectories.length);
+    } catch (error) {
+      console.error('Error loading directories:', error);
+      setDirectories([]);
     } finally {
       setLoading(false);
     }
@@ -163,36 +120,12 @@ export default function DirectorySubmission() {
           </div>
         </div>
 
-        {/* Debug Directories Flow */}
-        <DebugDirectoriesFlow />
-
-        {/* Debug Directories - Raw API Data */}
-        <DebugDirectories />
-
-        {/* Test Config */}
-        <TestConfig />
-
         {/* Directory Grid */}
-        <div className="bg-yellow-100 border-2 border-yellow-400 p-4 rounded-lg mb-4">
-          <h3 className="text-lg font-bold text-yellow-800">🔍 DEBUG: DirectoryGrid Status - CACHE BUST v5.0</h3>
-          <p className="text-yellow-700">Loading: {loading ? 'true' : 'false'}</p>
-          <p className="text-yellow-700">Directories count: {directories.length}</p>
-          <p className="text-yellow-700">Directories type: {typeof directories}</p>
-          <p className="text-yellow-700">Build timestamp: {new Date().toISOString()}</p>
-        </div>
-        
-        {DirectoryGrid ? (
-          <DirectoryGrid
-            directories={directories}
-            loading={loading}
-            classification="Directory Submission"
-          />
-        ) : (
-          <div className="bg-red-100 border-2 border-red-400 p-4 rounded-lg">
-            <h3 className="text-lg font-bold text-red-800">❌ DirectoryGrid Component Failed to Load</h3>
-            <p className="text-red-700">The DirectoryGrid component is not available</p>
-          </div>
-        )}
+        <DirectoryGrid
+          directories={directories}
+          loading={loading}
+          classification="Directory Submission"
+        />
 
         {/* Info Section */}
         <div className="mt-12 bg-white dark:bg-slate-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-slate-700">
