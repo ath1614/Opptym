@@ -47,7 +47,7 @@ export default function DirectorySubmission() {
       console.log('✅ Directory Submission directories loaded:', response.data?.length || 0);
       
       setDirectories(response.data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error loading directories:', error);
       console.error('❌ Error details:', error.response?.data);
       // Fallback to config if API fails
