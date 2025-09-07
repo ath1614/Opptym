@@ -255,9 +255,9 @@ export default function DirectoryGrid({
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' 
             : 'space-y-3'
           }>
-            {currentDirectories.map((directory) => (
+            {currentDirectories.map((directory, index) => (
               <div
-                key={directory._id}
+                key={`${directory.name}-${directory.url}-${index}`}
                 className={`border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
                   internalViewMode === 'list' ? 'flex items-center justify-between' : ''
                 }`}

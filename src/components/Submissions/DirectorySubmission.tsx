@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 import TestConfig from '../TestConfig';
+import DebugDirectories from '../DebugDirectories';
 import { 
   ExternalLink,
   Bookmark,
@@ -9,7 +10,7 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react';
-import { getDirectoriesByClassification, Directory } from '@/config/directoriesConfig';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function DirectorySubmission() {
   const [loading, setLoading] = useState(true);
@@ -115,6 +116,9 @@ export default function DirectorySubmission() {
             </div>
           </div>
         </div>
+
+        {/* Debug Directories */}
+        <DebugDirectories />
 
         {/* Test Config */}
         <TestConfig />
