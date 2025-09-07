@@ -1,18 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ExternalLink, ChevronLeft, ChevronRight, Search, Filter, Grid, List, X } from 'lucide-react';
-
-interface Directory {
-  _id: string;
-  name: string;
-  domain: string;
-  description?: string;
-  pageRank?: number;
-  daScore?: number;
-  spamScore?: number;
-  submissionUrl: string;
-  category: string;
-  country: string;
-}
+import { Directory } from '../../config/directoriesConfig';
 
 interface DirectoryGridProps {
   directories: Directory[];
@@ -65,7 +53,7 @@ export default function DirectoryGrid({
       const searchLower = searchTerm.toLowerCase();
       return (
         directory.name.toLowerCase().includes(searchLower) ||
-        directory.domain.toLowerCase().includes(searchLower) ||
+        directory.url.toLowerCase().includes(searchLower) ||
         (directory.description && directory.description.toLowerCase().includes(searchLower))
       );
     });
@@ -275,7 +263,7 @@ export default function DirectoryGrid({
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{directory.name}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{directory.domain}</p>
+                        <p className="text-sm text-gray-600 mb-2">{directory.url}</p>
                         {directory.description && (
                           <p className="text-xs text-gray-500 line-clamp-2">{directory.description}</p>
                         )}
@@ -291,7 +279,7 @@ export default function DirectoryGrid({
                     </div>
                     <div className="flex items-center justify-between">
                       <a
-                        href={directory.domain}
+                        href={directory.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
@@ -312,7 +300,7 @@ export default function DirectoryGrid({
                       <div className="flex items-center space-x-4">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900">{directory.name}</h4>
-                          <p className="text-sm text-gray-600">{directory.domain}</p>
+                          <p className="text-sm text-gray-600">{directory.url}</p>
                         </div>
                         <div className="flex items-center space-x-2">
                           {directory.pageRank && (
@@ -326,7 +314,7 @@ export default function DirectoryGrid({
                     </div>
                     <div className="flex items-center space-x-3">
                       <a
-                        href={directory.domain}
+                        href={directory.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:text-blue-800 flex items-center"

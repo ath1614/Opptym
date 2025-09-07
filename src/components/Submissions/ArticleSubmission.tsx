@@ -16,13 +16,13 @@ import {
   TrendingUp,
   Zap
 } from 'lucide-react';
-import axios from 'axios';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function ArticleSubmission() {
   const { user } = useAuth();
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
-  const [directories, setDirectories] = useState([]);
+  const [directories, setDirectories] = useState<Directory[]>([]);
   const [submissions, setSubmissions] = useState([]);
   const [stats, setStats] = useState({
     total: 0,
@@ -32,21 +32,16 @@ export default function ArticleSubmission() {
     instantApproval: 0
   });
 
-  // Fetch directories for Article Submission classification
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/directories', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { classification: 'Article Submission' }
-      });
-      
-      if (response.data.success) {
-        setDirectories(response.data.directories);
-      }
+      const configDirectories = getDirectoriesByClassification('Article Submission');
+      setDirectories(configDirectories);
+      console.log('✅ Article Submission directories loaded:', configDirectories.length);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
+      setDirectories([]);
     } finally {
       setLoading(false);
     }
@@ -78,8 +73,8 @@ export default function ArticleSubmission() {
   };
 
   useEffect(() => {
-    fetchDirectories();
-    fetchSubmissions();
+    loadDirectories();
+    loadSubmissions();
   }, []);
 
   return (

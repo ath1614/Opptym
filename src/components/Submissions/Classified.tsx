@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
 import DirectoryGrid from './DirectoryGrid';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -13,25 +13,7 @@ import {
   SortDesc
 } from 'lucide-react';
 
-interface Directory {
-  _id: string;
-  name: string;
-  domain: string;
-  description?: string;
-  pageRank?: number;
-  daScore?: number;
-  spamScore?: number;
-  submissionUrl: string;
-  category: string;
-  country: string;
-  priority?: number;
-  isPremium?: boolean;
-  status?: string;
-  totalSubmissions?: number;
-  successfulSubmissions?: number;
-  rejectionRate?: number;
-  createdAt?: string;
-}
+// Directory interface is now imported from config
 
 interface Submission {
   _id: string;
@@ -53,53 +35,33 @@ const Classified: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
 
-  // Fetch directories
+  // Load directories from config file
   useEffect(() => {
-    const fetchDirectories = async () => {
+    const loadDirectories = () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/directories', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { classification: 'Classified' }
-        });
-        
-        if (response.data) {
-          setDirectories(response.data);
-        }
+        const configDirectories = getDirectoriesByClassification('Classified');
+        setDirectories(configDirectories);
+        console.log('✅ Classified directories loaded:', configDirectories.length);
       } catch (error) {
-        console.error('Error fetching directories:', error);
+        console.error('Error loading directories:', error);
         setDirectories([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDirectories();
+    loadDirectories();
   }, []);
 
-  // Fetch submissions
+  // Load submissions (placeholder - can be replaced with API later)
   useEffect(() => {
-    const fetchSubmissions = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/submissions', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { classification: 'Classified' }
-        });
-        
-        if (response.data) {
-          setSubmissions(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching submissions:', error);
-        setSubmissions([]);
-      } finally {
-        setLoading(false);
-      }
+    const loadSubmissions = () => {
+      // TODO: Replace with API call when database is stable
+      setSubmissions([]);
     };
 
-    fetchSubmissions();
+    loadSubmissions();
   }, []);
 
   // Calculate stats
@@ -124,7 +86,7 @@ const Classified: React.FC = () => {
     let filtered = directories.filter(dir => {
       const matchesSearch = dir.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            dir.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           dir.country.toLowerCase().includes(searchTerm.toLowerCase());
+                           (dir.country || '').toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesPriority = filterPriority === 'all' || 
         (filterPriority === 'high' && (dir.priority || 0) >= 75) ||
@@ -152,8 +114,8 @@ const Classified: React.FC = () => {
           bValue = b.daScore || 0;
           break;
         case 'totalSubmissions':
-          aValue = a.totalSubmissions || 0;
-          bValue = b.totalSubmissions || 0;
+          aValue = 0; // Placeholder since totalSubmissions doesn't exist in Directory interface
+          bValue = 0;
           break;
         default:
           aValue = a.priority || 0;

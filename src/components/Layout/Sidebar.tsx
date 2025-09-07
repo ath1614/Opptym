@@ -9,7 +9,6 @@ import {
   BarChart3,
   CreditCard,
   User,
-  Shield,
   ChevronDown,
   ChevronRight,
   CheckSquare,

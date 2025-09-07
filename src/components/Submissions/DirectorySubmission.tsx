@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
   ExternalLink,
   Bookmark,
   AlertCircle,
@@ -15,69 +8,35 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react';
-import axios from 'axios';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function DirectorySubmission() {
-  const { user } = useAuth();
-  const theme = useTheme();
   const [loading, setLoading] = useState(true);
-  const [directories, setDirectories] = useState([]);
-  const [submissions, setSubmissions] = useState([]);
-  const [stats, setStats] = useState({
+  const [directories, setDirectories] = useState<Directory[]>([]);
+  const [stats] = useState({
     total: 0,
     submitted: 0,
     approved: 0,
     pending: 0
   });
 
-  // Fetch directories for Directory Submission classification
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/directories', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { classification: 'Directory Submission' }
-      });
-      
-      if (response.data.success) {
-        setDirectories(response.data.directories);
-      }
+      const configDirectories = getDirectoriesByClassification('Directory Submission');
+      setDirectories(configDirectories);
+      console.log('✅ Directory Submission directories loaded:', configDirectories.length);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
+      setDirectories([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch submissions for Directory Submission classification
-  const fetchSubmissions = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/submissions', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { classification: 'Directory Submission' }
-      });
-      
-      if (response.data.success) {
-        setSubmissions(response.data.submissions);
-        
-        // Calculate stats
-        const total = response.data.submissions.length;
-        const submitted = response.data.submissions.filter(s => s.status === 'submitted').length;
-        const approved = response.data.submissions.filter(s => s.status === 'approved' || s.status === 'published').length;
-        const pending = response.data.submissions.filter(s => s.status === 'pending').length;
-        
-        setStats({ total, submitted, approved, pending });
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchDirectories();
-    fetchSubmissions();
+    loadDirectories();
   }, []);
 
   return (
@@ -159,7 +118,6 @@ export default function DirectorySubmission() {
           directories={directories}
           loading={loading}
           classification="Directory Submission"
-          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}

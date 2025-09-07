@@ -17,13 +17,13 @@ import {
   Star,
   Globe
 } from 'lucide-react';
-import axios from 'axios';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function BusinessListing() {
   const { user } = useAuth();
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
-  const [directories, setDirectories] = useState([]);
+  const [directories, setDirectories] = useState<Directory[]>([]);
   const [submissions, setSubmissions] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('All');
   const [countryStats, setCountryStats] = useState({});
@@ -35,28 +35,23 @@ export default function BusinessListing() {
     highPriority: 0
   });
 
-  // Fetch directories for Business Listing classification
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/directories', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { classification: 'Business Listing' }
-      });
+      const configDirectories = getDirectoriesByClassification('Business Listing');
+      setDirectories(configDirectories);
+      console.log('✅ Business Listing directories loaded:', configDirectories.length);
       
-      if (response.data.success) {
-        setDirectories(response.data.directories);
-        
-        // Calculate country stats
-        const stats = response.data.directories.reduce((acc, dir) => {
-          acc[dir.country] = (acc[dir.country] || 0) + 1;
-          return acc;
-        }, {});
-        setCountryStats(stats);
-      }
+      // Calculate country stats
+      const stats = configDirectories.reduce((acc, dir) => {
+        acc[dir.country || 'Global'] = (acc[dir.country || 'Global'] || 0) + 1;
+        return acc;
+      }, {});
+      setCountryStats(stats);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
+      setDirectories([]);
     } finally {
       setLoading(false);
     }
@@ -88,8 +83,8 @@ export default function BusinessListing() {
   };
 
   useEffect(() => {
-    fetchDirectories();
-    fetchSubmissions();
+    loadDirectories();
+    loadSubmissions();
   }, []);
 
   // Filter directories by country

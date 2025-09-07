@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
 import DirectoryGrid from './DirectoryGrid';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -23,25 +23,7 @@ import {
   Zap
 } from 'lucide-react';
 
-interface Directory {
-  _id: string;
-  name: string;
-  domain: string;
-  description?: string;
-  pageRank?: number;
-  daScore?: number;
-  spamScore?: number;
-  submissionUrl: string;
-  category: string;
-  country: string;
-  priority?: number;
-  isPremium?: boolean;
-  status?: string;
-  totalSubmissions?: number;
-  successfulSubmissions?: number;
-  rejectionRate?: number;
-  createdAt?: string;
-}
+// Directory interface is now imported from config
 
 interface Submission {
   _id: string;
@@ -80,53 +62,33 @@ const MoreSEO: React.FC = () => {
     'Blog Commenting': <MessageSquare className="h-5 w-5" />
   };
 
-  // Fetch directories
+  // Load directories from config file
   useEffect(() => {
-    const fetchDirectories = async () => {
+    const loadDirectories = () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/directories', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { classification: 'More SEO' }
-        });
-        
-        if (response.data) {
-          setDirectories(response.data);
-        }
+        const configDirectories = getDirectoriesByClassification('More SEO');
+        setDirectories(configDirectories);
+        console.log('✅ More SEO directories loaded:', configDirectories.length);
       } catch (error) {
-        console.error('Error fetching directories:', error);
+        console.error('Error loading directories:', error);
         setDirectories([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDirectories();
+    loadDirectories();
   }, []);
 
-  // Fetch submissions
+  // Load submissions (placeholder - can be replaced with API later)
   useEffect(() => {
-    const fetchSubmissions = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/submissions', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { classification: 'More SEO' }
-        });
-        
-        if (response.data) {
-          setSubmissions(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching submissions:', error);
-        setSubmissions([]);
-      } finally {
-        setLoading(false);
-      }
+    const loadSubmissions = () => {
+      // TODO: Replace with API call when database is stable
+      setSubmissions([]);
     };
 
-    fetchSubmissions();
+    loadSubmissions();
   }, []);
 
   // Calculate stats

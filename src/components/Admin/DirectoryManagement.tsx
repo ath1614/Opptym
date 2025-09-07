@@ -1,906 +1,475 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Globe,
-  Plus,
-  Edit3,
-  Trash2,
-  Search,
-  Filter,
-  Star,
-  Users,
-  Target,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Eye,
-  Settings,
-  BarChart3,
-  TrendingUp,
-  Loader2
-} from 'lucide-react';
-// Remove BASE_URL import - use relative paths like other components
-import axios from 'axios';
-// CreateDirectoryModal import removed - using inline modal
+import { Plus, Edit, Trash2, Save, X, Search } from 'lucide-react';
+import { 
+  directoriesData, 
+  getAllClassifications, 
+  Directory 
+} from '../../config/directoriesConfig';
 
-interface Directory {
-  _id: string;
-  name: string;
-  domain: string;
-  description?: string;
-  category: string;
-  country: string;
-  classification: string;
-  pageRank: number;
-  daScore: number;
-  spamScore: number;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
-  isPremium: boolean;
-  requiresApproval: boolean;
-  submissionUrl: string;
-  contactEmail?: string;
-  submissionGuidelines?: string;
-  totalSubmissions: number;
-  successfulSubmissions: number;
-  rejectionRate: number;
-  isCustom: boolean;
-  priority: number;
-  freeUserLimit: number;
-  starterUserLimit: number;
-  proUserLimit: number;
-  businessUserLimit: number;
-  enterpriseUserLimit: number;
-  createdAt: string;
-  updatedAt: string;
+interface DirectoryManagementProps {
+  onDirectoryUpdate?: () => void;
 }
 
-interface DirectoryForm {
-  name: string;
-  domain: string;
-  description: string;
-  category: string;
-  country: string;
-  classification: string;
-  pageRank: number;
-  daScore: number;
-  spamScore: number;
-  isPremium: boolean;
-  requiresApproval: boolean;
-  submissionUrl: string;
-  contactEmail: string;
-  submissionGuidelines: string;
-  freeUserLimit: number;
-  starterUserLimit: number;
-  proUserLimit: number;
-  businessUserLimit: number;
-  enterpriseUserLimit: number;
-  priority: number;
-}
-
-const categories = [
-  'business', 'technology', 'health', 'education', 'finance', 
-  'entertainment', 'sports', 'travel', 'food', 'lifestyle', 'other'
-];
-
-const countries = [
-  'Global', 'USA', 'UK', 'Canada', 'Australia', 'Germany', 'France', 'India', 'Japan', 'Brazil', 'Mexico', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Switzerland', 'Austria', 'Belgium', 'Ireland', 'New Zealand', 'Singapore', 'South Korea', 'China', 'Russia', 'South Africa', 'Nigeria', 'Egypt', 'Kenya', 'Ghana', 'Morocco', 'Tunisia', 'Algeria', 'Libya', 'Sudan', 'Ethiopia', 'Uganda', 'Tanzania', 'Zambia', 'Zimbabwe', 'Botswana', 'Namibia', 'Mozambique', 'Angola', 'Congo', 'Cameroon', 'Gabon', 'Chad', 'Niger', 'Mali', 'Burkina Faso', 'Senegal', 'Guinea', 'Sierra Leone', 'Liberia', 'Ivory Coast', 'Togo', 'Benin', 'Central African Republic', 'Equatorial Guinea', 'Sao Tome and Principe', 'Cape Verde', 'Mauritania', 'Gambia', 'Guinea-Bissau', 'Comoros', 'Seychelles', 'Mauritius', 'Madagascar', 'Malawi', 'Lesotho', 'Eswatini', 'Other'
-];
-
-const classificationOptions = [
-  'Article Submission', 'Web2.0', 'Social', 'Local', 'Classified', 'Q&A', 'Press Release', 'Business'
-];
-
-export default function DirectoryManagement() {
-  const [directories, setDirectories] = useState<Directory[]>([]);
-  const [classifications, setClassifications] = useState<{name: string, count: number}[]>([]);
-  const [classificationStrings, setClassificationStrings] = useState<string[]>(classificationOptions);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedClassification, setSelectedClassification] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUpdate }) => {
+  const [directories, setDirectories] = useState<{ [key: string]: Directory[] }>(directoriesData);
+  const [selectedClassification, setSelectedClassification] = useState<string>('Directory Submission');
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingDirectory, setEditingDirectory] = useState<Directory | null>(null);
-  const [formData, setFormData] = useState<DirectoryForm>({
-    name: '',
-    domain: '',
-    description: '',
-    category: 'business',
-    country: 'Global',
-    classification: 'General',
-    pageRank: 0,
-    daScore: 0,
-    spamScore: 0,
-    isPremium: false,
-    requiresApproval: true,
-    submissionUrl: '',
-    contactEmail: '',
-    submissionGuidelines: '',
-    freeUserLimit: 0,
-    starterUserLimit: 5,
-    proUserLimit: 20,
-    businessUserLimit: 50,
-    enterpriseUserLimit: -1,
-    priority: 0
-  });
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterClassification, setFilterClassification] = useState<string>('all');
 
+  const classifications = getAllClassifications();
+
+  // Load directories from config
   useEffect(() => {
-    fetchDirectories();
-    fetchClassifications();
+    setDirectories(directoriesData);
   }, []);
 
-  useEffect(() => {
-    fetchDirectories();
-  }, [selectedClassification, selectedCategory, selectedStatus, searchTerm]);
-
-  const fetchDirectories = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      // Build query parameters
-      const params = new URLSearchParams();
-      if (selectedClassification !== 'all') params.append('classification', selectedClassification);
-      if (selectedCategory !== 'all') params.append('category', selectedCategory);
-      if (selectedStatus !== 'all') params.append('status', selectedStatus);
-      if (searchTerm) params.append('search', searchTerm);
-      
-      const response = await axios.get(`/api/admin/directories?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setDirectories(response.data);
-    } catch (error) {
-      console.error('Error fetching directories:', error);
-      setErrorMessage('Failed to fetch directories');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchClassifications = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/admin/directories/classifications', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log('📊 Classifications API response:', response.data);
-      // Convert objects to strings for the dropdown
-      const classificationStrings = response.data.map((item: any) => 
-        typeof item === 'string' ? item : (item.name || 'Unknown')
+  // Filter directories based on search and classification
+  const filteredDirectories = Object.entries(directories).filter(([classification, dirs]) => {
+    const matchesClassification = filterClassification === 'all' || classification === filterClassification;
+    const matchesSearch = searchTerm === '' || 
+      dirs.some(dir => 
+        dir.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dir.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (dir.description && dir.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      console.log('📝 Classification strings for dropdown:', classificationStrings);
-      setClassifications(response.data); // Keep original for stats if needed
-      setClassificationStrings(classificationStrings); // Set strings for dropdown
-    } catch (error) {
-      console.error('Error fetching classifications:', error);
-      // Fallback to static classifications if API fails
-      console.log('🔄 Using fallback classifications');
-      setClassificationStrings([
-        'Article Submission', 'Web2.0', 'Social', 'Local', 'Classified', 'Q&A', 'Press Release', 'Business'
-      ]);
-    }
-  };
-
-  const handleCreateDirectory = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      // Ensure all form data is properly formatted
-      const cleanFormData = {
-        ...formData,
-        classification: typeof formData.classification === 'string' ? formData.classification : 'General'
-      };
-      console.log('🏗️ Creating directory with data:', cleanFormData);
-      await axios.post(`/api/admin/directories`, cleanFormData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setSuccessMessage('Directory created successfully!');
-      setShowCreateModal(false);
-      resetForm();
-      fetchDirectories();
-      
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.error || 'Failed to create directory');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdateDirectory = async () => {
-    if (!editingDirectory) return;
-    
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      // Ensure all form data is properly formatted
-      const cleanFormData = {
-        ...formData,
-        classification: typeof formData.classification === 'string' ? formData.classification : 'General'
-      };
-      console.log('✏️ Updating directory with data:', cleanFormData);
-      await axios.put(`/api/admin/directories/${editingDirectory._id}`, cleanFormData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setSuccessMessage('Directory updated successfully!');
-      setShowEditModal(false);
-      setEditingDirectory(null);
-      resetForm();
-      fetchDirectories();
-      
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.error || 'Failed to update directory');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteDirectory = async (directoryId: string) => {
-    if (!window.confirm('Are you sure you want to delete this directory?')) return;
-    
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/admin/directories/${directoryId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setSuccessMessage('Directory deleted successfully!');
-      fetchDirectories();
-      
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.error || 'Failed to delete directory');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      domain: '',
-      description: '',
-      category: 'business',
-      country: 'Global',
-      classification: 'General',
-      pageRank: 0,
-      daScore: 0,
-      spamScore: 0,
-      isPremium: false,
-      requiresApproval: true,
-      submissionUrl: '',
-      contactEmail: '',
-      submissionGuidelines: '',
-      freeUserLimit: 0,
-      starterUserLimit: 5,
-      proUserLimit: 20,
-      businessUserLimit: 50,
-      enterpriseUserLimit: -1,
-      priority: 0
-    });
-  };
-
-  const openEditModal = (directory: Directory) => {
-    setEditingDirectory(directory);
-    setFormData({
-      name: directory.name,
-      domain: directory.domain,
-      description: directory.description || '',
-      category: directory.category,
-      country: directory.country || 'Global',
-      classification: directory.classification || 'General',
-      pageRank: directory.pageRank,
-      daScore: directory.daScore,
-      spamScore: directory.spamScore,
-      isPremium: directory.isPremium,
-      requiresApproval: directory.requiresApproval,
-      submissionUrl: directory.submissionUrl,
-      contactEmail: directory.contactEmail || '',
-      submissionGuidelines: directory.submissionGuidelines || '',
-      freeUserLimit: directory.freeUserLimit || 0,
-      starterUserLimit: directory.starterUserLimit || 5,
-      proUserLimit: directory.proUserLimit || 20,
-      businessUserLimit: directory.businessUserLimit || 50,
-      enterpriseUserLimit: directory.enterpriseUserLimit || -1,
-      priority: directory.priority || 0
-    });
-    setShowEditModal(true);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'inactive': return <XCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
-      case 'pending': return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
-      case 'rejected': return <XCircle className="w-4 h-4 text-red-600" />;
-      default: return <XCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
-    }
-  };
-
-  const filteredDirectories = directories.filter(directory => {
-    // Safe search with null checks
-    const name = directory.name || '';
-    const domain = directory.domain || '';
-    const searchLower = searchTerm.toLowerCase();
-    
-    const matchesSearch = name.toLowerCase().includes(searchLower) ||
-                         domain.toLowerCase().includes(searchLower);
-    const matchesCategory = selectedCategory === 'all' || directory.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesClassification && matchesSearch;
   });
 
-  if (loading && directories.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-      </div>
+  const handleAddDirectory = (newDirectory: Directory) => {
+    // Check if directory already exists
+    const exists = directories[selectedClassification]?.some(dir => 
+      dir.name === newDirectory.name || dir.url === newDirectory.url
     );
-  }
+    
+    if (!exists) {
+      const updatedDirectories = {
+        ...directories,
+        [selectedClassification]: [...(directories[selectedClassification] || []), newDirectory]
+      };
+      setDirectories(updatedDirectories);
+      setIsAddingNew(false);
+      onDirectoryUpdate?.();
+      alert('Directory added successfully!');
+    } else {
+      alert('Directory already exists or failed to add.');
+    }
+  };
+
+  const handleRemoveDirectory = (classification: string, directoryName: string) => {
+    if (window.confirm(`Are you sure you want to remove "${directoryName}"?`)) {
+      const updatedDirectories = {
+        ...directories,
+        [classification]: directories[classification].filter(dir => dir.name !== directoryName)
+      };
+      setDirectories(updatedDirectories);
+      onDirectoryUpdate?.();
+      alert('Directory removed successfully!');
+    }
+  };
+
+  const handleEditDirectory = (classification: string, directory: Directory) => {
+    setEditingDirectory({ ...directory, _classification: classification } as Directory & { _classification: string });
+  };
+
+  const handleSaveEdit = (updatedDirectory: Directory) => {
+    if (editingDirectory) {
+      const classification = (editingDirectory as any)._classification || '';
+      const updatedDirectories = {
+        ...directories,
+        [classification]: directories[classification].map(dir => 
+          dir.name === editingDirectory.name ? updatedDirectory : dir
+        )
+      };
+      setDirectories(updatedDirectories);
+      setEditingDirectory(null);
+      onDirectoryUpdate?.();
+      alert('Directory updated successfully!');
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Directory Management</h2>
-          <p className="text-gray-600 dark:text-gray-400">Manage directories and their submission settings</p>
+          <h2 className="text-2xl font-bold text-gray-900">Directory Management</h2>
+          <p className="text-gray-600">Manage directories across all SEO classifications</p>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
-          className="btn-primary flex items-center space-x-2"
+          onClick={() => setIsAddingNew(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>Add Directory</span>
+          Add Directory
         </button>
       </div>
 
-      {/* Success/Error Messages */}
-      {successMessage && (
-        <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center space-x-3">
-          <CheckCircle className="w-5 h-5 text-green-600" />
-          <span className="text-green-800 font-medium">{successMessage}</span>
-        </div>
-      )}
-
-      {errorMessage && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center space-x-3">
-          <XCircle className="w-5 h-5 text-red-600" />
-          <span className="text-red-800 font-medium">{errorMessage}</span>
-        </div>
-      )}
-
-      {/* Filters */}
-      <div className="card-modern p-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
+      {/* Search and Filter */}
+      <div className="mb-6 flex gap-4">
+        <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search directories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input-modern pl-10"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-          </div>
-          <div className="md:w-48">
             <select
-              value={selectedClassification}
-              onChange={(e) => setSelectedClassification(e.target.value)}
-              className="select-modern"
+          value={filterClassification}
+          onChange={(e) => setFilterClassification(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Classifications</option>
-              {classificationStrings.map(classification => (
+          {classifications.map(classification => (
                 <option key={classification} value={classification}>
                   {classification}
                 </option>
               ))}
             </select>
-          </div>
-          <div className="md:w-48">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="select-modern"
-            >
-              <option value="all">All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
       </div>
 
       {/* Directories List */}
-      <div className="card-modern overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Directory</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Category</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Country</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Classification</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Priority</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Metrics</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Submissions</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900 dark:text-white">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredDirectories.map((directory) => (
-                <tr key={directory._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <Globe className="w-5 h-5 text-white" />
+      <div className="space-y-6">
+        {filteredDirectories.map(([classification, dirs]) => (
+          <div key={classification} className="border border-gray-200 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">{classification}</h3>
+              <span className="text-sm text-gray-500">{dirs.length} directories</span>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{directory.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{directory.domain}</p>
-                        {directory.isPremium && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            <Star className="w-3 h-3 mr-1" />
-                            Premium
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dirs.map((directory, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 mb-1">{directory.name}</h4>
+                      <p className="text-sm text-blue-600 mb-2">{directory.url}</p>
+                      {directory.description && (
+                        <p className="text-xs text-gray-600 mb-2">{directory.description}</p>
+                      )}
+                      <div className="flex gap-2 mb-2">
+                        {directory.daScore && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            DA {directory.daScore}
+                          </span>
+                        )}
+                        {directory.pageRank && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            PR {directory.pageRank}
+                          </span>
+                        )}
+                        {directory.priority && (
+                          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                            Priority {directory.priority}
                           </span>
                         )}
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-900 capitalize">{directory.category}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-900">{directory.country || 'Global'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-900">{directory.classification || 'General'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium">{directory.priority || 0}</span>
-                      {directory.isCustom && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          Custom
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">PR:</span>
-                        <span className="text-sm font-medium">{directory.pageRank}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">DA:</span>
-                        <span className="text-sm font-medium">{directory.daScore}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(directory.status)}
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(directory.status)}`}>
-                        {directory.status}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <Target className="w-3 h-3 text-gray-400" />
-                        <span className="text-sm font-medium">{directory.totalSubmissions}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-3 h-3 text-green-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{directory.successfulSubmissions}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex gap-1 ml-2">
                       <button
-                        onClick={() => openEditModal(directory)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        onClick={() => handleEditDirectory(classification, directory)}
+                        className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                        title="Edit directory"
                       >
-                        <Edit3 className="w-4 h-4" />
+                        <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteDirectory(directory._id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        onClick={() => handleRemoveDirectory(classification, directory.name)}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                        title="Remove directory"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
         </div>
+        ))}
       </div>
 
-      {/* Create Directory Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">Create New Directory</h3>
-            
-            <form onSubmit={(e) => { e.preventDefault(); handleCreateDirectory(); }} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Directory Name</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="input-modern"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Domain</label>
-                  <input
-                    type="text"
-                    value={formData.domain}
-                    onChange={(e) => setFormData(prev => ({ ...prev, domain: e.target.value }))}
-                    className="input-modern"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                  <select
-                    value={formData.country}
-                    onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {countries.map(country => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Classification</label>
-                  <select
-                    value={formData.classification}
-                    onChange={(e) => setFormData(prev => ({ ...prev, classification: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {classificationStrings.map(classification => (
-                      <option key={classification} value={classification}>
-                        {classification}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority (0-100)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.priority}
-                    onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
-                    className="input-modern"
-                    placeholder="Higher number = higher priority"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Submission URL</label>
-                  <input
-                    type="url"
-                    value={formData.submissionUrl}
-                    onChange={(e) => setFormData(prev => ({ ...prev, submissionUrl: e.target.value }))}
-                    className="input-modern"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Page Rank</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    value={formData.pageRank}
-                    onChange={(e) => setFormData(prev => ({ ...prev, pageRank: parseInt(e.target.value) }))}
-                    className="input-modern"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">DA Score</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.daScore}
-                    onChange={(e) => setFormData(prev => ({ ...prev, daScore: parseInt(e.target.value) }))}
-                    className="input-modern"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="textarea-modern"
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="isPremium"
-                    checked={formData.isPremium}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <label htmlFor="isPremium" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Premium Directory
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="requiresApproval"
-                    checked={formData.requiresApproval}
-                    onChange={(e) => setFormData(prev => ({ ...prev, requiresApproval: e.target.checked }))}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <label htmlFor="requiresApproval" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Requires Approval
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1 btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 btn-primary flex items-center justify-center space-x-2"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Plus className="w-4 h-4" />
-                  )}
-                  <span>Create Directory</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {/* Add Directory Modal */}
+      {isAddingNew && (
+        <DirectoryForm
+          classification={selectedClassification}
+          onSave={handleAddDirectory}
+          onCancel={() => setIsAddingNew(false)}
+          classifications={classifications}
+          onClassificationChange={setSelectedClassification}
+        />
       )}
 
       {/* Edit Directory Modal */}
-      {showEditModal && editingDirectory && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">Edit Directory</h3>
-            
-            <form onSubmit={(e) => { e.preventDefault(); handleUpdateDirectory(); }} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {editingDirectory && (
+        <DirectoryForm
+          directory={editingDirectory}
+          onSave={handleSaveEdit}
+          onCancel={() => setEditingDirectory(null)}
+          classifications={classifications}
+          isEditing={true}
+        />
+      )}
+                </div>
+  );
+};
+
+interface DirectoryFormProps {
+  directory?: Directory & { _classification?: string };
+  classification?: string;
+  onSave: (directory: Directory) => void;
+  onCancel: () => void;
+  classifications: string[];
+  onClassificationChange?: (classification: string) => void;
+  isEditing?: boolean;
+}
+
+const DirectoryForm: React.FC<DirectoryFormProps> = ({
+  directory,
+  classification,
+  onSave,
+  onCancel,
+  classifications,
+  onClassificationChange,
+  isEditing = false
+}) => {
+  const [formData, setFormData] = useState<Directory>({
+    name: directory?.name || '',
+    url: directory?.url || '',
+    description: directory?.description || '',
+    category: directory?.category || 'business',
+    country: directory?.country || 'Global',
+    priority: directory?.priority || 50,
+    daScore: directory?.daScore || 0,
+    pageRank: directory?.pageRank || 0,
+    isPremium: directory?.isPremium || false,
+    status: directory?.status || 'active'
+  });
+
+  const [selectedClassification, setSelectedClassification] = useState(
+    directory?._classification || classification || 'Directory Submission'
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.url) {
+      alert('Name and URL are required');
+      return;
+    }
+
+    const directoryToSave = {
+      ...formData,
+      _classification: selectedClassification
+    };
+
+    onSave(directoryToSave);
+  };
+
+  const handleClassificationChange = (newClassification: string) => {
+    setSelectedClassification(newClassification);
+    onClassificationChange?.(newClassification);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {isEditing ? 'Edit Directory' : 'Add New Directory'}
+          </h3>
+          <button
+            onClick={onCancel}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="w-5 h-5" />
+          </button>
+                </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Directory Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Classification *
+              </label>
+                  <select
+                value={selectedClassification}
+                onChange={(e) => handleClassificationChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              >
+                {classifications.map(cls => (
+                  <option key={cls} value={cls}>{cls}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name *
+              </label>
                   <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="input-modern"
-                    required
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Domain</label>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                URL *
+              </label>
                   <input
-                    type="text"
-                    value={formData.domain}
-                    onChange={(e) => setFormData(prev => ({ ...prev, domain: e.target.value }))}
-                    className="input-modern"
+                    type="url"
+                value={formData.url}
+                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
-                </div>
+              </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+                <textarea
+                  value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  rows={3}
+                />
+              </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+                  </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="business">Business</option>
+                <option value="technology">Technology</option>
+                <option value="health">Health</option>
+                <option value="education">Education</option>
+                <option value="finance">Finance</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="sports">Sports</option>
+                <option value="travel">Travel</option>
+                <option value="food">Food</option>
+                <option value="lifestyle">Lifestyle</option>
+                <option value="other">Other</option>
+              </select>
+        </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </option>
-                    ))}
-                  </select>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+                  <input
+                    type="text"
+                value={formData.country}
+                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                  <select
-                    value={formData.country}
-                    onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {countries.map(country => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Classification</label>
-                  <select
-                    value={formData.classification}
-                    onChange={(e) => setFormData(prev => ({ ...prev, classification: e.target.value }))}
-                    className="select-modern"
-                  >
-                    {classificationStrings.map(classification => (
-                      <option key={classification} value={classification}>
-                        {classification}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority (0-100)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Priority (0-100)
+              </label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={formData.priority}
-                    onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
-                    className="input-modern"
-                    placeholder="Higher number = higher priority"
+                onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Submission URL</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                DA Score (0-100)
+              </label>
                   <input
-                    type="url"
-                    value={formData.submissionUrl}
-                    onChange={(e) => setFormData(prev => ({ ...prev, submissionUrl: e.target.value }))}
-                    className="input-modern"
-                    required
+                type="number"
+                min="0"
+                max="100"
+                value={formData.daScore}
+                onChange={(e) => setFormData({ ...formData, daScore: parseInt(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Page Rank</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Page Rank (0-10)
+              </label>
                   <input
                     type="number"
                     min="0"
                     max="10"
                     value={formData.pageRank}
-                    onChange={(e) => setFormData(prev => ({ ...prev, pageRank: parseInt(e.target.value) }))}
-                    className="input-modern"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">DA Score</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.daScore}
-                    onChange={(e) => setFormData(prev => ({ ...prev, daScore: parseInt(e.target.value) }))}
-                    className="input-modern"
-                  />
-                </div>
+                onChange={(e) => setFormData({ ...formData, pageRank: parseInt(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="textarea-modern"
-                  rows={3}
-                />
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' | 'pending' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pending">Pending</option>
+              </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center space-x-2">
+            <div className="flex items-center">
                   <input
                     type="checkbox"
-                    id="editIsPremium"
+                id="isPremium"
                     checked={formData.isPremium}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isPremium: e.target.checked }))}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                onChange={(e) => setFormData({ ...formData, isPremium: e.target.checked })}
+                className="mr-2"
                   />
-                  <label htmlFor="editIsPremium" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="isPremium" className="text-sm font-medium text-gray-700">
                     Premium Directory
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="editRequiresApproval"
-                    checked={formData.requiresApproval}
-                    onChange={(e) => setFormData(prev => ({ ...prev, requiresApproval: e.target.checked }))}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <label htmlFor="editRequiresApproval" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Requires Approval
-                  </label>
-                </div>
               </div>
 
-              <div className="flex space-x-3 pt-4">
+          <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowEditModal(false)}
-                  className="flex-1 btn-secondary"
+              onClick={onCancel}
+              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="flex-1 btn-primary flex items-center justify-center space-x-2"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Edit3 className="w-4 h-4" />
-                  )}
-                  <span>Update Directory</span>
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              {isEditing ? 'Update Directory' : 'Add Directory'}
                 </button>
               </div>
             </form>
           </div>
-        </div>
-      )}
-
-      {/* Create Directory Modal - Using inline modal instead of imported component */}
     </div>
   );
-} 
+};
+
+export default DirectoryManagement;
