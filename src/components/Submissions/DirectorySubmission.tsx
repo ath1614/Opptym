@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
+import axios from 'axios';
 import TestConfig from '../TestConfig';
 import DebugDirectories from '../DebugDirectories';
 import DebugDirectoriesFlow from '../DebugDirectoriesFlow';
@@ -23,18 +24,25 @@ export default function DirectorySubmission() {
     pending: 0
   });
 
-  // Load directories from config file
-  const loadDirectories = () => {
+  // Load directories from API
+  const loadDirectories = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Loading Directory Submission directories...');
-      const configDirectories = getDirectoriesByClassification('Directory Submission');
-      console.log('📊 Config directories received:', configDirectories);
-      console.log('✅ Directory Submission directories loaded:', configDirectories.length);
-      setDirectories(configDirectories);
+      console.log('🔄 Loading Directory Submission directories from API...');
+      
+      const response = await axios.get('/api/directories', {
+        params: { classification: 'Directory Submission' }
+      });
+      
+      console.log('📊 API response:', response.data);
+      console.log('✅ Directory Submission directories loaded:', response.data.length);
+      setDirectories(response.data);
     } catch (error) {
       console.error('❌ Error loading directories:', error);
-      setDirectories([]);
+      // Fallback to config if API fails
+      const configDirectories = getDirectoriesByClassification('Directory Submission');
+      console.log('📊 Fallback to config directories:', configDirectories);
+      setDirectories(configDirectories);
     } finally {
       setLoading(false);
     }
@@ -121,7 +129,7 @@ export default function DirectorySubmission() {
         {/* Debug Directories Flow */}
         <DebugDirectoriesFlow />
 
-        {/* Debug Directories */}
+        {/* Debug Directories - Raw API Data */}
         <DebugDirectories />
 
         {/* Test Config */}
