@@ -209,7 +209,6 @@ export default function BusinessListing() {
           directories={filteredDirectories}
           loading={loading}
           classification="Business Listing"
-          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}

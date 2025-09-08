@@ -169,7 +169,6 @@ export default function BookMarking() {
           directories={directories}
           loading={loading}
           classification="BookMarking"
-          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}

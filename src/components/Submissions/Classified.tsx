@@ -377,7 +377,6 @@ const Classified: React.FC = () => {
         {/* Directory Grid */}
         <DirectoryGrid
           directories={filteredDirectories}
-          submissions={submissions}
           viewMode={viewMode}
           classification="Classified"
         />

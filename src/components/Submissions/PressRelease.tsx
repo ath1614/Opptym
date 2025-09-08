@@ -169,7 +169,6 @@ export default function PressRelease() {
           directories={directories}
           loading={loading}
           classification="Press Release"
-          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}

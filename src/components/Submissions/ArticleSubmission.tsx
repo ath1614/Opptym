@@ -1,16 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import axios from 'axios';
 import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
   ExternalLink,
-  Bookmark,
   AlertCircle,
   CheckCircle,
   Clock,
@@ -20,12 +11,9 @@ import {
 import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function ArticleSubmission() {
-  const { user } = useAuth();
-  const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [directories, setDirectories] = useState<Directory[]>([]);
-  const [submissions, setSubmissions] = useState([]);
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     total: 0,
     submitted: 0,
     approved: 0,
@@ -47,34 +35,8 @@ export default function ArticleSubmission() {
     }
   };
 
-  // Fetch submissions for Article Submission classification
-  const fetchSubmissions = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/submissions', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { classification: 'Article Submission' }
-      });
-      
-      if (response.data.success) {
-        setSubmissions(response.data.submissions);
-        
-        // Calculate stats
-        const total = response.data.submissions.length;
-        const submitted = response.data.submissions.filter((s: any) => s.status === 'submitted').length;
-        const approved = response.data.submissions.filter((s: any) => s.status === 'approved' || s.status === 'published').length;
-        const pending = response.data.submissions.filter((s: any) => s.status === 'pending').length;
-        
-        setStats({ total, submitted, approved, pending, instantApproval: 23 }); // 23 instant approval platforms
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    }
-  };
-
   useEffect(() => {
     loadDirectories();
-    fetchSubmissions();
   }, []);
 
   return (
@@ -169,7 +131,6 @@ export default function ArticleSubmission() {
           directories={directories}
           loading={loading}
           classification="Article Submission"
-          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}
