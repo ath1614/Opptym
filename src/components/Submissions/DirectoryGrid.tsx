@@ -102,10 +102,18 @@ export default function DirectoryGrid({
 
   // Generate unique bookmarklet token with project data
   const generateBookmarkletToken = async () => {
+    console.log('generateBookmarkletToken called with:', { selectedProject, selectedDirectory });
+    
     if (!selectedProject) {
       alert('❌ No project selected. Please select a project first.');
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
+      return;
+    }
+
+    if (!selectedDirectory) {
+      alert('❌ No directory selected. Please select a directory first.');
+      setShowBookmarkletModal(false);
       return;
     }
 
@@ -119,6 +127,13 @@ export default function DirectoryGrid({
       alert(`❌ Project "${selectedProject.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`);
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
+      return;
+    }
+
+    // Validate directory data
+    if (!selectedDirectory.name || !selectedDirectory.url) {
+      alert(`❌ Directory data is incomplete. Missing: ${!selectedDirectory.name ? 'name' : ''} ${!selectedDirectory.url ? 'url' : ''}`);
+      setShowBookmarkletModal(false);
       return;
     }
 
@@ -211,6 +226,11 @@ export default function DirectoryGrid({
     setShowProjectSelection(false);
     setShowBookmarkletModal(true);
     console.log('DirectoryGrid: Modal states updated - project selection closed, bookmarklet modal opened');
+    
+    // Generate bookmarklet token automatically after project selection
+    setTimeout(() => {
+      generateBookmarkletToken();
+    }, 100);
   };
 
   // Close project selection modal
@@ -633,6 +653,16 @@ export default function DirectoryGrid({
                     >
                       🧪 Test Bookmarklet
                     </button>
+                    
+                    {!bookmarkletToken && (
+                      <button
+                        onClick={generateBookmarkletToken}
+                        disabled={isGeneratingToken}
+                        className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 disabled:bg-gray-400 transition-colors text-sm font-medium flex items-center gap-2"
+                      >
+                        {isGeneratingToken ? '⏳ Generating...' : '🔄 Generate Bookmarklet'}
+                      </button>
+                    )}
                   </div>
                   
                   <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
