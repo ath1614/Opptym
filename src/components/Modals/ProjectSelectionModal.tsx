@@ -98,15 +98,25 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
   };
 
   const handleProjectSelect = (project: Project) => {
+    console.log('Project selected:', project);
     setSelectedProject(project);
     const errors = validateProject(project);
+    console.log('Validation errors:', errors);
     setValidationErrors(errors);
   };
 
   const handleConfirmSelection = () => {
+    console.log('Confirm selection clicked:', { selectedProject, validationErrors });
     if (selectedProject && validationErrors.length === 0) {
+      console.log('Calling onProjectSelected with:', selectedProject);
       onProjectSelected(selectedProject);
       onClose();
+    } else {
+      console.log('Cannot proceed:', { 
+        hasProject: !!selectedProject, 
+        errorsCount: validationErrors.length,
+        errors: validationErrors 
+      });
     }
   };
 
@@ -297,8 +307,10 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-600" />
                 <span>Selected: <strong>{selectedProject.title}</strong></span>
-                {validationErrors.length === 0 && (
+                {validationErrors.length === 0 ? (
                   <span className="text-green-600">• Ready to submit</span>
+                ) : (
+                  <span className="text-orange-600">• {validationErrors.length} validation error(s)</span>
                 )}
               </div>
             ) : (
@@ -317,6 +329,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
               onClick={handleConfirmSelection}
               disabled={!selectedProject || validationErrors.length > 0}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+              title={!selectedProject ? 'Please select a project' : validationErrors.length > 0 ? `Missing fields: ${validationErrors.join(', ')}` : 'Ready to continue'}
             >
               <ExternalLink className="w-4 h-4" />
               Continue with Bookmarklet

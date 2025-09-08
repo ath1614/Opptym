@@ -158,9 +158,11 @@ export default function DirectoryGrid({
 
   // Handle project selection from modal
   const handleProjectSelected = (project: any) => {
+    console.log('DirectoryGrid: Project selected:', project);
     setSelectedProject(project);
     setShowProjectSelection(false);
     setShowBookmarkletModal(true);
+    console.log('DirectoryGrid: Modal states updated - project selection closed, bookmarklet modal opened');
   };
 
   // Close project selection modal
