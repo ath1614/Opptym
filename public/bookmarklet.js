@@ -5,11 +5,23 @@
   const API_BASE_URL = window.location.origin + '/api';
   const BOOKMARKLET_VERSION = '1.0.0';
   
-  // Get token and project data from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
-  const projectDataParam = urlParams.get('project');
-  const directoryDataParam = urlParams.get('directory');
+  // Get token and project data from script URL parameters
+  let token = null;
+  let projectDataParam = null;
+  let directoryDataParam = null;
+  
+  // Find the script element that loaded this bookmarklet
+  const scripts = document.getElementsByTagName('script');
+  for (let i = 0; i < scripts.length; i++) {
+    const script = scripts[i];
+    if (script.src && script.src.includes('bookmarklet.js')) {
+      const urlParams = new URLSearchParams(script.src.split('?')[1] || '');
+      token = urlParams.get('token');
+      projectDataParam = urlParams.get('project');
+      directoryDataParam = urlParams.get('directory');
+      break;
+    }
+  }
   
   // Parse project and directory data
   let projectData = null;
