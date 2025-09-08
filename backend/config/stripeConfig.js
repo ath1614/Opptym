@@ -5,7 +5,7 @@ module.exports = {
   // Production Stripe credentials
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || 'sk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
   STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || 'whsec_XXXXXXXXXXXXXXXXXXXXXXXX',
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || null, // Optional - can be null
   
   // Environment detection
   IS_PRODUCTION: process.env.NODE_ENV === 'production',

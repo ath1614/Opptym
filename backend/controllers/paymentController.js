@@ -78,6 +78,12 @@ exports.createCheckoutSession = async (req, res) => {
 };
 
 exports.stripeWebhook = async (req, res) => {
+  // Check if webhook secret is configured
+  if (!stripeConfig.STRIPE_WEBHOOK_SECRET) {
+    console.log('⚠️  Webhook secret not configured - skipping webhook verification');
+    return res.status(200).json({ received: true, message: 'Webhook secret not configured' });
+  }
+
   const sig = req.headers['stripe-signature'];
   let event;
   try {
@@ -87,6 +93,7 @@ exports.stripeWebhook = async (req, res) => {
       stripeConfig.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
