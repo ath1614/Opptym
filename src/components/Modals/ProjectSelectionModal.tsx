@@ -131,9 +131,22 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Prevent body scroll when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
           <div>
@@ -156,7 +169,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+        <div className="flex-1 p-6 overflow-y-auto">
           {/* Instructions */}
           <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200 mb-2">
@@ -385,7 +398,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900">
+        <div className="flex-shrink-0 flex items-center justify-between p-6 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900">
           <div className="text-sm text-gray-600 dark:text-gray-300">
             {selectedProject ? (
               <div className="flex items-center gap-2">
