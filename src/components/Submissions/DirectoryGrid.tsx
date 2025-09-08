@@ -238,10 +238,12 @@ export default function DirectoryGrid({
   // Handle project selection from modal
   const handleProjectSelected = (project: any) => {
     console.log('DirectoryGrid: Project selected:', project);
+    console.log('DirectoryGrid: Selected directory preserved:', selectedDirectory);
     setSelectedProject(project);
     setShowProjectSelection(false);
     setShowBookmarkletModal(true);
     console.log('DirectoryGrid: Modal states updated - project selection closed, bookmarklet modal opened');
+    console.log('DirectoryGrid: About to generate bookmarklet with:', { project, selectedDirectory });
     
     // Generate bookmarklet token automatically after project selection
     setTimeout(() => {
@@ -252,6 +254,14 @@ export default function DirectoryGrid({
   // Close project selection modal
   const handleCloseProjectSelection = () => {
     setShowProjectSelection(false);
+    // Don't clear selectedDirectory here - it should persist until bookmarklet is used
+  };
+
+  // Close bookmarklet modal and clear selections
+  const handleCloseBookmarkletModal = () => {
+    setShowBookmarkletModal(false);
+    setBookmarkletToken(null);
+    setSelectedProject(null);
     setSelectedDirectory(null);
   };
 
@@ -533,12 +543,7 @@ export default function DirectoryGrid({
                 )}
               </div>
               <button
-                onClick={() => {
-                  setShowBookmarkletModal(false);
-                  setBookmarkletToken(null);
-                  setSelectedProject(null);
-                  setSelectedDirectory(null);
-                }}
+                onClick={handleCloseBookmarkletModal}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X className="w-5 h-5" />
