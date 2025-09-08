@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Plus, ExternalLink, User, Building, Globe, Mail, Phone } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import axios from 'axios';
+import { getProjects } from '../../lib/api';
 
 interface Project {
   _id: string;
@@ -36,12 +36,15 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   // Fetch user projects
   useEffect(() => {
+    console.log('ProjectSelectionModal useEffect:', { isOpen, user: !!user });
     if (isOpen && user) {
+      console.log('Fetching projects for user:', user.email);
       fetchProjects();
     }
   }, [isOpen, user]);
@@ -49,16 +52,17 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/projects', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      setError(null);
+      const projectsData = await getProjects();
+      console.log('Projects fetched in modal:', projectsData);
       
-      if (response.data.success) {
-        setProjects(response.data.projects || []);
-      }
-    } catch (error) {
+      // Ensure we always have an array
+      const projectsArray = Array.isArray(projectsData) ? projectsData : [];
+      setProjects(projectsArray);
+    } catch (error: any) {
       console.error('Error fetching projects:', error);
+      setError(error.message || 'Failed to load projects');
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -146,6 +150,25 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-3 text-gray-600 dark:text-gray-300">Loading projects...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Error Loading Projects
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                {error}
+              </p>
+              <button
+                onClick={fetchProjects}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
+              >
+                <Plus className="w-5 h-5" />
+                Try Again
+              </button>
             </div>
           ) : projects.length === 0 ? (
             <div className="text-center py-12">
