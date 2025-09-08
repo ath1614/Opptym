@@ -140,12 +140,55 @@ export default function DirectoryGrid({
       sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(selectedDirectory));
       
       setBookmarkletToken(token);
+      
+      // Test bookmarklet functionality
+      testBookmarkletFunctionality(token, selectedProject, selectedDirectory);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
       alert('❌ Failed to generate bookmarklet token. Please try again.');
     } finally {
       setIsGeneratingToken(false);
     }
+  };
+
+  // Test bookmarklet functionality
+  const testBookmarkletFunctionality = (token: string, project: any, directory: any) => {
+    console.log('=== BOOKMARKLET FUNCTIONALITY TEST ===');
+    console.log('Token:', token);
+    console.log('Project:', project);
+    console.log('Directory:', directory);
+    
+    // Test URL generation
+    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${JSON.stringify(project)};var directoryData=${JSON.stringify(directory)};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
+    
+    console.log('Generated bookmarklet URL length:', bookmarkletUrl.length);
+    console.log('Bookmarklet URL preview:', bookmarkletUrl.substring(0, 200) + '...');
+    
+    // Test data validation
+    const requiredProjectFields = ['name', 'email', 'companyName', 'url'];
+    const missingFields = requiredProjectFields.filter(field => !project[field] || project[field] === '');
+    
+    console.log('Project validation:', {
+      hasAllRequiredFields: missingFields.length === 0,
+      missingFields: missingFields,
+      projectData: {
+        name: project.name,
+        email: project.email,
+        companyName: project.companyName,
+        url: project.url
+      }
+    });
+    
+    console.log('Directory validation:', {
+      hasName: !!directory.name,
+      hasUrl: !!directory.url,
+      directoryData: {
+        name: directory.name,
+        url: directory.url
+      }
+    });
+    
+    console.log('=== END BOOKMARKLET TEST ===');
   };
 
   // Check if bookmarklet has been used
@@ -156,6 +199,7 @@ export default function DirectoryGrid({
 
   // Handle Fill Form button click - show project selection first
   const handleFillFormClick = (directory: Directory) => {
+    console.log('Fill Form clicked for directory:', directory);
     setSelectedDirectory(directory);
     setShowProjectSelection(true);
   };
@@ -505,9 +549,14 @@ export default function DirectoryGrid({
               <div>
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm text-gray-600">
-                      <strong>⚠️ Security Notice:</strong> This bookmarklet can only be used once and will expire after use. Drag it to your bookmarks bar now.
-                    </p>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        <strong>⚠️ Security Notice:</strong> This bookmarklet can only be used once and will expire after use. Drag it to your bookmarks bar now.
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Directory: <strong>{selectedDirectory?.name}</strong> | URL: <strong>{selectedDirectory?.url}</strong>
+                      </p>
+                    </div>
                     <button
                       onClick={() => {
                         setShowBookmarkletModal(false);
@@ -558,11 +607,32 @@ export default function DirectoryGrid({
                       href={selectedDirectory?.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => {
+                        console.log('Visit Website clicked:', selectedDirectory?.url);
+                        if (!selectedDirectory?.url) {
+                          alert('No URL available for this directory');
+                          return false;
+                        }
+                      }}
                       className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-2"
                     >
                       <ExternalLink className="w-4 h-4" />
                       Visit Website
                     </a>
+                    
+                    <button
+                      onClick={() => {
+                        console.log('Testing bookmarklet functionality...');
+                        if (bookmarkletToken && selectedProject && selectedDirectory) {
+                          testBookmarkletFunctionality(bookmarkletToken, selectedProject, selectedDirectory);
+                        } else {
+                          alert('Missing bookmarklet data. Please generate bookmarklet first.');
+                        }
+                      }}
+                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium flex items-center gap-2"
+                    >
+                      🧪 Test Bookmarklet
+                    </button>
                   </div>
                   
                   <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
