@@ -385,6 +385,57 @@
     autoFillForm(formData);
   }
   
+  // Track submission in database
+  function trackSubmission(filledFields) {
+    try {
+      // Get token from localStorage or sessionStorage
+      const token = localStorage.getItem('token') || sessionStorage.getItem('opptym_bookmarklet_token');
+      
+      if (!token) {
+        console.log('No token available for submission tracking');
+        return;
+      }
+
+      // Prepare submission data
+      const submissionData = {
+        directoryName: directoryData?.name || 'Unknown Directory',
+        directoryUrl: directoryData?.url || window.location.href,
+        classification: directoryData?.classification || 'Directory Submission',
+        projectId: projectData?._id || null,
+        projectName: projectData?.title || projectData?.name || 'Unknown Project',
+        status: 'submitted',
+        fieldsFilled: filledFields,
+        submittedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        source: 'bookmarklet'
+      };
+
+      // Send submission to API
+      fetch('/api/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(submissionData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Submission tracked successfully:', data);
+        
+        // Notify parent component that submission was created
+        if (window.opptymSubmissionCreated) {
+          window.opptymSubmissionCreated();
+        }
+      })
+      .catch(error => {
+        console.error('Error tracking submission:', error);
+      });
+    } catch (error) {
+      console.error('Error in trackSubmission:', error);
+    }
+  }
+
   // Auto-fill form fields on the page
   function autoFillForm(data) {
     try {
@@ -510,6 +561,9 @@
       if (successMessage) {
         successMessage.textContent = `Successfully filled ${filledFields} form fields with your business information.`;
       }
+
+      // Track submission in database
+      trackSubmission(filledFields);
       
       // Auto-close after 3 seconds
       setTimeout(closeInterface, 3000);

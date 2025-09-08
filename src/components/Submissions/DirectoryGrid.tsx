@@ -16,6 +16,7 @@ interface DirectoryGridProps {
   emptyMessage?: string;
   classification?: string;
   viewMode?: 'grid' | 'list';
+  onSubmissionCreated?: () => void;
 }
 
 export default function DirectoryGrid({ 
@@ -30,7 +31,8 @@ export default function DirectoryGrid({
   title = 'Directories', 
   emptyMessage = 'No directories found',
   classification,
-  viewMode = 'grid'
+  viewMode = 'grid',
+  onSubmissionCreated
 }: DirectoryGridProps) {
 
   const displayDirectories = directories || [];
@@ -165,6 +167,20 @@ export default function DirectoryGrid({
       setIsGeneratingToken(false);
     }
   };
+
+  // Global function for bookmarklet to call when submission is created
+  React.useEffect(() => {
+    (window as any).opptymSubmissionCreated = () => {
+      console.log('Submission created callback triggered');
+      if (onSubmissionCreated) {
+        onSubmissionCreated();
+      }
+    };
+    
+    return () => {
+      delete (window as any).opptymSubmissionCreated;
+    };
+  }, [onSubmissionCreated]);
 
   // Test bookmarklet functionality
   const testBookmarkletFunctionality = (token: string, project: any, directory: any) => {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
+import axios from 'axios';
 
 import { 
   ExternalLink,
@@ -14,12 +15,13 @@ import { getDirectoriesByClassification, Directory } from '../../config/director
 export default function DirectorySubmission() {
   const [loading, setLoading] = useState(true);
   const [directories, setDirectories] = useState<Directory[]>([]);
-  const [stats] = useState({
+  const [stats, setStats] = useState({
     total: 0,
     submitted: 0,
     approved: 0,
     pending: 0
   });
+  const [submissions, setSubmissions] = useState<any[]>([]);
 
   // Load directories from config file
   const loadDirectories = () => {
@@ -35,8 +37,34 @@ export default function DirectorySubmission() {
     }
   };
 
+  // Fetch submissions for Directory Submission classification
+  const fetchSubmissions = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/submissions', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { classification: 'Directory Submission' }
+      });
+      
+      if (response.data && Array.isArray(response.data)) {
+        setSubmissions(response.data);
+        
+        // Calculate stats
+        const total = response.data.length;
+        const submitted = response.data.filter(s => s.status === 'submitted').length;
+        const approved = response.data.filter(s => s.status === 'approved' || s.status === 'published').length;
+        const pending = response.data.filter(s => s.status === 'pending').length;
+        
+        setStats({ total, submitted, approved, pending });
+      }
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+    }
+  };
+
   useEffect(() => {
     loadDirectories();
+    fetchSubmissions();
   }, []);
 
   return (
@@ -119,6 +147,7 @@ export default function DirectorySubmission() {
           directories={directories}
           loading={loading}
           classification="Directory Submission"
+          onSubmissionCreated={fetchSubmissions}
         />
 
         {/* Info Section */}
