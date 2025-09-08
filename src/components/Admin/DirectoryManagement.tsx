@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, Search } from 'lucide-react';
+import { Edit, Trash2, Save, X, Search } from 'lucide-react';
 import {
   directoriesData, 
   getAllClassifications, 
@@ -12,7 +12,7 @@ interface DirectoryManagementProps {
 
 const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUpdate }) => {
   const [directories, setDirectories] = useState<{ [key: string]: Directory[] }>(directoriesData);
-  const [selectedClassification, setSelectedClassification] = useState<string>('Directory Submission');
+  // const [selectedClassification, setSelectedClassification] = useState<string>('Directory Submission');
   const [editingDirectory, setEditingDirectory] = useState<Directory | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterClassification, setFilterClassification] = useState<string>('all');

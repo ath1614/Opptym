@@ -362,9 +362,9 @@
   
   // Close the interface
   function closeInterface() {
-    const interface = document.getElementById('opptym-bookmarklet-interface');
-    if (interface) {
-      interface.remove();
+    const bookmarkletInterface = document.getElementById('opptym-bookmarklet-interface');
+    if (bookmarkletInterface) {
+      bookmarkletInterface.remove();
     }
   }
   
