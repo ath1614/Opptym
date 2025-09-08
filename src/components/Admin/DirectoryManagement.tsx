@@ -21,6 +21,9 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
 
   // Load directories from config
   useEffect(() => {
+    console.log('Loading directories data:', directoriesData);
+    console.log('Classifications available:', Object.keys(directoriesData));
+    console.log('Total directories:', Object.values(directoriesData).reduce((sum, dirs) => sum + dirs.length, 0));
     setDirectories(directoriesData);
   }, []);
 
@@ -33,6 +36,16 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
         dir.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (dir.description && dir.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
+    
+    // Debug logging
+    if (searchTerm) {
+      console.log('Search term:', searchTerm);
+      console.log('Classification:', classification);
+      console.log('Directories in classification:', dirs.length);
+      console.log('Matches classification:', matchesClassification);
+      console.log('Matches search:', matchesSearch);
+    }
+    
     return matchesClassification && matchesSearch;
   });
 
@@ -82,29 +95,51 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
       </div>
 
       {/* Search and Filter */}
-      <div className="mb-6 flex gap-4">
-        <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search directories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <select
-          value={filterClassification}
-          onChange={(e) => setFilterClassification(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      <div className="mb-6">
+        <div className="flex gap-4 mb-3">
+          <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search directories..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <select
+            value={filterClassification}
+            onChange={(e) => setFilterClassification(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">All Classifications</option>
+            {classifications.map(classification => (
+                  <option key={classification} value={classification}>
+                    {classification}
+                  </option>
+                ))}
+              </select>
+        </div>
+        
+        {/* Search Results Info */}
+        {searchTerm && (
+          <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+            <span>
+              {(() => {
+                const totalResults = filteredDirectories.reduce((sum, [, dirs]) => sum + dirs.length, 0);
+                return totalResults > 0 
+                  ? `Found ${totalResults} directories matching "${searchTerm}"`
+                  : `No directories found matching "${searchTerm}"`;
+              })()}
+            </span>
+            <button
+              onClick={() => setSearchTerm('')}
+              className="text-blue-600 hover:text-blue-800 underline"
             >
-              <option value="all">All Classifications</option>
-          {classifications.map(classification => (
-                <option key={classification} value={classification}>
-                  {classification}
-                </option>
-              ))}
-            </select>
+              Clear Search
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Directories List */}
