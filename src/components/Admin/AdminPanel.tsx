@@ -899,8 +899,34 @@ export default function AdminPanel() {
 
       {/* Directories Tab */}
       {activeTab === 'directories' && (
-        <DirectoryManagement />
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Directory Management</h2>
+              <p className="text-gray-600 dark:text-gray-300">Manage directories across all SEO classifications</p>
+            </div>
+            <button
+              onClick={() => setShowCreateDirectoryModal(true)}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Create New Directory
+            </button>
+          </div>
+          <DirectoryManagement />
+        </div>
       )}
+
+      {/* Create Directory Modal */}
+      <CreateDirectoryModal
+        isOpen={showCreateDirectoryModal}
+        onClose={() => setShowCreateDirectoryModal(false)}
+        onCreated={() => {
+          // Refresh directories or handle success
+          setShowCreateDirectoryModal(false);
+          // You can add a refresh function here if needed
+        }}
+      />
 
       {/* Employees Tab */}
       {activeTab === 'employees' && (
