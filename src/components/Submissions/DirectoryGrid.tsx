@@ -168,6 +168,66 @@ export default function DirectoryGrid({
     }
   };
 
+  // Generate unique bookmarklet token with project data (using parameters)
+  const generateBookmarkletTokenWithData = async (project: any, directory: any) => {
+    console.log('generateBookmarkletTokenWithData called with:', { project, directory });
+
+    if (!project) {
+      alert('❌ No project selected. Please select a project first.');
+      setShowBookmarkletModal(false);
+      setShowProjectSelection(true);
+      return;
+    }
+
+    if (!directory) {
+      alert('❌ No directory selected. Please select a directory first.');
+      setShowBookmarkletModal(false);
+      return;
+    }
+
+    // Validate project data
+    const requiredFields = ['name', 'email', 'companyName', 'url'];
+    const missingFields = requiredFields.filter(field => 
+      !project[field] || project[field] === ''
+    );
+
+    if (missingFields.length > 0) {
+      alert(`❌ Project "${project.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`);
+      setShowBookmarkletModal(false);
+      setShowProjectSelection(true);
+      return;
+    }
+
+    // Validate directory data
+    if (!directory.name || !directory.url) {
+      alert(`❌ Directory data is incomplete. Missing: ${!directory.name ? 'name' : ''} ${!directory.url ? 'url' : ''}`);
+      setShowBookmarkletModal(false);
+      return;
+    }
+
+    setIsGeneratingToken(true);
+    try {
+      // Generate unique token
+      const token = `opptym_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      console.log('Generated bookmarklet token:', token);
+      console.log('Project data:', project);
+      console.log('Directory data:', directory);
+      sessionStorage.setItem('opptym_bookmarklet_used', 'false');
+      sessionStorage.setItem('opptym_bookmarklet_project', JSON.stringify(project));
+      sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(directory));
+
+      setBookmarkletToken(token);
+
+      // Test bookmarklet functionality
+      testBookmarkletFunctionality(token, project, directory);
+    } catch (error) {
+      console.error('Error generating bookmarklet token:', error);
+      alert('❌ Failed to generate bookmarklet token. Please try again.');
+    } finally {
+      setIsGeneratingToken(false);
+    }
+  };
+
   // Global function for bookmarklet to call when submission is created
   React.useEffect(() => {
     (window as any).opptymSubmissionCreated = () => {
@@ -246,8 +306,9 @@ export default function DirectoryGrid({
     console.log('DirectoryGrid: About to generate bookmarklet with:', { project, selectedDirectory });
     
     // Generate bookmarklet token automatically after project selection
+    // Pass project and directory directly to avoid state timing issues
     setTimeout(() => {
-      generateBookmarkletToken();
+      generateBookmarkletTokenWithData(project, selectedDirectory);
     }, 100);
   };
 
