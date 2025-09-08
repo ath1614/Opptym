@@ -23,7 +23,8 @@ import {
   Target,
   Star,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  CreditCard
 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
@@ -31,6 +32,7 @@ import { Modal, Button, Input, Select } from 'antd';
 import EmployeeManagement from './EmployeeManagement';
 import DirectoryManagement from './DirectoryManagement';
 import CreateDirectoryModal from './CreateDirectoryModal';
+import PricingManagement from './PricingManagement';
 // Remove BASE_URL import - use relative paths like other components
 
 interface AdminUser {
@@ -237,6 +239,7 @@ export default function AdminPanel() {
     { id: 'projects', name: 'Projects', icon: Globe },
     { id: 'submissions', name: 'Submissions', icon: FileText },
     { id: 'directories', name: 'Directories', icon: Database },
+    { id: 'pricing', name: 'Pricing Plans', icon: CreditCard },
     { id: 'employees', name: 'Employees', icon: Users },
     { id: 'settings', name: 'Settings', icon: Settings }
   ];
@@ -927,6 +930,11 @@ export default function AdminPanel() {
           // You can add a refresh function here if needed
         }}
       />
+
+      {/* Pricing Plans Tab */}
+      {activeTab === 'pricing' && (
+        <PricingManagement />
+      )}
 
       {/* Employees Tab */}
       {activeTab === 'employees' && (

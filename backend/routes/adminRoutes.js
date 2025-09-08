@@ -5,6 +5,12 @@ const User = require('../models/userModel');
 const Project = require('../models/projectModel');
 const Submission = require('../models/submissionModel');
 const Directory = require('../models/directoryModel');
+const Plan = require('../models/planModel');
+const PricingPlan = require('../models/pricingPlanModel');
+const Stripe = require('stripe');
+const stripeConfig = require('../config/stripeConfig');
+
+const stripe = Stripe(stripeConfig.STRIPE_SECRET_KEY);
 
 // Get all users (admin only)
 router.get('/users', protect, adminOnly, async (req, res) => {
@@ -672,6 +678,267 @@ router.get('/settings', protect, adminOnly, async (req, res) => {
     res.json(adminSettings);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch admin settings' });
+  }
+});
+
+// ==================== PRICING PLAN MANAGEMENT ====================
+
+// Get all pricing plans (admin only)
+router.get('/pricing-plans', protect, adminOnly, async (req, res) => {
+  try {
+    const plans = await Plan.find({}).sort({ sortOrder: 1 });
+    res.json(plans);
+  } catch (error) {
+    console.error('Error fetching pricing plans:', error);
+    res.status(500).json({ error: 'Failed to fetch pricing plans' });
+  }
+});
+
+// Create new pricing plan (admin only)
+router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      features,
+      price,
+      limits,
+      stripePriceIds,
+      trialDays,
+      isActive,
+      isPopular,
+      sortOrder,
+      metadata
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !description || !price || !limits) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Create Stripe product and prices if not provided
+    let stripeProductId = null;
+    let monthlyPriceId = null;
+    let yearlyPriceId = null;
+
+    try {
+      // Create Stripe product
+      const stripeProduct = await stripe.products.create({
+        name: name,
+        description: description,
+        metadata: {
+          planName: name,
+          createdBy: 'admin'
+        }
+      });
+      stripeProductId = stripeProduct.id;
+
+      // Create monthly price if provided
+      if (price.monthly > 0) {
+        const monthlyPrice = await stripe.prices.create({
+          unit_amount: price.monthly * 100, // Convert to cents/paise
+          currency: stripeConfig.DEFAULT_CURRENCY,
+          recurring: { interval: 'month' },
+          product: stripeProductId,
+          metadata: {
+            planName: name,
+            billingCycle: 'monthly'
+          }
+        });
+        monthlyPriceId = monthlyPrice.id;
+      }
+
+      // Create yearly price if provided
+      if (price.yearly > 0) {
+        const yearlyPrice = await stripe.prices.create({
+          unit_amount: price.yearly * 100, // Convert to cents/paise
+          currency: stripeConfig.DEFAULT_CURRENCY,
+          recurring: { interval: 'year' },
+          product: stripeProductId,
+          metadata: {
+            planName: name,
+            billingCycle: 'yearly'
+          }
+        });
+        yearlyPriceId = yearlyPrice.id;
+      }
+    } catch (stripeError) {
+      console.error('Stripe error:', stripeError);
+      return res.status(500).json({ error: 'Failed to create Stripe product/prices' });
+    }
+
+    // Create plan in database
+    const plan = new Plan({
+      name,
+      description,
+      features: features || [],
+      price: {
+        monthly: price.monthly || 0,
+        yearly: price.yearly || 0
+      },
+      limits: {
+        projects: limits.projects || 1,
+        submissions: limits.submissions || 10,
+        tools: limits.tools || 10,
+        apiCalls: limits.apiCalls || 20
+      },
+      stripePriceIds: {
+        monthly: monthlyPriceId,
+        yearly: yearlyPriceId
+      },
+      trialDays: trialDays || 0,
+      isActive: isActive !== undefined ? isActive : true,
+      isPopular: isPopular || false,
+      sortOrder: sortOrder || 0,
+      metadata: metadata || {
+        color: 'blue',
+        gradient: 'from-blue-500 to-blue-600',
+        icon: 'star'
+      }
+    });
+
+    await plan.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Pricing plan created successfully',
+      plan
+    });
+  } catch (error) {
+    console.error('Error creating pricing plan:', error);
+    res.status(500).json({ error: 'Failed to create pricing plan' });
+  }
+});
+
+// Update pricing plan (admin only)
+router.put('/pricing-plans/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    // Find existing plan
+    const existingPlan = await Plan.findById(id);
+    if (!existingPlan) {
+      return res.status(404).json({ error: 'Pricing plan not found' });
+    }
+
+    // Update Stripe product if name or description changed
+    if (updateData.name || updateData.description) {
+      try {
+        await stripe.products.update(existingPlan.stripeProductId, {
+          name: updateData.name || existingPlan.name,
+          description: updateData.description || existingPlan.description
+        });
+      } catch (stripeError) {
+        console.error('Stripe update error:', stripeError);
+      }
+    }
+
+    // Update plan in database
+    const updatedPlan = await Plan.findByIdAndUpdate(
+      id,
+      { ...updateData, updatedAt: new Date() },
+      { new: true, runValidators: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Pricing plan updated successfully',
+      plan: updatedPlan
+    });
+  } catch (error) {
+    console.error('Error updating pricing plan:', error);
+    res.status(500).json({ error: 'Failed to update pricing plan' });
+  }
+});
+
+// Delete pricing plan (admin only)
+router.delete('/pricing-plans/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const plan = await Plan.findById(id);
+    if (!plan) {
+      return res.status(404).json({ error: 'Pricing plan not found' });
+    }
+
+    // Archive Stripe product instead of deleting
+    if (plan.stripeProductId) {
+      try {
+        await stripe.products.update(plan.stripeProductId, {
+          active: false
+        });
+      } catch (stripeError) {
+        console.error('Stripe archive error:', stripeError);
+      }
+    }
+
+    // Soft delete - mark as inactive
+    await Plan.findByIdAndUpdate(id, { 
+      isActive: false,
+      deletedAt: new Date()
+    });
+
+    res.json({
+      success: true,
+      message: 'Pricing plan deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting pricing plan:', error);
+    res.status(500).json({ error: 'Failed to delete pricing plan' });
+  }
+});
+
+// Toggle plan active status (admin only)
+router.patch('/pricing-plans/:id/toggle', protect, adminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const plan = await Plan.findById(id);
+    if (!plan) {
+      return res.status(404).json({ error: 'Pricing plan not found' });
+    }
+
+    const updatedPlan = await Plan.findByIdAndUpdate(
+      id,
+      { isActive: !plan.isActive },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: `Pricing plan ${updatedPlan.isActive ? 'activated' : 'deactivated'} successfully`,
+      plan: updatedPlan
+    });
+  } catch (error) {
+    console.error('Error toggling pricing plan:', error);
+    res.status(500).json({ error: 'Failed to toggle pricing plan status' });
+  }
+});
+
+// Reorder pricing plans (admin only)
+router.patch('/pricing-plans/reorder', protect, adminOnly, async (req, res) => {
+  try {
+    const { planOrders } = req.body; // Array of { id, sortOrder }
+
+    if (!Array.isArray(planOrders)) {
+      return res.status(400).json({ error: 'Invalid plan orders format' });
+    }
+
+    // Update sort orders
+    const updatePromises = planOrders.map(({ id, sortOrder }) =>
+      Plan.findByIdAndUpdate(id, { sortOrder })
+    );
+
+    await Promise.all(updatePromises);
+
+    res.json({
+      success: true,
+      message: 'Pricing plans reordered successfully'
+    });
+  } catch (error) {
+    console.error('Error reordering pricing plans:', error);
+    res.status(500).json({ error: 'Failed to reorder pricing plans' });
   }
 });
 
