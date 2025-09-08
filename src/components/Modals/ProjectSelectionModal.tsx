@@ -39,6 +39,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [showOnlyReady, setShowOnlyReady] = useState(true);
 
   // Fetch user projects
   useEffect(() => {
@@ -156,6 +157,28 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
 
         {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+          {/* Instructions */}
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200 mb-2">
+              <CheckCircle className="w-5 h-5" />
+              <span className="font-medium">Project Selection Guide</span>
+            </div>
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              Only <strong>Ready</strong> projects can be selected for submissions. Complete any incomplete projects by adding missing required fields.
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="showOnlyReady"
+                checked={showOnlyReady}
+                onChange={(e) => setShowOnlyReady(e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <label htmlFor="showOnlyReady" className="text-sm text-blue-700 dark:text-blue-300">
+                Show only ready projects
+              </label>
+            </div>
+          </div>
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -205,8 +228,61 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Project Count */}
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600 dark:text-gray-300">
+                  {(() => {
+                    const readyProjects = projects.filter(p => validateProject(p).length === 0);
+                    const totalProjects = projects.length;
+                    return showOnlyReady 
+                      ? `${readyProjects.length} ready project${readyProjects.length !== 1 ? 's' : ''} available`
+                      : `${readyProjects.length} ready, ${totalProjects - readyProjects.length} incomplete (${totalProjects} total)`;
+                  })()}
+                </div>
+              </div>
               <div className="grid gap-4">
-                {projects.map((project) => {
+                {(() => {
+                  const filteredProjects = projects.filter(project => {
+                    if (showOnlyReady) {
+                      const errors = validateProject(project);
+                      return errors.length === 0;
+                    }
+                    return true;
+                  });
+                  
+                  if (filteredProjects.length === 0 && showOnlyReady) {
+                    return (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <AlertCircle className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                          No Ready Projects Found
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                          All your projects are incomplete. Complete them by adding required fields or create a new project.
+                        </p>
+                        <div className="flex items-center justify-center gap-4">
+                          <button
+                            onClick={() => setShowOnlyReady(false)}
+                            className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2"
+                          >
+                            <AlertCircle className="w-5 h-5" />
+                            Show All Projects
+                          </button>
+                          <button
+                            onClick={() => window.open('/projects', '_blank')}
+                            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                          >
+                            <Plus className="w-5 h-5" />
+                            Create New Project
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  return filteredProjects.map((project) => {
                   const completeness = getProjectCompleteness(project);
                   const isSelected = selectedProject?._id === project._id;
                   const errors = validateProject(project);
@@ -215,11 +291,15 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
                   return (
                     <div
                       key={project._id}
-                      onClick={() => handleProjectSelect(project)}
-                      className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                      onClick={() => isValid ? handleProjectSelect(project) : null}
+                      className={`p-4 border-2 rounded-xl transition-all ${
+                        isValid 
+                          ? `cursor-pointer ${
+                              isSelected
+                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                            }`
+                          : 'cursor-not-allowed opacity-60 border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -235,7 +315,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
                                   <span className="text-xs font-medium">Ready</span>
                                 </div>
                               ) : (
-                                <div className="flex items-center gap-1 text-orange-600">
+                                <div className="flex items-center gap-1 text-red-600">
                                   <AlertCircle className="w-4 h-4" />
                                   <span className="text-xs font-medium">Incomplete</span>
                                 </div>
@@ -279,22 +359,26 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
                         </div>
                       </div>
 
-                      {isSelected && errors.length > 0 && (
-                        <div className="mt-3 p-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
-                          <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 mb-2">
+                      {!isValid && (
+                        <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                          <div className="flex items-center gap-2 text-red-700 dark:text-red-300 mb-2">
                             <AlertCircle className="w-4 h-4" />
                             <span className="text-sm font-medium">Missing Required Fields:</span>
                           </div>
-                          <ul className="text-sm text-orange-600 dark:text-orange-400 space-y-1">
+                          <ul className="text-sm text-red-600 dark:text-red-400 space-y-1">
                             {errors.map((error, index) => (
                               <li key={index}>• {error}</li>
                             ))}
                           </ul>
+                          <div className="mt-2 text-xs text-red-600 dark:text-red-300 font-medium">
+                            ⚠️ Complete this project to use it for submissions
+                          </div>
                         </div>
                       )}
                     </div>
                   );
-                })}
+                });
+                })()}
               </div>
             </div>
           )}
