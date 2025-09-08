@@ -129,8 +129,6 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
     return Math.round((filledFields.length / requiredFields.length) * 100);
   };
 
-  if (!isOpen) return null;
-
   // Prevent body scroll when modal is open
   React.useEffect(() => {
     if (isOpen) {
@@ -143,6 +141,8 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
