@@ -169,14 +169,73 @@ export class UniversalFormService {
               }
             }, 3000);
             
-            // Show loading indicator
-            const loadingDiv = document.createElement('div');
-            loadingDiv.style.cssText = 'position: fixed; top: 60px; right: 20px; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            loadingDiv.textContent = '🤖 Filling forms...';
-            document.body.appendChild(loadingDiv);
+            // Create enhanced progress popup
+            const progressPopup = document.createElement('div');
+            progressPopup.style.cssText = `
+              position: fixed; 
+              top: 50%; 
+              left: 50%; 
+              transform: translate(-50%, -50%); 
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+              color: white; 
+              padding: 30px; 
+              border-radius: 16px; 
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+              font-size: 16px; 
+              z-index: 10000; 
+              box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+              min-width: 350px;
+              text-align: center;
+              backdrop-filter: blur(10px);
+            `;
+            
+            // Create progress content
+            const progressContent = document.createElement('div');
+            progressContent.innerHTML = `
+              <div style="margin-bottom: 20px;">
+                <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
+                <div style="font-weight: 600; margin-bottom: 5px;">OPPTYM Auto-Fill</div>
+                <div style="font-size: 14px; opacity: 0.9;">Filling forms automatically...</div>
+              </div>
+              <div id="progress-stats" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Fields Found:</span>
+                  <span id="total-fields">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Fields Filled:</span>
+                  <span id="filled-fields">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span>Success Rate:</span>
+                  <span id="success-rate">0%</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); border-radius: 10px; height: 8px; overflow: hidden;">
+                  <div id="progress-bar" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                </div>
+              </div>
+              <div id="status-message" style="font-size: 14px; opacity: 0.9;">Scanning page for forms...</div>
+            `;
+            
+            progressPopup.appendChild(progressContent);
+            document.body.appendChild(progressPopup);
+            
+            // Add overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+              position: fixed; 
+              top: 0; 
+              left: 0; 
+              width: 100%; 
+              height: 100%; 
+              background: rgba(0,0,0,0.5); 
+              z-index: 9999;
+            `;
+            document.body.appendChild(overlay);
             
             let filledCount = 0;
             let errorCount = 0;
+            let totalFields = 0;
             
             // Enhanced field mapping with better detection
             const fieldMappings = [
@@ -193,10 +252,50 @@ export class UniversalFormService {
               { patterns: ['zip', 'postal', 'pincode'], value: projectData.pincode || '' }
             ];
           
+          // Helper function to update progress
+          const updateProgress = () => {
+            const totalFieldsEl = document.getElementById('total-fields');
+            const filledFieldsEl = document.getElementById('filled-fields');
+            const successRateEl = document.getElementById('success-rate');
+            const progressBarEl = document.getElementById('progress-bar');
+            const statusMessageEl = document.getElementById('status-message');
+            
+            if (totalFieldsEl) totalFieldsEl.textContent = totalFields.toString();
+            if (filledFieldsEl) filledFieldsEl.textContent = filledCount.toString();
+            
+            const successRate = totalFields > 0 ? Math.round((filledCount / totalFields) * 100) : 0;
+            if (successRateEl) successRateEl.textContent = successRate + '%';
+            if (progressBarEl) progressBarEl.style.width = successRate + '%';
+            
+            // Update status message
+            if (statusMessageEl) {
+              if (filledCount === 0 && totalFields > 0) {
+                statusMessageEl.textContent = 'No matching fields found...';
+              } else if (filledCount > 0) {
+                statusMessageEl.textContent = `Successfully filled ${filledCount} out of ${totalFields} fields!`;
+              } else {
+                statusMessageEl.textContent = 'Scanning page for forms...';
+              }
+            }
+          };
+          
           // Process all form fields
           const processInputFields = () => {
             const inputs = document.querySelectorAll('input, textarea, select');
+            totalFields = 0;
             
+            // First pass: count fillable fields
+            inputs.forEach((input) => {
+              if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+              const fieldValue = input.value || '';
+              if (!fieldValue.trim()) {
+                totalFields++;
+              }
+            });
+            
+            updateProgress();
+            
+            // Second pass: fill fields with animation
             inputs.forEach((input, index) => {
               try {
                 if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
@@ -213,11 +312,26 @@ export class UniversalFormService {
                 );
                 
                 if (mapping && mapping.value) {
-                  input.value = mapping.value;
-                  input.dispatchEvent(new Event('input', { bubbles: true }));
-                  input.dispatchEvent(new Event('change', { bubbles: true }));
-                  filledCount++;
-                  console.log('✅ Filled field ' + (index + 1) + ': ' + (input.name || input.id || input.placeholder) + ' with: ' + mapping.value);
+                  // Animate field filling
+                  setTimeout(() => {
+                    input.value = mapping.value;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    // Add visual feedback
+                    input.style.transition = 'all 0.3s ease';
+                    input.style.backgroundColor = '#d1fae5';
+                    input.style.borderColor = '#10b981';
+                    
+                    setTimeout(() => {
+                      input.style.backgroundColor = '';
+                      input.style.borderColor = '';
+                    }, 1000);
+                    
+                    filledCount++;
+                    updateProgress();
+                    console.log('✅ Filled field ' + (index + 1) + ': ' + (input.name || input.id || input.placeholder) + ' with: ' + mapping.value);
+                  }, index * 100); // Stagger the filling for visual effect
                 }
               } catch (e) {
                 errorCount++;
@@ -229,20 +343,60 @@ export class UniversalFormService {
           // Execute form filling
           processInputFields();
           
-          // Update loading message
+          // Show completion message and cleanup
           setTimeout(() => {
-            loadingDiv.style.background = filledCount > 0 ? '#10b981' : '#f59e0b';
-            loadingDiv.textContent = filledCount > 0 
-              ? '✅ ' + filledCount + ' fields filled successfully!'
-              : '⚠️ No fields could be filled automatically';
-            
-            // Remove message after 3 seconds
-            setTimeout(() => {
-              if (loadingDiv.parentNode) {
-                loadingDiv.parentNode.removeChild(loadingDiv);
+            const statusMessageEl = document.getElementById('status-message');
+            if (statusMessageEl) {
+              if (filledCount > 0) {
+                statusMessageEl.innerHTML = `
+                  <div style="color: #10b981; font-weight: 600; margin-bottom: 10px;">
+                    ✅ Success! ${filledCount} fields filled
+                  </div>
+                  <div style="font-size: 12px; opacity: 0.8;">
+                    You can now submit the form manually
+                  </div>
+                `;
+              } else {
+                statusMessageEl.innerHTML = `
+                  <div style="color: #f59e0b; font-weight: 600; margin-bottom: 10px;">
+                    ⚠️ No fields could be filled
+                  </div>
+                  <div style="font-size: 12px; opacity: 0.8;">
+                    Try filling the form manually
+                  </div>
+                `;
               }
-            }, 3000);
-          }, 500);
+            }
+            
+            // Add close button
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '✕ Close';
+            closeButton.style.cssText = `
+              background: rgba(255,255,255,0.2); 
+              border: none; 
+              color: white; 
+              padding: 8px 16px; 
+              border-radius: 8px; 
+              cursor: pointer; 
+              font-size: 14px; 
+              margin-top: 15px;
+              transition: background 0.3s ease;
+            `;
+            closeButton.onmouseover = () => closeButton.style.background = 'rgba(255,255,255,0.3)';
+            closeButton.onmouseout = () => closeButton.style.background = 'rgba(255,255,255,0.2)';
+            closeButton.onclick = () => {
+              if (progressPopup.parentNode) progressPopup.parentNode.removeChild(progressPopup);
+              if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            };
+            
+            progressPopup.appendChild(closeButton);
+            
+            // Auto-close after 5 seconds
+            setTimeout(() => {
+              if (progressPopup.parentNode) progressPopup.parentNode.removeChild(progressPopup);
+              if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            }, 5000);
+          }, 2000);
           
           console.log('🎯 Form filling completed: ' + filledCount + ' fields filled, ' + errorCount + ' errors');
           
