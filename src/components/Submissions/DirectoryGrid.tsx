@@ -244,16 +244,52 @@ export default function DirectoryGrid({
 
   // Test bookmarklet functionality
   const testBookmarkletFunctionality = (token: string, project: any, directory: any) => {
-    console.log('=== BOOKMARKLET FUNCTIONALITY TEST ===');
+    console.log('=== COMPREHENSIVE BOOKMARKLET TEST ===');
     console.log('Token:', token);
     console.log('Project:', project);
     console.log('Directory:', directory);
     
     // Test URL generation
-    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${JSON.stringify(project)};var directoryData=${JSON.stringify(directory)};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
+    const projectJson = JSON.stringify(project);
+    const directoryJson = JSON.stringify(directory);
+    const encodedProject = encodeURIComponent(projectJson);
+    const encodedDirectory = encodeURIComponent(directoryJson);
+    
+    console.log('Data encoding test:');
+    console.log('- Project JSON length:', projectJson.length);
+    console.log('- Directory JSON length:', directoryJson.length);
+    console.log('- Encoded project length:', encodedProject.length);
+    console.log('- Encoded directory length:', encodedDirectory.length);
+    
+    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${projectJson};var directoryData=${directoryJson};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
     
     console.log('Generated bookmarklet URL length:', bookmarkletUrl.length);
     console.log('Bookmarklet URL preview:', bookmarkletUrl.substring(0, 200) + '...');
+    
+    // Test URL parameter parsing
+    const testUrl = `https://opptym.com/bookmarklet.js?token=${token}&project=${encodedProject}&directory=${encodedDirectory}`;
+    const urlParams = new URLSearchParams(testUrl.split('?')[1]);
+    const testToken = urlParams.get('token');
+    const testProjectParam = urlParams.get('project');
+    const testDirectoryParam = urlParams.get('directory');
+    
+    console.log('URL parameter parsing test:');
+    console.log('- Token matches:', testToken === token);
+    console.log('- Project param exists:', !!testProjectParam);
+    console.log('- Directory param exists:', !!testDirectoryParam);
+    
+    // Test JSON parsing
+    try {
+      const parsedProject = JSON.parse(decodeURIComponent(testProjectParam || ''));
+      const parsedDirectory = JSON.parse(decodeURIComponent(testDirectoryParam || ''));
+      console.log('JSON parsing test:');
+      console.log('- Project parsed successfully:', !!parsedProject);
+      console.log('- Directory parsed successfully:', !!parsedDirectory);
+      console.log('- Project name matches:', parsedProject?.name === project.name);
+      console.log('- Directory name matches:', parsedDirectory?.name === directory.name);
+    } catch (e) {
+      console.error('JSON parsing test failed:', e);
+    }
     
     // Test data validation
     const requiredProjectFields = ['name', 'email', 'companyName', 'url'];
@@ -279,7 +315,7 @@ export default function DirectoryGrid({
       }
     });
     
-    console.log('=== END BOOKMARKLET TEST ===');
+    console.log('=== END COMPREHENSIVE BOOKMARKLET TEST ===');
   };
 
   // Check if bookmarklet has been used

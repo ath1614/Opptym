@@ -2,7 +2,7 @@
   'use strict';
   
   // Configuration
-  const API_BASE_URL = window.location.origin + '/api';
+  const API_BASE_URL = 'https://api.opptym.com/api';
   const BOOKMARKLET_VERSION = '1.0.0';
   
   // Get token and project data from script URL parameters
@@ -10,43 +10,82 @@
   let projectDataParam = null;
   let directoryDataParam = null;
   
-  // Find the script element that loaded this bookmarklet
+  // Find the script element that loaded this bookmarklet (improved detection)
   const scripts = document.getElementsByTagName('script');
+  console.log('Total scripts found:', scripts.length);
+  
   for (let i = 0; i < scripts.length; i++) {
     const script = scripts[i];
+    console.log('Checking script:', script.src);
+    
     if (script.src && script.src.includes('bookmarklet.js')) {
+      console.log('Found bookmarklet script:', script.src);
       const urlParams = new URLSearchParams(script.src.split('?')[1] || '');
       token = urlParams.get('token');
       projectDataParam = urlParams.get('project');
       directoryDataParam = urlParams.get('directory');
+      console.log('Extracted params:', { token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
       break;
     }
   }
   
-  // Parse project and directory data
+  // Fallback: if no script found, try to get from the most recent script
+  if (!token && scripts.length > 0) {
+    const lastScript = scripts[scripts.length - 1];
+    if (lastScript.src && lastScript.src.includes('opptym.com')) {
+      console.log('Using fallback script detection:', lastScript.src);
+      const urlParams = new URLSearchParams(lastScript.src.split('?')[1] || '');
+      token = urlParams.get('token');
+      projectDataParam = urlParams.get('project');
+      directoryDataParam = urlParams.get('directory');
+    }
+  }
+  
+  // Parse project and directory data with enhanced error handling
   let projectData = null;
   let directoryData = null;
   
+  console.log('Parsing data...');
+  console.log('Project param length:', projectDataParam ? projectDataParam.length : 0);
+  console.log('Directory param length:', directoryDataParam ? directoryDataParam.length : 0);
+  
   try {
     if (projectDataParam) {
-      projectData = JSON.parse(decodeURIComponent(projectDataParam));
+      console.log('Decoding project data...');
+      const decodedProject = decodeURIComponent(projectDataParam);
+      console.log('Decoded project length:', decodedProject.length);
+      projectData = JSON.parse(decodedProject);
+      console.log('Project data parsed successfully:', !!projectData);
     }
     if (directoryDataParam) {
-      directoryData = JSON.parse(decodeURIComponent(directoryDataParam));
+      console.log('Decoding directory data...');
+      const decodedDirectory = decodeURIComponent(directoryDataParam);
+      console.log('Decoded directory length:', decodedDirectory.length);
+      directoryData = JSON.parse(decodedDirectory);
+      console.log('Directory data parsed successfully:', !!directoryData);
     }
   } catch (e) {
     console.error('Error parsing project/directory data:', e);
+    console.error('Project param (first 200 chars):', projectDataParam ? projectDataParam.substring(0, 200) : 'null');
+    console.error('Directory param (first 200 chars):', directoryDataParam ? directoryDataParam.substring(0, 200) : 'null');
   }
   
-  // Validate token
+  // Validate token with detailed logging
+  console.log('Validating token:', token);
   if (!token) {
-    alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.');
+    console.error('Token validation failed: No token found');
+    console.error('Available scripts:', Array.from(scripts).map(s => s.src));
+    alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.\n\nDebug info: No token found in script parameters.');
     return;
   }
   
-  // Validate project data
+  // Validate project data with detailed logging
+  console.log('Validating project data:', !!projectData);
   if (!projectData) {
-    alert('❌ No project data found. Please generate a new bookmarklet from Opptym.');
+    console.error('Project data validation failed: No project data found');
+    console.error('Project param exists:', !!projectDataParam);
+    console.error('Project param length:', projectDataParam ? projectDataParam.length : 0);
+    alert('❌ No project data found. Please generate a new bookmarklet from Opptym.\n\nDebug info: Project data could not be parsed from script parameters.');
     return;
   }
   
@@ -423,7 +462,7 @@
       };
 
       // Send submission to API
-      fetch('/api/submissions', {
+      fetch(API_BASE_URL + '/submissions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
