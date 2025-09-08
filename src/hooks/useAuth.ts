@@ -276,6 +276,13 @@ export const useAuthProvider = (): AuthContextType => {
       
       if (signupResponse.data.success) {
         console.log('✅ Signup successful');
+        
+        // Check if email verification is required
+        if (signupResponse.data.requiresVerification) {
+          console.log('📧 Email verification required');
+          return signupResponse.data; // Return response for email verification flow
+        }
+        
         const token = signupResponse.data.token;
         
         // Validate token before storing
@@ -297,6 +304,7 @@ export const useAuthProvider = (): AuthContextType => {
         // Refresh user data from server
         await refreshUser();
         showPopup('✅ Account created successfully! Welcome to Opptym!', 'success');
+        return signupResponse.data;
       } else {
         throw new Error(signupResponse.data.message || 'Signup failed');
       }

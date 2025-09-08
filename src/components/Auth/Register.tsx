@@ -4,9 +4,10 @@ import { useAuth } from '../../hooks/useAuth';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
+  onEmailVerification: (email: string) => void;
 }
 
-export default function Register({ onSwitchToLogin }: RegisterProps) {
+export default function Register({ onSwitchToLogin, onEmailVerification }: RegisterProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -93,11 +94,20 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
     try {
       setIsLoading(true);
       // Use name as username for the register function
-      await register(name, email, password);
-      setSuccess('Account created successfully! You can now login.');
-      setTimeout(() => {
-        onSwitchToLogin();
-      }, 2000);
+      const response = await register(name, email, password);
+      
+      // Check if email verification is required
+      if (response && response.requiresVerification) {
+        setSuccess('Account created successfully! Please check your email to verify your account.');
+        setTimeout(() => {
+          onEmailVerification(email);
+        }, 2000);
+      } else {
+        setSuccess('Account created successfully! You can now login.');
+        setTimeout(() => {
+          onSwitchToLogin();
+        }, 2000);
+      }
     } catch (err: any) {
       console.error('Registration error:', err);
       setError(err.message || 'Registration failed. Please try again.');

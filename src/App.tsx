@@ -6,6 +6,9 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
+import EmailVerification from './components/Auth/EmailVerification';
+import ForgotPassword from './components/Auth/ForgotPassword';
+import ResetPassword from './components/Auth/ResetPassword';
 import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
@@ -58,7 +61,8 @@ function App() {
 
 
 
-  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register'>('landing');
+  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register' | 'email-verification' | 'forgot-password' | 'reset-password'>('landing');
+  const [verificationEmail, setVerificationEmail] = useState('');
   
   // Initialize activeTab from localStorage or URL hash, default to dashboard
   const getInitialTab = () => {
@@ -236,8 +240,11 @@ function App() {
           
           <div className="relative z-10">
             {authMode === 'landing' && <LandingPage onLoginClick={() => setAuthMode('login')} onRegisterClick={() => setAuthMode('register')} />}
-            {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} />}
-            {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} />}
+            {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} onForgotPassword={() => setAuthMode('forgot-password')} />}
+            {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} onEmailVerification={(email) => { setVerificationEmail(email); setAuthMode('email-verification'); }} />}
+            {authMode === 'email-verification' && <EmailVerification email={verificationEmail} onBackToLogin={() => setAuthMode('login')} />}
+            {authMode === 'forgot-password' && <ForgotPassword onBackToLogin={() => setAuthMode('login')} />}
+            {authMode === 'reset-password' && <ResetPassword />}
           </div>
         </div>
         
