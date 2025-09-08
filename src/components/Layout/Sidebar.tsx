@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../hooks/useAuth';
 import {
   Home,
   FolderOpen,
@@ -13,7 +14,8 @@ import {
   ChevronRight,
   CheckSquare,
   Menu,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -31,6 +33,7 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const { t } = useTranslation();
   const { isDark } = useTheme();
+  const { user } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -108,6 +111,15 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       icon: User
     }
   ];
+
+  // Add admin panel if user is admin
+  if (user?.role === 'admin') {
+    sidebarItems.push({
+      id: 'admin',
+      label: 'Admin Panel',
+      icon: Shield
+    });
+  }
 
   const toggleExpanded = (itemId: string) => {
     setExpandedItems(prev =>
