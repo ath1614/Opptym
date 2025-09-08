@@ -5,13 +5,36 @@
   const API_BASE_URL = window.location.origin + '/api';
   const BOOKMARKLET_VERSION = '1.0.0';
   
-  // Get token from URL parameters
+  // Get token and project data from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
+  const projectDataParam = urlParams.get('project');
+  const directoryDataParam = urlParams.get('directory');
+  
+  // Parse project and directory data
+  let projectData = null;
+  let directoryData = null;
+  
+  try {
+    if (projectDataParam) {
+      projectData = JSON.parse(decodeURIComponent(projectDataParam));
+    }
+    if (directoryDataParam) {
+      directoryData = JSON.parse(decodeURIComponent(directoryDataParam));
+    }
+  } catch (e) {
+    console.error('Error parsing project/directory data:', e);
+  }
   
   // Validate token
   if (!token) {
     alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.');
+    return;
+  }
+  
+  // Validate project data
+  if (!projectData) {
+    alert('❌ No project data found. Please generate a new bookmarklet from Opptym.');
     return;
   }
   
@@ -66,9 +89,21 @@
     
     modal.innerHTML = `
       <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: #1f2937; font-size: 24px; font-weight: 600;">
-          🚀 Opptym Bookmarklet
-        </h2>
+        <div>
+          <h2 style="margin: 0; color: #1f2937; font-size: 24px; font-weight: 600;">
+            🚀 Opptym Bookmarklet
+          </h2>
+          ${projectData ? `
+            <div style="margin-top: 4px; font-size: 14px; color: #3b82f6;">
+              📋 Project: <strong>${projectData.title || 'Unknown'}</strong>
+            </div>
+          ` : ''}
+          ${directoryData ? `
+            <div style="font-size: 12px; color: #6b7280;">
+              🎯 Directory: ${directoryData.name || 'Unknown'}
+            </div>
+          ` : ''}
+        </div>
         <button id="opptym-close" style="
           background: none;
           border: none;
@@ -95,15 +130,31 @@
         
         <div id="opptym-form" style="display: none;">
           <p style="color: #6b7280; margin-bottom: 20px;">
-            Fill out the form below and we'll auto-fill the directory submission form on this page.
+            ${projectData ? 
+              'Your project data is ready! Click "Auto-Fill Form" to fill the directory submission form with your project information.' :
+              'Fill out the form below and we\'ll auto-fill the directory submission form on this page.'
+            }
           </p>
+          
+          ${projectData ? `
+            <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+              <h4 style="margin: 0 0 8px; color: #0c4a6e; font-size: 14px; font-weight: 600;">📋 Project Information</h4>
+              <div style="font-size: 13px; color: #0c4a6e; line-height: 1.4;">
+                <div><strong>Name:</strong> ${projectData.name || 'Not set'}</div>
+                <div><strong>Company:</strong> ${projectData.companyName || 'Not set'}</div>
+                <div><strong>Email:</strong> ${projectData.email || 'Not set'}</div>
+                <div><strong>Website:</strong> ${projectData.url || 'Not set'}</div>
+                ${projectData.businessPhone ? `<div><strong>Phone:</strong> ${projectData.businessPhone}</div>` : ''}
+              </div>
+            </div>
+          ` : ''}
           
           <form id="opptym-business-form">
             <div style="margin-bottom: 16px;">
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Business Name *
               </label>
-              <input type="text" id="business-name" required style="
+              <input type="text" id="business-name" required value="${projectData?.companyName || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
@@ -117,7 +168,7 @@
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Website URL
               </label>
-              <input type="url" id="business-url" style="
+              <input type="url" id="business-url" value="${projectData?.url || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
@@ -131,7 +182,7 @@
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Email *
               </label>
-              <input type="email" id="business-email" required style="
+              <input type="email" id="business-email" required value="${projectData?.email || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
@@ -145,7 +196,7 @@
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Phone
               </label>
-              <input type="tel" id="business-phone" style="
+              <input type="tel" id="business-phone" value="${projectData?.businessPhone || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
@@ -167,14 +218,14 @@
                 font-size: 14px;
                 box-sizing: border-box;
                 resize: vertical;
-              "></textarea>
+              ">${projectData?.description || ''}</textarea>
             </div>
             
             <div style="margin-bottom: 20px;">
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Address
               </label>
-              <input type="text" id="business-address" style="
+              <input type="text" id="business-address" value="${projectData?.address1 || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
@@ -185,6 +236,21 @@
             </div>
             
             <div style="display: flex; gap: 12px;">
+              ${projectData ? `
+                <button type="button" id="opptym-quick-fill" style="
+                  background: #10b981;
+                  color: white;
+                  border: none;
+                  padding: 12px 24px;
+                  border-radius: 6px;
+                  font-size: 14px;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: background-color 0.2s;
+                " onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                  ⚡ Quick Fill
+                </button>
+              ` : ''}
               <button type="submit" style="
                 flex: 1;
                 background: #3b82f6;
@@ -268,6 +334,24 @@
     });
     
     document.getElementById('opptym-business-form').addEventListener('submit', handleFormSubmit);
+    
+    // Add quick fill button listener if it exists
+    const quickFillBtn = document.getElementById('opptym-quick-fill');
+    if (quickFillBtn) {
+      quickFillBtn.addEventListener('click', function() {
+        if (projectData) {
+          const formData = {
+            businessName: projectData.companyName || '',
+            businessUrl: projectData.url || '',
+            businessEmail: projectData.email || '',
+            businessPhone: projectData.businessPhone || '',
+            businessDescription: projectData.description || '',
+            businessAddress: projectData.address1 || ''
+          };
+          autoFillForm(formData);
+        }
+      });
+    }
     
     // Show the form after a brief loading
     setTimeout(() => {

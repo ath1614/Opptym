@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { ExternalLink, ChevronLeft, ChevronRight, Search, Filter, Grid, List, X } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Search, Grid, List, X } from 'lucide-react';
 import { Directory } from '../../config/directoriesConfig';
+import ProjectSelectionModal from '../Modals/ProjectSelectionModal';
 
 interface DirectoryGridProps {
   directories: Directory[];
   loading?: boolean;
-  onBookmarkletClick?: () => void;
   theme?: {
     primary: string;
     primaryHover: string;
@@ -15,15 +15,12 @@ interface DirectoryGridProps {
   title?: string;
   emptyMessage?: string;
   classification?: string;
-  onSubmissionCreated?: () => void;
-  submissions?: any[];
   viewMode?: 'grid' | 'list';
 }
 
 export default function DirectoryGrid({ 
   directories, 
   loading = false, 
-  onBookmarkletClick, 
   theme = {
     primary: 'bg-blue-600',
     primaryHover: 'hover:bg-blue-700',
@@ -33,8 +30,6 @@ export default function DirectoryGrid({
   title = 'Directories', 
   emptyMessage = 'No directories found',
   classification,
-  onSubmissionCreated,
-  submissions = [],
   viewMode = 'grid'
 }: DirectoryGridProps) {
 
@@ -48,6 +43,9 @@ export default function DirectoryGrid({
   const [showBookmarkletModal, setShowBookmarkletModal] = useState(false);
   const [bookmarkletToken, setBookmarkletToken] = useState<string | null>(null);
   const [isGeneratingToken, setIsGeneratingToken] = useState(false);
+  const [showProjectSelection, setShowProjectSelection] = useState(false);
+  const [selectedDirectory, setSelectedDirectory] = useState<Directory | null>(null);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
 
   // Filter and sort directories
   const filteredAndSortedDirectories = useMemo(() => {
@@ -102,8 +100,28 @@ export default function DirectoryGrid({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Generate unique bookmarklet token
+  // Generate unique bookmarklet token with project data
   const generateBookmarkletToken = async () => {
+    if (!selectedProject) {
+      alert('❌ No project selected. Please select a project first.');
+      setShowBookmarkletModal(false);
+      setShowProjectSelection(true);
+      return;
+    }
+
+    // Validate project data
+    const requiredFields = ['name', 'email', 'companyName', 'url'];
+    const missingFields = requiredFields.filter(field => 
+      !selectedProject[field] || selectedProject[field] === ''
+    );
+
+    if (missingFields.length > 0) {
+      alert(`❌ Project "${selectedProject.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`);
+      setShowBookmarkletModal(false);
+      setShowProjectSelection(true);
+      return;
+    }
+
     setIsGeneratingToken(true);
     try {
       // Generate a unique token with timestamp and random string
@@ -111,14 +129,16 @@ export default function DirectoryGrid({
       const randomString = Math.random().toString(36).substring(2, 15);
       const token = `${timestamp}_${randomString}_${Math.random().toString(36).substring(2, 15)}`;
       
-      // Store token in sessionStorage (single-use, expires on browser close)
+      // Store token and project data in sessionStorage (single-use, expires on browser close)
       sessionStorage.setItem('opptym_bookmarklet_token', token);
       sessionStorage.setItem('opptym_bookmarklet_used', 'false');
+      sessionStorage.setItem('opptym_bookmarklet_project', JSON.stringify(selectedProject));
+      sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(selectedDirectory));
       
       setBookmarkletToken(token);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
-      alert('Failed to generate bookmarklet token');
+      alert('❌ Failed to generate bookmarklet token. Please try again.');
     } finally {
       setIsGeneratingToken(false);
     }
@@ -129,10 +149,24 @@ export default function DirectoryGrid({
     return sessionStorage.getItem('opptym_bookmarklet_used') === 'true';
   };
 
-  // Mark bookmarklet as used
-  const markBookmarkletAsUsed = () => {
-    sessionStorage.setItem('opptym_bookmarklet_used', 'true');
-    setBookmarkletToken(null);
+
+  // Handle Fill Form button click - show project selection first
+  const handleFillFormClick = (directory: Directory) => {
+    setSelectedDirectory(directory);
+    setShowProjectSelection(true);
+  };
+
+  // Handle project selection from modal
+  const handleProjectSelected = (project: any) => {
+    setSelectedProject(project);
+    setShowProjectSelection(false);
+    setShowBookmarkletModal(true);
+  };
+
+  // Close project selection modal
+  const handleCloseProjectSelection = () => {
+    setShowProjectSelection(false);
+    setSelectedDirectory(null);
   };
 
   const handleSort = (field: 'name' | 'daScore' | 'pageRank') => {
@@ -291,7 +325,7 @@ export default function DirectoryGrid({
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
-                        onClick={() => setShowBookmarkletModal(true)}
+                        onClick={() => handleFillFormClick(directory)}
                         className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
@@ -326,7 +360,7 @@ export default function DirectoryGrid({
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
-                        onClick={() => setShowBookmarkletModal(true)}
+                        onClick={() => handleFillFormClick(directory)}
                         className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
@@ -399,11 +433,25 @@ export default function DirectoryGrid({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">🔒 Secure Opptym Bookmarklet</h3>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">🔒 Secure Opptym Bookmarklet</h3>
+                {selectedProject && (
+                  <div className="mt-1 text-sm text-blue-600">
+                    📋 Project: <strong>{selectedProject.title}</strong>
+                  </div>
+                )}
+                {selectedDirectory && (
+                  <div className="text-sm text-gray-600">
+                    🎯 Directory: <strong>{selectedDirectory.name}</strong>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={() => {
                   setShowBookmarkletModal(false);
                   setBookmarkletToken(null);
+                  setSelectedProject(null);
+                  setSelectedDirectory(null);
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
@@ -450,13 +498,24 @@ export default function DirectoryGrid({
             ) : (
               <div>
                 <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-4">
-                    <strong>⚠️ Security Notice:</strong> This bookmarklet can only be used once and will expire after use. Drag it to your bookmarks bar now.
-                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-gray-600">
+                      <strong>⚠️ Security Notice:</strong> This bookmarklet can only be used once and will expire after use. Drag it to your bookmarks bar now.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setShowBookmarkletModal(false);
+                        setShowProjectSelection(true);
+                      }}
+                      className="text-xs text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Change Project
+                    </button>
+                  </div>
                   
                   <div className="flex items-center space-x-3">
                     <a
-                      href={`javascript:(function(){var token='${bookmarkletToken}';var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token;document.head.appendChild(script);})();`}
+                      href={`javascript:(function(){var token='${bookmarkletToken}';var projectData=${JSON.stringify(selectedProject)};var directoryData=${JSON.stringify(selectedDirectory)};var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));document.head.appendChild(script);})();`}
                       className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move select-none`}
                       style={{
                         userSelect: 'none',
@@ -512,6 +571,15 @@ export default function DirectoryGrid({
           </div>
         </div>
       )}
+
+      {/* Project Selection Modal */}
+      <ProjectSelectionModal
+        isOpen={showProjectSelection}
+        onClose={handleCloseProjectSelection}
+        onProjectSelected={handleProjectSelected}
+        directoryName={selectedDirectory?.name || ''}
+        classification={classification || ''}
+      />
     </div>
   );
 }
