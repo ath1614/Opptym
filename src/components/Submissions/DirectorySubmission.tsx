@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 
-import axios from 'axios';
 import { 
   ExternalLink,
   Bookmark,
@@ -28,7 +27,6 @@ export default function DirectorySubmission() {
       setLoading(true);
       const configDirectories = getDirectoriesByClassification('Directory Submission');
       setDirectories(configDirectories);
-      console.log('✅ Directory Submission directories loaded:', configDirectories.length);
     } catch (error) {
       console.error('Error loading directories:', error);
       setDirectories([]);
@@ -43,10 +41,6 @@ export default function DirectorySubmission() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
-      {/* AGGRESSIVE CACHE BUST BANNER */}
-      <div className="bg-red-500 text-white p-4 text-center font-bold text-xl">
-        🚀 CACHE BUST v5.0 - BUILD {Math.random().toString(36).substring(2, 8).toUpperCase()} - {new Date().toLocaleTimeString()}
-      </div>
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}

@@ -31,7 +31,6 @@ import { Modal, Button, Input, Select } from 'antd';
 import EmployeeManagement from './EmployeeManagement';
 import DirectoryManagement from './DirectoryManagement';
 import CreateDirectoryModal from './CreateDirectoryModal';
-import DebugAdminPanel from '../DebugAdminPanel';
 // Remove BASE_URL import - use relative paths like other components
 
 interface AdminUser {
@@ -337,8 +336,6 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      {/* Debug Admin Panel */}
-      <DebugAdminPanel />
 
       {/* Navigation Tabs */}
       <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">

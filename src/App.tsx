@@ -3,7 +3,6 @@ import axios from 'axios';
 import './i18n'; // Import i18n configuration
 import { useAuthProvider, AuthContext } from './hooks/useAuth';
 import { ThemeProvider } from './contexts/ThemeContext';
-import ForceDeploy from './components/ForceDeploy';
 import LandingPage from './components/Landing/LandingPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -218,12 +217,6 @@ function App() {
     }
   }, [activeTab]);
 
-  // Log deployment info to console only
-  useEffect(() => {
-    console.log('🚀 OPPTYM App loaded successfully');
-    console.log('📅 Current time:', new Date().toISOString());
-    console.log('🔄 Cache bust:', (window as any).__CACHE_BUST__);
-  }, []);
 
   // If user is not authenticated, show landing/login/register
   if (!authProvider.user || !authProvider.user.id) {
@@ -497,7 +490,6 @@ function App() {
   return (
     <ThemeProvider>
       <AuthContext.Provider value={authProvider}>
-        <ForceDeploy />
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">

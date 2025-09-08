@@ -42,7 +42,6 @@ const Classified: React.FC = () => {
         setLoading(true);
         const configDirectories = getDirectoriesByClassification('Classified');
         setDirectories(configDirectories);
-        console.log('✅ Classified directories loaded:', configDirectories.length);
       } catch (error) {
         console.error('Error loading directories:', error);
         setDirectories([]);

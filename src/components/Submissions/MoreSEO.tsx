@@ -69,7 +69,6 @@ const MoreSEO: React.FC = () => {
         setLoading(true);
         const configDirectories = getDirectoriesByClassification('More SEO');
         setDirectories(configDirectories);
-        console.log('✅ More SEO directories loaded:', configDirectories.length);
       } catch (error) {
         console.error('Error loading directories:', error);
         setDirectories([]);

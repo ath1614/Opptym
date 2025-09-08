@@ -3,7 +3,6 @@ import { useAuth } from '../../hooks/useAuth';
 // Remove BASE_URL import - use relative paths like other components
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import SubscriptionStatus from '../Subscription/SubscriptionStatus';
-import DebugProfile from '../DebugProfile';
 import { 
   Camera, 
   Save, 
@@ -259,8 +258,6 @@ export default function ProfileSettings() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Debug Profile */}
-        <DebugProfile />
 
         {/* Header */}
         <div className="text-center space-y-4">

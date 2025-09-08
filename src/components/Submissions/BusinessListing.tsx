@@ -41,7 +41,6 @@ export default function BusinessListing() {
       setLoading(true);
       const configDirectories = getDirectoriesByClassification('Business Listing');
       setDirectories(configDirectories);
-      console.log('✅ Business Listing directories loaded:', configDirectories.length);
       
       // Calculate country stats
       const stats = configDirectories.reduce((acc, dir) => {

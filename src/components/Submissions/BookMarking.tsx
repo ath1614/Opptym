@@ -38,7 +38,6 @@ export default function BookMarking() {
       setLoading(true);
       const configDirectories = getDirectoriesByClassification('BookMarking');
       setDirectories(configDirectories);
-      console.log('✅ BookMarking directories loaded:', configDirectories.length);
     } catch (error) {
       console.error('Error loading directories:', error);
       setDirectories([]);

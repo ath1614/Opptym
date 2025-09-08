@@ -39,7 +39,6 @@ export default function PressRelease() {
       setLoading(true);
       const configDirectories = getDirectoriesByClassification('Press Release');
       setDirectories(configDirectories);
-      console.log('✅ Press Release directories loaded:', configDirectories.length);
     } catch (error) {
       console.error('Error loading directories:', error);
       setDirectories([]);

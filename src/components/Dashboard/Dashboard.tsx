@@ -17,8 +17,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import TrialExpirationModal from '../Subscription/TrialExpirationModal';
-import DebugDashboard from '../DebugDashboard';
-import DebugI18n from '../DebugI18n';
 
 interface DashboardStats {
   totalProjects: number;
@@ -329,10 +327,6 @@ export default function Dashboard() {
     }
   }, [user?.id]); // Only depend on user.id to prevent infinite loops
 
-  // DEPLOYMENT VERIFICATION - This should be visible in browser console
-  console.log('🚀 Dashboard component loaded - DEPLOYMENT VERIFICATION: v3.0');
-  console.log('🔄 Cache bust timestamp:', (window as any).__CACHE_BUST__);
-  console.log('📅 Current time:', new Date().toISOString());
 
   if (loading) {
     return (
@@ -362,9 +356,6 @@ export default function Dashboard() {
 
       
       <div className="container mx-auto px-4 py-8">
-        {/* Debug Components */}
-        <DebugI18n />
-        <DebugDashboard />
 
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">

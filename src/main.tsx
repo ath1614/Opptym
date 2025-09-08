@@ -15,15 +15,6 @@ if (isDevelopment) {
   axios.defaults.baseURL = 'https://api.opptym.com';
 }
 
-// Simple cache info logging
-console.log('🚀 App starting with build info:', {
-  buildVersion: (window as any).__BUILD_VERSION__,
-  timestamp: (window as any).__TIMESTAMP__
-});
-
-// DEPLOYMENT INDICATOR
-console.log('🚀 DEPLOYMENT v6.2 - BUILD_' + Date.now() + ' - ' + new Date().toLocaleString());
-console.log('🚀 FORCE DEPLOY TRIGGER - This should be visible in production!');
 
 
 
