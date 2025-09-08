@@ -131,6 +131,10 @@ export default function DirectoryGrid({
       
       // Store token and project data in sessionStorage (single-use, expires on browser close)
       sessionStorage.setItem('opptym_bookmarklet_token', token);
+      
+      console.log('Generated bookmarklet token:', token);
+      console.log('Project data:', selectedProject);
+      console.log('Directory data:', selectedDirectory);
       sessionStorage.setItem('opptym_bookmarklet_used', 'false');
       sessionStorage.setItem('opptym_bookmarklet_project', JSON.stringify(selectedProject));
       sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(selectedDirectory));
@@ -517,7 +521,7 @@ export default function DirectoryGrid({
                   
                   <div className="flex items-center space-x-3">
                     <a
-                      href={`javascript:(function(){var token='${bookmarkletToken}';var projectData=${JSON.stringify(selectedProject)};var directoryData=${JSON.stringify(selectedDirectory)};var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));document.head.appendChild(script);})();`}
+                      href={`javascript:(function(){console.log('Bookmarklet clicked!');var token='${bookmarkletToken}';var projectData=${JSON.stringify(selectedProject)};var directoryData=${JSON.stringify(selectedDirectory)};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`}
                       className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move select-none`}
                       style={{
                         userSelect: 'none',
@@ -549,6 +553,16 @@ export default function DirectoryGrid({
                     >
                       🔒 Secure Bookmarklet
                     </a>
+                    
+                    <a
+                      href={selectedDirectory?.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-2"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Visit Website
+                    </a>
                   </div>
                   
                   <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -562,7 +576,7 @@ export default function DirectoryGrid({
                   <h4 className="font-medium text-gray-900 mb-2">How to use:</h4>
                   <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
                     <li>Drag the "🔒 Secure Bookmarklet" button to your browser's bookmarks bar</li>
-                    <li>Visit any directory website (Google My Business, Yelp, etc.)</li>
+                    <li>Click "Visit Website" to open the directory website in a new tab</li>
                     <li>Click the bookmarklet in your bookmarks bar to auto-fill the submission form</li>
                     <li>Review and submit your listing</li>
                     <li><strong>Note:</strong> The bookmarklet will expire after one use</li>
