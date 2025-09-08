@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Opptym! 🎉</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            color: #dcfce7;
+            margin: 8px 0 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #4b5563;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(22, 163, 74, 0.3);
+        }
+        .features {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .features h3 {
+            color: #15803d;
+            margin: 0 0 16px 0;
+            font-size: 18px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            color: #166534;
+            font-size: 14px;
+        }
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 8px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .celebration {
+            text-align: center;
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">O</div>
+            <h1>Welcome to Opptym!</h1>
+            <p>Your account is now active and ready to use</p>
+        </div>
+        
+        <div class="content">
+            <div class="celebration">🎉</div>
+            
+            <div class="greeting">Hello {{userName}},</div>
+            
+            <div class="message">
+                Congratulations! Your email has been verified and your Opptym account is now fully active. You can now access all our powerful SEO tools and features.
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="{{frontendUrl}}/dashboard" class="button">Go to Dashboard</a>
+            </div>
+            
+            <div class="features">
+                <h3>🚀 What you can do now:</h3>
+                <ul class="feature-list">
+                    <li>Create and manage SEO projects</li>
+                    <li>Submit to directory submission sites</li>
+                    <li>Use our comprehensive SEO tools</li>
+                    <li>Track your submission progress</li>
+                    <li>Access detailed analytics</li>
+                    <li>Manage your profile and settings</li>
+                </ul>
+            </div>
+            
+            <div class="message">
+                <strong>Getting Started:</strong><br>
+                1. Complete your profile setup<br>
+                2. Create your first SEO project<br>
+                3. Start with directory submissions<br>
+                4. Explore our SEO tools<br>
+                5. Track your progress and results
+            </div>
+            
+            <div class="message">
+                <strong>Need Help?</strong><br>
+                • Check out our documentation<br>
+                • Contact our support team<br>
+                • Join our community forum<br>
+                • Watch our tutorial videos
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for choosing Opptym for your SEO needs!</p>
+            <p>© 2024 Opptym. All rights reserved.</p>
+            <p>This email was sent to {{userEmail}}</p>
+        </div>
+    </div>
+</body>
+</html>

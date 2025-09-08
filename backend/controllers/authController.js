@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const EmailVerificationToken = require('../models/emailVerificationTokenModel');
+const emailService = require('../services/emailService');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -81,7 +83,7 @@ const signup = async (req, res) => {
       password,
       firstName,
       lastName,
-      isEmailVerified: true,
+      isEmailVerified: false, // Require email verification
       status: 'active'
     });
 
@@ -98,37 +100,31 @@ const signup = async (req, res) => {
     await user.save();
     console.log('✅ User saved successfully:', user._id);
 
-    // Generate JWT token
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error('❌ JWT_SECRET environment variable is not set');
-      return res.status(500).json({ error: 'Server configuration error' });
+    // Create email verification token
+    const verificationToken = await EmailVerificationToken.createForUser(user._id, user.email);
+
+    // Send verification email
+    try {
+      await emailService.sendVerificationEmail(
+        user.email,
+        user.username,
+        verificationToken.token
+      );
+      console.log(`📧 Verification email sent to ${user.email}`);
+    } catch (emailError) {
+      console.error('❌ Failed to send verification email:', emailError);
+      // Don't fail signup if email fails, but log the error
     }
-    
-    console.log('🔐 Generating JWT token for signup user:', user._id);
-    
-    const tokenPayload = {
-      userId: user._id.toString(),
-      username: user.username || '',
-      isAdmin: user.role === 'admin',
-      role: user.role || 'user',
-      subscription: user.subscription || 'free',
-      email: user.email
-    };
-    
-    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '7d' });
 
     res.status(200).json({
       success: true,
-      message: 'Account created successfully!',
-      token,
+      message: 'Account created successfully! Please check your email to verify your account.',
+      requiresVerification: true,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
-        isAdmin: user.role === 'admin',
-        role: user.role || 'user',
-        subscription: user.subscription
+        isEmailVerified: false
       }
     });
     
