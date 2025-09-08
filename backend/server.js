@@ -15,8 +15,25 @@ const app = express();
 app.set('trust proxy', 1);
 
 // CORS configuration - production ready with bookmarklet support
+const allowedOrigins = [
+  'https://opptym.com', 
+  'https://www.opptym.com', 
+  'http://localhost:5173', 
+  'http://localhost:3000'
+];
+
 app.use(cors({
-  origin: ['https://opptym.com', 'https://www.opptym.com', 'http://localhost:5173', 'http://localhost:3000'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('🚫 CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -31,23 +48,15 @@ app.use(cors({
   ]
 }));
 
-console.log('🌐 CORS configured to allow all origins');
+console.log('🌐 CORS configured for origins:', allowedOrigins);
 
-// Handle preflight requests
-app.options('*', cors());
-
-// Add explicit CORS headers to all responses
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://opptym.com');
+// Handle preflight requests explicitly
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept, Cache-Control, x-test-mode');
   res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
+  res.sendStatus(200);
 });
 
 // Security middleware
