@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Save, X, Search } from 'lucide-react';
-import { 
+import {
   directoriesData, 
   getAllClassifications, 
   Directory 
@@ -13,7 +13,6 @@ interface DirectoryManagementProps {
 const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUpdate }) => {
   const [directories, setDirectories] = useState<{ [key: string]: Directory[] }>(directoriesData);
   const [selectedClassification, setSelectedClassification] = useState<string>('Directory Submission');
-  const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingDirectory, setEditingDirectory] = useState<Directory | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterClassification, setFilterClassification] = useState<string>('all');
@@ -37,25 +36,6 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
     return matchesClassification && matchesSearch;
   });
 
-  const handleAddDirectory = (newDirectory: Directory) => {
-    // Check if directory already exists
-    const exists = directories[selectedClassification]?.some(dir => 
-      dir.name === newDirectory.name || dir.url === newDirectory.url
-    );
-    
-    if (!exists) {
-      const updatedDirectories = {
-        ...directories,
-        [selectedClassification]: [...(directories[selectedClassification] || []), newDirectory]
-      };
-      setDirectories(updatedDirectories);
-      setIsAddingNew(false);
-      onDirectoryUpdate?.();
-      alert('Directory added successfully!');
-    } else {
-      alert('Directory already exists or failed to add.');
-    }
-  };
 
   const handleRemoveDirectory = (classification: string, directoryName: string) => {
     if (window.confirm(`Are you sure you want to remove "${directoryName}"?`)) {
@@ -91,18 +71,14 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Directory Management</h2>
-          <p className="text-gray-600">Manage directories across all SEO classifications</p>
+          <p className="text-gray-600">View and manage existing directories across all SEO classifications</p>
+          <p className="text-sm text-gray-500 mt-1">
+            💡 Use the "Create New Directory" button above to add new directories to the database
+          </p>
         </div>
-        <button
-          onClick={() => setIsAddingNew(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Directory
-        </button>
       </div>
 
       {/* Search and Filter */}
@@ -192,16 +168,6 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
         ))}
       </div>
 
-      {/* Add Directory Modal */}
-      {isAddingNew && (
-        <DirectoryForm
-          classification={selectedClassification}
-          onSave={handleAddDirectory}
-          onCancel={() => setIsAddingNew(false)}
-          classifications={classifications}
-          onClassificationChange={setSelectedClassification}
-        />
-      )}
 
       {/* Edit Directory Modal */}
       {editingDirectory && (
