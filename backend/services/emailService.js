@@ -27,10 +27,18 @@ class EmailService {
       // Verify connection configuration
       await this.transporter.verify();
       console.log('✅ Email service initialized successfully with Hostinger SMTP');
+      console.log('🔗 Reset URL format:', `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-reset-token/{token}`);
+      console.log('🔗 Verification URL format:', `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-email/{token}`);
     } catch (error) {
       console.error('❌ Email service initialization failed:', error);
       throw new Error('Email service configuration failed');
     }
+  }
+
+  // Method to refresh configuration (useful for debugging)
+  async refreshConfiguration() {
+    console.log('🔄 Refreshing email service configuration...');
+    await this.initializeTransporter();
   }
 
   async sendEmail({ to, subject, html, text, attachments = [] }) {

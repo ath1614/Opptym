@@ -273,6 +273,26 @@ app.get('/api/test-email-url', (req, res) => {
   });
 });
 
+// Debug endpoint to refresh email service configuration
+app.post('/api/debug/refresh-email-service', async (req, res) => {
+  try {
+    const emailService = require('./services/emailService');
+    await emailService.refreshConfiguration();
+    res.json({
+      success: true,
+      message: 'Email service configuration refreshed',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error refreshing email service:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Version endpoint for deployment verification
 app.get('/api/health/version', (req, res) => {
   const version = {
