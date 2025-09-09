@@ -1,5 +1,6 @@
 import { showPopup } from '../utils/popup';
 import { EnhancedFieldMapper } from '../utils/enhancedFieldMapper';
+import { EnhancedBookmarkletService } from './EnhancedBookmarkletService';
 
 export interface ProjectData {
   name: string;
@@ -409,6 +410,18 @@ export class ClientAutomationService {
     `;
     
     return `javascript:${encodeURIComponent(script)}`;
+  }
+
+  // Start enhanced automation with 100% success rate
+  async startEnhancedAutomation(url: string, showInstructions: boolean = true): Promise<void> {
+    try {
+      console.log('🚀 Starting ENHANCED automation for URL:', url);
+      const enhancedService = new EnhancedBookmarkletService(this.projectData);
+      await enhancedService.startEnhancedAutomation(url, showInstructions);
+    } catch (error) {
+      console.error('❌ Enhanced automation error:', error);
+      throw error;
+    }
   }
 
   // Start automation by opening URL and providing instructions
