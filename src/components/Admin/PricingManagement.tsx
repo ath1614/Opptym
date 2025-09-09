@@ -427,6 +427,164 @@ const PricingManagement: React.FC = () => {
         ))}
       </div>
 
+      {/* Edit Plan Modal */}
+      {editingPlan && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Edit Pricing Plan</h3>
+                <button
+                  onClick={() => setEditingPlan(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Basic Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Plan Name
+                    </label>
+                    <input
+                      type="text"
+                      value={editingPlan.name}
+                      onChange={(e) => setEditingPlan(prev => prev ? { ...prev, name: e.target.value } : null)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Color Theme
+                    </label>
+                    <select
+                      value={editingPlan.metadata.color}
+                      onChange={(e) => {
+                        const selectedColor = colorOptions.find(c => c.value === e.target.value);
+                        setEditingPlan(prev => prev ? {
+                          ...prev,
+                          metadata: {
+                            ...prev.metadata,
+                            color: e.target.value,
+                            gradient: selectedColor?.gradient || 'from-blue-500 to-blue-600'
+                          }
+                        } : null);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      {colorOptions.map(color => (
+                        <option key={color.value} value={color.value}>{color.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={editingPlan.description}
+                    onChange={(e) => setEditingPlan(prev => prev ? { ...prev, description: e.target.value } : null)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={3}
+                  />
+                </div>
+
+                {/* Pricing */}
+                <div>
+                  <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-3">Pricing</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Monthly Price (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={editingPlan.price.monthly}
+                        onChange={(e) => setEditingPlan(prev => prev ? {
+                          ...prev,
+                          price: { ...prev.price, monthly: Number(e.target.value) }
+                        } : null)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        min="0"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Yearly Price (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={editingPlan.price.yearly}
+                        onChange={(e) => setEditingPlan(prev => prev ? {
+                          ...prev,
+                          price: { ...prev.price, yearly: Number(e.target.value) }
+                        } : null)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Settings */}
+                <div>
+                  <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-3">Settings</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="number"
+                        value={editingPlan.trialDays}
+                        onChange={(e) => setEditingPlan(prev => prev ? { ...prev, trialDays: Number(e.target.value) } : null)}
+                        className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        min="0"
+                      />
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Trial Days
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={editingPlan.isPopular}
+                        onChange={(e) => setEditingPlan(prev => prev ? { ...prev, isPopular: e.target.checked } : null)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Mark as Popular
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
+                <button
+                  onClick={() => setEditingPlan(null)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleUpdatePlan(editingPlan._id, editingPlan)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Update Plan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Create Plan Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

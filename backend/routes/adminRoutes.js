@@ -683,6 +683,15 @@ router.get('/settings', protect, adminOnly, async (req, res) => {
 
 // ==================== PRICING PLAN MANAGEMENT ====================
 
+// Test endpoint for debugging
+router.get('/test', protect, adminOnly, (req, res) => {
+  res.json({ 
+    message: 'Admin API is working', 
+    timestamp: new Date().toISOString(),
+    user: req.user.email 
+  });
+});
+
 // Get all pricing plans (admin only)
 router.get('/pricing-plans', protect, adminOnly, async (req, res) => {
   try {
@@ -716,12 +725,14 @@ router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Create Stripe product and prices if not provided
+    // Create Stripe product and prices if not provided (only if valid keys exist)
     let stripeProductId = null;
     let monthlyPriceId = null;
     let yearlyPriceId = null;
 
-    try {
+    // Only create Stripe products if we have valid Stripe keys
+    if (stripeConfig.STRIPE_SECRET_KEY && !stripeConfig.STRIPE_SECRET_KEY.includes('XXXX')) {
+      try {
       // Create Stripe product
       const stripeProduct = await stripe.products.create({
         name: name,
@@ -762,13 +773,17 @@ router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
         });
         yearlyPriceId = yearlyPrice.id;
       }
-    } catch (stripeError) {
-      console.error('Stripe error:', stripeError);
-      return res.status(500).json({ error: 'Failed to create Stripe product/prices' });
+      } catch (stripeError) {
+        console.error('Stripe error:', stripeError);
+        // Continue without Stripe integration if it fails
+        console.log('Continuing without Stripe integration...');
+      }
+    } else {
+      console.log('Skipping Stripe integration - no valid keys provided');
     }
 
     // Create plan in database
-    const plan = new Plan({
+    const planData = {
       name,
       description,
       features: features || [],
@@ -795,7 +810,11 @@ router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
         gradient: 'from-blue-500 to-blue-600',
         icon: 'star'
       }
-    });
+    };
+
+    console.log('Creating plan with data:', JSON.stringify(planData, null, 2));
+    
+    const plan = new Plan(planData);
 
     await plan.save();
 
@@ -806,7 +825,26 @@ router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating pricing plan:', error);
-    res.status(500).json({ error: 'Failed to create pricing plan' });
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: validationErrors 
+      });
+    }
+    
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        error: 'Plan name already exists' 
+      });
+    }
+    
+    res.status(500).json({ 
+      error: 'Failed to create pricing plan',
+      details: error.message 
+    });
   }
 });
 
