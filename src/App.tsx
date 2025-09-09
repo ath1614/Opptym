@@ -64,6 +64,21 @@ function App() {
   const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register' | 'email-verification' | 'forgot-password' | 'reset-password'>('landing');
   const [verificationEmail, setVerificationEmail] = useState('');
   
+  // Check URL parameters for auth mode
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pathname = window.location.pathname;
+    
+    // Check if we're on reset-password page
+    if (pathname === '/reset-password' || urlParams.has('token')) {
+      setAuthMode('reset-password');
+    }
+    // Check if we're on login page with verification parameters
+    else if (pathname === '/login' && (urlParams.has('verified') || urlParams.has('error'))) {
+      setAuthMode('login');
+    }
+  }, []);
+  
   // Initialize activeTab from localStorage or URL hash, default to dashboard
   const getInitialTab = () => {
     // Check URL hash first
