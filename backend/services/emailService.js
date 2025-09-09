@@ -61,7 +61,7 @@ class EmailService {
   }
 
   async sendVerificationEmail(userEmail, userName, verificationToken) {
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-email/${verificationToken}`;
     
     const subject = 'Verify Your Email - Opptym';
     const html = await this.getEmailTemplate('verification', {

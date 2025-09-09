@@ -65,53 +65,44 @@ const verifyEmail = async (req, res) => {
     const { token } = req.params;
 
     if (!token) {
-      return res.status(400).json({
-        error: 'MISSING_TOKEN',
-        message: 'Verification token is required'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/login?error=true&message=Verification token is required`;
+      return res.redirect(redirectUrl);
     }
 
     // Find verification token
     const verificationToken = await EmailVerificationToken.findOne({ token });
     if (!verificationToken) {
-      return res.status(400).json({
-        error: 'INVALID_TOKEN',
-        message: 'Invalid or expired verification token'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/login?error=true&message=Invalid or expired verification token`;
+      return res.redirect(redirectUrl);
     }
 
     // Verify token
     try {
       await verificationToken.verify();
     } catch (error) {
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      let message = 'Verification failed. Please try again.';
+      
       if (error.message === 'Token has already been used') {
-        return res.status(400).json({
-          error: 'TOKEN_USED',
-          message: 'This verification link has already been used'
-        });
+        message = 'This verification link has already been used';
+      } else if (error.message === 'Token has expired') {
+        message = 'Verification link has expired. Please request a new one.';
+      } else if (error.message === 'Too many verification attempts') {
+        message = 'Too many verification attempts. Please request a new verification email.';
       }
-      if (error.message === 'Token has expired') {
-        return res.status(400).json({
-          error: 'TOKEN_EXPIRED',
-          message: 'Verification link has expired. Please request a new one.'
-        });
-      }
-      if (error.message === 'Too many verification attempts') {
-        return res.status(400).json({
-          error: 'TOO_MANY_ATTEMPTS',
-          message: 'Too many verification attempts. Please request a new verification email.'
-        });
-      }
-      throw error;
+      
+      const redirectUrl = `${frontendUrl}/login?error=true&message=${encodeURIComponent(message)}`;
+      return res.redirect(redirectUrl);
     }
 
     // Update user verification status
     const user = await User.findById(verificationToken.userId);
     if (!user) {
-      return res.status(404).json({
-        error: 'USER_NOT_FOUND',
-        message: 'User not found'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/login?error=true&message=User not found`;
+      return res.redirect(redirectUrl);
     }
 
     user.isEmailVerified = true;
@@ -127,22 +118,16 @@ const verifyEmail = async (req, res) => {
 
     console.log(`✅ Email verified for user: ${user.email}`);
 
-    res.json({
-      success: true,
-      message: 'Email verified successfully',
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        isEmailVerified: user.isEmailVerified
-      }
-    });
+    // Redirect to frontend with success message
+    const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+    const redirectUrl = `${frontendUrl}/login?verified=true&message=Email verified successfully! You can now login.`;
+    
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error verifying email:', error);
-    res.status(500).json({
-      error: 'VERIFICATION_FAILED',
-      message: 'Email verification failed. Please try again.'
-    });
+    const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+    const redirectUrl = `${frontendUrl}/login?error=true&message=Email verification failed. Please try again.`;
+    res.redirect(redirectUrl);
   }
 };
 
