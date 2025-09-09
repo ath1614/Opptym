@@ -16,7 +16,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     description: '',
     category: 'business',
     country: 'Global',
-    classification: 'Article Submission',
+    classification: 'Directory Submission',
     pageRank: 3,
     daScore: 30,
     spamScore: 2,
@@ -51,7 +51,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         description: '',
         category: 'business',
         country: 'Global',
-        classification: 'Article Submission',
+        classification: 'Directory Submission',
         pageRank: 3,
         daScore: 30,
         spamScore: 2,
@@ -70,7 +70,20 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
       onCreated();
       onClose();
     } catch (error: any) {
-      showPopup(`Error creating directory: ${error.response?.data?.error || error.message}`, 'error');
+      console.error('Directory creation error:', error);
+      const errorMessage = error.response?.data?.error || error.message;
+      const errorDetails = error.response?.data?.details;
+      
+      let fullErrorMessage = `Error creating directory: ${errorMessage}`;
+      if (errorDetails) {
+        if (Array.isArray(errorDetails)) {
+          fullErrorMessage += `\nDetails: ${errorDetails.join(', ')}`;
+        } else {
+          fullErrorMessage += `\nDetails: ${errorDetails}`;
+        }
+      }
+      
+      showPopup(fullErrorMessage, 'error');
     } finally {
       setLoading(false);
     }
@@ -196,14 +209,13 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   onChange={(e) => setForm({ ...form, classification: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white"
                 >
+                  <option value="Directory Submission">Directory Submission</option>
                   <option value="Article Submission">Article Submission</option>
-                  <option value="Web2.0">Web2.0</option>
-                  <option value="Social">Social</option>
-                  <option value="Local">Local</option>
-                  <option value="Classified">Classified</option>
-                  <option value="Q&A">Q&A</option>
                   <option value="Press Release">Press Release</option>
-                  <option value="Business">Business</option>
+                  <option value="BookMarking">BookMarking</option>
+                  <option value="Business Listing">Business Listing</option>
+                  <option value="Classified">Classified</option>
+                  <option value="More SEO">More SEO</option>
                 </select>
               </div>
             </div>

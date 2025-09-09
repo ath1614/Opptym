@@ -483,6 +483,14 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
       priority
     } = req.body;
 
+    // Validate required fields
+    if (!name || !domain || !submissionUrl) {
+      return res.status(400).json({ 
+        error: 'Missing required fields', 
+        details: 'Name, domain, and submission URL are required' 
+      });
+    }
+
     // Check if directory with same name already exists
     const existingDirectory = await Directory.findOne({ name });
     if (existingDirectory) {
@@ -521,6 +529,27 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     res.status(201).json(directory);
   } catch (error) {
     console.error('Error creating directory:', error);
+    console.error('Error details:', {
+      message: error.message,
+      name: error.name,
+      code: error.code,
+      errors: error.errors
+    });
+    
+    // Return more specific error messages
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: validationErrors,
+        fieldErrors: error.errors
+      });
+    }
+    
+    if (error.code === 11000) {
+      return res.status(400).json({ error: 'Directory with this name or domain already exists' });
+    }
+    
     res.status(500).json({ error: 'Failed to create directory', details: error.message });
   }
 });
