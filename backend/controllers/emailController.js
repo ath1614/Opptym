@@ -285,56 +285,50 @@ const verifyResetToken = async (req, res) => {
     const { token } = req.params;
 
     if (!token) {
-      return res.status(400).json({
-        error: 'MISSING_TOKEN',
-        message: 'Reset token is required'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/reset-password?error=true&message=Reset token is required`;
+      return res.redirect(redirectUrl);
     }
 
     // Find reset token
     const resetToken = await PasswordResetToken.findOne({ token });
     if (!resetToken) {
-      return res.status(400).json({
-        error: 'INVALID_TOKEN',
-        message: 'Invalid or expired reset token'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/reset-password?error=true&message=Invalid or expired reset token`;
+      return res.redirect(redirectUrl);
     }
 
     // Check if token is expired
     if (resetToken.expiresAt < new Date()) {
-      return res.status(400).json({
-        error: 'TOKEN_EXPIRED',
-        message: 'Reset token has expired. Please request a new one.'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/reset-password?error=true&message=Reset token has expired. Please request a new one.`;
+      return res.redirect(redirectUrl);
     }
 
     // Check if token is already used
     if (resetToken.isUsed) {
-      return res.status(400).json({
-        error: 'TOKEN_USED',
-        message: 'This reset link has already been used'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/reset-password?error=true&message=This reset link has already been used`;
+      return res.redirect(redirectUrl);
     }
 
     // Check if too many attempts
     if (resetToken.attempts >= 3) {
-      return res.status(400).json({
-        error: 'TOO_MANY_ATTEMPTS',
-        message: 'Too many reset attempts. Please request a new reset link.'
-      });
+      const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+      const redirectUrl = `${frontendUrl}/reset-password?error=true&message=Too many reset attempts. Please request a new reset link.`;
+      return res.redirect(redirectUrl);
     }
 
-    res.json({
-      success: true,
-      message: 'Reset token is valid',
-      email: resetToken.email
-    });
+    // Redirect to frontend with valid token
+    const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+    const redirectUrl = `${frontendUrl}/reset-password?token=${token}&email=${encodeURIComponent(resetToken.email)}`;
+    
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error verifying reset token:', error);
-    res.status(500).json({
-      error: 'TOKEN_VERIFICATION_FAILED',
-      message: 'Failed to verify reset token. Please try again.'
-    });
+    const frontendUrl = process.env.FRONTEND_URL || 'https://opptym.com';
+    const redirectUrl = `${frontendUrl}/reset-password?error=true&message=Failed to verify reset token. Please try again.`;
+    res.redirect(redirectUrl);
   }
 };
 

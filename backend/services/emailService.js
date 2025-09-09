@@ -80,7 +80,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(userEmail, userName, resetToken) {
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-reset-token/${resetToken}`;
     
     const subject = 'Reset Your Password - Opptym';
     const html = await this.getEmailTemplate('password-reset', {

@@ -7,62 +7,40 @@ export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
+  const email = searchParams.get('email');
+  const errorParam = searchParams.get('error');
+  const message = searchParams.get('message');
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(true);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
-  // Verify token on component mount
+  // Handle URL parameters on component mount
   useEffect(() => {
-    const verifyToken = async () => {
-      if (!token) {
-        setError('Invalid or missing reset token');
-        setIsVerifying(false);
-        return;
-      }
+    // Check for error parameters first
+    if (errorParam === 'true' && message) {
+      setError(decodeURIComponent(message));
+      setIsVerifying(false);
+      return;
+    }
 
-      try {
-        const response = await axios.get(`/api/auth/verify-reset-token/${token}`);
-        
-        if (response.data.success) {
-          setUserEmail(response.data.email);
-        }
-      } catch (error: any) {
-        console.error('Token verification error:', error);
-        
-        if (error.response?.data?.error) {
-          switch (error.response.data.error) {
-            case 'INVALID_TOKEN':
-              setError('Invalid or expired reset token');
-              break;
-            case 'TOKEN_EXPIRED':
-              setError('Reset token has expired. Please request a new one.');
-              break;
-            case 'TOKEN_USED':
-              setError('This reset link has already been used');
-              break;
-            case 'TOO_MANY_ATTEMPTS':
-              setError('Too many reset attempts. Please request a new reset link.');
-              break;
-            default:
-              setError(error.response.data.message || 'Invalid reset token');
-          }
-        } else {
-          setError('Failed to verify reset token');
-        }
-      } finally {
-        setIsVerifying(false);
-      }
-    };
-
-    verifyToken();
-  }, [token]);
+    // Check for valid token and email
+    if (token && email) {
+      setUserEmail(decodeURIComponent(email));
+      setIsVerifying(false);
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      setError('Invalid or missing reset token');
+      setIsVerifying(false);
+    }
+  }, [token, email, errorParam, message]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
