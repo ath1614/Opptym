@@ -123,12 +123,15 @@ const connectDB = async () => {
     // Validate MongoDB URI
     if (!mongoURI) {
       console.error('❌ MONGODB_URI environment variable is not set');
-      throw new Error('MongoDB URI not configured');
+      console.log('⚠️ Server will start without database connection');
+      return false;
     }
     
     // Validate URI format
     if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('mongodb.net/')) {
-      throw new Error('Invalid MongoDB URI format');
+      console.error('❌ Invalid MongoDB URI format');
+      console.log('⚠️ Server will start without database connection');
+      return false;
     }
     
     console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
@@ -138,19 +141,39 @@ const connectDB = async () => {
     const connectionPromise = mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // 10 second timeout
+      serverSelectionTimeoutMS: 15000, // 15 second timeout
       socketTimeoutMS: 45000, // 45 second timeout
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      maxIdleTimeMS: 30000,
+      retryWrites: true,
+      w: 'majority'
     });
     
     await connectionPromise;
     console.log('✅ MongoDB connected successfully');
+    
+    // Set up connection event handlers
+    mongoose.connection.on('error', (err) => {
+      console.error('❌ MongoDB connection error:', err);
+    });
+    
+    mongoose.connection.on('disconnected', () => {
+      console.log('⚠️ MongoDB disconnected');
+    });
+    
+    mongoose.connection.on('reconnected', () => {
+      console.log('✅ MongoDB reconnected');
+    });
+    
+    return true;
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
-    console.error('🔍 Full error:', err);
     console.error('🔍 Error name:', err.name);
     console.error('🔍 Error code:', err.code);
     console.log('⚠️ Server will start without database connection');
     console.log('⚠️ Some features may not work properly');
+    return false;
   }
 };
 
@@ -172,16 +195,62 @@ function formatUptime(seconds) {
 
 // Health check endpoint for deployment
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+  const healthCheck = {
+    status: 'OK',
+    uptime: formatUptime(process.uptime()),
     message: 'OPPTYM Backend is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    uptime: formatUptime(process.uptime()),
     version: '3.0.0',
     commit: (process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT || 'dev').substring(0, 7),
-    cors: 'enabled',
-    database: 'connected' // Could be enhanced to actually check DB connection
+    process: {
+      pid: process.pid,
+      nodeVersion: process.version,
+      platform: process.platform,
+      arch: process.arch
+    },
+    memory: {
+      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+      external: Math.round(process.memoryUsage().external / 1024 / 1024),
+      rss: Math.round(process.memoryUsage().rss / 1024 / 1024)
+    },
+    database: {
+      status: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+      readyState: mongoose.connection.readyState,
+      host: mongoose.connection.host || 'unknown',
+      port: mongoose.connection.port || 'unknown',
+      name: mongoose.connection.name || 'unknown'
+    },
+    services: {
+      cors: 'enabled',
+      rateLimit: 'enabled',
+      compression: 'enabled',
+      helmet: 'enabled'
+    }
+  };
+  
+  try {
+    // Check if database is connected
+    if (mongoose.connection.readyState !== 1) {
+      healthCheck.status = 'WARNING';
+      healthCheck.message = 'Server running but database disconnected';
+    }
+    
+    res.status(200).json(healthCheck);
+  } catch (error) {
+    healthCheck.status = 'ERROR';
+    healthCheck.message = error.message;
+    res.status(503).json(healthCheck);
+  }
+});
+
+// Simple health check for load balancers
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: formatUptime(process.uptime())
   });
 });
 
@@ -358,9 +427,61 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Process error handling
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  console.error('🔍 Stack:', err.stack);
+  // Don't exit immediately, log and continue
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit immediately, log and continue
+});
+
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received, shutting down gracefully');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT received, shutting down gracefully');
+  process.exit(0);
+});
+
+// Start server with proper error handling
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
   console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Process ID: ${process.pid}`);
+  console.log(`✅ Node Version: ${process.version}`);
+  console.log(`✅ Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`);
 });
+
+// Server error handling
+server.on('error', (err) => {
+  console.error('❌ Server error:', err);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use`);
+    process.exit(1);
+  } else {
+    console.error('❌ Server failed to start:', err.message);
+    process.exit(1);
+  }
+});
+
+// Graceful shutdown
+const gracefulShutdown = () => {
+  console.log('🛑 Received shutdown signal, closing server gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    mongoose.connection.close(false, () => {
+      console.log('✅ Database connection closed');
+      process.exit(0);
+    });
+  });
+};
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
