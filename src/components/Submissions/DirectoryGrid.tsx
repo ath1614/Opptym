@@ -479,55 +479,55 @@ export default function DirectoryGrid({
         <>
           {/* Grid/List View */}
           <div className={internalViewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6' 
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4' 
             : 'space-y-3'
           }>
             {currentDirectories.map((directory, index) => (
               <div
                 key={`${directory.name}-${directory.url}-${index}`}
-                className={`group border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
+                className={`group border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-200 ${
                   internalViewMode === 'list' ? 'flex items-center justify-between' : ''
                 }`}
               >
                 {internalViewMode === 'grid' ? (
                   <>
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{directory.name}</h4>
                         <a
                           href={directory.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           title={directory.url}
-                          className="text-sm text-blue-600 hover:text-blue-800 mb-2 block truncate max-w-full"
+                          className="text-xs text-blue-600 hover:text-blue-800 mb-1 block truncate max-w-full"
                         >
-                          {directory.url}
+                          {directory.url.length > 35 ? `${directory.url.substring(0, 35)}...` : directory.url}
                         </a>
                         {directory.description && (
-                          <p className="text-xs text-gray-500 line-clamp-2">{directory.description}</p>
+                          <p className="text-xs text-gray-500 line-clamp-1">{directory.description}</p>
                         )}
                       </div>
-                      <div className="flex flex-col items-end space-y-1 ml-2">
+                      <div className="flex flex-col items-end space-y-1 ml-2 flex-shrink-0">
                         {directory.pageRank && (
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PR {directory.pageRank}</span>
+                          <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">PR {directory.pageRank}</span>
                         )}
                         {directory.daScore && (
-                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">DA {directory.daScore}</span>
+                          <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">DA {directory.daScore}</span>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center justify-between mt-1">
                       <a
                         href={directory.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
+                        className="text-xs text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
                       >
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
                         onClick={() => handleFillFormClick(directory)}
-                        className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
+                        className={`text-xs ${theme.primary} text-white px-2 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
                       </button>
@@ -537,24 +537,24 @@ export default function DirectoryGrid({
                   <>
                     <div className="flex-1">
                       <div className="flex items-center space-x-4">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900">{directory.name}</h4>
                           <a
                             href={directory.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             title={directory.url}
-                            className="text-sm text-blue-600 hover:text-blue-800 block truncate max-w-[520px]"
+                            className="text-sm text-blue-600 hover:text-blue-800 block truncate max-w-[400px]"
                           >
-                            {directory.url}
+                            {directory.url.length > 50 ? `${directory.url.substring(0, 50)}...` : directory.url}
                           </a>
                         </div>
                         <div className="flex items-center space-x-2">
                           {directory.pageRank && (
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PR {directory.pageRank}</span>
+                            <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">PR {directory.pageRank}</span>
                           )}
                           {directory.daScore && (
-                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">DA {directory.daScore}</span>
+                            <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">DA {directory.daScore}</span>
                           )}
                         </div>
                       </div>
@@ -564,13 +564,13 @@ export default function DirectoryGrid({
                         href={directory.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                        className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
                       >
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                       <button
                         onClick={() => handleFillFormClick(directory)}
-                        className={`text-sm ${theme.primary} text-white px-3 py-1 rounded hover:${theme.primaryHover} transition-colors`}
+                        className={`text-xs ${theme.primary} text-white px-2 py-1 rounded hover:${theme.primaryHover} transition-colors`}
                       >
                         Fill Form
                       </button>
