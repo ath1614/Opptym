@@ -53,6 +53,7 @@ const createProject = async (req, res) => {
     // Check project creation limit
     if (!user.checkUsageLimit('projects')) {
       const limits = user.planLimits;
+      console.log('❌ Project limit exceeded for user:', user.email);
       return res.status(429).json({ 
         error: 'Usage limit exceeded',
         message: `You have reached your projects limit (${user.usage.projectsUsed}/${limits.projects}). Please upgrade your plan for more usage.`,
