@@ -180,14 +180,14 @@ const resendVerificationEmail = async (req, res) => {
     // Check for recent verification email (rate limiting)
     const recentToken = await EmailVerificationToken.findOne({
       userId: user._id,
-      createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) }, // 5 minutes
+      createdAt: { $gte: new Date(Date.now() - 2 * 60 * 1000) }, // 2 minutes
       isUsed: false
     });
 
     if (recentToken) {
       return res.status(429).json({
         error: 'RATE_LIMITED',
-        message: 'Please wait 5 minutes before requesting another verification email'
+        message: 'Please wait 2 minutes before requesting another verification email'
       });
     }
 
@@ -195,18 +195,31 @@ const resendVerificationEmail = async (req, res) => {
     const verificationToken = await EmailVerificationToken.createForUser(user._id, user.email);
 
     // Send verification email
-    await emailService.sendVerificationEmail(
-      user.email,
-      user.username,
-      verificationToken.token
-    );
+    try {
+      await emailService.sendVerificationEmail(
+        user.email,
+        user.username,
+        verificationToken.token
+      );
 
-    console.log(`📧 Verification email resent to ${user.email}`);
+      console.log(`📧 Verification email resent to ${user.email}`);
+      console.log(`🔗 Verification token: ${verificationToken.token}`);
 
-    res.json({
-      success: true,
-      message: 'Verification email sent successfully'
-    });
+      res.json({
+        success: true,
+        message: 'Verification email sent successfully'
+      });
+    } catch (emailError) {
+      console.error('❌ Failed to send verification email:', emailError);
+      
+      // Delete the token if email sending failed
+      await EmailVerificationToken.findByIdAndDelete(verificationToken._id);
+      
+      return res.status(500).json({
+        error: 'EMAIL_SEND_FAILED',
+        message: 'Failed to send verification email. Please check your email configuration.'
+      });
+    }
   } catch (error) {
     console.error('Error resending verification email:', error);
     res.status(500).json({

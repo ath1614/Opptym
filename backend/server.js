@@ -84,14 +84,18 @@ const limiter = rateLimit({
 // Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 auth requests per windowMs (increased for testing)
+  max: 200, // limit each IP to 200 auth requests per windowMs (increased for email verification)
   message: 'Too many authentication attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    // Skip rate limiting for health checks and certain test scenarios
+    // Skip rate limiting for health checks, email verification, and test scenarios
     return req.path === '/api/health' || 
            req.path === '/api/test-cors' ||
+           req.path === '/api/auth/resend-verification' ||
+           req.path === '/api/auth/send-verification' ||
+           req.path === '/api/auth/forgot-password' ||
+           req.path === '/api/auth/reset-password' ||
            req.headers['x-test-mode'] === 'true' ||
            req.headers['x-test-mode'] === true;
   }
