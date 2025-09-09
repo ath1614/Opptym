@@ -4,18 +4,21 @@ import axios from 'axios';
 
 interface ForgotPasswordProps {
   onBackToLogin: () => void;
+  onSwitchToRegister?: () => void;
 }
 
-export default function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
+export default function ForgotPassword({ onBackToLogin, onSwitchToRegister }: ForgotPasswordProps) {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [isUserNotFound, setIsUserNotFound] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsSuccess(false);
+    setIsUserNotFound(false);
 
     // Client-side validation
     if (!email || !email.trim()) {
@@ -42,7 +45,9 @@ export default function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
       
       if (error.response?.status === 404) {
         // Handle non-existent user case
-        setError(error.response.data.message || 'user account not found, please register');
+        const message = error.response.data.message || 'user account not found, please register';
+        setError(message);
+        setIsUserNotFound(true);
       } else if (error.response?.data?.error) {
         switch (error.response.data.error) {
           case 'RATE_LIMITED':
@@ -55,7 +60,12 @@ export default function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
             setError(error.response.data.message || 'Failed to send reset email');
         }
       } else {
-        setError('Failed to send reset email. Please try again.');
+        // Check if it's a network/server error
+        if (error.code === 'NETWORK_ERROR' || error.message?.includes('Network Error') || !error.response) {
+          setError('Unable to connect to server. Please check your internet connection and try again.');
+        } else {
+          setError('Failed to send reset email. Please try again.');
+        }
       }
     } finally {
       setIsLoading(false);
@@ -191,6 +201,16 @@ export default function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
                     {error}
                   </p>
                 </div>
+                {isUserNotFound && onSwitchToRegister && (
+                  <div className="mt-3 pt-3 border-t border-red-200 dark:border-red-800">
+                    <button
+                      onClick={onSwitchToRegister}
+                      className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 hover:shadow-lg hover:scale-105 text-sm font-medium"
+                    >
+                      Create New Account
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

@@ -258,7 +258,7 @@ function App() {
             {authMode === 'login' && <Login onSwitchToRegister={() => setAuthMode('register')} onForgotPassword={() => setAuthMode('forgot-password')} />}
             {authMode === 'register' && <Register onSwitchToLogin={() => setAuthMode('login')} onEmailVerification={(email) => { setVerificationEmail(email); setAuthMode('email-verification'); }} />}
             {authMode === 'email-verification' && <EmailVerification email={verificationEmail} onBackToLogin={() => setAuthMode('login')} />}
-            {authMode === 'forgot-password' && <ForgotPassword onBackToLogin={() => setAuthMode('login')} />}
+            {authMode === 'forgot-password' && <ForgotPassword onBackToLogin={() => setAuthMode('login')} onSwitchToRegister={() => setAuthMode('register')} />}
             {authMode === 'reset-password' && <ResetPassword />}
           </div>
         </div>
