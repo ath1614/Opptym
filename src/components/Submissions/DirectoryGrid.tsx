@@ -479,13 +479,13 @@ export default function DirectoryGrid({
         <>
           {/* Grid/List View */}
           <div className={internalViewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' 
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6' 
             : 'space-y-3'
           }>
             {currentDirectories.map((directory, index) => (
               <div
                 key={`${directory.name}-${directory.url}-${index}`}
-                className={`border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
+                className={`group border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
                   internalViewMode === 'list' ? 'flex items-center justify-between' : ''
                 }`}
               >
@@ -494,7 +494,15 @@ export default function DirectoryGrid({
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{directory.name}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{directory.url}</p>
+                        <a
+                          href={directory.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={directory.url}
+                          className="text-sm text-blue-600 hover:text-blue-800 mb-2 block truncate max-w-full"
+                        >
+                          {directory.url}
+                        </a>
                         {directory.description && (
                           <p className="text-xs text-gray-500 line-clamp-2">{directory.description}</p>
                         )}
@@ -508,12 +516,12 @@ export default function DirectoryGrid({
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mt-2">
                       <a
                         href={directory.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
                       >
                         Visit <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
@@ -531,7 +539,15 @@ export default function DirectoryGrid({
                       <div className="flex items-center space-x-4">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900">{directory.name}</h4>
-                          <p className="text-sm text-gray-600">{directory.url}</p>
+                          <a
+                            href={directory.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={directory.url}
+                            className="text-sm text-blue-600 hover:text-blue-800 block truncate max-w-[520px]"
+                          >
+                            {directory.url}
+                          </a>
                         </div>
                         <div className="flex items-center space-x-2">
                           {directory.pageRank && (
