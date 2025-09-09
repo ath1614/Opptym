@@ -18,8 +18,8 @@ router.get('/', protect, getProjects);
 // Get a specific project by ID
 router.get('/:id', protect, getProjectById);
 
-// Create a new project - combined trial and usage check in controller
-router.post('/', protect, createProject);
+// Create a new project - check usage limits
+router.post('/', protect, checkUsageLimit('projects'), createProject);
 
 // Update a project - requires trial check
 router.put('/:id', protect, checkTrialStatus, updateProject);

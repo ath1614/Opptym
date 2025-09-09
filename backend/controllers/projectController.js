@@ -2,6 +2,7 @@
 
 const Project = require('../models/projectModel');
 const User = require('../models/userModel');
+const { validateAllSocialMediaLinks } = require('../utils/socialMediaValidator');
 
 // @desc    Create a new project
 // @route   POST /api/projects
@@ -105,8 +106,8 @@ const createProject = async (req, res) => {
       });
     }
 
-    // Sanitize inputs
-    const sanitizedData = {
+    // Prepare data for validation
+    const rawData = {
       title: title.trim().substring(0, 200),
       url: processedUrl, // Use the processed URL with protocol
       category: category ? category.trim().substring(0, 100) : undefined,
@@ -149,6 +150,20 @@ const createProject = async (req, res) => {
       sitemapUrl: sitemapUrl ? sitemapUrl.trim().substring(0, 500) : undefined,
       robotsTxtUrl: robotsTxtUrl ? robotsTxtUrl.trim().substring(0, 500) : undefined
     };
+
+    // Validate social media links
+    const socialMediaValidation = validateAllSocialMediaLinks(rawData);
+    if (!socialMediaValidation.isValid) {
+      console.log(`❌ DEBUG: Social media validation failed:`, socialMediaValidation.errors);
+      return res.status(400).json({
+        error: 'Invalid social media links',
+        details: socialMediaValidation.errors.map(err => `${err.field}: ${err.error}`).join(', '),
+        socialMediaErrors: socialMediaValidation.errors
+      });
+    }
+
+    // Use validated data
+    const sanitizedData = socialMediaValidation.validatedData;
 
     const project = await Project.create({
       userId: req.userId,
@@ -230,6 +245,25 @@ const deleteProject = async (req, res) => {
 // @access  Private
 const updateProject = async (req, res) => {
   try {
+    // Validate social media links if they are being updated
+    const socialMediaFields = ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube', 'tiktok', 'pinterest', 'reddit', 'snapchat', 'whatsapp'];
+    const hasSocialMediaUpdates = socialMediaFields.some(field => req.body[field] !== undefined);
+    
+    if (hasSocialMediaUpdates) {
+      console.log(`🔍 DEBUG: Validating social media links in project update`);
+      const socialMediaValidation = validateAllSocialMediaLinks(req.body);
+      if (!socialMediaValidation.isValid) {
+        console.log(`❌ DEBUG: Social media validation failed in update:`, socialMediaValidation.errors);
+        return res.status(400).json({
+          error: 'Invalid social media links',
+          details: socialMediaValidation.errors.map(err => `${err.field}: ${err.error}`).join(', '),
+          socialMediaErrors: socialMediaValidation.errors
+        });
+      }
+      // Use validated data for update
+      Object.assign(req.body, socialMediaValidation.validatedData);
+    }
+
     const project = await Project.findOneAndUpdate(
       {
         _id: req.params.id,

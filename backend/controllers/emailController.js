@@ -20,9 +20,10 @@ const sendVerificationEmail = async (req, res) => {
     // Find user
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
+      console.log(`🔍 DEBUG: User not found for email verification: ${email}`);
       return res.status(404).json({
         error: 'USER_NOT_FOUND',
-        message: 'No account found with this email address'
+        message: 'user account not found, please register'
       });
     }
 
@@ -148,9 +149,10 @@ const resendVerificationEmail = async (req, res) => {
     // Find user
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
+      console.log(`🔍 DEBUG: User not found for resend verification: ${email}`);
       return res.status(404).json({
         error: 'USER_NOT_FOUND',
-        message: 'No account found with this email address'
+        message: 'user account not found, please register'
       });
     }
 

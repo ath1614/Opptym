@@ -18,7 +18,8 @@ const sendVerificationEmail = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      console.log(`🔍 DEBUG: User not found for email verification (legacy): ${email}`);
+      return res.status(404).json({ success: false, message: 'user account not found, please register' });
     }
 
     if (user.isEmailVerified) {
@@ -116,7 +117,8 @@ const resendVerificationEmail = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      console.log(`🔍 DEBUG: User not found for email verification (legacy): ${email}`);
+      return res.status(404).json({ success: false, message: 'user account not found, please register' });
     }
 
     if (user.isEmailVerified) {
@@ -163,7 +165,8 @@ const checkVerificationStatus = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      console.log(`🔍 DEBUG: User not found for email verification (legacy): ${email}`);
+      return res.status(404).json({ success: false, message: 'user account not found, please register' });
     }
 
     res.status(200).json({ 

@@ -435,6 +435,15 @@ try {
   console.log('⚠️ Email verification will be disabled');
 }
 
+// Debug routes (for testing only)
+try {
+  app.use('/api/debug', require('./routes/debugRoutes'));
+  console.log('✅ Debug routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading debug routes:', error);
+  console.log('⚠️ Debug routes will be disabled');
+}
+
 
 
 console.log('✅ Payment routes mounted at /api/payment');

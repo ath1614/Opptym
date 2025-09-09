@@ -1,4 +1,5 @@
 import { showPopup } from '../utils/popup';
+import { EnhancedFieldMapper } from '../utils/enhancedFieldMapper';
 
 export interface ProjectData {
   name: string;
@@ -34,12 +35,12 @@ export class ClientAutomationService {
          
          const projectData = ${JSON.stringify(this.projectData)};
         
-                 // Function to map field to value
+                 // Enhanced field mapping function
          function mapFieldToValue(input) {
            const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
            const fieldType = input.type.toLowerCase();
            
-           console.log('🔍 Mapping field:', {
+           console.log('🔍 Enhanced field mapping:', {
              fieldName: fieldName,
              fieldType: fieldType,
              originalName: input.name,
@@ -47,85 +48,107 @@ export class ClientAutomationService {
              originalPlaceholder: input.placeholder
            });
           
-                     // Email fields
-           if (fieldName.includes('email') || fieldType === 'email') {
-             console.log('📧 Matched email field, value:', projectData.email);
-             return projectData.email;
+           // Enhanced field mapping with better patterns and confidence scoring
+           const fieldMappings = [
+             // Email fields - High confidence
+             { patterns: ['email', 'e-mail', 'mail', 'emailaddress', 'email_address', 'useremail', 'contactemail'], value: projectData.email, confidence: 0.95 },
+             
+             // Name fields - High confidence
+             { patterns: ['name', 'fullname', 'full_name', 'firstname', 'first_name', 'lastname', 'last_name', 'contactname', 'contact_name', 'personname', 'person_name', 'username', 'user_name', 'displayname', 'display_name'], value: projectData.name, confidence: 0.9 },
+             
+             // Phone fields - High confidence
+             { patterns: ['phone', 'telephone', 'mobile', 'cell', 'contact', 'phonenumber', 'phone_number', 'mobilephone', 'mobile_phone', 'cellphone', 'cell_phone', 'tel', 'telephone_number'], value: projectData.phone, confidence: 0.9 },
+             
+             // Company/Business fields - High confidence
+             { patterns: ['company', 'companyname', 'company_name', 'business', 'businessname', 'business_name', 'organization', 'org', 'firm', 'enterprise', 'corporation', 'corp'], value: projectData.companyName, confidence: 0.9 },
+             
+             // Website/URL fields - High confidence
+             { patterns: ['website', 'url', 'site', 'web', 'homepage', 'home_page', 'websiteurl', 'website_url', 'siteurl', 'site_url', 'weburl', 'web_url', 'domain', 'webaddress', 'web_address'], value: projectData.url, confidence: 0.9 },
+             
+             // Address fields - Medium confidence
+             { patterns: ['address', 'street', 'streetaddress', 'street_address', 'location', 'addr', 'fulladdress', 'full_address', 'businessaddress', 'business_address', 'companyaddress', 'company_address'], value: projectData.address || '', confidence: 0.8 },
+             
+             // City fields - Medium confidence
+             { patterns: ['city', 'town', 'municipality', 'locality', 'place', 'urban', 'metro'], value: projectData.city || '', confidence: 0.8 },
+             
+             // State/Province fields - Medium confidence
+             { patterns: ['state', 'province', 'region', 'territory', 'county', 'district', 'area', 'zone'], value: projectData.state || '', confidence: 0.8 },
+             
+             // Country fields - Medium confidence
+             { patterns: ['country', 'nation', 'land', 'territory', 'republic', 'kingdom'], value: projectData.country || '', confidence: 0.8 },
+             
+             // Zip/Postal code fields - Medium confidence
+             { patterns: ['zip', 'postal', 'pincode', 'pin_code', 'postcode', 'post_code', 'zipcode', 'zip_code', 'postalcode', 'postal_code', 'code', 'postalnumber', 'postal_number'], value: projectData.pincode || '', confidence: 0.8 },
+             
+             // Description fields - Medium confidence
+             { patterns: ['description', 'desc', 'about', 'details', 'message', 'comment', 'notes', 'info', 'information', 'summary', 'overview', 'content', 'text', 'body', 'bio', 'biography', 'profile', 'introduction', 'intro'], value: projectData.description, confidence: 0.7 },
+             
+             // Category fields - Medium confidence
+             { patterns: ['category', 'cat', 'type', 'industry', 'sector', 'field', 'domain', 'niche', 'classification', 'class', 'group', 'genre', 'style'], value: projectData.companyName, confidence: 0.7 },
+             
+             // Title fields - Medium confidence
+             { patterns: ['title', 'headline', 'heading', 'subject', 'topic', 'theme', 'label', 'caption'], value: projectData.companyName, confidence: 0.7 }
+           ];
+           
+           // Find the best matching field mapping
+           let bestMatch = null;
+           let highestConfidence = 0;
+           
+           for (const mapping of fieldMappings) {
+             for (const pattern of mapping.patterns) {
+               if (fieldName.includes(pattern)) {
+                 let confidence = mapping.confidence;
+                 
+                 // Boost confidence for exact matches
+                 if (fieldName === pattern) {
+                   confidence += 0.2;
+                 }
+                 
+                 // Boost confidence for type matches
+                 if (fieldType === 'email' && pattern.includes('email')) {
+                   confidence += 0.1;
+                 } else if (fieldType === 'tel' && (pattern.includes('phone') || pattern.includes('mobile'))) {
+                   confidence += 0.1;
+                 } else if (fieldType === 'url' && (pattern.includes('website') || pattern.includes('url'))) {
+                   confidence += 0.1;
+                 }
+                 
+                 if (confidence > highestConfidence && mapping.value) {
+                   bestMatch = {
+                     value: mapping.value,
+                     confidence: Math.min(confidence, 1.0),
+                     pattern: pattern
+                   };
+                   highestConfidence = confidence;
+                 }
+               }
+             }
            }
            
-           // Name fields
-           if (fieldName.includes('name') || fieldName.includes('fullname') || fieldName.includes('firstname')) {
-             console.log('👤 Matched name field, value:', projectData.name);
-             return projectData.name;
+           // Type-based fallback matching
+           if (!bestMatch) {
+             if (fieldType === 'email' && projectData.email) {
+               bestMatch = { value: projectData.email, confidence: 0.8, pattern: 'type-based' };
+             } else if (fieldType === 'tel' && projectData.phone) {
+               bestMatch = { value: projectData.phone, confidence: 0.8, pattern: 'type-based' };
+             } else if (fieldType === 'url' && projectData.url) {
+               bestMatch = { value: projectData.url, confidence: 0.8, pattern: 'type-based' };
+             } else if (fieldType === 'textarea' && projectData.description) {
+               bestMatch = { value: projectData.description, confidence: 0.6, pattern: 'type-based' };
+             }
            }
            
-           // Phone fields
-           if (fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('contact')) {
-             console.log('📞 Matched phone field, value:', projectData.phone);
-             return projectData.phone;
+           if (bestMatch && bestMatch.confidence > 0.5) {
+             console.log('✅ Enhanced match found:', {
+               field: fieldName,
+               value: bestMatch.value,
+               confidence: bestMatch.confidence,
+               pattern: bestMatch.pattern
+             });
+             return bestMatch.value;
            }
            
-           // Company fields
-           if (fieldName.includes('company') || fieldName.includes('business') || fieldName.includes('organization')) {
-             console.log('🏢 Matched company field, value:', projectData.companyName);
-             return projectData.companyName;
-           }
-           
-           // Website/URL fields
-           if (fieldName.includes('website') || fieldName.includes('url') || fieldName.includes('site')) {
-             console.log('🌐 Matched website field, value:', projectData.url);
-             return projectData.url;
-           }
-           
-           // Address fields
-           if (fieldName.includes('address') || fieldName.includes('street')) {
-             console.log('📍 Matched address field, value:', projectData.address || '');
-             return projectData.address || '';
-           }
-           
-           // City fields
-           if (fieldName.includes('city')) {
-             console.log('🏙️ Matched city field, value:', projectData.city || '');
-             return projectData.city || '';
-           }
-           
-           // State fields
-           if (fieldName.includes('state') || fieldName.includes('province')) {
-             console.log('🏛️ Matched state field, value:', projectData.state || '');
-             return projectData.state || '';
-           }
-           
-           // Zip/Postal code fields
-           if (fieldName.includes('zip') || fieldName.includes('postal') || fieldName.includes('pincode')) {
-             console.log('📮 Matched zip field, value:', projectData.pincode || '');
-             return projectData.pincode || '';
-           }
-           
-           // Country fields
-           if (fieldName.includes('country')) {
-             console.log('🌍 Matched country field, value:', projectData.country || '');
-             return projectData.country || '';
-           }
-           
-           // Description fields
-           if (fieldName.includes('description') || fieldName.includes('about') || fieldName.includes('details') || fieldName.includes('message')) {
-             console.log('📝 Matched description field, value:', projectData.description);
-             return projectData.description;
-           }
-           
-           // Category fields
-           if (fieldName.includes('category') || fieldName.includes('type') || fieldName.includes('industry')) {
-             console.log('🏷️ Matched category field, value:', projectData.companyName);
-             return projectData.companyName;
-           }
-           
-           // Title fields
-           if (fieldName.includes('title')) {
-             console.log('📋 Matched title field, value:', projectData.companyName);
-             return projectData.companyName;
-           }
-           
-           console.log('❌ No match found for field:', fieldName);
+           console.log('❌ No enhanced match found for field:', fieldName);
            return null;
         }
         
@@ -254,6 +277,28 @@ export class ClientAutomationService {
                      await new Promise(resolve => setTimeout(resolve, 500));
                    } else {
                      console.log('❌ No value mapped for field:', input.name || input.id);
+                     
+                     // Try to provide a fallback value for common field types
+                     let fallbackValue = null;
+                     if (input.type === 'email' && projectData.email) {
+                       fallbackValue = projectData.email;
+                       console.log('🔄 Using email fallback for unrecognized field');
+                     } else if (input.type === 'tel' && projectData.phone) {
+                       fallbackValue = projectData.phone;
+                       console.log('🔄 Using phone fallback for unrecognized field');
+                     } else if (input.type === 'url' && projectData.url) {
+                       fallbackValue = projectData.url;
+                       console.log('🔄 Using URL fallback for unrecognized field');
+                     } else if (input.type === 'textarea' && projectData.description) {
+                       fallbackValue = projectData.description;
+                       console.log('🔄 Using description fallback for unrecognized field');
+                     }
+                     
+                     if (fallbackValue) {
+                       console.log('✅ Using fallback value for field:', input.name || input.id, '=', fallbackValue);
+                       await fillFieldWithAnimation(input, fallbackValue);
+                       totalFieldsFilled++;
+                     }
                    }
                  } catch (fieldError) {
                    console.error('❌ Error processing field ' + (inputIndex + 1) + ':', fieldError);
