@@ -528,3 +528,7 @@ process.on('SIGINT', gracefulShutdown);
 // DEPLOYMENT TRIGGER - Tue Sep  9 10:11:28 IST 2025
 // This comment forces a rebuild
 
+
+// FORCE RESTART - Tue Sep  9 10:43:46 IST 2025
+// This change forces the server to restart and reload email service
+
