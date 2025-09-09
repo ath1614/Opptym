@@ -86,6 +86,16 @@ export const getUserShortName = (user: User | null): string => {
 };
 
 /**
+ * Get user profile photo URL or return null if not available
+ */
+export const getUserProfilePhoto = (user: User | null): string | null => {
+  if (!user || !user.profilePhoto || user.profilePhoto.trim() === '') {
+    return null;
+  }
+  return user.profilePhoto;
+};
+
+/**
  * Get user initials for avatar display
  * Ensures no duplicate letters are shown
  */

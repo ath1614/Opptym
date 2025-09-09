@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
-import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import { getUserDisplayName, getUserInitials, getUserProfilePhoto } from '../../utils/userUtils';
 
 interface NavbarProps {
   onNotificationClick?: () => void;
@@ -22,6 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNotificationClick }) => {
 
   const userDisplayName = user ? getUserDisplayName(user) : '';
   const userInitials = user ? getUserInitials(user) : '';
+  const userProfilePhoto = user ? getUserProfilePhoto(user) : null;
 
   return (
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
@@ -93,9 +94,17 @@ const Navbar: React.FC<NavbarProps> = ({ onNotificationClick }) => {
                   aria-haspopup="true"
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                 >
-                  <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
-                    {userInitials}
-                  </div>
+                  {userProfilePhoto ? (
+                    <img
+                      src={userProfilePhoto}
+                      alt="Profile"
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
+                      {userInitials}
+                    </div>
+                  )}
                   <div className="hidden lg:ml-3 lg:block">
                     <div className="text-base font-medium text-gray-800 dark:text-white">
                       {t('navbar.welcomeBack')}, {userDisplayName}

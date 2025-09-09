@@ -17,7 +17,26 @@ interface User {
   timezone?: string;
   bio?: string;
   profilePhoto?: string;
-  subscription?: 'free' | 'test' | 'starter' | 'pro' | 'business' | 'enterprise';
+  subscription?: 'free' | 'test' | 'starter' | 'pro' | 'business' | 'enterprise' | 'custom';
+  customPlan?: {
+    name: string;
+    description: string;
+    price: number;
+    billingCycle: 'monthly' | 'yearly' | 'lifetime';
+    limits: {
+      submissions: number;
+      projects: number;
+      tools: number;
+      apiCalls: number;
+    };
+    features: {
+      canCreateProjects: boolean;
+      canSubmitDirectories: boolean;
+      canUseSeoTools: boolean;
+      canAccessAnalytics: boolean;
+      canAccessAdmin: boolean;
+    };
+  };
   status?: 'active' | 'inactive' | 'suspended' | 'banned' | 'pending';
   role?: 'user' | 'admin';
   isAdmin?: boolean;

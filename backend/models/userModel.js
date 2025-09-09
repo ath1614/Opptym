@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
   },
   subscription: {
     type: String,
-    enum: ['free', 'test', 'starter', 'pro', 'business', 'enterprise'],
+    enum: ['free', 'test', 'starter', 'pro', 'business', 'enterprise', 'custom'],
     default: 'free'
   },
   subscriptionStatus: {
@@ -78,6 +78,26 @@ const userSchema = new mongoose.Schema({
     projects: { type: Number, default: 1 },
     tools: { type: Number, default: 10 },
     apiCalls: { type: Number, default: 20 }
+  },
+  // Custom plan details (for custom subscriptions)
+  customPlan: {
+    name: { type: String, default: '' },
+    description: { type: String, default: '' },
+    price: { type: Number, default: 0 },
+    billingCycle: { type: String, enum: ['monthly', 'yearly', 'lifetime'], default: 'monthly' },
+    limits: {
+      submissions: { type: Number, default: 5 },
+      projects: { type: Number, default: 1 },
+      tools: { type: Number, default: 10 },
+      apiCalls: { type: Number, default: 20 }
+    },
+    features: {
+      canCreateProjects: { type: Boolean, default: true },
+      canSubmitDirectories: { type: Boolean, default: true },
+      canUseSeoTools: { type: Boolean, default: true },
+      canAccessAnalytics: { type: Boolean, default: false },
+      canAccessAdmin: { type: Boolean, default: false }
+    }
   },
   // Feature flags
   features: {
@@ -344,6 +364,12 @@ userSchema.methods.setPlanLimits = function() {
       projects: -1, // unlimited
       tools: -1, // unlimited
       apiCalls: -1 // unlimited
+    },
+    custom: {
+      submissions: this.customPlan?.limits?.submissions || 5,
+      projects: this.customPlan?.limits?.projects || 1,
+      tools: this.customPlan?.limits?.tools || 10,
+      apiCalls: this.customPlan?.limits?.apiCalls || 20
     }
   };
 
@@ -351,13 +377,23 @@ userSchema.methods.setPlanLimits = function() {
   this.planLimits = limits;
   
   // Set feature flags based on subscription
-  this.features = {
-    canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
-    canAccessAdmin: this.role === 'admin'
-  };
+  if (this.subscription === 'custom') {
+    this.features = {
+      canCreateProjects: this.customPlan?.features?.canCreateProjects || true,
+      canSubmitDirectories: this.customPlan?.features?.canSubmitDirectories || true,
+      canUseSeoTools: this.customPlan?.features?.canUseSeoTools || true,
+      canAccessAnalytics: this.customPlan?.features?.canAccessAnalytics || false,
+      canAccessAdmin: this.role === 'admin'
+    };
+  } else {
+    this.features = {
+      canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
+      canAccessAdmin: this.role === 'admin'
+    };
+  }
   
   return this.save();
 };
@@ -400,6 +436,12 @@ userSchema.methods.setPlanLimitsSync = function() {
       projects: -1, // unlimited
       tools: -1, // unlimited
       apiCalls: -1 // unlimited
+    },
+    custom: {
+      submissions: this.customPlan?.limits?.submissions || 5,
+      projects: this.customPlan?.limits?.projects || 1,
+      tools: this.customPlan?.limits?.tools || 10,
+      apiCalls: this.customPlan?.limits?.apiCalls || 20
     }
   };
 
@@ -407,13 +449,23 @@ userSchema.methods.setPlanLimitsSync = function() {
   this.planLimits = limits;
   
   // Set feature flags based on subscription
-  this.features = {
-    canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
-    canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
-    canAccessAdmin: this.role === 'admin'
-  };
+  if (this.subscription === 'custom') {
+    this.features = {
+      canCreateProjects: this.customPlan?.features?.canCreateProjects || true,
+      canSubmitDirectories: this.customPlan?.features?.canSubmitDirectories || true,
+      canUseSeoTools: this.customPlan?.features?.canUseSeoTools || true,
+      canAccessAnalytics: this.customPlan?.features?.canAccessAnalytics || false,
+      canAccessAdmin: this.role === 'admin'
+    };
+  } else {
+    this.features = {
+      canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
+      canAccessAdmin: this.role === 'admin'
+    };
+  }
   
   // Don't save, just update the object
   return this;

@@ -504,7 +504,7 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
       description: description || '',
       category: category || 'business',
       country: country || 'Global',
-      classification: classification || 'General',
+      classification: classification || 'Directory Submission',
       pageRank: pageRank || 0,
       daScore: daScore || 0,
       spamScore: spamScore || 0,
@@ -551,6 +551,74 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     }
     
     res.status(500).json({ error: 'Failed to create directory', details: error.message });
+  }
+});
+
+// Create custom package for user (admin only)
+router.post('/users/:userId/custom-package', protect, adminOnly, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const {
+      name,
+      description,
+      price,
+      billingCycle,
+      limits,
+      features
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !limits) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        details: 'Name and limits are required'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Set custom plan details
+    user.subscription = 'custom';
+    user.customPlan = {
+      name: name,
+      description: description || '',
+      price: price || 0,
+      billingCycle: billingCycle || 'monthly',
+      limits: {
+        submissions: limits.submissions || 5,
+        projects: limits.projects || 1,
+        tools: limits.tools || 10,
+        apiCalls: limits.apiCalls || 20
+      },
+      features: {
+        canCreateProjects: features?.canCreateProjects !== undefined ? features.canCreateProjects : true,
+        canSubmitDirectories: features?.canSubmitDirectories !== undefined ? features.canSubmitDirectories : true,
+        canUseSeoTools: features?.canUseSeoTools !== undefined ? features.canUseSeoTools : true,
+        canAccessAnalytics: features?.canAccessAnalytics !== undefined ? features.canAccessAnalytics : false,
+        canAccessAdmin: features?.canAccessAdmin !== undefined ? features.canAccessAdmin : false
+      }
+    };
+
+    // Update plan limits and features
+    await user.setPlanLimits();
+
+    res.json({
+      message: 'Custom package created successfully',
+      user: {
+        id: user._id,
+        email: user.email,
+        subscription: user.subscription,
+        customPlan: user.customPlan,
+        planLimits: user.planLimits,
+        features: user.features
+      }
+    });
+  } catch (error) {
+    console.error('Error creating custom package:', error);
+    res.status(500).json({ error: 'Failed to create custom package', details: error.message });
   }
 });
 
