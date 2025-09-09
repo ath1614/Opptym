@@ -40,7 +40,10 @@ export default function ForgotPassword({ onBackToLogin }: ForgotPasswordProps) {
     } catch (error: any) {
       console.error('Forgot password error:', error);
       
-      if (error.response?.data?.error) {
+      if (error.response?.status === 404) {
+        // Handle non-existent user case
+        setError(error.response.data.message || 'user account not found, please register');
+      } else if (error.response?.data?.error) {
         switch (error.response.data.error) {
           case 'RATE_LIMITED':
             setError('Please wait 15 minutes before requesting another password reset');

@@ -235,10 +235,10 @@ const requestPasswordReset = async (req, res) => {
     // Find user
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      // Don't reveal if user exists or not for security
-      return res.json({
-        success: true,
-        message: 'If an account with that email exists, a password reset link has been sent'
+      console.log('❌ Password reset requested for non-existent user:', email);
+      return res.status(404).json({
+        success: false,
+        message: 'user account not found, please register'
       });
     }
 
