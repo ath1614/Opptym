@@ -193,10 +193,9 @@ export default function PricingPlans() {
     
     try {
       const res = await axios.post(`/api/payment/create-checkout-session`, {
-        plan: planId,
+        planId: planId,
         userId: user.id,
         email: user.email,
-        priceId,
         billingCycle,
       });
       window.location.href = res.data.url;
