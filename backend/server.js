@@ -258,6 +258,21 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test endpoint to check email URL generation
+app.get('/api/test-email-url', (req, res) => {
+  const testToken = 'test-token-123';
+  const resetUrl = `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-reset-token/${testToken}`;
+  const verificationUrl = `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-email/${testToken}`;
+  
+  res.json({
+    resetUrl,
+    verificationUrl,
+    apiBaseUrl: process.env.API_BASE_URL,
+    frontendUrl: process.env.FRONTEND_URL,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Version endpoint for deployment verification
 app.get('/api/health/version', (req, res) => {
   const version = {
