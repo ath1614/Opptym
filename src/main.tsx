@@ -18,6 +18,7 @@ if (isDevelopment) {
   axios.defaults.baseURL = apiUrl;
   console.log('🚀 Production mode: Using API URL:', apiUrl);
   console.log('🔍 Environment check:', { isDevelopment, isProduction, VITE_API_URL: import.meta.env.VITE_API_URL });
+  console.log('✅ API URL fix deployed - should connect to production API now');
 }
 
 
