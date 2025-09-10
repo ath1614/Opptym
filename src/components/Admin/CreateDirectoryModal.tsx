@@ -40,6 +40,8 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
 
     try {
       const token = localStorage.getItem('token');
+      console.log('🚀 Creating directory with data:', form);
+      console.log('🔗 Using API endpoint: /api/admin/directories');
       await axios.post('/api/admin/directories', form, {
         headers: { Authorization: `Bearer ${token}` }
       });
