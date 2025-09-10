@@ -11,8 +11,13 @@ const isProduction = import.meta.env.PROD;
 
 if (isDevelopment) {
   axios.defaults.baseURL = 'http://localhost:3000';
+  console.log('🔧 Development mode: Using localhost:3000');
 } else {
-  axios.defaults.baseURL = 'https://api.opptym.com';
+  // Use environment variable or fallback to production API
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://api.opptym.com';
+  axios.defaults.baseURL = apiUrl;
+  console.log('🚀 Production mode: Using API URL:', apiUrl);
+  console.log('🔍 Environment check:', { isDevelopment, isProduction, VITE_API_URL: import.meta.env.VITE_API_URL });
 }
 
 
