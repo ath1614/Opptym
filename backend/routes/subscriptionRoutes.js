@@ -3,6 +3,15 @@ const router = express.Router();
 const subscriptionController = require('../controllers/subscriptionController');
 const { protect } = require('../middleware/authMiddleware');
 
+// Health check endpoint (no auth required)
+router.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    service: 'subscription-service'
+  });
+});
+
 // Subscription management routes
 router.get('/status', protect, subscriptionController.getSubscriptionDetails);
 router.get('/details', protect, subscriptionController.getSubscriptionDetails);

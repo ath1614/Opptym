@@ -95,18 +95,44 @@ const MyProjects = () => {
   // Fetch user limits and usage
   const fetchUserLimits = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log('No auth token found, using default limits');
+        setUserLimits({ projects: 1, submissions: 5 });
+        setUserUsage({ projectsUsed: 0, submissionsUsed: 0 });
+        return;
+      }
+
       const response = await fetch('/api/subscription/details', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
+      
       if (response.ok) {
-        const data = await response.json();
-        setUserLimits(data.planLimits || { projects: 1, submissions: 5 });
-        setUserUsage(data.usage || { projectsUsed: 0, submissionsUsed: 0 });
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          setUserLimits(data.planLimits || { projects: 1, submissions: 5 });
+          setUserUsage(data.usage || { projectsUsed: 0, submissionsUsed: 0 });
+        } else {
+          console.error('Expected JSON response but got:', contentType);
+          // Fallback to default limits
+          setUserLimits({ projects: 1, submissions: 5 });
+          setUserUsage({ projectsUsed: 0, submissionsUsed: 0 });
+        }
+      } else {
+        console.error('Failed to fetch user limits:', response.status, response.statusText);
+        // Fallback to default limits
+        setUserLimits({ projects: 1, submissions: 5 });
+        setUserUsage({ projectsUsed: 0, submissionsUsed: 0 });
       }
     } catch (error) {
       console.error('Error fetching user limits:', error);
+      // Fallback to default limits
+      setUserLimits({ projects: 1, submissions: 5 });
+      setUserUsage({ projectsUsed: 0, submissionsUsed: 0 });
     }
   };
 

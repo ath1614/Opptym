@@ -38,12 +38,24 @@ axios.interceptors.request.use(
   }
 );
 
-// Add response interceptor to handle 401 errors
+// Add response interceptor to handle 401 errors and HTML responses
 axios.interceptors.response.use(
   (response) => {
+    // Check if response is HTML instead of JSON
+    const contentType = response.headers['content-type'];
+    if (contentType && contentType.includes('text/html') && response.config.url?.includes('/api/')) {
+      console.error('❌ Received HTML response for API call:', response.config.url);
+      return Promise.reject(new Error('Server returned HTML instead of JSON. Check if API server is running.'));
+    }
     return response;
   },
   (error) => {
+    // Handle HTML responses that cause JSON parsing errors
+    if (error.message?.includes('Unexpected token') && error.message?.includes('<!doctype')) {
+      console.error('❌ Received HTML response instead of JSON for:', error.config?.url);
+      return Promise.reject(new Error('Server returned HTML instead of JSON. Check if API server is running.'));
+    }
+    
     if (error.response?.status === 401) {
       
       // Clear authentication data
