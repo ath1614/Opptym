@@ -46,7 +46,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      showPopup('Directory created successfully!', 'success');
+      showPopup('Directory created successfully! 🎉', 'success');
       setForm({
         name: '',
         domain: '',
