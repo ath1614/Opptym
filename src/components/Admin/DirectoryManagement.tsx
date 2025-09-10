@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Edit, Trash2, Save, X, Search } from 'lucide-react';
+import { Edit, Trash2, Save, X, Search, RefreshCw } from 'lucide-react';
+import axios from 'axios';
 import {
   directoriesData, 
   getAllClassifications, 
@@ -11,20 +12,56 @@ interface DirectoryManagementProps {
 }
 
 const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUpdate }) => {
-  const [directories, setDirectories] = useState<{ [key: string]: Directory[] }>(directoriesData);
-  // const [selectedClassification, setSelectedClassification] = useState<string>('Directory Submission');
+  const [directories, setDirectories] = useState<{ [key: string]: Directory[] }>({});
   const [editingDirectory, setEditingDirectory] = useState<Directory | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterClassification, setFilterClassification] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
 
   const classifications = getAllClassifications();
 
-  // Load directories from config
+  // Load directories from API
+  const fetchDirectories = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/admin/directories', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Group directories by classification
+      const groupedDirectories: { [key: string]: Directory[] } = {};
+      response.data.forEach((dir: any) => {
+        const classification = dir.classification || 'Directory Submission';
+        if (!groupedDirectories[classification]) {
+          groupedDirectories[classification] = [];
+        }
+        groupedDirectories[classification].push({
+          name: dir.name,
+          url: dir.domain,
+          description: dir.description,
+          category: dir.category,
+          country: dir.country,
+          priority: dir.priority,
+          daScore: dir.daScore,
+          pageRank: dir.pageRank,
+          isPremium: dir.isPremium,
+          status: dir.status || 'active'
+        });
+      });
+      
+      setDirectories(groupedDirectories);
+    } catch (error) {
+      console.error('Error fetching directories:', error);
+      // Fallback to static data if API fails
+      setDirectories(directoriesData);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    console.log('Loading directories data:', directoriesData);
-    console.log('Classifications available:', Object.keys(directoriesData));
-    console.log('Total directories:', Object.values(directoriesData).reduce((sum, dirs) => sum + dirs.length, 0));
-    setDirectories(directoriesData);
+    fetchDirectories();
   }, []);
 
   // Filter directories based on search and classification
@@ -82,15 +119,38 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
     }
   };
 
+  if (loading) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading directories...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Directory Management</h2>
-          <p className="text-gray-600">View and manage existing directories across all SEO classifications</p>
-          <p className="text-sm text-gray-500 mt-1">
-            💡 Use the "Create New Directory" button above to add new directories to the database
-          </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Directory Management</h2>
+            <p className="text-gray-600">View and manage existing directories across all SEO classifications</p>
+            <p className="text-sm text-gray-500 mt-1">
+              💡 Use the "Create New Directory" button above to add new directories to the database
+            </p>
+          </div>
+          <button
+            onClick={fetchDirectories}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
         </div>
       </div>
 

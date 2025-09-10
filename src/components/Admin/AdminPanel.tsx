@@ -86,6 +86,7 @@ export default function AdminPanel() {
   const [showDirectoryModal, setShowDirectoryModal] = useState(false);
   const [newDirectory, setNewDirectory] = useState<any>({ name: '', domain: '', category: '', pageRank: 0, status: 'active' });
   const [showCreateDirectoryModal, setShowCreateDirectoryModal] = useState(false);
+  const [directoryRefreshKey, setDirectoryRefreshKey] = useState(0);
 
   const openCreateUser = () => {
     setEditingUser(null);
@@ -916,7 +917,13 @@ export default function AdminPanel() {
               Create New Directory
             </button>
           </div>
-          <DirectoryManagement />
+          <DirectoryManagement 
+            key={directoryRefreshKey}
+            onDirectoryUpdate={() => {
+              // This will be called when directories are updated
+              console.log('Directories updated');
+            }} 
+          />
         </div>
       )}
 
@@ -925,9 +932,9 @@ export default function AdminPanel() {
         isOpen={showCreateDirectoryModal}
         onClose={() => setShowCreateDirectoryModal(false)}
         onCreated={() => {
-          // Refresh directories or handle success
+          // Refresh directories by updating the key
+          setDirectoryRefreshKey(prev => prev + 1);
           setShowCreateDirectoryModal(false);
-          // You can add a refresh function here if needed
         }}
       />
 
