@@ -5,7 +5,7 @@ import App from './App.tsx'
 import './index.css'
 import axios from 'axios'
 
-// Set base URL for axios
+// Set base URL for axios - FORCE DEPLOYMENT v6.4
 const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
@@ -19,6 +19,7 @@ if (isDevelopment) {
   console.log('🚀 Production mode: Using API URL:', apiUrl);
   console.log('🔍 Environment check:', { isDevelopment, isProduction, VITE_API_URL: import.meta.env.VITE_API_URL });
   console.log('✅ API URL fix deployed - should connect to production API now');
+  console.log('🚀 FORCE DEPLOYMENT v6.4 - API URL FIX');
 }
 
 
