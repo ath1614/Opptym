@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
+
+// CRITICAL FIX: API URL Configuration - v6.5
+console.log('🚀 OPPTYM App Starting - API URL Fix v6.5');
 import { useAuthProvider, AuthContext } from './hooks/useAuth';
 import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './components/Landing/LandingPage';

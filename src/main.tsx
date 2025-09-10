@@ -5,6 +5,9 @@ import App from './App.tsx'
 import './index.css'
 import axios from 'axios'
 
+// CRITICAL FIX: API URL Configuration - v6.5
+console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.5');
+
 // Set base URL for axios - FORCE DEPLOYMENT v6.4
 const isDevelopment = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
