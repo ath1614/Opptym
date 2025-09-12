@@ -137,29 +137,31 @@ function App() {
     }
   }, [activeTab]);
 
-  // Check trial expiration
+  // Check trial expiration - UX friendly approach
   useEffect(() => {
     if (authProvider.user && authProvider.user.subscription === 'free') {
-      // Check if trial has expired
       const checkTrialExpiration = () => {
         const trialEndDate = authProvider.user?.trialEndDate;
-        if (trialEndDate && new Date() > new Date(trialEndDate)) {
-          // Show trial expiration modal
-          setShowTrialExpirationModal(true);
+        if (trialEndDate) {
+          const now = new Date();
+          const trialEnd = new Date(trialEndDate);
+          const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+          
+          // Only show modal if:
+          // 1. Trial has actually expired (daysLeft <= 0), OR
+          // 2. Trial expires in 1 day AND user hasn't seen the warning today
+          const hasSeenWarningToday = localStorage.getItem('trialWarningSeen') === new Date().toDateString();
+          
+          if (daysLeft <= 0 || (daysLeft === 1 && !hasSeenWarningToday)) {
+            setShowTrialExpirationModal(true);
+            // Mark that user has seen the warning today
+            localStorage.setItem('trialWarningSeen', new Date().toDateString());
+          }
         }
       };
       
+      // Only check once when user data loads, not on every navigation
       checkTrialExpiration();
-      
-      // Check every time user navigates
-      const handleVisibilityChange = () => {
-        if (!document.hidden) {
-          checkTrialExpiration();
-        }
-      };
-      
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }
   }, [authProvider.user]);
 
@@ -275,6 +277,11 @@ function App() {
           onUpgrade={() => {
             setShowTrialExpirationModal(false);
             updateActiveTab('pricing');
+          }}
+          onRemindLater={() => {
+            setShowTrialExpirationModal(false);
+            // Clear the warning flag so it can show again tomorrow
+            localStorage.removeItem('trialWarningSeen');
           }}
         />
         </AuthContext.Provider>

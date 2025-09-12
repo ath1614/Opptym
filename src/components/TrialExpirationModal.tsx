@@ -6,9 +6,10 @@ interface TrialExpirationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpgrade: () => void;
+  onRemindLater?: () => void;
 }
 
-const TrialExpirationModal: React.FC<TrialExpirationModalProps> = ({ isOpen, onClose, onUpgrade }) => {
+const TrialExpirationModal: React.FC<TrialExpirationModalProps> = ({ isOpen, onClose, onUpgrade, onRemindLater }) => {
   const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
 
@@ -153,6 +154,18 @@ const TrialExpirationModal: React.FC<TrialExpirationModalProps> = ({ isOpen, onC
               </div>
             ))}
           </div>
+
+          {/* Remind Later Button */}
+          {onRemindLater && (
+            <div className="text-center py-4">
+              <button
+                onClick={onRemindLater}
+                className="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 font-medium underline transition-colors"
+              >
+                Remind me later
+              </button>
+            </div>
+          )}
 
           {/* Footer */}
           <div className="text-center border-t border-primary-200 dark:border-primary-700 pt-6">
