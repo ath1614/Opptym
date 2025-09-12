@@ -112,7 +112,8 @@ function App() {
   const updateActiveTab = (tab: string) => {
     setActiveTab(tab);
     localStorage.setItem('activeTab', tab);
-    window.location.hash = tab;
+    // Use history.pushState to avoid page refresh
+    window.history.pushState(null, '', `#${tab}`);
   };
 
   // Listen for hash changes (back/forward browser buttons)
@@ -132,7 +133,7 @@ function App() {
   // Set initial hash if not present
   useEffect(() => {
     if (!window.location.hash) {
-      window.location.hash = activeTab;
+      window.history.replaceState(null, '', `#${activeTab}`);
     }
   }, [activeTab]);
 
