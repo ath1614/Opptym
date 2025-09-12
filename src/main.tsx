@@ -5,35 +5,31 @@ import App from './App.tsx'
 import './index.css'
 import axios from 'axios'
 
-// CRITICAL FIX: API URL Configuration - v6.5
-console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.5');
+// CRITICAL FIX: API URL Configuration - v6.7
+console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.7');
+console.log('🔥 FORCE BUILD UPDATE - HOSTNAME DETECTION v6.7');
 
-// Set base URL for axios - CRITICAL FIX v6.6
-const isDevelopment = import.meta.env.DEV;
-const isProduction = import.meta.env.PROD;
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+// Set base URL for axios - CRITICAL FIX v6.8
+// Force runtime detection to prevent build optimization
+const getApiUrl = () => {
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
+  
+  if (isLocalhost) {
+    return 'http://localhost:3000';
+  } else {
+    return 'https://api.opptym.com';
+  }
+};
 
-// Use hostname-based detection as fallback
-const shouldUseLocalhost = isDevelopment || isLocalhost;
+const apiUrl = getApiUrl();
+axios.defaults.baseURL = apiUrl;
 
-if (shouldUseLocalhost) {
-  axios.defaults.baseURL = 'http://localhost:3000';
-  console.log('🔧 Development/Local mode: Using localhost:3000');
-} else {
-  // Use environment variable or fallback to production API
-  const apiUrl = import.meta.env.VITE_API_URL || 'https://api.opptym.com';
-  axios.defaults.baseURL = apiUrl;
-  console.log('🚀 Production mode: Using API URL:', apiUrl);
-  console.log('🔍 Environment check:', { 
-    isDevelopment, 
-    isProduction, 
-    isLocalhost,
-    hostname: window.location.hostname,
-    VITE_API_URL: import.meta.env.VITE_API_URL 
-  });
-  console.log('✅ API URL fix deployed - should connect to production API now');
-  console.log('🚀 CRITICAL FIX v6.6 - HOSTNAME-BASED DETECTION');
-}
+console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.8');
+console.log('🔥 FORCE BUILD UPDATE - RUNTIME DETECTION v6.8');
+console.log('🔍 Hostname:', window.location.hostname);
+console.log('🔗 API URL:', apiUrl);
+console.log('✅ Runtime API URL detection active');
 
 
 
