@@ -246,7 +246,14 @@ userSchema.methods.hasFeatureAccess = function(feature) {
   };
   
   const featureFlag = featureMap[feature] || feature;
-  return this.features[featureFlag] || false;
+  
+  // Ensure features object is properly initialized
+  if (!this.features) {
+    this.setPlanLimitsSync();
+  }
+  
+  // Return the actual feature flag value, not a fallback
+  return this.features[featureFlag] === true;
 };
 
 userSchema.methods.hasPermission = function(permission) {
