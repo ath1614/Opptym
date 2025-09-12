@@ -46,11 +46,11 @@ const bookmarkletTokenSchema = new mongoose.Schema({
     min: 0
   },
   
-  // Maximum allowed uses
+  // Maximum allowed uses (-1 means unlimited)
   maxUsage: {
     type: Number,
     default: 10,
-    min: 1
+    min: -1
   },
   
   // Token expiration
@@ -120,8 +120,9 @@ bookmarkletTokenSchema.pre('save', async function(next) {
 
 // Method to check if token is valid
 bookmarkletTokenSchema.methods.isValid = function() {
+  const withinUsageLimit = this.maxUsage === -1 || this.usageCount < this.maxUsage;
   return this.isActive && 
-         this.usageCount < this.maxUsage && 
+         withinUsageLimit && 
          this.expiresAt > new Date();
 };
 
@@ -163,19 +164,67 @@ bookmarkletTokenSchema.statics.generateToken = function() {
   return token;
 };
 
-// Static method to create token with default expiration
-bookmarkletTokenSchema.statics.createToken = function(userId, projectId, projectData, options = {}) {
+// Subscription-based token limits
+const subscriptionLimits = {
+  free: { 
+    maxUses: 5, 
+    expiresInHours: 24 * 30, // 30 days
+    rateLimitSeconds: 10
+  },
+  starter: { 
+    maxUses: 150, 
+    expiresInHours: 24 * 365, // 1 year
+    rateLimitSeconds: 5
+  },
+  pro: { 
+    maxUses: 750, 
+    expiresInHours: -1, // Never expires
+    rateLimitSeconds: 3
+  },
+  business: { 
+    maxUses: 1500, 
+    expiresInHours: -1, // Never expires
+    rateLimitSeconds: 2
+  },
+  enterprise: { 
+    maxUses: -1, // Unlimited
+    expiresInHours: -1, // Never expires
+    rateLimitSeconds: 1
+  },
+  custom: { 
+    maxUses: 100, // Default for custom plans
+    expiresInHours: 24 * 365, // 1 year
+    rateLimitSeconds: 5
+  }
+};
+
+// Static method to get subscription-based limits
+bookmarkletTokenSchema.statics.getSubscriptionLimits = function(subscription) {
+  return subscriptionLimits[subscription] || subscriptionLimits.free;
+};
+
+// Static method to create token with subscription-based limits
+bookmarkletTokenSchema.statics.createToken = function(userId, projectId, projectData, userSubscription, options = {}) {
   const token = this.generateToken();
-  const expiresAt = new Date(Date.now() + (options.expiresInHours || 24) * 60 * 60 * 1000);
+  const limits = this.getSubscriptionLimits(userSubscription);
+  
+  // Calculate expiration date
+  let expiresAt;
+  if (limits.expiresInHours === -1) {
+    // Never expires - set to 10 years from now
+    expiresAt = new Date(Date.now() + (10 * 365 * 24 * 60 * 60 * 1000));
+  } else {
+    expiresAt = new Date(Date.now() + limits.expiresInHours * 60 * 60 * 1000);
+  }
   
   return new this({
     token,
     userId,
     projectId,
     projectData,
-    maxUsage: options.maxUsage || 10,
+    maxUsage: options.maxUsage || limits.maxUses,
     expiresAt,
-    rateLimitSeconds: options.rateLimitSeconds || 5
+    rateLimitSeconds: options.rateLimitSeconds || limits.rateLimitSeconds
   });
 };
 

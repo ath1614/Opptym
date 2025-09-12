@@ -347,6 +347,14 @@ try {
   console.error('❌ Error loading bookmarklet routes:', error);
 }
 
+// Load user profile routes
+try {
+  app.use('/api/user', require('./routes/userProfileRoutes'));
+  console.log('✅ User profile routes loaded');
+} catch (error) {
+  console.error('❌ Error loading user profile routes:', error);
+}
+
 // Load analytics routes
 try {
   app.use('/api/analytics', require('./routes/analyticsRoutes'));

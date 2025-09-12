@@ -163,6 +163,33 @@ const userSchema = new mongoose.Schema({
     theme: { type: String, enum: ['light', 'dark', 'auto'], default: 'auto' },
     language: { type: String, default: 'en' },
     notifications: { type: Boolean, default: true }
+  },
+  // Enhanced profile for form pre-filling
+  profile: {
+    businessName: { type: String, trim: true, default: '' },
+    website: { type: String, trim: true, default: '' },
+    email: { type: String, trim: true, default: '' },
+    phone: { type: String, trim: true, default: '' },
+    address: { type: String, trim: true, default: '' },
+    city: { type: String, trim: true, default: '' },
+    state: { type: String, trim: true, default: '' },
+    country: { type: String, trim: true, default: '' },
+    zipCode: { type: String, trim: true, default: '' },
+    description: { type: String, trim: true, default: '' },
+    category: { type: String, trim: true, default: '' },
+    socialMedia: {
+      facebook: { type: String, trim: true, default: '' },
+      twitter: { type: String, trim: true, default: '' },
+      linkedin: { type: String, trim: true, default: '' },
+      instagram: { type: String, trim: true, default: '' },
+      youtube: { type: String, trim: true, default: '' }
+    },
+    preferences: {
+      autoFill: { type: Boolean, default: true },
+      showInstructions: { type: Boolean, default: true },
+      defaultCategory: { type: String, default: 'Business' }
+    },
+    lastUpdated: { type: Date, default: Date.now }
   }
 }, {
   timestamps: true

@@ -43,11 +43,15 @@ export interface BookmarkletResult {
   error?: string;
 }
 
+import SmartFormDetectionService from './SmartFormDetectionService';
+
 export class UniversalFormService {
   private projectData: ProjectData;
+  private smartFormService: SmartFormDetectionService;
 
   constructor(projectData: ProjectData) {
     this.projectData = projectData;
+    this.smartFormService = new SmartFormDetectionService(projectData);
   }
 
   // Create universal form filling bookmarklet with server-side token validation
@@ -279,69 +283,273 @@ export class UniversalFormService {
             }
           };
           
-          // Process all form fields
-          const processInputFields = () => {
-            const inputs = document.querySelectorAll('input, textarea, select');
-            totalFields = 0;
-            
-            // First pass: count fillable fields
-            inputs.forEach((input) => {
-              if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
-              const fieldValue = input.value || '';
-              if (!fieldValue.trim()) {
-                totalFields++;
-              }
-            });
-            
-            updateProgress();
-            
-            // Second pass: fill fields with animation
-            inputs.forEach((input, index) => {
-              try {
-                if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
-                
-                const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
-                const fieldValue = input.value || '';
-                
-                // Skip if field already has a value
-                if (fieldValue.trim()) return;
-                
-                // Find matching field mapping
-                const mapping = fieldMappings.find(m => 
-                  m.patterns.some(pattern => fieldName.includes(pattern))
-                );
-                
-                if (mapping && mapping.value) {
-                  // Animate field filling
-                  setTimeout(() => {
-                    input.value = mapping.value;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                    
-                    // Add visual feedback
-                    input.style.transition = 'all 0.3s ease';
-                    input.style.backgroundColor = '#d1fae5';
-                    input.style.borderColor = '#10b981';
-                    
-                    setTimeout(() => {
-                      input.style.backgroundColor = '';
-                      input.style.borderColor = '';
-                    }, 1000);
-                    
-                    filledCount++;
-                    updateProgress();
-                    console.log('✅ Filled field ' + (index + 1) + ': ' + (input.name || input.id || input.placeholder) + ' with: ' + mapping.value);
-                  }, index * 100); // Stagger the filling for visual effect
+          // Smart form detection and filling
+          const smartFormDetection = async () => {
+            try {
+              // Import and use SmartFormDetectionService
+              const SmartFormDetectionService = (() => {
+                // Inline SmartFormDetectionService for bookmarklet
+                class SmartFormDetectionService {
+                  constructor(projectData) {
+                    this.projectData = projectData;
+                  }
+
+                  async detectAndFillAllForms() {
+                    const detectedForms = this.detectDirectoryForms();
+                    const results = [];
+
+                    for (const form of detectedForms) {
+                      const result = await this.fillForm(form);
+                      results.push(result);
+                    }
+
+                    return results;
+                  }
+
+                  detectDirectoryForms() {
+                    const forms = document.querySelectorAll('form');
+                    const detectedForms = [];
+
+                    Array.from(forms).forEach((form, index) => {
+                      const confidence = this.calculateFormConfidence(form);
+                      
+                      if (confidence > 0.3) {
+                        const formData = this.extractFormFields(form);
+                        
+                        detectedForms.push({
+                          id: \`form_\${index}\`,
+                          element: form,
+                          fields: formData,
+                          isDirectoryForm: confidence > 0.6,
+                          confidence: confidence,
+                          url: window.location.href,
+                          title: this.getFormTitle(form)
+                        });
+                      }
+                    });
+
+                    return detectedForms.sort((a, b) => b.confidence - a.confidence);
+                  }
+
+                  calculateFormConfidence(form) {
+                    let confidence = 0;
+                    const formText = form.innerHTML.toLowerCase();
+
+                    const directoryKeywords = [
+                      'submit', 'directory', 'listing', 'business', 'website', 'url',
+                      'company', 'address', 'phone', 'email', 'description', 'category'
+                    ];
+
+                    directoryKeywords.forEach(keyword => {
+                      if (formText.includes(keyword)) confidence += 0.1;
+                    });
+
+                    const commonFields = ['website', 'url', 'business', 'company', 'description'];
+                    commonFields.forEach(field => {
+                      if (form.querySelector(\`[name*="\${field}"]\`) || form.querySelector(\`[id*="\${field}"]\`)) {
+                        confidence += 0.15;
+                      }
+                    });
+
+                    return Math.min(confidence, 1.0);
+                  }
+
+                  extractFormFields(form) {
+                    const fields = [];
+                    const inputs = form.querySelectorAll('input, textarea, select');
+
+                    inputs.forEach((input) => {
+                      if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+
+                      const field = {
+                        name: input.name || input.id || '',
+                        value: this.mapFieldToValue(input),
+                        type: input.type || input.tagName.toLowerCase(),
+                        selector: this.generateSelector(input),
+                        required: input.required || false,
+                        filled: false
+                      };
+
+                      if (field.value) {
+                        fields.push(field);
+                      }
+                    });
+
+                    return fields;
+                  }
+
+                  mapFieldToValue(input) {
+                    const name = (input.name || input.id || '').toLowerCase();
+                    const placeholder = (input.placeholder || '').toLowerCase();
+
+                    if (name.includes('website') || name.includes('url') || placeholder.includes('website')) {
+                      return this.projectData.url || '';
+                    }
+                    if (name.includes('business') || name.includes('company') || name.includes('name')) {
+                      return this.projectData.companyName || this.projectData.name || '';
+                    }
+                    if (name.includes('email') || input.type === 'email') {
+                      return this.projectData.email || '';
+                    }
+                    if (name.includes('phone') || input.type === 'tel') {
+                      return this.projectData.phone || '';
+                    }
+                    if (name.includes('description') || name.includes('about')) {
+                      return this.projectData.description || '';
+                    }
+                    if (name.includes('address')) {
+                      return this.projectData.address || '';
+                    }
+                    if (name.includes('city')) {
+                      return this.projectData.city || '';
+                    }
+                    if (name.includes('state')) {
+                      return this.projectData.state || '';
+                    }
+                    if (name.includes('country')) {
+                      return this.projectData.country || '';
+                    }
+                    if (name.includes('zip') || name.includes('postal')) {
+                      return this.projectData.pincode || '';
+                    }
+
+                    return '';
+                  }
+
+                  generateSelector(input) {
+                    if (input.id) return \`#\${input.id}\`;
+                    if (input.name) return \`[name="\${input.name}"]\`;
+                    return input.tagName.toLowerCase();
+                  }
+
+                  getFormTitle(form) {
+                    const title = form.querySelector('h1, h2, h3, .title, .form-title');
+                    if (title) return title.textContent || '';
+                    return 'Untitled Form';
+                  }
+
+                  async fillForm(detectedForm) {
+                    const result = {
+                      formId: detectedForm.id,
+                      success: false,
+                      fieldsFilled: 0,
+                      totalFields: detectedForm.fields.length,
+                      errors: [],
+                      timeTaken: 0
+                    };
+
+                    const startTime = Date.now();
+
+                    for (const field of detectedForm.fields) {
+                      try {
+                        const element = detectedForm.element.querySelector(field.selector);
+                        if (element && field.value) {
+                          element.value = field.value;
+                          element.dispatchEvent(new Event('input', { bubbles: true }));
+                          element.dispatchEvent(new Event('change', { bubbles: true }));
+                          
+                          // Visual feedback
+                          element.style.transition = 'all 0.3s ease';
+                          element.style.backgroundColor = '#d1fae5';
+                          element.style.borderColor = '#10b981';
+                          
+                          setTimeout(() => {
+                            element.style.backgroundColor = '';
+                            element.style.borderColor = '';
+                          }, 1000);
+                          
+                          field.filled = true;
+                          result.fieldsFilled++;
+                        }
+                      } catch (error) {
+                        result.errors.push(\`Failed to fill \${field.name}: \${error}\`);
+                      }
+                    }
+
+                    result.success = result.fieldsFilled > 0;
+                    result.timeTaken = Date.now() - startTime;
+
+                    return result;
+                  }
                 }
-              } catch (e) {
-                errorCount++;
-                console.log('⚠️ Error processing field ' + (index + 1) + ':', e);
-              }
-            });
+
+                return SmartFormDetectionService;
+              })();
+
+              // Use smart form detection
+              const smartService = new SmartFormDetectionService(projectData);
+              const results = await smartService.detectAndFillAllForms();
+
+              // Update counters
+              totalFields = results.reduce((sum, r) => sum + r.totalFields, 0);
+              filledCount = results.reduce((sum, r) => sum + r.fieldsFilled, 0);
+              errorCount = results.reduce((sum, r) => sum + r.errors.length, 0);
+
+              updateProgress();
+
+              console.log('🎯 Smart form detection completed:', results);
+
+            } catch (error) {
+              console.error('❌ Smart form detection failed:', error);
+              // Fallback to basic form filling
+              const processInputFields = () => {
+                const inputs = document.querySelectorAll('input, textarea, select');
+                totalFields = 0;
+                
+                inputs.forEach((input) => {
+                  if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+                  const fieldValue = input.value || '';
+                  if (!fieldValue.trim()) {
+                    totalFields++;
+                  }
+                });
+                
+                updateProgress();
+                
+                inputs.forEach((input, index) => {
+                  try {
+                    if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
+                    
+                    const fieldName = (input.name || input.id || input.placeholder || '').toLowerCase();
+                    const fieldValue = input.value || '';
+                    
+                    if (fieldValue.trim()) return;
+                    
+                    const mapping = fieldMappings.find(m => 
+                      m.patterns.some(pattern => fieldName.includes(pattern))
+                    );
+                    
+                    if (mapping && mapping.value) {
+                      setTimeout(() => {
+                        input.value = mapping.value;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        input.dispatchEvent(new Event('change', { bubbles: true }));
+                        
+                        input.style.transition = 'all 0.3s ease';
+                        input.style.backgroundColor = '#d1fae5';
+                        input.style.borderColor = '#10b981';
+                        
+                        setTimeout(() => {
+                          input.style.backgroundColor = '';
+                          input.style.borderColor = '';
+                        }, 1000);
+                        
+                        filledCount++;
+                        updateProgress();
+                      }, index * 100);
+                    }
+                  } catch (e) {
+                    errorCount++;
+                  }
+                });
+              };
+              
+              processInputFields();
+            }
           };
-          
-          // Execute form filling
-          processInputFields();
+
+          // Execute smart form detection
+          smartFormDetection();
           
           // Show completion message and cleanup
           setTimeout(() => {
