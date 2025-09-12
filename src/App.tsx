@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
 
@@ -18,7 +18,6 @@ import ResetPassword from './components/Auth/ResetPassword';
 import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
-import SubmissionDashboard from './components/Submission/SubmissionDashboard';
 import DirectorySubmission from './components/Submissions/DirectorySubmission';
 import ArticleSubmission from './components/Submissions/ArticleSubmission';
 import PressRelease from './components/Submissions/PressRelease';
@@ -31,7 +30,6 @@ import ProfileSettings from './components/Profile/ProfileSettings';
 import AdminPanel from './components/Admin/AdminPanel';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
-import Footer from './components/Layout/Footer';
 import TrialExpirationModal from './components/TrialExpirationModal';
 import ProjectDetails from './components/Reports/ProjectDetails';
 
@@ -104,7 +102,6 @@ function App() {
   const [projectsLoading, setProjectsLoading] = useState(false);
   const [projectsError, setProjectsError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [showProjectReport, setShowProjectReport] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   
   // Trial expiration modal state
@@ -144,7 +141,7 @@ function App() {
     if (authProvider.user && authProvider.user.subscription === 'free') {
       const checkTrialExpiration = () => {
         const trialEndDate = authProvider.user?.trialEndDate;
-        console.log('🔍 Checking trial expiration for user:', authProvider.user.email);
+        console.log('🔍 Checking trial expiration for user:', authProvider.user?.email);
         console.log('📅 Trial end date:', trialEndDate);
         
         if (trialEndDate) {
@@ -304,19 +301,7 @@ function App() {
     );
   }
 
-  const navigateToTab = (tab: string) => {
-    updateActiveTab(tab);
-  };
-
-  // Run SEO analysis
-  const handleRunAnalysis = () => {
-    navigateToTab('tools');
-  };
-
-  // View reports
-  const handleViewReports = () => {
-    navigateToTab('reports');
-  };
+  // Removed unused handler functions
 
   // View project report
   const handleViewProjectReport = async (project: Project) => {
@@ -337,21 +322,7 @@ function App() {
     }
   };
 
-  // View all projects
-  const handleViewAllProjects = () => {
-    navigateToTab('projects');
-  };
-
-  // View specific project
-  const handleViewProject = (projectId: string) => {
-    navigateToTab('projects');
-    // You could also set a selected project state here
-  };
-
-  // Create first project
-  const handleCreateFirstProject = () => {
-    navigateToTab('projects');
-  };
+  // Removed more unused handler functions
 
   const renderContent = () => {
     // Check if user is admin for admin-only routes

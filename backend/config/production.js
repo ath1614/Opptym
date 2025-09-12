@@ -5,7 +5,7 @@ module.exports = {
   
   // Database Configuration
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym',
+    uri: process.env.MONGODB_URI,
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -21,7 +21,7 @@ module.exports = {
   
   // JWT Configuration
   jwt: {
-    secret: process.env.JWT_SECRET || 'opptym-super-secret-jwt-key-2024-production-ready',
+    secret: process.env.JWT_SECRET,
     expiresIn: '7d',
     refreshExpiresIn: '30d'
   },
@@ -121,7 +121,7 @@ module.exports = {
   
   // Session Configuration
   session: {
-    secret: process.env.SESSION_SECRET || 'opptym-session-secret-2024',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {

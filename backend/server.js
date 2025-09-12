@@ -115,71 +115,8 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Database connection with error handling
-const connectDB = async () => {
-  try {
-    // Use environment variable for MongoDB URI, with properly encoded fallback
-    let mongoURI = process.env.MONGODB_URI;
-    
-    console.log('🔗 Attempting to connect to MongoDB...');
-    console.log('🔍 Environment MONGODB_URI exists:', !!process.env.MONGODB_URI);
-    
-    // Validate MongoDB URI
-    if (!mongoURI) {
-      console.error('❌ MONGODB_URI environment variable is not set');
-      console.log('⚠️ Server will start without database connection');
-      return false;
-    }
-    
-    // Validate URI format
-    if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('mongodb.net/')) {
-      console.error('❌ Invalid MongoDB URI format');
-      console.log('⚠️ Server will start without database connection');
-      return false;
-    }
-    
-    console.log('📍 URI preview:', mongoURI.substring(0, 50) + '...');
-    console.log('🔍 Full URI length:', mongoURI.length);
-    
-    // Test connection with timeout
-    const connectionPromise = mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 15000, // 15 second timeout
-      socketTimeoutMS: 45000, // 45 second timeout
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      maxIdleTimeMS: 30000,
-      retryWrites: true,
-      w: 'majority'
-    });
-    
-    await connectionPromise;
-    console.log('✅ MongoDB connected successfully');
-    
-    // Set up connection event handlers
-    mongoose.connection.on('error', (err) => {
-      console.error('❌ MongoDB connection error:', err);
-    });
-    
-    mongoose.connection.on('disconnected', () => {
-      console.log('⚠️ MongoDB disconnected');
-    });
-    
-    mongoose.connection.on('reconnected', () => {
-      console.log('✅ MongoDB reconnected');
-    });
-    
-    return true;
-  } catch (err) {
-    console.error('❌ MongoDB connection error:', err.message);
-    console.error('🔍 Error name:', err.name);
-    console.error('🔍 Error code:', err.code);
-    console.log('⚠️ Server will start without database connection');
-    console.log('⚠️ Some features may not work properly');
-    return false;
-  }
-};
+// Import shared database connection utility
+const { connectDB } = require('./utils/dbConnection');
 
 // Connect to database
 connectDB();

@@ -1,16 +1,5 @@
-const mongoose = require('mongoose');
+const { connectDB } = require('../utils/dbConnection');
 const Plan = require('../models/planModel');
-
-// Connect to MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ MongoDB connected for plan seeding');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
-  }
-};
 
 // Seed plans data
 const plans = [
