@@ -68,36 +68,36 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-200 to-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-200 to-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-100 to-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-accent-200 to-accent-300 dark:from-accent-800 dark:to-accent-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-800 dark:to-primary-700 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-accent-100 to-primary-200 dark:from-accent-900 dark:to-primary-800 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '4s' }}></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700/20 p-8">
+        <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8 animate-fade-in-up">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-glow">
               <Mail className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl font-bold text-primary-800 dark:text-primary-200 mb-2">
               Check Your Email
             </h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-primary-600 dark:text-primary-400">
               We've sent a verification link to
             </p>
-            <p className="text-blue-600 dark:text-blue-400 font-medium">
+            <p className="text-accent-600 dark:text-accent-400 font-medium">
               {email || 'your email address'}
             </p>
           </div>
 
           {/* Instructions */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+          <div className="bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800 rounded-xl p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-800 dark:text-blue-200">
+              <CheckCircle className="w-5 h-5 text-accent-600 dark:text-accent-400 mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-accent-800 dark:text-accent-200">
                 <p className="font-medium mb-1">Next Steps:</p>
-                <ol className="list-decimal list-inside space-y-1 text-blue-700 dark:text-blue-300">
+                <ol className="list-decimal list-inside space-y-1 text-accent-700 dark:text-accent-300">
                   <li>Check your email inbox (and spam folder)</li>
                   <li>Click the verification link in the email</li>
                   <li>Return here to log in</li>
@@ -109,17 +109,17 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
           {/* Resend Section */}
           <div className="space-y-4">
             <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-primary-600 dark:text-primary-400 mb-4">
                 Didn't receive the email?
               </p>
               
               <button
                 onClick={handleResendVerification}
                 disabled={isResending || countdown > 0}
-                className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                   isResending || countdown > 0
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:shadow-lg hover:scale-105'
+                    ? 'bg-primary-100 dark:bg-primary-700 text-primary-400 dark:text-primary-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-accent-500 to-accent-600 text-white hover:from-accent-600 hover:to-accent-700 hover:shadow-glow hover:scale-105'
                 }`}
               >
                 {isResending ? (
@@ -143,10 +143,10 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
 
             {/* Success Message */}
             {resendSuccess && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+              <div className="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl p-3">
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <p className="text-sm text-green-800 dark:text-green-200">
+                  <CheckCircle className="w-4 h-4 text-success-600 dark:text-success-400" />
+                  <p className="text-sm text-success-800 dark:text-success-200">
                     Verification email sent successfully!
                   </p>
                 </div>
@@ -155,10 +155,10 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
 
             {/* Error Message */}
             {resendError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+              <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl p-3">
                 <div className="flex items-center space-x-2">
-                  <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                  <p className="text-sm text-red-800 dark:text-red-200">
+                  <AlertCircle className="w-4 h-4 text-error-600 dark:text-error-400" />
+                  <p className="text-sm text-error-800 dark:text-error-200">
                     {resendError}
                   </p>
                 </div>
@@ -167,10 +167,10 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
           </div>
 
           {/* Back to Login */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
+          <div className="mt-6 pt-6 border-t border-primary-200 dark:border-primary-700">
             <button
               onClick={onBackToLogin}
-              className="w-full flex items-center justify-center space-x-2 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+              className="w-full flex items-center justify-center space-x-2 py-2 px-4 text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Login</span>
@@ -179,7 +179,7 @@ export default function EmailVerification({ email, onBackToLogin }: EmailVerific
 
           {/* Help Text */}
           <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-primary-500 dark:text-primary-400">
               Having trouble? Check your spam folder or contact support.
             </p>
           </div>
