@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
 
-// CRITICAL FIX: API URL Configuration - v6.5
-console.log('🚀 OPPTYM App Starting - API URL Fix v6.5');
+// CRITICAL FIX: API URL Configuration - v6.9
+console.log('🚀 OPPTYM App Starting - API URL Fix v6.9');
+console.log('🔥 TRIAL UX IMPROVEMENTS DEPLOYED - v6.9');
+console.log('✅ New features: Smart trial modal, Remind later button, Better UX');
 
 import { useAuthProvider, AuthContext } from './hooks/useAuth';
 import { ThemeProvider } from './contexts/ThemeContext';

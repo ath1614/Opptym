@@ -25,8 +25,9 @@ const getApiUrl = () => {
 const apiUrl = getApiUrl();
 axios.defaults.baseURL = apiUrl;
 
-console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.8');
-console.log('🔥 FORCE BUILD UPDATE - RUNTIME DETECTION v6.8');
+console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.9');
+console.log('🔥 FORCE BUILD UPDATE - RUNTIME DETECTION v6.9');
+console.log('🎯 TRIAL UX IMPROVEMENTS ACTIVE - v6.9');
 console.log('🔍 Hostname:', window.location.hostname);
 console.log('🔗 API URL:', apiUrl);
 console.log('✅ Runtime API URL detection active');
