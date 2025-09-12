@@ -40,15 +40,13 @@ const connectDB = async (options = {}) => {
     // Merge with provided options
     const connectionOptions = { ...defaultOptions, ...options.connectionOptions };
     
-    // Validate URI format for production (allow localhost for development)
-    if (process.env.NODE_ENV === 'production') {
-      if (!mongoURI.includes('mongodb+srv://') || !mongoURI.includes('mongodb.net/')) {
-        console.error('❌ Invalid MongoDB URI format for production');
-        if (options.required !== false) {
-          process.exit(1);
-        } else {
-          return false;
-        }
+    // Validate URI format - be more flexible
+    if (!mongoURI.includes('mongodb://') && !mongoURI.includes('mongodb+srv://')) {
+      console.error('❌ Invalid MongoDB URI format - must start with mongodb:// or mongodb+srv://');
+      if (options.required !== false) {
+        process.exit(1);
+      } else {
+        return false;
       }
     }
     

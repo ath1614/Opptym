@@ -2,8 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import axios from 'axios';
 import { showPopup } from '../utils/popup';
 
-// Use the same axios instance configured in main.tsx
-// The axios.defaults.baseURL is already set to the correct base URL
+// Production-ready authentication hook with optimized UX
 
 interface User {
   id: string;
@@ -66,36 +65,27 @@ export const useAuthProvider = (): AuthContextType => {
 
   const decodeUser = (token: string): User | null => {
     try {
-      // Validate token format
       if (!token || typeof token !== 'string') {
-        console.error('Token is null, undefined, or not a string');
         localStorage.removeItem('token');
         return null;
       }
 
-      // Check if token has the correct JWT format (3 parts separated by dots)
       if (!token.includes('.') || token.split('.').length !== 3) {
-        console.error('Invalid JWT token format - should have 3 parts separated by dots');
         localStorage.removeItem('token');
         return null;
       }
       
       const parts = token.split('.');
       
-      // Validate each part
       if (!parts[0] || !parts[1] || !parts[2]) {
-        console.error('Invalid JWT token structure - missing parts');
         localStorage.removeItem('token');
         return null;
       }
       
-      // Decode the payload (second part)
       let payload;
       try {
-        // Handle base64url decoding with proper padding
         let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
         
-        // Add padding if needed
         while (base64.length % 4) {
           base64 += '=';
         }
@@ -103,29 +93,21 @@ export const useAuthProvider = (): AuthContextType => {
         const jsonPayload = atob(base64);
         payload = JSON.parse(jsonPayload);
       } catch (decodeError) {
-        console.error('Error decoding JWT payload:', decodeError);
-        console.error('Token parts:', parts);
-        console.error('Base64 part:', parts[1]);
         localStorage.removeItem('token');
         return null;
       }
       
-      // Validate payload has required fields
       if (!payload || typeof payload !== 'object') {
-        console.error('Invalid token payload - not an object');
         localStorage.removeItem('token');
         return null;
       }
       
       if (!payload.userId || !payload.email) {
-        console.error('Invalid token payload - missing required fields (userId or email)');
         localStorage.removeItem('token');
         return null;
       }
       
-      // Check if token is expired
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        console.error('Token has expired');
         localStorage.removeItem('token');
         return null;
       }
@@ -140,8 +122,6 @@ export const useAuthProvider = (): AuthContextType => {
         status: payload.status
       };
     } catch (error) {
-      console.error('Error decoding token:', error);
-      // Clear invalid token
       localStorage.removeItem('token');
       return null;
     }
@@ -150,15 +130,10 @@ export const useAuthProvider = (): AuthContextType => {
   const refreshUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        console.log('🔍 No token found for refresh');
-        return;
-      }
+      if (!token) return;
 
-      // Validate token before making request
       const userFromToken = decodeUser(token);
       if (!userFromToken) {
-        console.log('🔍 Invalid token found during refresh, clearing...');
         localStorage.removeItem('token');
         setUser(null);
         return;
@@ -173,25 +148,20 @@ export const useAuthProvider = (): AuthContextType => {
       if (response.data && response.data.id) {
         setUser(response.data);
       } else {
-        // Keep the user from token if profile fetch fails
         setUser(userFromToken);
       }
-          } catch (error: any) {
-        console.error('Error refreshing user data:', error);
-        
-        // If refresh fails with 401, clear the token and user
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          setUser(null);
-        } else {
-          // Keep the user from token if profile fetch fails
-          const token = localStorage.getItem('token');
-          const userFromToken = decodeUser(token);
-          if (userFromToken) {
-            setUser(userFromToken);
-          }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        setUser(null);
+      } else {
+        const token = localStorage.getItem('token');
+        const userFromToken = decodeUser(token);
+        if (userFromToken) {
+          setUser(userFromToken);
         }
       }
+    }
   };
 
   const login = async (email: string, password: string) => {
@@ -202,7 +172,6 @@ export const useAuthProvider = (): AuthContextType => {
       if (loginResponse.data.success) {
         const token = loginResponse.data.token;
         
-        // Validate token before storing
         const userFromToken = decodeUser(token);
         if (!userFromToken) {
           throw new Error('Invalid token received from server');
@@ -210,7 +179,6 @@ export const useAuthProvider = (): AuthContextType => {
         
         localStorage.setItem('token', token);
         
-        // Set user from token first
         const userData = {
           ...userFromToken,
           isAdmin: loginResponse.data.user.isAdmin,
@@ -219,14 +187,11 @@ export const useAuthProvider = (): AuthContextType => {
         } as User;
         
         setUser(userData);
-        console.log('🔍 User set from login response:', userData);
 
-        // Try to refresh user data from server (but don't fail if it doesn't work)
         try {
           await refreshUser();
         } catch (error) {
-          console.log('⚠️ Profile refresh failed, but keeping user logged in:', error);
-          // Keep the user logged in even if profile refresh fails
+          // Keep user logged in even if profile refresh fails
         }
         
         showPopup('✅ Login successful!', 'success');
@@ -234,9 +199,6 @@ export const useAuthProvider = (): AuthContextType => {
         throw new Error(loginResponse.data.message || 'Login failed');
       }
     } catch (error: any) {
-      console.error('Login error:', error);
-      
-      // Handle specific error types with user-friendly messages
       let errorMessage = 'Login failed. Please try again.';
       
       if (error.response?.data?.message) {
@@ -260,7 +222,6 @@ export const useAuthProvider = (): AuthContextType => {
         }
       }
       
-      // Show error popup
       showPopup(errorMessage, 'error');
       throw new Error(errorMessage);
     } finally {
@@ -271,22 +232,15 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log('📝 Registration attempt:', { username, email });
-      
       const signupResponse = await axios.post('/api/auth/signup', { username, email, password });
       
       if (signupResponse.data.success) {
-        console.log('✅ Signup successful');
-        
-        // Check if email verification is required
         if (signupResponse.data.requiresVerification) {
-          console.log('📧 Email verification required');
-          return signupResponse.data; // Return response for email verification flow
+          return signupResponse.data;
         }
         
         const token = signupResponse.data.token;
         
-        // Validate token before storing
         const userFromToken = decodeUser(token);
         if (!userFromToken) {
           throw new Error('Invalid token received from server');
@@ -294,7 +248,6 @@ export const useAuthProvider = (): AuthContextType => {
         
         localStorage.setItem('token', token);
         
-        // Set user from token
         setUser({
           ...userFromToken,
           isAdmin: signupResponse.data.user.isAdmin,
@@ -302,7 +255,6 @@ export const useAuthProvider = (): AuthContextType => {
           email: signupResponse.data.user.email,
         });
 
-        // Refresh user data from server
         await refreshUser();
         showPopup('✅ Account created successfully! Welcome to Opptym!', 'success');
         return signupResponse.data;
@@ -310,9 +262,6 @@ export const useAuthProvider = (): AuthContextType => {
         throw new Error(signupResponse.data.message || 'Signup failed');
       }
     } catch (error: any) {
-      console.error('Registration error:', error);
-      
-      // Handle specific error types with user-friendly messages
       let errorMessage = 'Registration failed. Please try again.';
       
       if (error.response?.data?.message) {
@@ -339,7 +288,6 @@ export const useAuthProvider = (): AuthContextType => {
         }
       }
       
-      // Show error popup
       showPopup(errorMessage, 'error');
       throw new Error(errorMessage);
     } finally {
@@ -354,42 +302,29 @@ export const useAuthProvider = (): AuthContextType => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔍 Initializing auth...');
       const token = localStorage.getItem('token');
-      console.log('🔍 Token found:', !!token);
       
       if (token) {
         try {
-          console.log('🔍 Decoding user from token...');
           const userFromToken = decodeUser(token);
-          console.log('🔍 User from token:', userFromToken);
           
-          // Check if user data is valid
           if (userFromToken && userFromToken.id && userFromToken.email) {
             setUser(userFromToken);
-            console.log('🔍 User set from token during initialization:', userFromToken);
             
-            // Try to refresh user data from server (but don't fail if it doesn't work)
             try {
-              console.log('🔍 Refreshing user data from server...');
               await refreshUser();
             } catch (error) {
-              console.log('⚠️ Profile refresh failed during initialization, but keeping user logged in:', error);
-              // Keep the user logged in even if profile refresh fails
+              // Keep user logged in even if profile refresh fails
             }
           } else {
-            console.log('🔍 Invalid user data from token, clearing...');
             localStorage.removeItem('token');
             setUser(null);
           }
         } catch (error) {
-          console.error('🔍 Error initializing auth:', error);
-          // If token is invalid, remove it
           localStorage.removeItem('token');
           setUser(null);
         }
       } else {
-        console.log('🔍 No token found, user is null');
         setUser(null);
       }
     };

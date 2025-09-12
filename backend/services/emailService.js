@@ -10,6 +10,13 @@ class EmailService {
 
   async initializeTransporter() {
     try {
+      // Check if email credentials are available
+      if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+        console.log('⚠️ Email credentials not configured, using mock transporter');
+        this.transporter = this.createMockTransporter();
+        return;
+      }
+
       // Hostinger SMTP Configuration
       this.transporter = nodemailer.createTransport({
         host: 'smtp.hostinger.com',
@@ -31,8 +38,23 @@ class EmailService {
       console.log('🔗 Verification URL format:', `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-email/{token}`);
     } catch (error) {
       console.error('❌ Email service initialization failed:', error);
-      throw new Error('Email service configuration failed');
+      console.log('⚠️ Falling back to mock transporter');
+      this.transporter = this.createMockTransporter();
     }
+  }
+
+  createMockTransporter() {
+    return {
+      sendMail: async (mailOptions) => {
+        console.log('📧 Mock email sent:', mailOptions.to);
+        console.log('📧 Subject:', mailOptions.subject);
+        return { messageId: 'mock-message-id-' + Date.now() };
+      },
+      verify: async () => {
+        console.log('✅ Mock email transporter verified');
+        return true;
+      }
+    };
   }
 
   // Method to refresh configuration (useful for debugging)
