@@ -229,8 +229,8 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             </button>
             <button 
               onClick={() => {
-                // Open demo video in new tab or show modal
-                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+                // TODO: Replace with actual OPPTYM demo video
+                window.open('#', '_blank');
               }}
               className="px-8 py-4 border-2 border-white dark:border-primary-300 text-white dark:text-primary-300 rounded-2xl font-semibold text-lg hover:bg-white dark:hover:bg-primary-800 hover:text-accent-600 dark:hover:text-accent-400 transition-all duration-300 flex items-center space-x-2"
             >
