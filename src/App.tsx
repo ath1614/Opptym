@@ -144,21 +144,34 @@ function App() {
     if (authProvider.user && authProvider.user.subscription === 'free') {
       const checkTrialExpiration = () => {
         const trialEndDate = authProvider.user?.trialEndDate;
+        console.log('🔍 Checking trial expiration for user:', authProvider.user.email);
+        console.log('📅 Trial end date:', trialEndDate);
+        
         if (trialEndDate) {
           const now = new Date();
           const trialEnd = new Date(trialEndDate);
           const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
           
+          console.log('⏰ Days left in trial:', daysLeft);
+          
           // Only show modal if:
           // 1. Trial has actually expired (daysLeft <= 0), OR
           // 2. Trial expires in 1 day AND user hasn't seen the warning today
           const hasSeenWarningToday = localStorage.getItem('trialWarningSeen') === new Date().toDateString();
+          console.log('👀 Has seen warning today:', hasSeenWarningToday);
+          console.log('📝 Warning seen date:', localStorage.getItem('trialWarningSeen'));
+          console.log('📅 Today date:', new Date().toDateString());
           
           if (daysLeft <= 0 || (daysLeft === 1 && !hasSeenWarningToday)) {
+            console.log('🚨 Showing trial expiration modal');
             setShowTrialExpirationModal(true);
             // Mark that user has seen the warning today
             localStorage.setItem('trialWarningSeen', new Date().toDateString());
+          } else {
+            console.log('✅ Not showing trial modal - conditions not met');
           }
+        } else {
+          console.log('❌ No trial end date found');
         }
       };
       

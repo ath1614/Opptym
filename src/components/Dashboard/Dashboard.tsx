@@ -16,7 +16,7 @@ import {
   Plus,
   RefreshCw
 } from 'lucide-react';
-import TrialExpirationModal from '../Subscription/TrialExpirationModal';
+// Removed old TrialExpirationModal import - now handled in App.tsx
 
 interface DashboardStats {
   totalProjects: number;
@@ -58,8 +58,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [subscription, setSubscription] = useState<any>(null);
-  const [showTrialModal, setShowTrialModal] = useState(false);
-  const [trialModalType, setTrialModalType] = useState<'trial_expired' | 'subscription_expired' | 'trial_ending'>('trial_expired');
+  // Trial modal logic removed - now handled in App.tsx
 
   // Calculate delta percentage between two values
   const calculateDelta = (current: number, previous: number): { delta: number; direction: 'increase' | 'decrease' | 'stable' } => {
@@ -98,18 +97,7 @@ export default function Dashboard() {
         console.log('📊 Subscription response:', subscriptionResponse.data);
         setSubscription(subscriptionResponse.data);
         
-        // Check for trial/subscription expiry
-        const subData = subscriptionResponse.data;
-        if (subData.trialExpired) {
-          setTrialModalType('trial_expired');
-          setShowTrialModal(true);
-        } else if (subData.subscription !== 'free' && subData.status !== 'active') {
-          setTrialModalType('subscription_expired');
-          setShowTrialModal(true);
-        } else if (subData.isInTrial && subData.trialDaysLeft <= 1) {
-          setTrialModalType('trial_ending');
-          setShowTrialModal(true);
-        }
+        // Trial modal logic removed - now handled in App.tsx
       } catch (error) {
         console.log('⚠️ Could not fetch subscription details:', error);
         // Set fallback subscription data for free users
@@ -344,15 +332,7 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <TrialExpirationModal
-        isOpen={showTrialModal}
-        onClose={() => setShowTrialModal(false)}
-        type={trialModalType}
-        daysLeft={subscription?.trialDaysLeft}
-        subscription={subscription?.subscription}
-      />
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900">
 
       
       <div className="container mx-auto px-4 py-8">
@@ -785,6 +765,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-    </>
   );
 }
