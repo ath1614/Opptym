@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { showPopup } from '../utils/popup';
 
@@ -154,13 +154,15 @@ export const useAuthProvider = (): AuthContextType => {
       if (error.response?.status === 401) {
         localStorage.removeItem('token');
         setUser(null);
-      } else {
-        const token = localStorage.getItem('token');
-        const userFromToken = decodeUser(token);
-        if (userFromToken) {
-          setUser(userFromToken);
+        } else {
+          const token = localStorage.getItem('token');
+          if (token) {
+            const userFromToken = decodeUser(token);
+            if (userFromToken) {
+              setUser(userFromToken);
+            }
+          }
         }
-      }
     }
   };
 

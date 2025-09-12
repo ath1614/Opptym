@@ -5,7 +5,11 @@ const fs = require('fs').promises;
 class EmailService {
   constructor() {
     this.transporter = null;
-    this.initializeTransporter();
+    this.isInitialized = false;
+    // Initialize asynchronously to avoid blocking
+    this.initializeTransporter().catch(error => {
+      console.error('❌ Email service initialization failed:', error);
+    });
   }
 
   async initializeTransporter() {
@@ -14,6 +18,7 @@ class EmailService {
       if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
         console.log('⚠️ Email credentials not configured, using mock transporter');
         this.transporter = this.createMockTransporter();
+        this.isInitialized = true;
         return;
       }
 
@@ -36,10 +41,12 @@ class EmailService {
       console.log('✅ Email service initialized successfully with Hostinger SMTP');
       console.log('🔗 Reset URL format:', `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-reset-token/{token}`);
       console.log('🔗 Verification URL format:', `${process.env.API_BASE_URL || 'https://api.opptym.com'}/api/auth/verify-email/{token}`);
+      this.isInitialized = true;
     } catch (error) {
       console.error('❌ Email service initialization failed:', error);
       console.log('⚠️ Falling back to mock transporter');
       this.transporter = this.createMockTransporter();
+      this.isInitialized = true;
     }
   }
 
@@ -65,8 +72,13 @@ class EmailService {
 
   async sendEmail({ to, subject, html, text, attachments = [] }) {
     try {
-      if (!this.transporter) {
+      // Wait for initialization if not ready
+      if (!this.isInitialized) {
         await this.initializeTransporter();
+      }
+      
+      if (!this.transporter) {
+        throw new Error('Email service not available');
       }
 
       const mailOptions = {

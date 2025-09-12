@@ -40,9 +40,19 @@ const connectDB = async (options = {}) => {
     // Merge with provided options
     const connectionOptions = { ...defaultOptions, ...options.connectionOptions };
     
-    // Validate URI format - be more flexible
-    if (!mongoURI.includes('mongodb://') && !mongoURI.includes('mongodb+srv://')) {
-      console.error('❌ Invalid MongoDB URI format - must start with mongodb:// or mongodb+srv://');
+    // Validate URI format - be more flexible for development
+    if (!mongoURI || typeof mongoURI !== 'string') {
+      console.error('❌ MongoDB URI is not a valid string');
+      if (options.required !== false) {
+        process.exit(1);
+      } else {
+        return false;
+      }
+    }
+    
+    // Only validate format for production
+    if (process.env.NODE_ENV === 'production' && !mongoURI.includes('mongodb://') && !mongoURI.includes('mongodb+srv://')) {
+      console.error('❌ Invalid MongoDB URI format for production - must start with mongodb:// or mongodb+srv://');
       if (options.required !== false) {
         process.exit(1);
       } else {
