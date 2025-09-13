@@ -178,22 +178,29 @@ export const showPopup = (message: string, type: PopupType = 'info', duration: n
 };
 
 export const showConfirmPopup = (message: string, onConfirm: () => void, onCancel?: () => void): void => {
+  // Remove any existing popups first
+  const existingPopups = document.querySelectorAll('[data-popup="confirm"]');
+  existingPopups.forEach(popup => popup.remove());
+
   const modal = document.createElement('div');
+  modal.setAttribute('data-popup', 'confirm');
   modal.style.cssText = `
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center; z-index: 10000;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    animation: fadeIn 0.3s ease-out;
+    position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; 
+    background: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px) !important;
+    display: flex !important; align-items: center !important; justify-content: center !important; 
+    z-index: 999999 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    animation: fadeIn 0.3s ease-out !important;
   `;
 
   const content = document.createElement('div');
   content.style.cssText = `
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-    backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px; padding: 40px; max-width: 450px; width: 90%;
-    text-align: center; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-    animation: slideInUp 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)) !important;
+    backdrop-filter: blur(20px) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 24px !important; padding: 40px !important; max-width: 450px !important; width: 90% !important;
+    text-align: center !important; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3) !important;
+    animation: slideInUp 0.4s ease-out !important;
+    position: relative !important; z-index: 1000000 !important;
   `;
 
   // Create elements safely to prevent XSS
@@ -258,7 +265,51 @@ export const showConfirmPopup = (message: string, onConfirm: () => void, onCance
   content.appendChild(messageP);
   content.appendChild(buttonContainer);
 
+  modal.appendChild(content);
   document.body.appendChild(modal);
+
+  // Add CSS animations if not already present
+  if (!document.querySelector('#popup-animations')) {
+    const style = document.createElement('style');
+    style.id = 'popup-animations';
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideInUp {
+        from { 
+          opacity: 0; 
+          transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+          opacity: 1; 
+          transform: translateY(0) scale(1); 
+        }
+      }
+      @keyframes bounceIn {
+        0% { 
+          opacity: 0; 
+          transform: scale(0.3); 
+        }
+        50% { 
+          opacity: 1; 
+          transform: scale(1.05); 
+        }
+        70% { 
+          transform: scale(0.9); 
+        }
+        100% { 
+          opacity: 1; 
+          transform: scale(1); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Debug: Log that popup was created
+  console.log('🎨 Confirm popup created and added to DOM');
 
   // Add button hover effects
   confirmBtn.addEventListener('mouseenter', () => {
