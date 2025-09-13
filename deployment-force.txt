@@ -1,15 +1,17 @@
-FORCE_REBUILD_1757740343_v7.2
-CRITICAL_API_URL_FIX
+SUBSCRIPTION_ACCESS_FIX_1757741000_v8.0
+CRITICAL_SUBSCRIPTION_ACCESS_FIX
 TIMESTAMP: $(date)
-ISSUE: Old build still cached, still connecting to localhost:3000
+ISSUE: Free users could access all premium features (SEO Tools, Reports, etc.)
 ACTIONS TAKEN:
 1. Deleted all old build files (dist/, build/, .next/, out/)
 2. Cleared Vite cache (node_modules/.vite)
 3. Updated build trigger with new timestamp
 4. Force rebuild required
-FIXES APPLIED:
-1. Fixed MyProjects.tsx to use axios.defaults.baseURL
-2. Fixed src/lib/api.ts to use runtime hostname detection
-3. Added explicit domain checking for opptym.com
-STATUS: FORCE REBUILD REQUIRED
-PRIORITY: CRITICAL
+CRITICAL FIXES APPLIED:
+1. Added subscription-based sidebar filtering
+2. Added route protection for premium features
+3. Free users now only see: Dashboard, Projects, Pricing, Profile
+4. SEO Tools, Tasks, Reports restricted to paid users
+5. Professional access denied screens with upgrade prompts
+STATUS: CRITICAL SUBSCRIPTION FIX DEPLOYED
+PRIORITY: CRITICAL - BUSINESS LOGIC FIX
