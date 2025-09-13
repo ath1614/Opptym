@@ -1,1 +1,7 @@
-FORCE_DEPLOY_1757698436
+FORCE_DEPLOYMENT_1757739444
+API_URL_FIX_v7.0
+PRODUCTION_READY
+TIMESTAMP: $(date)
+ISSUE: Frontend connecting to localhost:3000 instead of api.opptym.com
+FIX: Enhanced API URL detection with explicit domain checking
+STATUS: READY FOR DEPLOYMENT
