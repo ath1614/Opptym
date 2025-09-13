@@ -37,6 +37,36 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  // Helper function to check if user can access a feature
+  const canAccessFeature = (feature: string): boolean => {
+    if (!user) return false;
+    
+    // Admin users can access everything
+    if (user.role === 'admin' || user.isAdmin) return true;
+    
+    // Check subscription-based access
+    const subscription = user.subscription || 'free';
+    
+    switch (feature) {
+      case 'projects':
+        // Free users can access projects (with limits enforced in component)
+        return true;
+      case 'tools':
+      case 'seoTasks':
+        // Only paid users or trial users can access SEO tools
+        return subscription !== 'free' || (user.trialEndDate ? new Date(user.trialEndDate) > new Date() : false);
+      case 'reports':
+        // Only paid users can access reports/analytics
+        return ['test', 'starter', 'pro', 'business', 'enterprise', 'custom'].includes(subscription);
+      case 'pricing':
+      case 'profile':
+        // Everyone can access pricing and profile
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const sidebarItems: SidebarItem[] = [
     {
       id: 'dashboard',
@@ -47,13 +77,21 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       id: 'projects',
       label: t('sidebar.projects'),
       icon: FolderOpen
-    },
-    {
+    }
+  ];
+
+  // Add SEO Tools only if user has access
+  if (canAccessFeature('tools')) {
+    sidebarItems.push({
       id: 'tools',
       label: t('sidebar.tools'),
       icon: Search
-    },
-    {
+    });
+  }
+
+  // Add SEO Tasks only if user has access
+  if (canAccessFeature('seoTasks')) {
+    sidebarItems.push({
       id: 'seoTasks',
       label: t('sidebar.seoTasks'),
       icon: CheckSquare,
@@ -94,12 +132,20 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           icon: FileText
         }
       ]
-    },
-    {
+    });
+  }
+
+  // Add Reports only if user has access
+  if (canAccessFeature('reports')) {
+    sidebarItems.push({
       id: 'reports',
       label: t('sidebar.reports'),
       icon: BarChart3
-    },
+    });
+  }
+
+  // Always add pricing and profile
+  sidebarItems.push(
     {
       id: 'pricing',
       label: t('sidebar.pricing'),
@@ -110,7 +156,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       label: t('sidebar.profile'),
       icon: User
     }
-  ];
+  );
 
   // Add admin panel if user is admin
   if (user?.role === 'admin') {

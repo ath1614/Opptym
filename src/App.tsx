@@ -324,6 +324,36 @@ function App() {
 
   // Removed more unused handler functions
 
+  // Helper function to check if user can access a feature
+  const canAccessFeature = (feature: string): boolean => {
+    if (!authProvider.user) return false;
+    
+    // Admin users can access everything
+    if (authProvider.user.role === 'admin' || authProvider.user.isAdmin) return true;
+    
+    // Check subscription-based access
+    const subscription = authProvider.user.subscription || 'free';
+    
+    switch (feature) {
+      case 'projects':
+        // Free users can access projects (with limits enforced in component)
+        return true;
+      case 'tools':
+      case 'seoTasks':
+        // Only paid users or trial users can access SEO tools
+        return subscription !== 'free' || (authProvider.user.trialEndDate ? new Date(authProvider.user.trialEndDate) > new Date() : false);
+      case 'reports':
+        // Only paid users can access reports/analytics
+        return ['test', 'starter', 'pro', 'business', 'enterprise', 'custom'].includes(subscription);
+      case 'pricing':
+      case 'profile':
+        // Everyone can access pricing and profile
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const renderContent = () => {
     // Check if user is admin for admin-only routes
     const isAdmin = authProvider.user?.role === 'admin';
@@ -335,21 +365,65 @@ function App() {
       case 'projects':
         return <MyProjects />;
       case 'tools':
+        if (!canAccessFeature('tools')) {
+          return (
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-primary-800 mb-4">Access Restricted</h1>
+                <p className="text-primary-600 mb-6">SEO Tools are only available for paid subscribers.</p>
+                <button 
+                  onClick={() => updateActiveTab('pricing')}
+                  className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+                >
+                  View Pricing Plans
+                </button>
+              </div>
+            </div>
+          );
+        }
         return <SEOTools />;
       case 'directory-submission':
-        return <DirectorySubmission />;
       case 'article-submission':
-        return <ArticleSubmission />;
       case 'press-release':
-        return <PressRelease />;
       case 'bookmarking':
-        return <BookMarking />;
       case 'business-listing':
-        return <BusinessListing />;
       case 'classified':
-        return <Classified />;
       case 'more-seo':
-        return <MoreSEO />;
+        if (!canAccessFeature('seoTasks')) {
+          return (
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-primary-800 mb-4">Access Restricted</h1>
+                <p className="text-primary-600 mb-6">SEO Tasks are only available for paid subscribers.</p>
+                <button 
+                  onClick={() => updateActiveTab('pricing')}
+                  className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+                >
+                  View Pricing Plans
+                </button>
+              </div>
+            </div>
+          );
+        }
+        // Route to appropriate component
+        switch (activeTab) {
+          case 'directory-submission':
+            return <DirectorySubmission />;
+          case 'article-submission':
+            return <ArticleSubmission />;
+          case 'press-release':
+            return <PressRelease />;
+          case 'bookmarking':
+            return <BookMarking />;
+          case 'business-listing':
+            return <BusinessListing />;
+          case 'classified':
+            return <Classified />;
+          case 'more-seo':
+            return <MoreSEO />;
+          default:
+            return <DirectorySubmission />;
+        }
       case 'project-details':
         return selectedProject ? (
           <ProjectDetails project={selectedProject} />
@@ -367,6 +441,22 @@ function App() {
           </div>
         );
       case 'reports':
+        if (!canAccessFeature('reports')) {
+          return (
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-primary-800 mb-4">Access Restricted</h1>
+                <p className="text-primary-600 mb-6">Reports and Analytics are only available for paid subscribers.</p>
+                <button 
+                  onClick={() => updateActiveTab('pricing')}
+                  className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+                >
+                  View Pricing Plans
+                </button>
+              </div>
+            </div>
+          );
+        }
         return (
           <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 p-6 relative overflow-hidden">
             {/* Animated Background */}
