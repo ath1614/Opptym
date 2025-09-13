@@ -462,8 +462,15 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     console.log('🔍 Directory creation request received:', {
       body: req.body,
       userId: req.userId,
-      userRole: req.user?.role
+      userRole: req.user?.role,
+      user: req.user
     });
+    
+    // Check if user is authenticated
+    if (!req.userId) {
+      console.log('❌ No userId found in request');
+      return res.status(401).json({ error: 'Authentication required' });
+    }
 
     const {
       name,
@@ -490,10 +497,23 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     } = req.body;
 
     // Validate required fields
+    console.log('🔍 Validating required fields:', {
+      name: !!name,
+      domain: !!domain,
+      submissionUrl: !!submissionUrl,
+      category: !!category
+    });
+    
     if (!name || !domain || !submissionUrl) {
+      console.log('❌ Missing required fields:', { name: !!name, domain: !!domain, submissionUrl: !!submissionUrl });
       return res.status(400).json({ 
         error: 'Missing required fields', 
-        details: 'Name, domain, and submission URL are required' 
+        details: 'Name, domain, and submission URL are required',
+        missing: {
+          name: !name,
+          domain: !domain,
+          submissionUrl: !submissionUrl
+        }
       });
     }
 

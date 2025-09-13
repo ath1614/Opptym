@@ -49,9 +49,18 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
       const token = localStorage.getItem('token');
       console.log('🚀 Creating directory with data:', form);
       console.log('🔗 Using API endpoint: /api/admin/directories');
-      await axios.post('/api/admin/directories', form, {
+      console.log('🔑 Token exists:', !!token);
+      console.log('📋 Required fields check:', {
+        name: !!form.name,
+        domain: !!form.domain,
+        submissionUrl: !!form.submissionUrl
+      });
+      
+      const response = await axios.post('/api/admin/directories', form, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      console.log('✅ Directory created successfully:', response.data);
 
       showPopup('Directory created successfully! 🎉', 'success');
       setForm({
@@ -80,16 +89,34 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
       onClose();
     } catch (error: any) {
       console.error('Directory creation error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error headers:', error.response?.headers);
+      
       const errorMessage = error.response?.data?.error || error.message;
       const errorDetails = error.response?.data?.details;
+      const fieldErrors = error.response?.data?.fieldErrors;
       
       let fullErrorMessage = `Error creating directory: ${errorMessage}`;
+      
       if (errorDetails) {
         if (Array.isArray(errorDetails)) {
           fullErrorMessage += `\nDetails: ${errorDetails.join(', ')}`;
         } else {
           fullErrorMessage += `\nDetails: ${errorDetails}`;
         }
+      }
+      
+      if (fieldErrors) {
+        fullErrorMessage += `\nField errors: ${JSON.stringify(fieldErrors)}`;
+      }
+      
+      if (error.response?.status === 400) {
+        fullErrorMessage += `\n\nThis is a validation error. Please check all required fields.`;
+      } else if (error.response?.status === 401) {
+        fullErrorMessage += `\n\nAuthentication error. Please log out and log back in.`;
+      } else if (error.response?.status === 403) {
+        fullErrorMessage += `\n\nPermission denied. You need admin access.`;
       }
       
       showPopup(fullErrorMessage, 'error');
