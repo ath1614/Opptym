@@ -459,6 +459,12 @@ router.get('/directories/classifications', protect, adminOnly, async (req, res) 
 // Create new directory (admin only)
 router.post('/directories', protect, adminOnly, async (req, res) => {
   try {
+    console.log('🔍 Directory creation request received:', {
+      body: req.body,
+      userId: req.userId,
+      userRole: req.user?.role
+    });
+
     const {
       name,
       domain,

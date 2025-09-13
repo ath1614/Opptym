@@ -38,6 +38,13 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     e.preventDefault();
     setLoading(true);
 
+    // Client-side validation
+    if (!form.name || !form.domain || !form.submissionUrl) {
+      showPopup('Please fill in all required fields: Name, Domain, and Submission URL', 'error');
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       console.log('🚀 Creating directory with data:', form);
@@ -182,6 +189,25 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   <option value="health">Health</option>
                   <option value="education">Education</option>
                   <option value="finance">Finance</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="sports">Sports</option>
+                  <option value="travel">Travel</option>
+                  <option value="food">Food</option>
+                  <option value="lifestyle">Lifestyle</option>
+                  <option value="other">Other</option>
+                  <option value="Web 2.0 Submission">Web 2.0 Submission</option>
+                  <option value="Q & A Websites">Q & A Websites</option>
+                  <option value="PDF Submission">PDF Submission</option>
+                  <option value="PPT Submission">PPT Submission</option>
+                  <option value="Video Submission">Video Submission</option>
+                  <option value="Event Submission">Event Submission</option>
+                  <option value="Podcast Submission">Podcast Submission</option>
+                  <option value="Photo Sharing">Photo Sharing</option>
+                  <option value="Search Engine Submission">Search Engine Submission</option>
+                  <option value="Infographics Submission">Infographics Submission</option>
+                  <option value="RSS Submission">RSS Submission</option>
+                  <option value="Ping Websites">Ping Websites</option>
+                  <option value="Blog Commenting">Blog Commenting</option>
                 </select>
               </div>
               
@@ -195,10 +221,84 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white"
                 >
                   <option value="Global">Global</option>
-                  <option value="United States">United States</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="India">India</option>
+                  <option value="USA">USA</option>
+                  <option value="UK">UK</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Australia">Australia</option>
                   <option value="Germany">Germany</option>
+                  <option value="France">France</option>
+                  <option value="India">India</option>
+                  <option value="Japan">Japan</option>
+                  <option value="Brazil">Brazil</option>
+                  <option value="Mexico">Mexico</option>
+                  <option value="Spain">Spain</option>
+                  <option value="Italy">Italy</option>
+                  <option value="Netherlands">Netherlands</option>
+                  <option value="Sweden">Sweden</option>
+                  <option value="Norway">Norway</option>
+                  <option value="Denmark">Denmark</option>
+                  <option value="Finland">Finland</option>
+                  <option value="Switzerland">Switzerland</option>
+                  <option value="Austria">Austria</option>
+                  <option value="Belgium">Belgium</option>
+                  <option value="Ireland">Ireland</option>
+                  <option value="New Zealand">New Zealand</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="South Korea">South Korea</option>
+                  <option value="China">China</option>
+                  <option value="Russia">Russia</option>
+                  <option value="South Africa">South Africa</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="Egypt">Egypt</option>
+                  <option value="Kenya">Kenya</option>
+                  <option value="Ghana">Ghana</option>
+                  <option value="Morocco">Morocco</option>
+                  <option value="Tunisia">Tunisia</option>
+                  <option value="Algeria">Algeria</option>
+                  <option value="Libya">Libya</option>
+                  <option value="Sudan">Sudan</option>
+                  <option value="Ethiopia">Ethiopia</option>
+                  <option value="Uganda">Uganda</option>
+                  <option value="Tanzania">Tanzania</option>
+                  <option value="Zambia">Zambia</option>
+                  <option value="Zimbabwe">Zimbabwe</option>
+                  <option value="Botswana">Botswana</option>
+                  <option value="Namibia">Namibia</option>
+                  <option value="Mozambique">Mozambique</option>
+                  <option value="Angola">Angola</option>
+                  <option value="Congo">Congo</option>
+                  <option value="Cameroon">Cameroon</option>
+                  <option value="Gabon">Gabon</option>
+                  <option value="Chad">Chad</option>
+                  <option value="Niger">Niger</option>
+                  <option value="Mali">Mali</option>
+                  <option value="Burkina Faso">Burkina Faso</option>
+                  <option value="Senegal">Senegal</option>
+                  <option value="Guinea">Guinea</option>
+                  <option value="Sierra Leone">Sierra Leone</option>
+                  <option value="Liberia">Liberia</option>
+                  <option value="Ivory Coast">Ivory Coast</option>
+                  <option value="Togo">Togo</option>
+                  <option value="Benin">Benin</option>
+                  <option value="Central African Republic">Central African Republic</option>
+                  <option value="Equatorial Guinea">Equatorial Guinea</option>
+                  <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                  <option value="Cape Verde">Cape Verde</option>
+                  <option value="Mauritania">Mauritania</option>
+                  <option value="Gambia">Gambia</option>
+                  <option value="Guinea-Bissau">Guinea-Bissau</option>
+                  <option value="Comoros">Comoros</option>
+                  <option value="Seychelles">Seychelles</option>
+                  <option value="Mauritius">Mauritius</option>
+                  <option value="Madagascar">Madagascar</option>
+                  <option value="Malawi">Malawi</option>
+                  <option value="Lesotho">Lesotho</option>
+                  <option value="Eswatini">Eswatini</option>
+                  <option value="Bangladesh">Bangladesh</option>
+                  <option value="Dubai">Dubai</option>
+                  <option value="Philippines">Philippines</option>
+                  <option value="Malaysia">Malaysia</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               
