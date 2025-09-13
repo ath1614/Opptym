@@ -33,6 +33,27 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     enterpriseUserLimit: -1
   });
   const [loading, setLoading] = useState(false);
+  const [suggestedNames, setSuggestedNames] = useState<string[]>([]);
+
+  // Function to generate alternative directory names
+  const generateAlternativeNames = (baseName: string): string[] => {
+    const alternatives = [];
+    const timestamp = new Date().getTime().toString().slice(-4);
+    
+    alternatives.push(`${baseName} ${timestamp}`);
+    alternatives.push(`${baseName} Directory`);
+    alternatives.push(`${baseName} Listing`);
+    alternatives.push(`${baseName} Portal`);
+    alternatives.push(`${baseName} Hub`);
+    
+    return alternatives;
+  };
+
+  // Function to use a suggested name
+  const useSuggestedName = (suggestedName: string) => {
+    setForm({ ...form, name: suggestedName });
+    setSuggestedNames([]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +133,13 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
       }
       
       if (error.response?.status === 400) {
-        fullErrorMessage += `\n\nThis is a validation error. Please check all required fields.`;
+        if (errorMessage.includes('already exists')) {
+          const alternatives = generateAlternativeNames(form.name);
+          setSuggestedNames(alternatives);
+          fullErrorMessage = `Directory name "${form.name}" already exists.\n\nSuggested alternatives:\n${alternatives.slice(0, 3).map(name => `• ${name}`).join('\n')}`;
+        } else {
+          fullErrorMessage += `\n\nThis is a validation error. Please check all required fields.`;
+        }
       } else if (error.response?.status === 401) {
         fullErrorMessage += `\n\nAuthentication error. Please log out and log back in.`;
       } else if (error.response?.status === 403) {
@@ -171,6 +198,27 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white"
                   placeholder="e.g., Blahoo"
                 />
+                
+                {/* Suggested Names */}
+                {suggestedNames.length > 0 && (
+                  <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+                      Suggested names:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestedNames.slice(0, 3).map((name, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => useSuggestedName(name)}
+                          className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors"
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div>
