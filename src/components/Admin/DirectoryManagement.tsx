@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, Save, X, Search, RefreshCw } from 'lucide-react';
 import axios from 'axios';
-import { showPopup } from '../../utils/popup';
+import { showPopup, showConfirmPopup } from '../../utils/popup';
 import {
   directoriesData, 
   getAllClassifications, 
@@ -89,15 +89,21 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
 
 
   const handleRemoveDirectory = (classification: string, directoryName: string) => {
-    if (window.confirm(`Are you sure you want to remove "${directoryName}"?`)) {
-      const updatedDirectories = {
-        ...directories,
-        [classification]: directories[classification].filter(dir => dir.name !== directoryName)
-      };
-      setDirectories(updatedDirectories);
-      onDirectoryUpdate?.();
-      showPopup('Directory removed successfully!', 'success');
-    }
+    showConfirmPopup(
+      `Are you sure you want to remove "${directoryName}"?`,
+      () => {
+        const updatedDirectories = {
+          ...directories,
+          [classification]: directories[classification].filter(dir => dir.name !== directoryName)
+        };
+        setDirectories(updatedDirectories);
+        onDirectoryUpdate?.();
+        showPopup('Directory removed successfully!', 'success');
+      },
+      () => {
+        // User cancelled, do nothing
+      }
+    );
   };
 
   const handleEditDirectory = (classification: string, directory: Directory) => {

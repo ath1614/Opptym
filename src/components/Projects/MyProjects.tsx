@@ -3,7 +3,7 @@ import {
   Plus, Search, Filter, Globe, MoreVertical, Eye, Edit3, Trash2, Loader2, AlertCircle
 } from 'lucide-react';
 import axios from 'axios';
-import { showPopup } from '../../utils/popup';
+import { showPopup, showConfirmPopup } from '../../utils/popup';
 
 import {
   getProjects,
@@ -464,10 +464,16 @@ const MyProjects = () => {
                         </button>
                         <button
                           onClick={() => {
-                            if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-                              handleDelete(project._id);
-                              setOpenDropdown(null);
-                            }
+                            showConfirmPopup(
+                              'Are you sure you want to delete this project? This action cannot be undone.',
+                              () => {
+                                handleDelete(project._id);
+                                setOpenDropdown(null);
+                              },
+                              () => {
+                                // User cancelled, do nothing
+                              }
+                            );
                           }}
                           disabled={deleting === project._id}
                           className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2 disabled:opacity-50"

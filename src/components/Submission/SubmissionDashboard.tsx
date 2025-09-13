@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 // Use axios directly with relative paths like other components
 import axios from 'axios';
+import { showConfirmPopup } from '../../utils/popup';
 import { ClientAutomationService } from '../../services/ClientAutomationService';
 import { UniversalFormService } from '../../services/UniversalFormService';
 import { 
@@ -1265,9 +1266,15 @@ const SubmissionsDashboard = () => {
         
         if (limit !== -1 && currentUsage >= limit) {
           // Show upgrade popup
-          if (window.confirm('You have reached your submission limit. Would you like to upgrade your plan to continue?')) {
-            window.location.hash = '#pricing';
-          }
+          showConfirmPopup(
+            'You have reached your submission limit. Would you like to upgrade your plan to continue?',
+            () => {
+              window.location.hash = '#pricing';
+            },
+            () => {
+              // User cancelled, do nothing
+            }
+          );
           return;
         }
       }

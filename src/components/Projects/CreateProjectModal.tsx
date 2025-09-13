@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import { createProject } from '../../lib/api';
+import { showPopup, showConfirmPopup } from '../../utils/popup';
 
 interface CreateProjectModalProps {
   onClose: () => void;
@@ -236,10 +237,16 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       
       if (showUpgradePopup) {
         setError('');
-        // Show upgrade modal
-        if (window.confirm(errorMessage + '\n\nWould you like to upgrade your plan?')) {
-          window.location.hash = '#pricing';
-        }
+        // Show upgrade modal with our popup system
+        showConfirmPopup(
+          errorMessage + '\n\nWould you like to upgrade your plan?',
+          () => {
+            window.location.hash = '#pricing';
+          },
+          () => {
+            // User cancelled, do nothing
+          }
+        );
       } else {
         setError(errorMessage);
       }
