@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Plus, Search, Filter, Globe, MoreVertical, Eye, Edit3, Trash2, Loader2, AlertCircle
 } from 'lucide-react';
+import axios from 'axios';
 
 import {
   getProjects,
@@ -103,7 +104,7 @@ const MyProjects = () => {
         return;
       }
 
-      const response = await fetch('/api/subscription/details', {
+      const response = await fetch(`${axios.defaults.baseURL}/api/subscription/details`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -1,7 +1,10 @@
-FORCE_DEPLOYMENT_1757739444
-API_URL_FIX_v7.0
-PRODUCTION_READY
+CRITICAL_API_FIX_1757739922_v7.1
+PRODUCTION_API_URL_FIX
 TIMESTAMP: $(date)
-ISSUE: Frontend connecting to localhost:3000 instead of api.opptym.com
-FIX: Enhanced API URL detection with explicit domain checking
-STATUS: READY FOR DEPLOYMENT
+ISSUE: API calls still going to localhost:3000
+FIXES APPLIED:
+1. Fixed MyProjects.tsx to use axios.defaults.baseURL
+2. Fixed src/lib/api.ts to use runtime hostname detection
+3. Added explicit domain checking for opptym.com
+STATUS: READY FOR IMMEDIATE DEPLOYMENT
+PRIORITY: CRITICAL

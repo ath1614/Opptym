@@ -4,13 +4,20 @@ const isProduction = import.meta.env.PROD;
 
 // Base URL configuration - ensure /api prefix is always included
 const getBaseURL = () => {
-  if (isProduction) {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://api.opptym.com';
-    // Ensure the URL ends with /api and doesn't have double slashes
-    const cleanApiUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
-    return cleanApiUrl.endsWith('/api') ? cleanApiUrl : `${cleanApiUrl}/api`;
+  // Use runtime detection like main.tsx
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
+  
+  // Force production API for opptym.com domain
+  if (hostname === 'opptym.com' || hostname === 'www.opptym.com') {
+    return 'https://api.opptym.com/api';
   }
-   return 'http://localhost:3000/api';
+  
+  if (isLocalhost) {
+    return 'http://localhost:3000/api';
+  } else {
+    return 'https://api.opptym.com/api';
+  }
 };
 
 export const BASE_URL = getBaseURL();
