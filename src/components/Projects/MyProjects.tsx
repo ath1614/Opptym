@@ -3,6 +3,7 @@ import {
   Plus, Search, Filter, Globe, MoreVertical, Eye, Edit3, Trash2, Loader2, AlertCircle
 } from 'lucide-react';
 import axios from 'axios';
+import { showPopup } from '../../utils/popup';
 
 import {
   getProjects,
@@ -170,7 +171,7 @@ const MyProjects = () => {
       console.error('❌ Error deleting project:', err);
       // Use a more user-friendly error message
       const errorMessage = err.response?.data?.error || err.message || 'Failed to delete project. Please try again.';
-      alert(errorMessage);
+      showPopup(errorMessage, 'error');
     } finally {
       setDeleting(null);
     }
@@ -443,7 +444,7 @@ const MyProjects = () => {
                             } catch (err: any) {
                               console.error('❌ Failed to load project details:', err);
                               const errorMessage = err.response?.data?.error || err.message || 'Failed to load project details. Please try again.';
-                              alert(errorMessage);
+                              showPopup(errorMessage, 'error');
                             }
                           }}
                           className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center space-x-2"

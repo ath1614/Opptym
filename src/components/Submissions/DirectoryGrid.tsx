@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ExternalLink, ChevronLeft, ChevronRight, Search, Grid, List, X } from 'lucide-react';
 import { Directory } from '../../config/directoriesConfig';
 import ProjectSelectionModal from '../Modals/ProjectSelectionModal';
+import { showPopup } from '../../utils/popup';
 
 interface DirectoryGridProps {
   directories: Directory[];
@@ -107,14 +108,14 @@ export default function DirectoryGrid({
     console.log('generateBookmarkletToken called with:', { selectedProject, selectedDirectory });
     
     if (!selectedProject) {
-      alert('❌ No project selected. Please select a project first.');
+      showPopup('❌ No project selected. Please select a project first.', 'warning');
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
       return;
     }
 
     if (!selectedDirectory) {
-      alert('❌ No directory selected. Please select a directory first.');
+      showPopup('❌ No directory selected. Please select a directory first.', 'warning');
       setShowBookmarkletModal(false);
       return;
     }
@@ -126,7 +127,7 @@ export default function DirectoryGrid({
     );
 
     if (missingFields.length > 0) {
-      alert(`❌ Project "${selectedProject.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`);
+      showPopup(`❌ Project "${selectedProject.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`, 'error');
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
       return;
@@ -134,7 +135,7 @@ export default function DirectoryGrid({
 
     // Validate directory data
     if (!selectedDirectory.name || !selectedDirectory.url) {
-      alert(`❌ Directory data is incomplete. Missing: ${!selectedDirectory.name ? 'name' : ''} ${!selectedDirectory.url ? 'url' : ''}`);
+      showPopup(`❌ Directory data is incomplete. Missing: ${!selectedDirectory.name ? 'name' : ''} ${!selectedDirectory.url ? 'url' : ''}`, 'error');
       setShowBookmarkletModal(false);
       return;
     }
@@ -162,7 +163,7 @@ export default function DirectoryGrid({
       testBookmarkletFunctionality(token, selectedProject, selectedDirectory);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
-      alert('❌ Failed to generate bookmarklet token. Please try again.');
+      showPopup('❌ Failed to generate bookmarklet token. Please try again.', 'error');
     } finally {
       setIsGeneratingToken(false);
     }
@@ -173,14 +174,14 @@ export default function DirectoryGrid({
     console.log('generateBookmarkletTokenWithData called with:', { project, directory });
 
     if (!project) {
-      alert('❌ No project selected. Please select a project first.');
+      showPopup('❌ No project selected. Please select a project first.', 'warning');
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
       return;
     }
 
     if (!directory) {
-      alert('❌ No directory selected. Please select a directory first.');
+      showPopup('❌ No directory selected. Please select a directory first.', 'warning');
       setShowBookmarkletModal(false);
       return;
     }
@@ -192,7 +193,7 @@ export default function DirectoryGrid({
     );
 
     if (missingFields.length > 0) {
-      alert(`❌ Project "${project.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`);
+      showPopup(`❌ Project "${project.title}" is missing required fields: ${missingFields.join(', ')}. Please edit your project or select a different one.`, 'error');
       setShowBookmarkletModal(false);
       setShowProjectSelection(true);
       return;
@@ -200,7 +201,7 @@ export default function DirectoryGrid({
 
     // Validate directory data
     if (!directory.name || !directory.url) {
-      alert(`❌ Directory data is incomplete. Missing: ${!directory.name ? 'name' : ''} ${!directory.url ? 'url' : ''}`);
+      showPopup(`❌ Directory data is incomplete. Missing: ${!directory.name ? 'name' : ''} ${!directory.url ? 'url' : ''}`, 'error');
       setShowBookmarkletModal(false);
       return;
     }
@@ -222,7 +223,7 @@ export default function DirectoryGrid({
       testBookmarkletFunctionality(token, project, directory);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
-      alert('❌ Failed to generate bookmarklet token. Please try again.');
+      showPopup('❌ Failed to generate bookmarklet token. Please try again.', 'error');
     } finally {
       setIsGeneratingToken(false);
     }
@@ -741,11 +742,11 @@ export default function DirectoryGrid({
                       }}
                       onClick={(e: any) => {
                         e.preventDefault();
-                        alert('Drag this button to your bookmarks bar! This bookmarklet can only be used once.');
+                        showPopup('Drag this button to your bookmarks bar! This bookmarklet can only be used once.', 'info');
                       }}
                       onContextMenu={(e: any) => {
                         e.preventDefault();
-                        alert('Right-clicking is disabled for security. Please drag the bookmarklet to your bookmarks bar.');
+                        showPopup('Right-clicking is disabled for security. Please drag the bookmarklet to your bookmarks bar.', 'warning');
                       }}
                       onMouseDown={(e: any) => {
                         if (e.button === 2) { // Right click
@@ -764,7 +765,7 @@ export default function DirectoryGrid({
                       onClick={() => {
                         console.log('Visit Website clicked:', selectedDirectory?.url);
                         if (!selectedDirectory?.url) {
-                          alert('No URL available for this directory');
+                          showPopup('No URL available for this directory', 'warning');
                           return false;
                         }
                       }}
@@ -780,7 +781,7 @@ export default function DirectoryGrid({
                         if (bookmarkletToken && selectedProject && selectedDirectory) {
                           testBookmarkletFunctionality(bookmarkletToken, selectedProject, selectedDirectory);
                         } else {
-                          alert('Missing bookmarklet data. Please generate bookmarklet first.');
+                          showPopup('Missing bookmarklet data. Please generate bookmarklet first.', 'warning');
                         }
                       }}
                       className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium flex items-center gap-2"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, Save, X, Search, RefreshCw } from 'lucide-react';
 import axios from 'axios';
+import { showPopup } from '../../utils/popup';
 import {
   directoriesData, 
   getAllClassifications, 
@@ -95,7 +96,7 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
       };
       setDirectories(updatedDirectories);
       onDirectoryUpdate?.();
-      alert('Directory removed successfully!');
+      showPopup('Directory removed successfully!', 'success');
     }
   };
 
@@ -115,7 +116,7 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
       setDirectories(updatedDirectories);
       setEditingDirectory(null);
       onDirectoryUpdate?.();
-      alert('Directory updated successfully!');
+      showPopup('Directory updated successfully!', 'success');
     }
   };
 
@@ -317,7 +318,7 @@ const DirectoryForm: React.FC<DirectoryFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.url) {
-      alert('Name and URL are required');
+      showPopup('Name and URL are required', 'warning');
       return;
     }
 

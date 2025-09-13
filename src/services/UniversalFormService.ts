@@ -129,7 +129,8 @@ export class UniversalFormService {
               }
               
               if (!result.success) {
-                alert('❌ ' + (result.message || 'Bookmarklet validation failed'));
+                // Note: showPopup is not available in this context, using console.error instead
+                console.error('❌ Bookmarklet validation failed:', result.message || 'Unknown error');
                 return null;
               }
               
