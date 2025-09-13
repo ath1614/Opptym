@@ -192,15 +192,49 @@ export default function PricingPlans() {
     }
     
     try {
+      console.log('🚀 Initiating payment for plan:', planId);
+      console.log('📧 User email:', user.email);
+      console.log('💰 Billing cycle:', billingCycle);
+      console.log('🔑 Stripe price ID:', priceId);
+      
       const res = await axios.post(`/api/payment/create-checkout-session`, {
         planId: planId,
         userId: user.id,
         email: user.email,
         billingCycle,
       });
-      window.location.href = res.data.url;
+      
+      console.log('✅ Checkout session created:', res.data);
+      
+      if (res.data && res.data.url) {
+        window.location.href = res.data.url;
+      } else {
+        throw new Error('No checkout URL received from server');
+      }
     } catch (err: any) {
-      showPopup('Failed to initiate payment: ' + (err.response?.data?.error || err.message), 'error');
+      console.error('❌ Payment initiation failed:', err);
+      console.error('❌ Error response:', err.response?.data);
+      console.error('❌ Error status:', err.response?.status);
+      
+      let errorMessage = 'Failed to initiate payment. ';
+      
+      if (err.response?.status === 404) {
+        errorMessage += 'Payment service is currently unavailable. Please try again later or contact support.';
+        // Show contact information for payment issues
+        setTimeout(() => {
+          showPopup('For immediate assistance with payments, please contact support at support@opptym.com', 'info');
+        }, 3000);
+      } else if (err.response?.status === 500) {
+        errorMessage += 'Server error occurred. Please try again later.';
+      } else if (err.response?.data?.error) {
+        errorMessage += err.response.data.error;
+      } else if (err.message) {
+        errorMessage += err.message;
+      } else {
+        errorMessage += 'Unknown error occurred.';
+      }
+      
+      showPopup(errorMessage, 'error');
       setSelectedPlan(null);
     }
   };
