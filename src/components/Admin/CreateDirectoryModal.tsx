@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Plus, Globe, Settings, Save } from 'lucide-react';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
+import { handleFormError } from '../../utils/errorHandler';
 
 interface CreateDirectoryModalProps {
   isOpen: boolean;
@@ -109,44 +110,16 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
       onCreated();
       onClose();
     } catch (error: any) {
-      console.error('Directory creation error:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
-      console.error('Error headers:', error.response?.headers);
-      
-      const errorMessage = error.response?.data?.error || error.message;
-      const errorDetails = error.response?.data?.details;
-      const fieldErrors = error.response?.data?.fieldErrors;
-      
-      let fullErrorMessage = `Error creating directory: ${errorMessage}`;
-      
-      if (errorDetails) {
-        if (Array.isArray(errorDetails)) {
-          fullErrorMessage += `\nDetails: ${errorDetails.join(', ')}`;
-        } else {
-          fullErrorMessage += `\nDetails: ${errorDetails}`;
-        }
+      // Handle duplicate name error specifically
+      if (error.response?.status === 400 && error.response?.data?.error?.includes('already exists')) {
+        const alternatives = generateAlternativeNames(form.name);
+        setSuggestedNames(alternatives);
+        const fullErrorMessage = `Directory name "${form.name}" already exists.\n\nSuggested alternatives:\n${alternatives.slice(0, 3).map(name => `• ${name}`).join('\n')}`;
+        showPopup(fullErrorMessage, 'error');
+      } else {
+        // Use comprehensive error handler for all other errors
+        handleFormError(error, 'Directory Creation');
       }
-      
-      if (fieldErrors) {
-        fullErrorMessage += `\nField errors: ${JSON.stringify(fieldErrors)}`;
-      }
-      
-      if (error.response?.status === 400) {
-        if (errorMessage.includes('already exists')) {
-          const alternatives = generateAlternativeNames(form.name);
-          setSuggestedNames(alternatives);
-          fullErrorMessage = `Directory name "${form.name}" already exists.\n\nSuggested alternatives:\n${alternatives.slice(0, 3).map(name => `• ${name}`).join('\n')}`;
-        } else {
-          fullErrorMessage += `\n\nThis is a validation error. Please check all required fields.`;
-        }
-      } else if (error.response?.status === 401) {
-        fullErrorMessage += `\n\nAuthentication error. Please log out and log back in.`;
-      } else if (error.response?.status === 403) {
-        fullErrorMessage += `\n\nPermission denied. You need admin access.`;
-      }
-      
-      showPopup(fullErrorMessage, 'error');
     } finally {
       setLoading(false);
     }

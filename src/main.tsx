@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 import axios from 'axios'
+import { setupAxiosInterceptors } from './utils/axiosErrorInterceptor'
 
 // CRITICAL FIX: API URL Configuration - v6.7
 console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.7');
@@ -45,6 +46,9 @@ console.log('🎯 TRIAL UX IMPROVEMENTS ACTIVE - v7.2');
 console.log('🔍 Hostname:', window.location.hostname);
 console.log('🔗 API URL:', apiUrl);
 console.log('✅ Runtime API URL detection active');
+
+// Setup comprehensive error handling
+setupAxiosInterceptors();
 
 
 

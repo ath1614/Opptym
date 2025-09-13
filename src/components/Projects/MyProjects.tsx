@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { showPopup, showConfirmPopup } from '../../utils/popup';
+import { useErrorHandler } from '../../hooks/useErrorHandler';
 
 import {
   getProjects,
@@ -86,6 +87,7 @@ const MyProjects = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const { handleError, handleApiError } = useErrorHandler();
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
