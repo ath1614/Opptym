@@ -1,10 +1,15 @@
-CRITICAL_API_FIX_1757739922_v7.1
-PRODUCTION_API_URL_FIX
+FORCE_REBUILD_1757740343_v7.2
+CRITICAL_API_URL_FIX
 TIMESTAMP: $(date)
-ISSUE: API calls still going to localhost:3000
+ISSUE: Old build still cached, still connecting to localhost:3000
+ACTIONS TAKEN:
+1. Deleted all old build files (dist/, build/, .next/, out/)
+2. Cleared Vite cache (node_modules/.vite)
+3. Updated build trigger with new timestamp
+4. Force rebuild required
 FIXES APPLIED:
 1. Fixed MyProjects.tsx to use axios.defaults.baseURL
 2. Fixed src/lib/api.ts to use runtime hostname detection
 3. Added explicit domain checking for opptym.com
-STATUS: READY FOR IMMEDIATE DEPLOYMENT
+STATUS: FORCE REBUILD REQUIRED
 PRIORITY: CRITICAL

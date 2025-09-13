@@ -9,20 +9,29 @@ import axios from 'axios'
 console.log('🚀 OPPTYM Frontend Starting - API URL Fix v6.7');
 console.log('🔥 FORCE BUILD UPDATE - HOSTNAME DETECTION v6.7');
 
-// Set base URL for axios - CRITICAL FIX v7.0
+// Set base URL for axios - CRITICAL FIX v7.2
 // Force runtime detection to prevent build optimization
 const getApiUrl = () => {
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
   
-  // Force production API for opptym.com domain
-  if (hostname === 'opptym.com' || hostname === 'www.opptym.com') {
+  // Force production API for opptym.com domain - AGGRESSIVE CHECK
+  if (hostname === 'opptym.com' || hostname === 'www.opptym.com' || hostname.includes('opptym.com')) {
+    console.log('🚨 FORCING PRODUCTION API for domain:', hostname);
+    return 'https://api.opptym.com';
+  }
+  
+  // Check if we're in production environment
+  if (window.location.protocol === 'https:' && !isLocalhost) {
+    console.log('🚨 FORCING PRODUCTION API for HTTPS production environment');
     return 'https://api.opptym.com';
   }
   
   if (isLocalhost) {
+    console.log('🔧 Using localhost API for development');
     return 'http://localhost:3000';
   } else {
+    console.log('🚨 FORCING PRODUCTION API as fallback');
     return 'https://api.opptym.com';
   }
 };
@@ -30,9 +39,9 @@ const getApiUrl = () => {
 const apiUrl = getApiUrl();
 axios.defaults.baseURL = apiUrl;
 
-console.log('🚀 OPPTYM Frontend Starting - API URL Fix v7.0');
-console.log('🔥 FORCE BUILD UPDATE - PRODUCTION API FIX v7.0');
-console.log('🎯 TRIAL UX IMPROVEMENTS ACTIVE - v7.0');
+console.log('🚀 OPPTYM Frontend Starting - API URL Fix v7.2');
+console.log('🔥 FORCE BUILD UPDATE - AGGRESSIVE API FIX v7.2');
+console.log('🎯 TRIAL UX IMPROVEMENTS ACTIVE - v7.2');
 console.log('🔍 Hostname:', window.location.hostname);
 console.log('🔗 API URL:', apiUrl);
 console.log('✅ Runtime API URL detection active');

@@ -4,18 +4,27 @@ const isProduction = import.meta.env.PROD;
 
 // Base URL configuration - ensure /api prefix is always included
 const getBaseURL = () => {
-  // Use runtime detection like main.tsx
+  // Use runtime detection like main.tsx - AGGRESSIVE CHECK
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
   
-  // Force production API for opptym.com domain
-  if (hostname === 'opptym.com' || hostname === 'www.opptym.com') {
+  // Force production API for opptym.com domain - AGGRESSIVE CHECK
+  if (hostname === 'opptym.com' || hostname === 'www.opptym.com' || hostname.includes('opptym.com')) {
+    console.log('🚨 API LIB: FORCING PRODUCTION API for domain:', hostname);
+    return 'https://api.opptym.com/api';
+  }
+  
+  // Check if we're in production environment
+  if (window.location.protocol === 'https:' && !isLocalhost) {
+    console.log('🚨 API LIB: FORCING PRODUCTION API for HTTPS production environment');
     return 'https://api.opptym.com/api';
   }
   
   if (isLocalhost) {
+    console.log('🔧 API LIB: Using localhost API for development');
     return 'http://localhost:3000/api';
   } else {
+    console.log('🚨 API LIB: FORCING PRODUCTION API as fallback');
     return 'https://api.opptym.com/api';
   }
 };
