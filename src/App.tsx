@@ -340,8 +340,9 @@ function App() {
         return true;
       case 'tools':
       case 'seoTasks':
-        // Only paid users or trial users can access SEO tools
-        return subscription !== 'free' || (authProvider.user.trialEndDate ? new Date(authProvider.user.trialEndDate) > new Date() : false);
+        // ALL users can access SEO tools (freemium model)
+        // Usage limits will be enforced within the components
+        return true;
       case 'reports':
         // Only paid users can access reports/analytics
         return ['test', 'starter', 'pro', 'business', 'enterprise', 'custom'].includes(subscription);
@@ -365,22 +366,6 @@ function App() {
       case 'projects':
         return <MyProjects />;
       case 'tools':
-        if (!canAccessFeature('tools')) {
-          return (
-            <div className="min-h-screen flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-primary-800 mb-4">Access Restricted</h1>
-                <p className="text-primary-600 mb-6">SEO Tools are only available for paid subscribers.</p>
-                <button 
-                  onClick={() => updateActiveTab('pricing')}
-                  className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-                >
-                  View Pricing Plans
-                </button>
-              </div>
-            </div>
-          );
-        }
         return <SEOTools />;
       case 'directory-submission':
       case 'article-submission':
@@ -389,22 +374,6 @@ function App() {
       case 'business-listing':
       case 'classified':
       case 'more-seo':
-        if (!canAccessFeature('seoTasks')) {
-          return (
-            <div className="min-h-screen flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-primary-800 mb-4">Access Restricted</h1>
-                <p className="text-primary-600 mb-6">SEO Tasks are only available for paid subscribers.</p>
-                <button 
-                  onClick={() => updateActiveTab('pricing')}
-                  className="px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-                >
-                  View Pricing Plans
-                </button>
-              </div>
-            </div>
-          );
-        }
         // Route to appropriate component
         switch (activeTab) {
           case 'directory-submission':

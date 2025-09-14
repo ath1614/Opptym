@@ -61,8 +61,9 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
         return true;
       case 'tools':
       case 'seoTasks':
-        // Only paid users or trial users can access SEO tools
-        return subscription !== 'free' || (user.trialEndDate ? new Date(user.trialEndDate) > new Date() : false);
+        // ALL users can see and access SEO tools (freemium model)
+        // Usage limits will be enforced within the components
+        return true;
       case 'reports':
         // Only paid users can access reports/analytics
         return ['test', 'starter', 'pro', 'business', 'enterprise', 'custom'].includes(subscription);
