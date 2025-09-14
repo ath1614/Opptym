@@ -144,14 +144,12 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
     });
   }
 
-  // Add Reports only if user has access
-  if (canAccessFeature('reports')) {
-    sidebarItems.push({
-      id: 'reports',
-      label: t('sidebar.reports'),
-      icon: BarChart3
-    });
-  }
+  // Always add Reports section (access restriction handled in click handler)
+  sidebarItems.push({
+    id: 'reports',
+    label: t('sidebar.reports'),
+    icon: BarChart3
+  });
 
   // Always add pricing and profile
   sidebarItems.push(
@@ -188,6 +186,13 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
     if (hasChildren) {
       toggleExpanded(itemId);
     } else {
+      // Handle Reports access restriction
+      if (itemId === 'reports' && !canAccessFeature('reports')) {
+        // Show access denied message for reports
+        alert('Access Denied: Reports are available for paid users only. Please upgrade your subscription to access detailed analytics and reports.');
+        return;
+      }
+      
       // Handle SEO task classifications - they should go to their respective components
       if (['directory-submission', 'article-submission', 'press-release', 'bookmarking', 'business-listing', 'classified', 'more-seo'].includes(itemId)) {
         setActiveTab(itemId); // Go to the specific classification component
