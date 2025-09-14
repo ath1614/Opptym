@@ -1,195 +1,199 @@
 const mongoose = require('mongoose');
 
 const teamSchema = new mongoose.Schema({
+  // Team name
   name: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    maxlength: 100
   },
-  ownerId: {
+  
+  // Team description
+  description: {
+    type: String,
+    trim: true,
+    maxlength: 500
+  },
+  
+  // Team owner (admin who created the team)
+  owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
+  
+  // Team members
   members: [{
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
     role: {
       type: String,
-      enum: ['admin', 'manager', 'employee'],
+      enum: ['employee', 'manager', 'viewer', 'admin'],
       default: 'employee'
     },
     permissions: {
-      type: Map,
-      of: Boolean,
-      default: {}
+      canUseSeoTools: { type: Boolean, default: true },
+      canCreateProjects: { type: Boolean, default: true },
+      canEditProjects: { type: Boolean, default: false },
+      canDeleteProjects: { type: Boolean, default: false },
+      canSubmitToDirectories: { type: Boolean, default: true },
+      canViewSubmissionReports: { type: Boolean, default: true },
+      canManageTeamMembers: { type: Boolean, default: false },
+      canAccessAdminPanel: { type: Boolean, default: false }
     },
     joinedAt: {
       type: Date,
       default: Date.now
+    },
+    status: {
+      type: String,
+      enum: ['active', 'inactive', 'suspended'],
+      default: 'active'
     }
   }],
-  maxMembers: {
-    type: Number,
-    default: 5
-  },
-  subscription: {
-    type: String,
-    enum: ['free', 'basic', 'pro', 'enterprise'],
-    default: 'free'
-  },
+  
+  // Team settings
   settings: {
-    allowMemberInvites: {
-      type: Boolean,
-      default: true
-    },
-    requireApproval: {
-      type: Boolean,
-      default: false
-    },
-    autoAssignProjects: {
-      type: Boolean,
-      default: false
-    }
+    allowMemberInvites: { type: Boolean, default: true },
+    requireApprovalForJoins: { type: Boolean, default: false },
+    maxMembers: { type: Number, default: 10 },
+    defaultRole: { type: String, default: 'employee' }
   },
-  usage: {
-    projectsCreated: {
-      type: Number,
-      default: 0
-    },
-    submissionsMade: {
-      type: Number,
-      default: 0
-    },
-    automationsRun: {
-      type: Number,
-      default: 0
-    }
+  
+  // Team status
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'suspended'],
+    default: 'active'
+  },
+  
+  // Subscription plan for the team
+  subscriptionPlan: {
+    type: String,
+    enum: ['business', 'enterprise', 'custom'],
+    default: 'business'
   }
 }, {
   timestamps: true
 });
 
 // Indexes
-teamSchema.index({ ownerId: 1 });
-teamSchema.index({ 'members.userId': 1 });
+teamSchema.index({ owner: 1 });
+teamSchema.index({ 'members.user': 1 });
+teamSchema.index({ status: 1 });
 
-// Virtual for member count
-teamSchema.virtual('memberCount').get(function() {
-  return this.members.length;
-});
-
-// Virtual for available slots
-teamSchema.virtual('availableSlots').get(function() {
-  return Math.max(0, this.maxMembers - this.members.length);
-});
-
-// Method to check if team can add more members
-teamSchema.methods.canAddMember = function() {
-  return this.members.length < this.maxMembers;
+// Static methods
+teamSchema.statics.createTeam = async function(teamData) {
+  const team = new this(teamData);
+  return await team.save();
 };
 
-// Method to add a member to the team
-teamSchema.methods.addMember = function(userId, role = 'employee', permissions = {}) {
-  if (!this.canAddMember()) {
-    throw new Error('Team is at maximum capacity');
-  }
+teamSchema.statics.findByOwner = async function(ownerId) {
+  return await this.find({ owner: ownerId }).populate('members.user', 'username email firstName lastName');
+};
 
+teamSchema.statics.findByMember = async function(userId) {
+  return await this.find({ 
+    $or: [
+      { owner: userId },
+      { 'members.user': userId }
+    ]
+  }).populate('members.user', 'username email firstName lastName');
+};
+
+// Instance methods
+teamSchema.methods.addMember = async function(userId, role = 'employee', permissions = {}) {
   // Check if user is already a member
-  const existingMember = this.members.find(member => member.userId.toString() === userId.toString());
+  const existingMember = this.members.find(member => member.user.toString() === userId.toString());
   if (existingMember) {
     throw new Error('User is already a member of this team');
   }
-
+  
+  // Check member limit
+  if (this.members.length >= this.settings.maxMembers) {
+    throw new Error('Team has reached maximum member limit');
+  }
+  
   this.members.push({
-    userId,
+    user: userId,
     role,
-    permissions,
-    joinedAt: new Date()
+    permissions: {
+      canUseSeoTools: true,
+      canCreateProjects: true,
+      canEditProjects: false,
+      canDeleteProjects: false,
+      canSubmitToDirectories: true,
+      canViewSubmissionReports: true,
+      canManageTeamMembers: false,
+      canAccessAdminPanel: false,
+      ...permissions
+    },
+    joinedAt: new Date(),
+    status: 'active'
   });
-
-  return this.save();
+  
+  return await this.save();
 };
 
-// Method to remove a member from the team
-teamSchema.methods.removeMember = function(userId) {
-  this.members = this.members.filter(member => member.userId.toString() !== userId.toString());
-  return this.save();
+teamSchema.methods.removeMember = async function(userId) {
+  this.members = this.members.filter(member => member.user.toString() !== userId.toString());
+  return await this.save();
 };
 
-// Method to update member role
-teamSchema.methods.updateMemberRole = function(userId, newRole) {
-  const member = this.members.find(member => member.userId.toString() === userId.toString());
+teamSchema.methods.updateMemberRole = async function(userId, role, permissions = {}) {
+  const member = this.members.find(member => member.user.toString() === userId.toString());
   if (!member) {
     throw new Error('Member not found');
   }
-
-  member.role = newRole;
-  return this.save();
-};
-
-// Method to get team usage
-teamSchema.methods.getUsage = function() {
-  return {
-    projects: this.usage.projectsCreated,
-    submissions: this.usage.submissionsMade,
-    automations: this.usage.automationsRun,
-    members: this.members.length,
-    maxMembers: this.maxMembers
-  };
-};
-
-// Method to increment usage
-teamSchema.methods.incrementUsage = function(type, amount = 1) {
-  if (this.usage[type] !== undefined) {
-    this.usage[type] += amount;
-    return this.save();
-  }
-  throw new Error(`Invalid usage type: ${type}`);
-};
-
-// Static method to create team for user
-teamSchema.statics.createForUser = function(userId, teamName = 'My Team') {
-  return this.create({
-    name: teamName,
-    ownerId: userId,
-    members: [{
-      userId,
-      role: 'admin',
-      permissions: { canManageTeam: true, canInviteMembers: true },
-      joinedAt: new Date()
-    }]
-  });
-};
-
-// Static method to get team by owner
-teamSchema.statics.getByOwner = function(ownerId) {
-  return this.findOne({ ownerId }).populate('members.userId', 'username email role');
-};
-
-// Static method to get team by member
-teamSchema.statics.getByMember = function(userId) {
-  return this.findOne({ 'members.userId': userId }).populate('members.userId', 'username email role');
-};
-
-// Pre-save middleware to ensure owner is always a member
-teamSchema.pre('save', function(next) {
-  const ownerIsMember = this.members.some(member => 
-    member.userId.toString() === this.ownerId.toString()
-  );
   
-  if (!ownerIsMember) {
-    this.members.push({
-      userId: this.ownerId,
-      role: 'admin',
-      permissions: { canManageTeam: true, canInviteMembers: true },
-      joinedAt: new Date()
-    });
+  member.role = role;
+  member.permissions = { ...member.permissions, ...permissions };
+  
+  return await this.save();
+};
+
+teamSchema.methods.getMemberCount = function() {
+  return this.members.length + 1; // +1 for owner
+};
+
+teamSchema.methods.isOwner = function(userId) {
+  return this.owner.toString() === userId.toString();
+};
+
+teamSchema.methods.isMember = function(userId) {
+  return this.isOwner(userId) || this.members.some(member => member.user.toString() === userId.toString());
+};
+
+teamSchema.methods.getMemberRole = function(userId) {
+  if (this.isOwner(userId)) {
+    return 'owner';
   }
   
-  next();
-});
+  const member = this.members.find(member => member.user.toString() === userId.toString());
+  return member ? member.role : null;
+};
 
-module.exports = mongoose.model('Team', teamSchema); 
+teamSchema.methods.getMemberPermissions = function(userId) {
+  if (this.isOwner(userId)) {
+    // Owner has all permissions
+    return {
+      canUseSeoTools: true,
+      canCreateProjects: true,
+      canEditProjects: true,
+      canDeleteProjects: true,
+      canSubmitToDirectories: true,
+      canViewSubmissionReports: true,
+      canManageTeamMembers: true,
+      canAccessAdminPanel: true
+    };
+  }
+  
+  const member = this.members.find(member => member.user.toString() === userId.toString());
+  return member ? member.permissions : {};
+};
+
+module.exports = mongoose.model('Team', teamSchema);

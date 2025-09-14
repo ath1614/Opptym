@@ -107,15 +107,16 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: 'Free',
     price: 0,
     features: [
-      '5 SEO Projects',
-      '10 Directory Submissions/month',
-      'Basic SEO Tools',
-      'Email Support'
+      '3-Day Trial Access',
+      '3 SEO Projects (trial)',
+      '5 Directory Submissions (trial)',
+      '5 SEO Tool Uses (trial)',
+      'Progressive Feature Lockout'
     ],
     limits: {
-      projects: 5,
-      submissions: 10,
-      tools: false
+      projects: 3,
+      submissions: 5,
+      tools: true
     }
   },
   {

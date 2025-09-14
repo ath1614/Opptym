@@ -13,6 +13,8 @@ import {
   BarChart3,
   Sparkles,
   ArrowUpRight,
+  ArrowDownRight,
+  Minus,
   Plus,
   RefreshCw
 } from 'lucide-react';
@@ -87,19 +89,16 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const totalProjects = projectsResponse.data.length;
-      console.log('📊 Total projects:', totalProjects);
       
       // Fetch subscription details
       try {
         const subscriptionResponse = await axios.get('/api/subscription/details', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-        console.log('📊 Subscription response:', subscriptionResponse.data);
         setSubscription(subscriptionResponse.data);
         
         // Trial modal logic removed - now handled in App.tsx
       } catch (error) {
-        console.log('⚠️ Could not fetch subscription details:', error);
         // Set fallback subscription data for free users
         const getPlanLimits = (plan: string) => {
           switch (plan) {
@@ -224,20 +223,17 @@ export default function Dashboard() {
         setRecentActivity(realActivity);
 
       } catch (error) {
-        console.log('⚠️ Could not fetch recent submissions:', error);
         setRecentActivity([]);
       }
       
       // Fetch analytics and update stats with real data
       try {
-        const analyticsResponse = await axios.get('/api/analytics/overview', {
+        const analyticsResponse = await axios.get('/api/analytics/dashboard', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-        console.log('📊 Analytics response:', analyticsResponse.data);
         
         // Update stats with analytics data
         if (analyticsResponse.data) {
-          console.log('📊 Updating stats with analytics data:', analyticsResponse.data);
           setStats(prev => {
             const updatedStats = {
               ...prev,
@@ -248,12 +244,15 @@ export default function Dashboard() {
               backlinksGained: analyticsResponse.data.backlinksGained || prev.backlinksGained,
               directoriesSubmitted: analyticsResponse.data.totalSubmissions || prev.directoriesSubmitted
             };
-            console.log('📊 Updated stats:', updatedStats);
             return updatedStats;
           });
+
+          // Update deltas with analytics data
+          if (analyticsResponse.data.deltas) {
+            setDeltas(analyticsResponse.data.deltas);
+          }
         }
       } catch (error) {
-        console.log('⚠️ Could not fetch analytics:', error);
         // Keep existing stats if analytics fails
       }
       
@@ -319,11 +318,42 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-accent-50 to-primary-100 dark:from-primary-950 dark:via-accent-950 dark:to-primary-900 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64" role="status" aria-live="polite">
-            <div className="flex items-center space-x-3">
-              <RefreshCw className="w-6 h-6 animate-spin text-accent-600" aria-hidden="true" />
-              <span className="text-lg text-primary-700 dark:text-primary-300">Loading dashboard...</span>
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header Skeleton */}
+          <div className="text-center space-y-4">
+            <div className="h-12 bg-white/20 dark:bg-primary-800/20 rounded-2xl animate-pulse w-80 mx-auto"></div>
+            <div className="h-6 bg-white/20 dark:bg-primary-800/20 rounded-xl animate-pulse w-96 mx-auto"></div>
+          </div>
+          
+          {/* Stats Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="group p-6 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 animate-pulse">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-white/30 dark:bg-primary-700/30 rounded-2xl"></div>
+                  <div className="w-16 h-4 bg-white/30 dark:bg-primary-700/30 rounded-lg"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-8 bg-white/30 dark:bg-primary-700/30 rounded-xl w-20"></div>
+                  <div className="h-4 bg-white/30 dark:bg-primary-700/30 rounded-lg w-24"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Activity Skeleton */}
+          <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 p-8">
+            <div className="h-8 bg-white/30 dark:bg-primary-700/30 rounded-xl w-48 mb-6 animate-pulse"></div>
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4 p-4 bg-white/20 dark:bg-primary-700/20 rounded-2xl animate-pulse">
+                  <div className="w-10 h-10 bg-white/30 dark:bg-primary-600/30 rounded-full"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-white/30 dark:bg-primary-600/30 rounded w-3/4"></div>
+                    <div className="h-3 bg-white/30 dark:bg-primary-600/30 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -423,9 +453,17 @@ export default function Dashboard() {
                   {stat.icon}
                 </div>
                 <div className={`flex items-center space-x-1 text-sm font-medium ${
-                  stat.changeType === 'increase' ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'
+                  stat.changeType === 'increase' ? 'text-success-600 dark:text-success-400' : 
+                  stat.changeType === 'decrease' ? 'text-error-600 dark:text-error-400' : 
+                  'text-gray-500 dark:text-gray-400'
                 }`}>
-                  <ArrowUpRight className="w-4 h-4" />
+                  {stat.changeType === 'increase' ? (
+                    <ArrowUpRight className="w-4 h-4" />
+                  ) : stat.changeType === 'decrease' ? (
+                    <ArrowDownRight className="w-4 h-4" />
+                  ) : (
+                    <Minus className="w-4 h-4" />
+                  )}
                   <span>{stat.change}</span>
                 </div>
               </div>

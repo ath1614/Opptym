@@ -118,12 +118,61 @@ exports.stripeWebhook = async (req, res) => {
     
     // Update user subscription in DB
     try {
-      await User.findByIdAndUpdate(userId, { 
-        subscription: planName.toLowerCase(),
-        subscriptionStatus: 'active',
-        subscriptionExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-      });
-      console.log('✅ User subscription updated:', userId);
+      const user = await User.findById(userId);
+      if (!user) {
+        console.error('❌ User not found:', userId);
+        return;
+      }
+
+      // Check if this is a custom plan
+      const plan = await Plan.findById(planId);
+      if (plan && plan.isCustom) {
+        // Handle custom plan
+        user.subscription = 'custom';
+        user.customPlan = {
+          name: plan.name,
+          description: plan.description || '',
+          price: plan.price.monthly,
+          billingCycle: 'monthly',
+          limits: plan.limits || {
+            submissions: 100,
+            projects: 10,
+            tools: 50,
+            apiCalls: 500
+          },
+          features: {
+            canCreateProjects: true,
+            canSubmitDirectories: true,
+            canUseSeoTools: true,
+            canAccessAnalytics: plan.limits?.apiCalls > 1000, // Custom logic for analytics
+            canAccessAdmin: false
+          }
+        };
+        console.log('✅ Custom plan assigned to user:', userId);
+      } else {
+        // Handle regular plan
+        user.subscription = planName.toLowerCase();
+        console.log('✅ Regular plan assigned to user:', userId);
+      }
+
+      user.subscriptionStatus = 'active';
+      user.subscriptionExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+      
+      // Update plan limits
+      await user.setPlanLimits();
+      await user.save();
+      
+      // Create notification for subscription change
+      try {
+        const NotificationHelper = require('../utils/notificationHelper');
+        await NotificationHelper.createSubscriptionNotification(userId, 'subscription_upgraded', {
+          planName: plan ? plan.name : planName
+        });
+      } catch (error) {
+        console.error('Error creating subscription notification:', error);
+      }
+      
+      console.log('✅ User subscription updated:', userId, 'Plan:', user.subscription);
     } catch (error) {
       console.error('❌ Error updating user subscription:', error);
     }

@@ -9,6 +9,7 @@ interface User {
   website?: string;
   timezone?: string;
   bio?: string;
+  profilePhoto?: string;
   subscription?: 'free' | 'test' | 'starter' | 'pro' | 'business' | 'enterprise';
   status?: 'active' | 'inactive' | 'suspended' | 'banned' | 'pending';
   role?: 'user' | 'admin';

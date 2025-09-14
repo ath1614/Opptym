@@ -1,5 +1,6 @@
 // Central Directories Configuration
 export interface Directory {
+  _id?: string;
   name: string;
   url: string;
   description?: string;

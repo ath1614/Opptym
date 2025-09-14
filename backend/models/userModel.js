@@ -72,12 +72,18 @@ const userSchema = new mongoose.Schema({
     seoToolsUsed: { type: Number, default: 0 },
     apiCallsUsed: { type: Number, default: 0 }
   },
+  // Trial usage tracking for progressive lockout
+  trialUsage: {
+    seoToolsUsed: { type: Number, default: 0 },
+    projectsUsed: { type: Number, default: 0 },
+    submissionsUsed: { type: Number, default: 0 }
+  },
   // Plan limits (cached for performance)
   planLimits: {
     submissions: { type: Number, default: 5 },
-    projects: { type: Number, default: 1 },
-    tools: { type: Number, default: 10 },
-    apiCalls: { type: Number, default: 20 }
+    projects: { type: Number, default: 3 },
+    tools: { type: Number, default: 5 },
+    apiCalls: { type: Number, default: 50 }
   },
   // Custom plan details (for custom subscriptions)
   customPlan: {
@@ -87,9 +93,9 @@ const userSchema = new mongoose.Schema({
     billingCycle: { type: String, enum: ['monthly', 'yearly', 'lifetime'], default: 'monthly' },
     limits: {
       submissions: { type: Number, default: 5 },
-      projects: { type: Number, default: 1 },
-      tools: { type: Number, default: 10 },
-      apiCalls: { type: Number, default: 20 }
+      projects: { type: Number, default: 3 },
+      tools: { type: Number, default: 5 },
+      apiCalls: { type: Number, default: 50 }
     },
     features: {
       canCreateProjects: { type: Boolean, default: true },
@@ -202,7 +208,7 @@ userSchema.index({ subscription: 1 });
 userSchema.index({ 'trialEndDate': 1 });
 
 // Pre-save middleware to set trial dates for free users
-userSchema.pre('save', function(next) {
+userSchema.pre('save', async function(next) {
   if (this.isNew && this.subscription === 'free') {
     if (!this.trialStartDate) {
       this.trialStartDate = new Date();
@@ -218,10 +224,24 @@ userSchema.pre('save', function(next) {
   next();
 });
 
+// Post-save middleware to create notifications
+userSchema.post('save', async function(doc) {
+  try {
+    const NotificationHelper = require('../utils/notificationHelper');
+    
+    // Create trial started notification for new free users
+    if (doc.isNew && doc.subscription === 'free') {
+      await NotificationHelper.createSubscriptionNotification(doc._id, 'trial_started');
+    }
+  } catch (error) {
+    console.error('Error creating notification:', error);
+  }
+});
+
 // Instance methods
 userSchema.methods.updatePlanLimits = function() {
   const limits = {
-    free: { submissions: 5, projects: 1, tools: 10, apiCalls: 20 },
+    free: { submissions: 5, projects: 3, tools: 5, apiCalls: 50 },
     starter: { submissions: 150, projects: 5, tools: 100, apiCalls: 500 },
     pro: { submissions: 750, projects: 15, tools: 500, apiCalls: 2000 },
     business: { submissions: 1500, projects: 50, tools: 1000, apiCalls: 5000 },
@@ -254,14 +274,82 @@ userSchema.methods.getTrialDaysLeft = function() {
   return Math.max(0, diffDays);
 };
 
-userSchema.methods.hasFeatureAccess = function(feature) {
-  // Admin has access to everything
-  if (this.role === 'admin') return true;
+// Progressive lockout methods for free trial users
+userSchema.methods.canUseSeoTools = function() {
+  if (this.subscription !== 'free') return true;
+  if (!this.isInTrialPeriod()) return false;
+  return this.trialUsage.seoToolsUsed < 5; // 5 SEO tool uses in trial
+};
+
+userSchema.methods.canCreateProjects = function() {
+  if (this.subscription !== 'free') return true;
+  if (!this.isInTrialPeriod()) return false;
+  return this.trialUsage.projectsUsed < 3; // 3 projects in trial
+};
+
+userSchema.methods.canMakeSubmissions = function() {
+  if (this.subscription !== 'free') return true;
+  if (!this.isInTrialPeriod()) return false;
+  return this.trialUsage.submissionsUsed < 5; // 5 submissions in trial
+};
+
+userSchema.methods.incrementTrialUsage = function(type) {
+  if (this.subscription !== 'free' || !this.isInTrialPeriod()) return;
   
-  // Check if trial is expired
+  switch (type) {
+    case 'seoTools':
+      this.trialUsage.seoToolsUsed += 1;
+      break;
+    case 'projects':
+      this.trialUsage.projectsUsed += 1;
+      break;
+    case 'submissions':
+      this.trialUsage.submissionsUsed += 1;
+      break;
+  }
+  
+  return this.save();
+};
+
+userSchema.methods.getTrialLockoutStatus = function() {
+  if (this.subscription !== 'free') {
+    return { locked: false, reason: null };
+  }
+  
+  if (!this.isInTrialPeriod()) {
+    return { 
+      locked: true, 
+      reason: 'trial_expired',
+      message: 'Your 3-day trial has expired. Upgrade to continue using OPPTYM.'
+    };
+  }
+  
+  const status = {
+    locked: false,
+    reason: null,
+    seoToolsLocked: !this.canUseSeoTools(),
+    projectsLocked: !this.canCreateProjects(),
+    submissionsLocked: !this.canMakeSubmissions()
+  };
+  
+  // Check if any feature is locked
+  if (status.seoToolsLocked || status.projectsLocked || status.submissionsLocked) {
+    status.locked = true;
+    status.reason = 'trial_limits_reached';
+    status.message = 'You\'ve reached your trial limits. Upgrade to unlock all features.';
+  }
+  
+  return status;
+};
+
+userSchema.methods.hasFeatureAccess = function(feature) {
+  // Check if trial is expired (applies to all users including admins)
   if (this.subscription === 'free' && !this.isInTrialPeriod()) {
     return false;
   }
+  
+  // Admin has access to admin panel regardless of trial status
+  if (this.role === 'admin' && feature === 'admin') return true;
   
   // Map feature names to feature flags
   const featureMap = {
@@ -284,13 +372,13 @@ userSchema.methods.hasFeatureAccess = function(feature) {
 };
 
 userSchema.methods.hasPermission = function(permission) {
-  // Admin has all permissions
-  if (this.role === 'admin') return true;
-  
-  // Check if trial is expired
+  // Check if trial is expired (applies to all users including admins)
   if (this.subscription === 'free' && !this.isInTrialPeriod()) {
     return false;
   }
+  
+  // Admin has access to admin panel regardless of trial status
+  if (this.role === 'admin' && permission === 'canAccessAdmin') return true;
   
   // Map permissions to features
   const permissionMap = {
@@ -306,13 +394,13 @@ userSchema.methods.hasPermission = function(permission) {
 };
 
 userSchema.methods.checkUsageLimit = function(feature) {
-  // Admin has unlimited access
-  if (this.role === 'admin') return true;
-  
-  // Check if trial is expired
+  // Check if trial is expired (applies to all users including admins)
   if (this.subscription === 'free' && !this.isInTrialPeriod()) {
     return false;
   }
+  
+  // Admin has unlimited access to admin features only
+  if (this.role === 'admin' && feature === 'admin') return true;
   
   const limits = {
     submissions: this.planLimits.submissions,
@@ -364,10 +452,10 @@ userSchema.methods.incrementUsage = function(feature) {
 userSchema.methods.setPlanLimits = function() {
   const planLimits = {
     free: {
-      submissions: 5,
-      projects: 1,
-      tools: 10,
-      apiCalls: 20
+      submissions: 5, // 5 submissions in trial
+      projects: 3, // 3 projects in trial
+      tools: 5, // 5 SEO tool uses in trial
+      apiCalls: 50 // 50 API calls in trial
     },
     test: {
       submissions: 10,
@@ -401,9 +489,9 @@ userSchema.methods.setPlanLimits = function() {
     },
     custom: {
       submissions: this.customPlan?.limits?.submissions || 5,
-      projects: this.customPlan?.limits?.projects || 1,
-      tools: this.customPlan?.limits?.tools || 10,
-      apiCalls: this.customPlan?.limits?.apiCalls || 20
+      projects: this.customPlan?.limits?.projects || 3,
+      tools: this.customPlan?.limits?.tools || 5,
+      apiCalls: this.customPlan?.limits?.apiCalls || 50
     }
   };
 
@@ -421,9 +509,9 @@ userSchema.methods.setPlanLimits = function() {
     };
   } else {
     this.features = {
-      canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
-      canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
-      canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canCreateProjects: this.canCreateProjects(),
+      canSubmitDirectories: this.canMakeSubmissions(),
+      canUseSeoTools: this.canUseSeoTools(),
       canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
       canAccessAdmin: this.role === 'admin'
     };
@@ -436,10 +524,10 @@ userSchema.methods.setPlanLimits = function() {
 userSchema.methods.setPlanLimitsSync = function() {
   const planLimits = {
     free: {
-      submissions: 5,
-      projects: 1,
-      tools: 10,
-      apiCalls: 20
+      submissions: 5, // 5 submissions in trial
+      projects: 3, // 3 projects in trial
+      tools: 5, // 5 SEO tool uses in trial
+      apiCalls: 50 // 50 API calls in trial
     },
     test: {
       submissions: 10,
@@ -473,9 +561,9 @@ userSchema.methods.setPlanLimitsSync = function() {
     },
     custom: {
       submissions: this.customPlan?.limits?.submissions || 5,
-      projects: this.customPlan?.limits?.projects || 1,
-      tools: this.customPlan?.limits?.tools || 10,
-      apiCalls: this.customPlan?.limits?.apiCalls || 20
+      projects: this.customPlan?.limits?.projects || 3,
+      tools: this.customPlan?.limits?.tools || 5,
+      apiCalls: this.customPlan?.limits?.apiCalls || 50
     }
   };
 
@@ -493,9 +581,9 @@ userSchema.methods.setPlanLimitsSync = function() {
     };
   } else {
     this.features = {
-      canCreateProjects: this.subscription !== 'free' || this.isInTrialPeriod(),
-      canSubmitDirectories: this.subscription !== 'free' || this.isInTrialPeriod(),
-      canUseSeoTools: this.subscription !== 'free' || this.isInTrialPeriod(),
+      canCreateProjects: this.canCreateProjects(),
+      canSubmitDirectories: this.canMakeSubmissions(),
+      canUseSeoTools: this.canUseSeoTools(),
       canAccessAnalytics: ['test', 'pro', 'business', 'enterprise'].includes(this.subscription),
       canAccessAdmin: this.role === 'admin'
     };

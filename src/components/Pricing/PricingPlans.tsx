@@ -276,7 +276,7 @@ export default function PricingPlans() {
             </span> plan
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {user.subscription === 'free' ? 'Free forever plan with basic features' :
+            {user.subscription === 'free' ? 'Free plan: 3-day trial with progressive feature lockout' :
              user.subscription === 'test' ? 'Test plan - ₹10 payment testing' :
              user.subscription === 'starter' ? '1 project, 150 submissions per month' :
              user.subscription === 'pro' ? '5 projects, 750 submissions per month' :
@@ -531,7 +531,7 @@ export default function PricingPlans() {
             </div>
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-2">Is there a free trial?</h3>
-              <p className="text-gray-600 dark:text-gray-400">Our Starter plan is completely free forever. No credit card required to get started.</p>
+              <p className="text-gray-600 dark:text-gray-400">Our Free plan includes a 3-day trial with progressive feature lockout. Try 3 projects, 5 submissions, and 5 SEO tool uses. No credit card required to get started.</p>
             </div>
           </div>
           <div className="space-y-6">

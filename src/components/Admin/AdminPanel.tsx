@@ -87,6 +87,30 @@ export default function AdminPanel() {
   const [newDirectory, setNewDirectory] = useState<any>({ name: '', domain: '', category: '', pageRank: 0, status: 'active' });
   const [showCreateDirectoryModal, setShowCreateDirectoryModal] = useState(false);
   const [directoryRefreshKey, setDirectoryRefreshKey] = useState(0);
+  
+  // System Settings State
+  const [systemSettings, setSystemSettings] = useState({
+    siteName: 'OPPTYM - SEO Automation Platform',
+    supportEmail: 'support@opptym.com',
+    defaultUserRole: 'free',
+    requireEmailVerification: true,
+    enableRateLimiting: true,
+    enableTwoFactorAuth: false,
+    plans: [
+      { id: 'free', name: 'Free Trial', projects: 1, submissions: 10, price: 0, isActive: true },
+      { id: 'starter', name: 'Starter Pack', projects: 1, submissions: 100, price: 999, isActive: true },
+      { id: 'pro', name: 'Pro Pack', projects: 5, submissions: 500, price: 3999, isActive: true },
+      { id: 'business', name: 'Business Pack', projects: 10, submissions: 1000, price: 8999, isActive: true }
+    ],
+    stripePublishableKey: '',
+    stripeSecretKey: '',
+    webhookSecret: '',
+    aiProvider: 'huggingface',
+    aiApiKey: '',
+    enableAiFormDetection: true
+  });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const openCreateUser = () => {
     setEditingUser(null);
@@ -318,6 +342,69 @@ export default function AdminPanel() {
     const d = new Date(date);
     return isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString();
   };
+
+  // System Settings Functions
+  const fetchSystemSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/admin/settings', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSystemSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching system settings:', error);
+      setSettingsMessage({ message: 'Failed to load system settings', type: 'error' });
+    }
+  };
+
+  const saveSystemSettings = async () => {
+    setSettingsLoading(true);
+    setSettingsMessage(null);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put('/api/admin/settings', systemSettings, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setSystemSettings(response.data.settings);
+      setSettingsMessage({ message: 'System settings saved successfully!', type: 'success' });
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSettingsMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Error saving system settings:', error);
+      setSettingsMessage({ 
+        message: error.response?.data?.error || 'Failed to save system settings', 
+        type: 'error' 
+      });
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
+  const handleSettingChange = (field: string, value: any) => {
+    setSystemSettings(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handlePlanChange = (planId: string, field: string, value: any) => {
+    setSystemSettings(prev => ({
+      ...prev,
+      plans: prev.plans.map(plan => 
+        plan.id === planId ? { ...plan, [field]: value } : plan
+      )
+    }));
+  };
+
+  // Load system settings when settings tab is activated
+  useEffect(() => {
+    if (activeTab === 'settings') {
+      fetchSystemSettings();
+    }
+  }, [activeTab]);
 
   // In the Users tab, compute selected users' statuses
   const selectedStatuses = selectedUsers.map(id => {
@@ -951,6 +1038,24 @@ export default function AdminPanel() {
       {/* Settings Tab */}
       {activeTab === 'settings' && (
         <div className="space-y-6">
+          {/* Settings Messages */}
+          {settingsMessage && (
+            <div className={`p-4 rounded-lg ${
+              settingsMessage.type === 'success' 
+                ? 'bg-green-50 border border-green-200 text-green-800' 
+                : 'bg-red-50 border border-red-200 text-red-800'
+            }`}>
+              <div className="flex items-center space-x-2">
+                {settingsMessage.type === 'success' ? (
+                  <CheckCircle className="w-5 h-5" />
+                ) : (
+                  <AlertCircle className="w-5 h-5" />
+                )}
+                <span className="font-medium">{settingsMessage.message}</span>
+              </div>
+            </div>
+          )}
+          
           <div className="bg-white dark:bg-primary-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">System Settings</h3>
             
@@ -966,7 +1071,8 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="text"
-                        defaultValue="SEO Automation Toolkit"
+                        value={systemSettings.siteName}
+                        onChange={(e) => handleSettingChange('siteName', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -976,7 +1082,8 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="email"
-                        defaultValue="support@seoautomation.com"
+                        value={systemSettings.supportEmail}
+                        onChange={(e) => handleSettingChange('supportEmail', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -984,7 +1091,11 @@ export default function AdminPanel() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Default User Role
                       </label>
-                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <select 
+                        value={systemSettings.defaultUserRole}
+                        onChange={(e) => handleSettingChange('defaultUserRole', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
                         <option value="free">Free</option>
                         <option value="starter">Starter</option>
                         <option value="pro">Pro</option>
@@ -1004,7 +1115,12 @@ export default function AdminPanel() {
                         <p className="text-sm text-gray-600 dark:text-gray-400">New users must verify their email</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
+                        <input 
+                          type="checkbox" 
+                          checked={systemSettings.requireEmailVerification}
+                          onChange={(e) => handleSettingChange('requireEmailVerification', e.target.checked)}
+                          className="sr-only peer" 
+                        />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-600"></div>
                       </label>
                     </div>
@@ -1014,7 +1130,12 @@ export default function AdminPanel() {
                         <p className="text-sm text-gray-600 dark:text-gray-400">Limit API requests per user</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
+                        <input 
+                          type="checkbox" 
+                          checked={systemSettings.enableRateLimiting}
+                          onChange={(e) => handleSettingChange('enableRateLimiting', e.target.checked)}
+                          className="sr-only peer" 
+                        />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-600"></div>
                       </label>
                     </div>
@@ -1024,7 +1145,12 @@ export default function AdminPanel() {
                         <p className="text-sm text-gray-600 dark:text-gray-400">Require 2FA for admin accounts</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" />
+                        <input 
+                          type="checkbox" 
+                          checked={systemSettings.enableTwoFactorAuth}
+                          onChange={(e) => handleSettingChange('enableTwoFactorAuth', e.target.checked)}
+                          className="sr-only peer" 
+                        />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-600"></div>
                       </label>
                     </div>
@@ -1037,12 +1163,7 @@ export default function AdminPanel() {
                 <div>
                   <h4 className="font-medium text-gray-900 mb-4">Plan Management</h4>
                   <div className="space-y-4">
-                    {[
-                      { id: 'free', name: 'Free Trial', projects: 1, submissions: 10, price: 0 },
-                      { id: 'starter', name: 'Starter Pack', projects: 1, submissions: 100, price: 999 },
-                      { id: 'pro', name: 'Pro Pack', projects: 5, submissions: 500, price: 3999 },
-                      { id: 'business', name: 'Business Pack', projects: 10, submissions: 1000, price: 8999 }
-                    ].map((plan) => (
+                    {systemSettings.plans.map((plan) => (
                       <div key={plan.id} className="p-4 border border-gray-200 rounded-lg">
                         <div className="flex items-center justify-between mb-3">
                           <h5 className="font-medium text-gray-900 dark:text-white">{plan.name}</h5>
@@ -1053,7 +1174,8 @@ export default function AdminPanel() {
                             <label className="block text-sm text-gray-600 mb-1">Projects</label>
                             <input
                               type="number"
-                              defaultValue={plan.projects}
+                              value={plan.projects}
+                              onChange={(e) => handlePlanChange(plan.id, 'projects', parseInt(e.target.value))}
                               className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                             />
                           </div>
@@ -1061,7 +1183,8 @@ export default function AdminPanel() {
                             <label className="block text-sm text-gray-600 mb-1">Submissions</label>
                             <input
                               type="number"
-                              defaultValue={plan.submissions}
+                              value={plan.submissions}
+                              onChange={(e) => handlePlanChange(plan.id, 'submissions', parseInt(e.target.value))}
                               className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                             />
                           </div>
@@ -1070,7 +1193,8 @@ export default function AdminPanel() {
                           <label className="block text-sm text-gray-600 mb-1">Price (₹)</label>
                           <input
                             type="number"
-                            defaultValue={plan.price}
+                            value={plan.price}
+                            onChange={(e) => handlePlanChange(plan.id, 'price', parseInt(e.target.value))}
                             className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
@@ -1089,7 +1213,9 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="text"
-                        defaultValue="pk_test_..."
+                        value={systemSettings.stripePublishableKey}
+                        onChange={(e) => handleSettingChange('stripePublishableKey', e.target.value)}
+                        placeholder="pk_test_..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -1099,7 +1225,9 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="password"
-                        defaultValue="sk_test_..."
+                        value={systemSettings.stripeSecretKey}
+                        onChange={(e) => handleSettingChange('stripeSecretKey', e.target.value)}
+                        placeholder="sk_test_..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -1109,7 +1237,9 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="password"
-                        defaultValue="whsec_..."
+                        value={systemSettings.webhookSecret}
+                        onChange={(e) => handleSettingChange('webhookSecret', e.target.value)}
+                        placeholder="whsec_..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -1124,7 +1254,11 @@ export default function AdminPanel() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         AI Provider
                       </label>
-                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <select 
+                        value={systemSettings.aiProvider}
+                        onChange={(e) => handleSettingChange('aiProvider', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
                         <option value="huggingface">Hugging Face (Free)</option>
                         <option value="openai">OpenAI (Paid)</option>
                         <option value="ollama">Ollama (Local)</option>
@@ -1136,6 +1270,8 @@ export default function AdminPanel() {
                       </label>
                       <input
                         type="password"
+                        value={systemSettings.aiApiKey}
+                        onChange={(e) => handleSettingChange('aiApiKey', e.target.value)}
                         placeholder="Enter your API key"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -1146,7 +1282,12 @@ export default function AdminPanel() {
                         <p className="text-sm text-gray-600 dark:text-gray-400">Use AI to automatically detect form fields</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
+                        <input 
+                          type="checkbox" 
+                          checked={systemSettings.enableAiFormDetection}
+                          onChange={(e) => handleSettingChange('enableAiFormDetection', e.target.checked)}
+                          className="sr-only peer" 
+                        />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-600"></div>
                       </label>
                     </div>
@@ -1161,9 +1302,13 @@ export default function AdminPanel() {
             </div>
 
             <div className="flex justify-end pt-6 border-t border-gray-200 mt-8">
-              <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all flex items-center space-x-2">
+              <button 
+                onClick={saveSystemSettings}
+                disabled={settingsLoading}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <Settings className="w-4 h-4" />
-                <span>Save Settings</span>
+                <span>{settingsLoading ? 'Saving...' : 'Save Settings'}</span>
               </button>
             </div>
           </div>

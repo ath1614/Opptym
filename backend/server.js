@@ -347,6 +347,38 @@ try {
   console.error('❌ Error loading bookmarklet routes:', error);
 }
 
+// Load notification routes
+try {
+  app.use('/api/notifications', require('./routes/notificationRoutes'));
+  console.log('✅ Notification routes loaded');
+} catch (error) {
+  console.error('❌ Error loading notification routes:', error);
+}
+
+// Load team routes
+try {
+  app.use('/api/team', require('./routes/teamRoutes'));
+  console.log('✅ Team routes loaded');
+} catch (error) {
+  console.error('❌ Error loading team routes:', error);
+}
+
+// Load analytics routes
+try {
+  app.use('/api/analytics', require('./routes/analyticsRoutes'));
+  console.log('✅ Analytics routes loaded');
+} catch (error) {
+  console.error('❌ Error loading analytics routes:', error);
+}
+
+// Load system settings routes
+try {
+  app.use('/api/admin/settings', require('./routes/systemSettingsRoutes'));
+  console.log('✅ System settings routes loaded');
+} catch (error) {
+  console.error('❌ Error loading system settings routes:', error);
+}
+
 // Load user profile routes
 try {
   app.use('/api/user', require('./routes/userProfileRoutes'));

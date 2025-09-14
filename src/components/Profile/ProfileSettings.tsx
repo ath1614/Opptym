@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 // Remove BASE_URL import - use relative paths like other components
-import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import { getUserDisplayName, getUserInitials, getUserProfilePhoto } from '../../utils/userUtils';
 import SubscriptionStatus from '../Subscription/SubscriptionStatus';
 import { 
   Camera, 
@@ -12,10 +12,6 @@ import {
   Bell, 
   Shield, 
   User, 
-  Mail, 
-  Phone, 
-  Globe, 
-  Clock,
   CheckCircle,
   AlertCircle,
   Loader2
@@ -82,7 +78,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`/api/auth/profile`, profileForm, {
+      await axios.put(`/api/auth/profile`, profileForm, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -121,7 +117,7 @@ export default function ProfileSettings() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`/api/auth/password`, {
+      await axios.put(`/api/auth/password`, {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       }, {
@@ -164,7 +160,7 @@ export default function ProfileSettings() {
             
             try {
               const token = localStorage.getItem('token');
-              const response = await axios.put('/api/auth/photo', {
+              await axios.put('/api/auth/photo', {
                 photoUrl
               }, {
                 headers: {
@@ -291,17 +287,17 @@ export default function ProfileSettings() {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
               <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                 <div className="relative">
-                  {user?.profilePhoto ? (
+                  {getUserProfilePhoto(user as any) ? (
                     <div className="w-32 h-32 rounded-2xl shadow-lg overflow-hidden">
                       <img 
-                        src={user.profilePhoto} 
+                        src={getUserProfilePhoto(user as any) || undefined} 
                         alt="Profile" 
                         className="w-full h-full object-cover"
                       />
                     </div>
                   ) : (
                     <div className="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                      <span className="text-white text-3xl font-bold">{getUserInitials(user)}</span>
+                      <span className="text-white text-3xl font-bold">{getUserInitials(user as any)}</span>
                     </div>
                   )}
                   <button
@@ -314,7 +310,7 @@ export default function ProfileSettings() {
                 </div>
                 <div className="text-center md:text-left space-y-3">
                   <h4 className="text-2xl font-bold text-gray-900">
-                    {getUserDisplayName(user)}
+                    {getUserDisplayName(user as any)}
                   </h4>
                   <p className="text-gray-600 text-lg">{user?.email}</p>
                   <button

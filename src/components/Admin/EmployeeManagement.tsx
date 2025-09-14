@@ -164,13 +164,20 @@ const EmployeeManagement = () => {
 
   const fetchTeamData = async () => {
     try {
-      const response = await axios.get('/api/subscription/team', {
+      const response = await axios.get('/api/team', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setTeam(response.data.team);
-      setMembers(response.data.members);
+      setMembers(response.data.team?.members || []);
     } catch (error) {
       console.error('Error fetching team data:', error);
+      // Set default team data if no team exists
+      setTeam({
+        name: 'My Team',
+        description: 'Create a team to invite members',
+        memberCount: 1
+      });
+      setMembers([]);
     } finally {
       setLoading(false);
     }
@@ -178,7 +185,7 @@ const EmployeeManagement = () => {
 
   const handleInviteMember = async () => {
     try {
-      await axios.post('/api/subscription/team/invite', inviteForm, {
+      await axios.post('/api/team/invite', inviteForm, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       

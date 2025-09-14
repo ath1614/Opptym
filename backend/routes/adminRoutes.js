@@ -520,7 +520,16 @@ router.post('/directories', protect, adminOnly, async (req, res) => {
     // Check if directory with same name already exists
     const existingDirectory = await Directory.findOne({ name });
     if (existingDirectory) {
-      return res.status(400).json({ error: 'Directory with this name already exists' });
+      console.log('❌ Directory name conflict:', { 
+        requestedName: name, 
+        existingId: existingDirectory._id,
+        existingDomain: existingDirectory.domain 
+      });
+      return res.status(400).json({ 
+        error: 'Directory with this name already exists',
+        details: `A directory named "${name}" already exists in the system`,
+        suggestion: 'Please choose a different name or check if you meant to edit the existing directory'
+      });
     }
 
     // Create new directory with proper schema
@@ -926,6 +935,7 @@ router.post('/pricing-plans', protect, adminOnly, async (req, res) => {
       },
       trialDays: trialDays || 0,
       isActive: isActive !== undefined ? isActive : true,
+      isCustom: name.toLowerCase().includes('custom') || false,
       isPopular: isPopular || false,
       sortOrder: sortOrder || 0,
       metadata: metadata || {

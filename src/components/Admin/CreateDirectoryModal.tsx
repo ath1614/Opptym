@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Plus, Globe, Settings, Save } from 'lucide-react';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
@@ -26,6 +26,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     submissionUrl: '',
     contactEmail: '',
     submissionGuidelines: '',
+    requiredFields: [],
     priority: 10,
     freeUserLimit: 0,
     starterUserLimit: 5,
@@ -35,6 +36,8 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
   });
   const [loading, setLoading] = useState(false);
   const [suggestedNames, setSuggestedNames] = useState<string[]>([]);
+  const [nameError, setNameError] = useState<string>('');
+  const [checkingName, setCheckingName] = useState(false);
 
   // Function to generate alternative directory names
   const generateAlternativeNames = (baseName: string): string[] => {
@@ -50,11 +53,57 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     return alternatives;
   };
 
+  // Function to check if directory name exists
+  const checkDirectoryName = async (name: string) => {
+    if (!name || name.length < 3) {
+      setNameError('');
+      return;
+    }
+
+    setCheckingName(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`/api/admin/directories?search=${encodeURIComponent(name)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const existingDirectory = response.data.find((dir: any) => 
+        dir.name.toLowerCase() === name.toLowerCase()
+      );
+      
+      if (existingDirectory) {
+        setNameError(`Directory "${name}" already exists`);
+        const alternatives = generateAlternativeNames(name);
+        setSuggestedNames(alternatives);
+      } else {
+        setNameError('');
+        setSuggestedNames([]);
+      }
+    } catch (error) {
+      console.error('Error checking directory name:', error);
+      setNameError('');
+    } finally {
+      setCheckingName(false);
+    }
+  };
+
   // Function to use a suggested name
   const useSuggestedName = (suggestedName: string) => {
     setForm({ ...form, name: suggestedName });
     setSuggestedNames([]);
+    setNameError('');
   };
+
+  // Debounced effect to check directory name
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (form.name) {
+        checkDirectoryName(form.name);
+      }
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [form.name]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +112,13 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
     // Client-side validation
     if (!form.name || !form.domain || !form.submissionUrl) {
       showPopup('Please fill in all required fields: Name, Domain, and Submission URL', 'error');
+      setLoading(false);
+      return;
+    }
+
+    // Check for name conflicts
+    if (nameError) {
+      showPopup(`Cannot create directory: ${nameError}`, 'error');
       setLoading(false);
       return;
     }
@@ -100,6 +156,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         submissionUrl: '',
         contactEmail: '',
         submissionGuidelines: '',
+        requiredFields: [],
         priority: 10,
         freeUserLimit: 0,
         starterUserLimit: 5,
@@ -107,15 +164,25 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
         businessUserLimit: 50,
         enterpriseUserLimit: -1
       });
+      setNameError('');
+      setSuggestedNames([]);
       onCreated();
       onClose();
     } catch (error: any) {
+      console.error('❌ Directory creation error:', error);
+      console.error('❌ Error response:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      
       // Handle duplicate name error specifically
       if (error.response?.status === 400 && error.response?.data?.error?.includes('already exists')) {
         const alternatives = generateAlternativeNames(form.name);
         setSuggestedNames(alternatives);
         const fullErrorMessage = `Directory name "${form.name}" already exists.\n\nSuggested alternatives:\n${alternatives.slice(0, 3).map(name => `• ${name}`).join('\n')}`;
         showPopup(fullErrorMessage, 'error');
+      } else if (error.response?.status === 400) {
+        // Handle other validation errors
+        const errorMessage = error.response?.data?.error || 'Validation failed. Please check your input.';
+        showPopup(`❌ ${errorMessage}`, 'error');
       } else {
         // Use comprehensive error handler for all other errors
         handleFormError(error, 'Directory Creation');
@@ -163,14 +230,28 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
                 <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
                   Directory Name *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white"
-                  placeholder="e.g., Blahoo"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent dark:bg-primary-700 dark:text-white ${
+                      nameError 
+                        ? 'border-red-500 dark:border-red-400' 
+                        : 'border-gray-300 dark:border-gray-600'
+                    }`}
+                    placeholder="e.g., Blahoo"
+                  />
+                  {checkingName && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <div className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+                {nameError && (
+                  <p className="text-red-500 text-sm mt-1">{nameError}</p>
+                )}
                 
                 {/* Suggested Names */}
                 {suggestedNames.length > 0 && (
@@ -523,11 +604,16 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({ isOpen, onC
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !!nameError || checkingName}
               className="px-6 py-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-lg hover:from-accent-600 hover:to-accent-700 transition-all flex items-center space-x-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{loading ? 'Creating...' : 'Create Directory'}</span>
+              <span>
+                {loading ? 'Creating...' : 
+                 checkingName ? 'Checking name...' :
+                 nameError ? 'Fix name error' :
+                 'Create Directory'}
+              </span>
             </button>
           </div>
         </form>

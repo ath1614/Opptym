@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './i18n'; // Import i18n configuration
 
-// CRITICAL FIX: API URL Configuration - v6.9
-console.log('🚀 OPPTYM App Starting - API URL Fix v6.9');
-console.log('🔥 TRIAL UX IMPROVEMENTS DEPLOYED - v6.9');
-console.log('✅ New features: Smart trial modal, Remind later button, Better UX');
+// OPPTYM Application - Production Ready
 
 import { useAuthProvider, AuthContext } from './hooks/useAuth';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -32,6 +29,7 @@ import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
 import TrialExpirationModal from './components/TrialExpirationModal';
 import ProjectDetails from './components/Reports/ProjectDetails';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 
@@ -95,6 +93,8 @@ function App() {
   };
   
   const [activeTab, setActiveTab] = useState(getInitialTab);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
   // Move all project-related state to the top
@@ -613,13 +613,37 @@ function App() {
             <Sidebar 
               activeTab={activeTab} 
               setActiveTab={updateActiveTab}
+              onCollapseChange={setSidebarCollapsed}
             />
+            
+            {/* Mobile Sidebar Overlay */}
+            {mobileMenuOpen && (
+              <div className="lg:hidden fixed inset-0 z-40">
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+                <div className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 shadow-xl">
+                  <Sidebar 
+                    activeTab={activeTab} 
+                    setActiveTab={(tab) => {
+                      updateActiveTab(tab);
+                      setMobileMenuOpen(false);
+                    }}
+                    onCollapseChange={setSidebarCollapsed}
+                  />
+                </div>
+              </div>
+            )}
+            
             <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
-              activeTab === 'dashboard' ? 'ml-64' : 'ml-64'
+              sidebarCollapsed ? 'ml-0 lg:ml-16' : 'ml-0 lg:ml-64'
             }`}>
-              <Navbar />
+              <Navbar onMobileMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)} />
               <main className="flex-1 p-6 overflow-auto">
-                {renderContent()}
+                <ErrorBoundary>
+                  {renderContent()}
+                </ErrorBoundary>
               </main>
             </div>
           </div>

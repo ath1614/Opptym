@@ -3,20 +3,20 @@ const router = express.Router();
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 const PricingPlan = require('../models/pricingPlanModel');
 
-// Get all pricing plans
+// Get all pricing plans (public - only active plans)
 router.get('/', async (req, res) => {
   try {
-    const plans = await PricingPlan.find({}).sort({ price: 1 });
+    const plans = await PricingPlan.find({ isActive: true }).sort({ price: 1 });
     res.json(plans);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pricing plans' });
   }
 });
 
-// Get single pricing plan
+// Get single pricing plan (public - only active plans)
 router.get('/:id', async (req, res) => {
   try {
-    const plan = await PricingPlan.findById(req.params.id);
+    const plan = await PricingPlan.findOne({ _id: req.params.id, isActive: true });
     if (!plan) {
       return res.status(404).json({ error: 'Pricing plan not found' });
     }

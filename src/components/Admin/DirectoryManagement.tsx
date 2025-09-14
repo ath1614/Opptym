@@ -38,6 +38,7 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
           groupedDirectories[classification] = [];
         }
         groupedDirectories[classification].push({
+          _id: dir._id,
           name: dir.name,
           url: dir.domain,
           description: dir.description,
@@ -88,17 +89,40 @@ const DirectoryManagement: React.FC<DirectoryManagementProps> = ({ onDirectoryUp
   });
 
 
-  const handleRemoveDirectory = (classification: string, directoryName: string) => {
+  const handleRemoveDirectory = async (classification: string, directoryName: string) => {
     showConfirmPopup(
       `Are you sure you want to remove "${directoryName}"?`,
-      () => {
-        const updatedDirectories = {
-          ...directories,
-          [classification]: directories[classification].filter(dir => dir.name !== directoryName)
-        };
-        setDirectories(updatedDirectories);
-        onDirectoryUpdate?.();
-        showPopup('Directory removed successfully!', 'success');
+      async () => {
+        try {
+          // Find the directory to get its ID
+          const directoryToDelete = directories[classification]?.find(dir => dir.name === directoryName);
+          if (!directoryToDelete) {
+            showPopup('Directory not found!', 'error');
+            return;
+          }
+
+          const token = localStorage.getItem('token');
+          const response = await axios.delete(`/api/admin/directories/${directoryToDelete._id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (response.status === 200) {
+            // Update local state
+            const updatedDirectories = {
+              ...directories,
+              [classification]: directories[classification].filter(dir => dir.name !== directoryName)
+            };
+            setDirectories(updatedDirectories);
+            onDirectoryUpdate?.();
+            showPopup('Directory removed successfully!', 'success');
+          }
+        } catch (error: any) {
+          console.error('Error removing directory:', error);
+          showPopup(
+            error.response?.data?.error || 'Failed to remove directory',
+            'error'
+          );
+        }
       },
       () => {
         // User cancelled, do nothing

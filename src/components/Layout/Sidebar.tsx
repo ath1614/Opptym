@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
@@ -28,14 +28,22 @@ interface SidebarItem {
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onCollapseChange?: (isCollapsed: boolean) => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: SidebarProps) {
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const { user } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>(['seoTasks']);
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Notify parent component when collapsed state changes
+  useEffect(() => {
+    if (onCollapseChange) {
+      onCollapseChange(isCollapsed);
+    }
+  }, [isCollapsed, onCollapseChange]);
 
   // Helper function to check if user can access a feature
   const canAccessFeature = (feature: string): boolean => {
@@ -199,27 +207,27 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         <button
           onClick={() => handleItemClick(item.id, hasChildren || false)}
           className={`
-            w-full flex items-center justify-between text-left rounded-xl transition-all duration-200
+            w-full flex items-center justify-between text-left rounded-xl transition-all duration-200 group
             ${depth > 0 ? 'ml-4 pl-8' : ''}
             ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'}
             ${isActive
-              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transform scale-105'
               : isDark
-                ? 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                ? 'text-slate-300 hover:bg-slate-700 hover:text-white hover:shadow-md hover:transform hover:scale-105'
+                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-md hover:transform hover:scale-105'
             }
           `}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
-            <Icon className={`h-5 w-5 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
+            <Icon className={`h-5 w-5 transition-colors duration-200 ${isActive ? 'text-white' : isDark ? 'text-slate-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-700'}`} />
             {!isCollapsed && <span className="font-medium truncate">{item.label}</span>}
           </div>
           {hasChildren && !isCollapsed && (
             <div className="flex items-center flex-shrink-0">
               {isExpanded ? (
-                <ChevronDown className={`h-4 w-4 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
+                <ChevronDown className={`h-4 w-4 transition-colors duration-200 ${isActive ? 'text-white' : isDark ? 'text-slate-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-700'}`} />
               ) : (
-                <ChevronRight className={`h-4 w-4 ${isActive ? 'text-white' : isDark ? 'text-slate-400' : 'text-gray-500'}`} />
+                <ChevronRight className={`h-4 w-4 transition-colors duration-200 ${isActive ? 'text-white' : isDark ? 'text-slate-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-700'}`} />
               )}
             </div>
           )}
@@ -236,13 +244,13 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className={`h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden ${
+    <aside className={`h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden shadow-xl ${
       isCollapsed ? 'w-16' : 'w-64'
     } ${
       isDark 
-        ? 'bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700' 
-        : 'bg-gradient-to-b from-white to-gray-50 border-r border-gray-200'
-    }`}>
+        ? 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700' 
+        : 'bg-gradient-to-b from-white via-gray-50 to-white border-r border-gray-200'
+    } hidden lg:flex`}>
       {/* Sidebar Header */}
       <div className={`border-b flex-shrink-0 ${
         isCollapsed ? 'p-4' : 'p-6'
@@ -275,21 +283,21 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`p-1 rounded-md transition-colors flex-shrink-0 ${
+            className={`p-2 rounded-lg transition-all duration-200 flex-shrink-0 group ${
               isCollapsed ? 'mx-auto' : ''
             } ${
               isDark 
-                ? 'hover:bg-slate-700' 
-                : 'hover:bg-gray-100'
+                ? 'hover:bg-slate-700 hover:shadow-md' 
+                : 'hover:bg-gray-100 hover:shadow-md'
             }`}
           >
             {isCollapsed ? (
-              <Menu className={`h-5 w-5 ${
-                isDark ? 'text-slate-300' : 'text-gray-600'
+              <Menu className={`h-5 w-5 transition-colors duration-200 ${
+                isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
               }`} />
             ) : (
-              <X className={`h-5 w-5 ${
-                isDark ? 'text-slate-300' : 'text-gray-600'
+              <X className={`h-5 w-5 transition-colors duration-200 ${
+                isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
               }`} />
             )}
           </button>

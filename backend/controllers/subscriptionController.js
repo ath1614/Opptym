@@ -15,10 +15,16 @@ const getSubscriptionDetails = async (req, res) => {
     }
 
     const subscriptionDetails = user.getSubscriptionDetails();
+    const trialLockoutStatus = user.getTrialLockoutStatus();
     
     console.log('📊 Subscription details for user:', user.email, subscriptionDetails);
+    console.log('🔒 Trial lockout status:', trialLockoutStatus);
     
-    res.json(subscriptionDetails);
+    res.json({
+      ...subscriptionDetails,
+      trialLockoutStatus,
+      trialUsage: user.trialUsage
+    });
   } catch (error) {
     console.error('Error getting subscription details:', error);
     res.status(500).json({ error: 'Failed to get subscription details' });
@@ -110,11 +116,21 @@ const trackUsage = async (req, res) => {
     // Increment usage
     await user.incrementUsage(feature);
     
+    // Also track trial usage for free users
+    if (user.subscription === 'free' && user.isInTrialPeriod()) {
+      await user.incrementTrialUsage(feature);
+    }
+    
+    // Get updated trial lockout status
+    const trialLockoutStatus = user.getTrialLockoutStatus();
+    
     res.json({
       success: true,
       feature,
       newUsage: user.usage[feature] || 0,
-      limit: user.planLimits[feature] || 0
+      trialUsage: user.trialUsage,
+      limit: user.planLimits[feature] || 0,
+      trialLockoutStatus
     });
   } catch (error) {
     console.error('Error tracking usage:', error);
@@ -359,17 +375,86 @@ const verifyBookmarkletUsage = async (req, res) => {
   }
 };
 
-// Team management functions (placeholders - implement as needed)
+// Team management functions
 const inviteTeamMember = async (req, res) => {
-  res.status(501).json({ error: 'Team management not implemented yet' });
+  try {
+    const { email, role, permissions } = req.body;
+    const invitedBy = req.userId;
+
+    // Validate required fields
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    // Import team controller
+    const teamController = require('./teamController');
+    
+    // Create invitation using team controller
+    const invitation = await teamController.createInvitation(req, res);
+    
+  } catch (error) {
+    console.error('❌ Invite team member error:', error);
+    res.status(500).json({ error: 'Failed to invite team member' });
+  }
 };
 
 const updateTeamMemberPermissions = async (req, res) => {
-  res.status(501).json({ error: 'Team management not implemented yet' });
+  try {
+    const { memberId } = req.params;
+    const { role, permissions } = req.body;
+    const userId = req.userId;
+
+    // Find user's team
+    const Team = require('../models/teamModel');
+    const team = await Team.findOne({ owner: userId });
+    
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+
+    // Update member permissions
+    await team.updateMemberRole(memberId, role, permissions);
+
+    res.json({
+      success: true,
+      message: 'Team member permissions updated successfully'
+    });
+  } catch (error) {
+    console.error('❌ Update team member error:', error);
+    res.status(500).json({ error: 'Failed to update team member' });
+  }
 };
 
 const removeTeamMember = async (req, res) => {
-  res.status(501).json({ error: 'Team management not implemented yet' });
+  try {
+    const { memberId } = req.params;
+    const userId = req.userId;
+
+    // Find user's team
+    const Team = require('../models/teamModel');
+    const team = await Team.findOne({ owner: userId });
+    
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+
+    // Remove member
+    await team.removeMember(memberId);
+
+    res.json({
+      success: true,
+      message: 'Team member removed successfully'
+    });
+  } catch (error) {
+    console.error('❌ Remove team member error:', error);
+    res.status(500).json({ error: 'Failed to remove team member' });
+  }
 };
 
 module.exports = {
