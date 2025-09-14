@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getUserProfile, updateUserProfile, getProfileCompletion } = require('../controllers/userProfileController');
-const { authenticateToken } = require('../middleware/auth');
+const { protect } = require('../middleware/authMiddleware');
 
 // Apply authentication middleware to all routes
-router.use(authenticateToken);
+router.use(protect);
 
 // Get user profile
 router.get('/profile', getUserProfile);
