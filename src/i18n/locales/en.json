@@ -169,8 +169,7 @@
     "profile": "Profile",
     "settings": "Settings",
     "help": "Help",
-    "logout": "Logout",
-    "notifications": "Notifications"
+    "logout": "Logout"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -196,7 +195,6 @@
     "title": "Settings",
     "profile": "Profile",
     "account": "Account",
-    "notifications": "Notifications",
     "security": "Security",
     "language": "Language",
     "theme": "Theme",

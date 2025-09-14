@@ -46,8 +46,6 @@ export default function ProfileSettings() {
 
   // Settings State
   const [settings, setSettings] = useState({
-    emailNotifications: true,
-    pushNotifications: true,
     marketingEmails: false,
     twoFactorAuth: false,
     sessionTimeout: 30
@@ -548,41 +546,15 @@ export default function ProfileSettings() {
               </div>
             </div>
 
-            {/* Notification Settings */}
+            {/* Marketing Settings */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
                 <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Bell className="w-4 h-4 text-purple-600" />
                 </div>
-                <span>Notifications</span>
+                <span>Marketing</span>
               </h3>
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Email Notifications</span>
-                  <button
-                    onClick={() => handleSettingChange('emailNotifications', !settings.emailNotifications)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.emailNotifications ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Push Notifications</span>
-                  <button
-                    onClick={() => handleSettingChange('pushNotifications', !settings.pushNotifications)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.pushNotifications ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings.pushNotifications ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">Marketing Emails</span>
                   <button

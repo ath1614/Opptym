@@ -347,13 +347,6 @@ try {
   console.error('❌ Error loading bookmarklet routes:', error);
 }
 
-// Load notification routes
-try {
-  app.use('/api/notifications', require('./routes/notificationRoutes'));
-  console.log('✅ Notification routes loaded');
-} catch (error) {
-  console.error('❌ Error loading notification routes:', error);
-}
 
 // Load team routes
 try {

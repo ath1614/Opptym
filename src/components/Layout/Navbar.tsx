@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
-import { Bell, User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react';
+import { User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { useNotifications } from '../../hooks/useNotifications';
 import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from '../LanguageSwitcher';
-import NotificationDropdown from '../Notifications/NotificationDropdown';
 import { useTranslation } from 'react-i18next';
 import { getUserDisplayName, getUserInitials, getUserProfilePhoto } from '../../utils/userUtils';
 
 interface NavbarProps {
-  onNotificationClick?: () => void;
   onMobileMenuClick?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onNotificationClick, onMobileMenuClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ onMobileMenuClick }) => {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
-  const { unreadCount } = useNotifications();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -69,28 +64,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNotificationClick, onMobileMenuClick 
               <LanguageSwitcher />
             </div>
 
-            {/* Notification Bell */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg p-2 rounded-lg text-primary-400 dark:text-primary-500 hover:text-accent-600 dark:hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200 shadow-soft hover:shadow-medium relative"
-              >
-                <span className="sr-only">{t('navbar.notifications')}</span>
-                <Bell className="h-5 w-5" aria-hidden="true" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </button>
-              
-              {/* Notification Dropdown */}
-              <NotificationDropdown
-                isOpen={showNotifications}
-                onClose={() => setShowNotifications(false)}
-              />
-            </div>
 
             {/* Profile dropdown */}
             <div className="relative">
