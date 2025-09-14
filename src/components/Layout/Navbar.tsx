@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from './ThemeToggle';
@@ -14,6 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuClick }) => {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     logout();
@@ -23,6 +24,23 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuClick }) => {
   const userDisplayName = user ? getUserDisplayName(user) : '';
   const userInitials = user ? getUserInitials(user) : '';
   const userProfilePhoto = user ? getUserProfilePhoto(user) : null;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    if (showProfileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfileMenu]);
 
   return (
     <nav className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg border-b border-primary-200 dark:border-primary-700 shadow-glass">
@@ -66,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuClick }) => {
 
 
             {/* Profile dropdown */}
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <div>
                 <button
                   type="button"
@@ -101,7 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuClick }) => {
 
               {/* Profile dropdown menu */}
               {showProfileMenu && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-glass py-1 bg-white/90 dark:bg-primary-800/90 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 animate-fade-in-up">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-glass py-1 bg-white/95 dark:bg-primary-800/95 backdrop-blur-lg border border-white/20 dark:border-primary-700/20 ring-1 ring-black ring-opacity-5 focus:outline-none z-[9999] animate-fade-in-up">
                   <button
                     onClick={() => {
                       window.location.hash = 'profile';
