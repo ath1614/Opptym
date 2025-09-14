@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
+import { Directory } from '../../config/directoriesConfig';
+import axios from 'axios';
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -35,22 +36,28 @@ const Classified: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
 
-  // Load directories from config file
+  // Load directories from API
   useEffect(() => {
-    const loadDirectories = () => {
+    const fetchDirectories = async () => {
       try {
         setLoading(true);
-        const configDirectories = getDirectoriesByClassification('Classified');
-        setDirectories(configDirectories);
+        const token = localStorage.getItem('token');
+        // Use correct database classification
+        const dbClassification = 'Classified';
+        const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setDirectories(response.data);
       } catch (error) {
-        console.error('Error loading directories:', error);
+        console.error('Error fetching directories:', error);
         setDirectories([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadDirectories();
+    fetchDirectories();
   }, []);
 
   // Load submissions (placeholder - can be replaced with API later)

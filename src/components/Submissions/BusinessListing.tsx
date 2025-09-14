@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import DirectoryGrid from './DirectoryGrid';
+import axios from 'axios';
 import { 
   Plus, 
   Search, 
@@ -35,21 +36,27 @@ export default function BusinessListing() {
     highPriority: 0
   });
 
-  // Load directories from config file
-  const loadDirectories = () => {
+  // Load directories from API
+  const fetchDirectories = async () => {
     try {
       setLoading(true);
-      const configDirectories = getDirectoriesByClassification('Business Listing');
-      setDirectories(configDirectories);
+      const token = localStorage.getItem('token');
+      // Use correct database classification
+      const dbClassification = 'Business Listing';
+      const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setDirectories(response.data);
       
       // Calculate country stats
-      const stats = configDirectories.reduce((acc, dir) => {
+      const stats = response.data.reduce((acc: any, dir: any) => {
         acc[dir.country || 'Global'] = (acc[dir.country || 'Global'] || 0) + 1;
         return acc;
       }, {});
       setCountryStats(stats);
     } catch (error) {
-      console.error('Error loading directories:', error);
+      console.error('Error fetching directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);
@@ -82,7 +89,7 @@ export default function BusinessListing() {
   };
 
   useEffect(() => {
-    loadDirectories();
+    fetchDirectories();
     fetchSubmissions();
   }, []);
 

@@ -151,7 +151,7 @@ export default function DirectorySubmissions() {
     try {
       const token = localStorage.getItem('token');
       // Map frontend classification to database classification
-      const dbClassification = 'Business'; // directory maps to Business in database
+      const dbClassification = 'Business Listing'; // directory maps to Business Listing in database
       const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
