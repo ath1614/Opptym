@@ -111,14 +111,23 @@
     return;
   }
   
-  // Validate project data with detailed logging
-  console.log('Validating project data:', !!projectData);
-  if (!projectData) {
-    console.error('Project data validation failed: No project data found');
-    console.error('Project param exists:', !!projectDataParam);
-    console.error('Project param length:', projectDataParam ? projectDataParam.length : 0);
-    alert('❌ No project data found. Please generate a new bookmarklet from Opptym.\n\nDebug info: Project data could not be parsed from script parameters.');
-    return;
+  // Check if this is a fallback bookmarklet (no project data)
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFallback = urlParams.get('fallback') === 'true' || !projectData;
+  
+  if (isFallback) {
+    console.log('📝 Fallback bookmarklet detected - no project data required');
+    // Continue with fallback mode
+  } else {
+    // Validate project data with detailed logging
+    console.log('Validating project data:', !!projectData);
+    if (!projectData) {
+      console.error('Project data validation failed: No project data found');
+      console.error('Project param exists:', !!projectDataParam);
+      console.error('Project param length:', projectDataParam ? projectDataParam.length : 0);
+      alert('❌ No project data found. Please generate a new bookmarklet from Opptym.\n\nDebug info: Project data could not be parsed from script parameters.');
+      return;
+    }
   }
   
   // Check if this token has already been used

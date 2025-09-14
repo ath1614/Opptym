@@ -578,7 +578,7 @@ export default function ArticlePlatforms() {
                   </div>
                   <div className="flex items-center space-x-3">
                     <a
-                      href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();"
+                      href="javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?fallback=true';document.head.appendChild(script);})();"
                       className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium cursor-move"
                       draggable="true"
                       onDragStart={(e) => {
@@ -594,7 +594,7 @@ export default function ArticlePlatforms() {
                     </a>
                     <button
                       onClick={() => {
-                        const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js';document.head.appendChild(script);})();`;
+                        const bookmarkletCode = `javascript:(function(){var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?fallback=true';document.head.appendChild(script);})();`;
                         navigator.clipboard.writeText(bookmarkletCode).then(() => {
                           showPopup('Bookmarklet code copied to clipboard!', 'success');
                         }).catch(() => {
