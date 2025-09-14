@@ -120,8 +120,7 @@ const getDashboardAnalytics = async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(10)
         .populate('projectId', 'name')
-        .populate('directoryId', 'name')
-        .select('status directoryName projectName createdAt')
+        .select('status siteName projectName createdAt')
         .lean();
     } catch (populateError) {
       console.error('❌ Error populating recent activity:', populateError);
@@ -129,7 +128,7 @@ const getDashboardAnalytics = async (req, res) => {
       recentActivity = await Submission.find({ userId })
         .sort({ createdAt: -1 })
         .limit(10)
-        .select('status directoryName projectName createdAt')
+        .select('status siteName projectName createdAt')
         .lean();
     }
 
