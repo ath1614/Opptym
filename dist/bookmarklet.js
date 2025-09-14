@@ -54,15 +54,47 @@
       console.log('Decoding project data...');
       const decodedProject = decodeURIComponent(projectDataParam);
       console.log('Decoded project length:', decodedProject.length);
-      projectData = JSON.parse(decodedProject);
-      console.log('Project data parsed successfully:', !!projectData);
+      
+      // Try parsing once
+      try {
+        projectData = JSON.parse(decodedProject);
+        
+        // If the result is a string, it means we have double-encoded data
+        if (typeof projectData === 'string') {
+          console.log('Detected double-encoded data, parsing again...');
+          projectData = JSON.parse(projectData);
+        }
+        
+        console.log('Project data parsed successfully:', !!projectData);
+        console.log('Project data type:', typeof projectData);
+        console.log('Project data keys:', projectData ? Object.keys(projectData) : 'null');
+      } catch (parseError) {
+        console.error('Failed to parse project data:', parseError);
+        projectData = null;
+      }
     }
     if (directoryDataParam) {
       console.log('Decoding directory data...');
       const decodedDirectory = decodeURIComponent(directoryDataParam);
       console.log('Decoded directory length:', decodedDirectory.length);
-      directoryData = JSON.parse(decodedDirectory);
-      console.log('Directory data parsed successfully:', !!directoryData);
+      
+      // Try parsing once
+      try {
+        directoryData = JSON.parse(decodedDirectory);
+        
+        // If the result is a string, it means we have double-encoded data
+        if (typeof directoryData === 'string') {
+          console.log('Detected double-encoded directory data, parsing again...');
+          directoryData = JSON.parse(directoryData);
+        }
+        
+        console.log('Directory data parsed successfully:', !!directoryData);
+        console.log('Directory data type:', typeof directoryData);
+        console.log('Directory data keys:', directoryData ? Object.keys(directoryData) : 'null');
+      } catch (parseError) {
+        console.error('Failed to parse directory data:', parseError);
+        directoryData = null;
+      }
     }
   } catch (e) {
     console.error('Error parsing project/directory data:', e);
@@ -191,7 +223,7 @@
             <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
               <h4 style="margin: 0 0 8px; color: #0c4a6e; font-size: 14px; font-weight: 600;">📋 Project Information</h4>
               <div style="font-size: 13px; color: #0c4a6e; line-height: 1.4;">
-                <div><strong>Name:</strong> ${projectData.name || 'Not set'}</div>
+                <div><strong>Name:</strong> ${projectData.name || projectData.title || 'Not set'}</div>
                 <div><strong>Company:</strong> ${projectData.companyName || 'Not set'}</div>
                 <div><strong>Email:</strong> ${projectData.email || 'Not set'}</div>
                 <div><strong>Website:</strong> ${projectData.url || 'Not set'}</div>
@@ -205,7 +237,7 @@
               <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
                 Business Name *
               </label>
-              <input type="text" id="business-name" required value="${projectData?.companyName || ''}" style="
+              <input type="text" id="business-name" required value="${projectData?.companyName || projectData?.name || projectData?.title || ''}" style="
                 width: 100%;
                 padding: 8px 12px;
                 border: 1px solid #d1d5db;
