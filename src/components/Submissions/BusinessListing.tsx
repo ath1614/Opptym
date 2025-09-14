@@ -18,7 +18,7 @@ import {
   Star,
   Globe
 } from 'lucide-react';
-import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
+import { Directory } from '../../config/directoriesConfig';
 
 export default function BusinessListing() {
   const { user } = useAuth();

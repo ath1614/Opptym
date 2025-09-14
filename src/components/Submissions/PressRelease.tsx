@@ -17,7 +17,7 @@ import {
   TrendingUp,
   Star
 } from 'lucide-react';
-import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
+import { Directory } from '../../config/directoriesConfig';
 
 export default function PressRelease() {
   const { user } = useAuth();
@@ -33,14 +33,18 @@ export default function PressRelease() {
     highPriority: 0
   });
 
-  // Load directories from config file
-  const loadDirectories = () => {
+  // Load directories from API
+  const fetchDirectories = async () => {
     try {
       setLoading(true);
-      const configDirectories = getDirectoriesByClassification('Press Release');
-      setDirectories(configDirectories);
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/directories?classification=Press Release', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setDirectories(response.data);
     } catch (error) {
-      console.error('Error loading directories:', error);
+      console.error('Error fetching directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);
@@ -73,7 +77,7 @@ export default function PressRelease() {
   };
 
   useEffect(() => {
-    loadDirectories();
+    fetchDirectories();
     fetchSubmissions();
   }, []);
 
