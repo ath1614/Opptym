@@ -178,7 +178,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
       console.error('Error status:', err.status);
       
       // Parse error response to show specific messages
-      let errorMessage = 'Failed to create project. Please try again.';
+      let errorMessage = 'Please check the form and try again.';
       let showUpgradePopup = false;
       
       // Check if it's a usage limit error
@@ -192,48 +192,69 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
         // Handle 429 Too Many Requests (usage limit exceeded)
         showUpgradePopup = true;
         errorMessage = 'You have reached your project limit. Please upgrade your plan to create more projects.';
-              } else if (err.message && err.message.includes('API Error:')) {
-          try {
-            // Extract error body from API error message
-            const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
-            if (errorMatch) {
-              const errorBody = errorMatch[1];
-              try {
-                const errorData = JSON.parse(errorBody);
-                if (errorData.error === 'Usage limit exceeded') {
-                  showUpgradePopup = true;
-                  errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
-                } else if (errorData.error === 'Trial expired') {
-                  showUpgradePopup = true;
-                  errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
-                } else if (errorData.message) {
-                  errorMessage = errorData.message;
-                }
-              } catch (parseError) {
-                // If JSON parsing fails, use the raw error body
-                errorMessage = errorBody;
+      } else if (err.message && err.message.includes('API Error:')) {
+        try {
+          // Extract error body from API error message
+          const errorMatch = err.message.match(/API Error: \d+ [^-]+ - (.+)/);
+          if (errorMatch) {
+            const errorBody = errorMatch[1];
+            try {
+              const errorData = JSON.parse(errorBody);
+              if (errorData.error === 'Usage limit exceeded') {
+                showUpgradePopup = true;
+                errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
+              } else if (errorData.error === 'Trial expired') {
+                showUpgradePopup = true;
+                errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
+              } else if (errorData.error === 'Invalid social media links') {
+                errorMessage = errorData.message || 'Please check your social media links and try again.';
+              } else if (errorData.error === 'Project title is required' || errorData.error === 'Project URL is required') {
+                errorMessage = 'Please fill in all required fields and try again.';
+              } else if (errorData.message) {
+                errorMessage = errorData.message;
               }
+            } catch (parseError) {
+              // If JSON parsing fails, use the raw error body
+              errorMessage = errorBody;
             }
-          } catch (parseError) {
-            console.error('Error parsing API error:', parseError);
           }
-        } else if (err.response?.data) {
-          // Handle axios error response data
-          try {
-            const errorData = err.response.data;
-            if (errorData.error === 'Usage limit exceeded') {
-              showUpgradePopup = true;
-              errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
-            } else if (errorData.error === 'Trial expired') {
-              showUpgradePopup = true;
-              errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
-            } else if (errorData.message) {
-              errorMessage = errorData.message;
-            }
-          } catch (parseError) {
-            console.error('Error parsing response data:', parseError);
-          }
+        } catch (parseError) {
+          console.error('Error parsing API error:', parseError);
         }
+      } else if (err.response?.data) {
+        // Handle axios error response data
+        try {
+          const errorData = err.response.data;
+          if (errorData.error === 'Usage limit exceeded') {
+            showUpgradePopup = true;
+            errorMessage = errorData.message || 'You have reached your project limit. Please upgrade your plan to create more projects.';
+          } else if (errorData.error === 'Trial expired') {
+            showUpgradePopup = true;
+            errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
+          } else if (errorData.error === 'Invalid social media links') {
+            errorMessage = errorData.message || 'Please check your social media links and try again.';
+          } else if (errorData.error === 'Project title is required' || errorData.error === 'Project URL is required') {
+            errorMessage = 'Please fill in all required fields and try again.';
+          } else if (errorData.error === 'Unauthorized: userId is missing') {
+            errorMessage = 'Please refresh the page and try again.';
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (parseError) {
+          console.error('Error parsing response data:', parseError);
+        }
+      } else if (err.message) {
+        // Handle other error messages
+        if (err.message.includes('Network Error') || err.message.includes('timeout')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        } else if (err.message.includes('Unauthorized')) {
+          errorMessage = 'Please refresh the page and try again.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
       
       if (showUpgradePopup) {
         setError('');
