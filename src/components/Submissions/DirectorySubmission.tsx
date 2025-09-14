@@ -10,7 +10,7 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react';
-import { Directory } from '../../config/directoriesConfig';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function DirectorySubmission() {
   const [loading, setLoading] = useState(true);
@@ -23,20 +23,14 @@ export default function DirectorySubmission() {
   });
   const [submissions, setSubmissions] = useState<any[]>([]);
 
-  // Load directories from API
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      // Use correct database classification
-      const dbClassification = 'Directory Submission';
-      const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setDirectories(response.data);
+      const configDirectories = getDirectoriesByClassification('Directory Submission');
+      setDirectories(configDirectories);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);
@@ -69,7 +63,7 @@ export default function DirectorySubmission() {
   };
 
   useEffect(() => {
-    fetchDirectories();
+    loadDirectories();
     fetchSubmissions();
   }, []);
 

@@ -18,7 +18,7 @@ import {
   Star,
   Globe
 } from 'lucide-react';
-import { Directory } from '../../config/directoriesConfig';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function BusinessListing() {
   const { user } = useAuth();
@@ -36,27 +36,21 @@ export default function BusinessListing() {
     highPriority: 0
   });
 
-  // Load directories from API
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      // Use correct database classification
-      const dbClassification = 'Business Listing';
-      const response = await axios.get(`/api/directories?classification=${dbClassification}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setDirectories(response.data);
+      const configDirectories = getDirectoriesByClassification('Business Listing');
+      setDirectories(configDirectories);
       
       // Calculate country stats
-      const stats = response.data.reduce((acc: any, dir: any) => {
+      const stats = configDirectories.reduce((acc: any, dir: any) => {
         acc[dir.country || 'Global'] = (acc[dir.country || 'Global'] || 0) + 1;
         return acc;
       }, {});
       setCountryStats(stats);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);
@@ -89,7 +83,7 @@ export default function BusinessListing() {
   };
 
   useEffect(() => {
-    fetchDirectories();
+    loadDirectories();
     fetchSubmissions();
   }, []);
 

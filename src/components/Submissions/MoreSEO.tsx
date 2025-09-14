@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import { Directory } from '../../config/directoriesConfig';
-import axios from 'axios';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -63,26 +62,22 @@ const MoreSEO: React.FC = () => {
     'Blog Commenting': <MessageSquare className="h-5 w-5" />
   };
 
-  // Load directories from API
+  // Load directories from config file
   useEffect(() => {
-    const fetchDirectories = async () => {
+    const loadDirectories = () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/directories?classification=More SEO', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        setDirectories(response.data);
+        const configDirectories = getDirectoriesByClassification('More SEO');
+        setDirectories(configDirectories);
       } catch (error) {
-        console.error('Error fetching directories:', error);
+        console.error('Error loading directories:', error);
         setDirectories([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDirectories();
+    loadDirectories();
   }, []);
 
   // Load submissions (placeholder - can be replaced with API later)

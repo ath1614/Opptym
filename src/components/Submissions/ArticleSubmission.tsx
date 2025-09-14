@@ -9,7 +9,7 @@ import {
   TrendingUp,
   Zap
 } from 'lucide-react';
-import { Directory } from '../../config/directoriesConfig';
+import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
 export default function ArticleSubmission() {
   const [loading, setLoading] = useState(true);
@@ -23,18 +23,14 @@ export default function ArticleSubmission() {
   });
   const [submissions, setSubmissions] = useState<any[]>([]);
 
-  // Load directories from API
-  const fetchDirectories = async () => {
+  // Load directories from config file
+  const loadDirectories = () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/directories?classification=Article Submission', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setDirectories(response.data);
+      const configDirectories = getDirectoriesByClassification('Article Submission');
+      setDirectories(configDirectories);
     } catch (error) {
-      console.error('Error fetching directories:', error);
+      console.error('Error loading directories:', error);
       setDirectories([]);
     } finally {
       setLoading(false);
@@ -68,7 +64,7 @@ export default function ArticleSubmission() {
   };
 
   useEffect(() => {
-    fetchDirectories();
+    loadDirectories();
     fetchSubmissions();
   }, []);
 
