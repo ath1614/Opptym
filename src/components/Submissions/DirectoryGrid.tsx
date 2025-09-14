@@ -56,7 +56,7 @@ export default function DirectoryGrid({
       const searchLower = searchTerm.toLowerCase();
       return (
         directory.name.toLowerCase().includes(searchLower) ||
-        directory.url.toLowerCase().includes(searchLower) ||
+        (directory.url && directory.url.toLowerCase().includes(searchLower)) ||
         (directory.description && directory.description.toLowerCase().includes(searchLower))
       );
     });
@@ -200,10 +200,15 @@ export default function DirectoryGrid({
     }
 
     // Validate directory data
-    if (!directory.name || !directory.url) {
-      showPopup(`❌ Directory data is incomplete. Missing: ${!directory.name ? 'name' : ''} ${!directory.url ? 'url' : ''}`, 'error');
+    if (!directory.name) {
+      showPopup(`❌ Directory data is incomplete. Missing: name`, 'error');
       setShowBookmarkletModal(false);
       return;
+    }
+    
+    // Note: URL is optional for bookmarklet functionality
+    if (!directory.url) {
+      console.warn('Directory has no URL, but continuing with bookmarklet generation');
     }
 
     setIsGeneratingToken(true);
@@ -485,7 +490,7 @@ export default function DirectoryGrid({
           }>
             {currentDirectories.map((directory, index) => (
               <div
-                key={`${directory.name}-${directory.url}-${index}`}
+                key={`${directory.name}-${directory.url || 'no-url'}-${index}`}
                 className={`group border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-200 ${
                   internalViewMode === 'list' ? 'flex items-center justify-between' : ''
                 }`}
@@ -495,15 +500,19 @@ export default function DirectoryGrid({
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{directory.name}</h4>
-                        <a
-                          href={directory.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={directory.url}
-                          className="text-xs text-blue-600 hover:text-blue-800 mb-1 block truncate max-w-full"
-                        >
-                          {directory.url.length > 35 ? `${directory.url.substring(0, 35)}...` : directory.url}
-                        </a>
+                        {directory.url ? (
+                          <a
+                            href={directory.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={directory.url}
+                            className="text-xs text-blue-600 hover:text-blue-800 mb-1 block truncate max-w-full"
+                          >
+                            {directory.url.length > 35 ? `${directory.url.substring(0, 35)}...` : directory.url}
+                          </a>
+                        ) : (
+                          <span className="text-xs text-gray-400 mb-1 block">No URL available</span>
+                        )}
                         {directory.description && (
                           <p className="text-xs text-gray-500 line-clamp-1">{directory.description}</p>
                         )}
@@ -518,14 +527,18 @@ export default function DirectoryGrid({
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <a
-                        href={directory.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
-                      >
-                        Visit <ExternalLink className="w-3 h-3 ml-1" />
-                      </a>
+                      {directory.url ? (
+                        <a
+                          href={directory.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
+                        >
+                          Visit <ExternalLink className="w-3 h-3 ml-1" />
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-400">No URL</span>
+                      )}
                       <button
                         onClick={() => handleFillFormClick(directory)}
                         className={`text-xs ${theme.primary} text-white px-2 py-1 rounded hover:${theme.primaryHover} transition-colors`}
@@ -540,15 +553,19 @@ export default function DirectoryGrid({
                       <div className="flex items-center space-x-4">
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900">{directory.name}</h4>
-                          <a
-                            href={directory.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            title={directory.url}
-                            className="text-sm text-blue-600 hover:text-blue-800 block truncate max-w-[400px]"
-                          >
-                            {directory.url.length > 50 ? `${directory.url.substring(0, 50)}...` : directory.url}
-                          </a>
+                          {directory.url ? (
+                            <a
+                              href={directory.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={directory.url}
+                              className="text-sm text-blue-600 hover:text-blue-800 block truncate max-w-[400px]"
+                            >
+                              {directory.url.length > 50 ? `${directory.url.substring(0, 50)}...` : directory.url}
+                            </a>
+                          ) : (
+                            <span className="text-sm text-gray-400">No URL available</span>
+                          )}
                         </div>
                         <div className="flex items-center space-x-2">
                           {directory.pageRank && (
@@ -561,14 +578,18 @@ export default function DirectoryGrid({
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <a
-                        href={directory.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
-                      >
-                        Visit <ExternalLink className="w-3 h-3 ml-1" />
-                      </a>
+                      {directory.url ? (
+                        <a
+                          href={directory.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
+                        >
+                          Visit <ExternalLink className="w-3 h-3 ml-1" />
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-400">No URL</span>
+                      )}
                       <button
                         onClick={() => handleFillFormClick(directory)}
                         className={`text-xs ${theme.primary} text-white px-2 py-1 rounded hover:${theme.primaryHover} transition-colors`}
