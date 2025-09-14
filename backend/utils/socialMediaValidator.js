@@ -146,7 +146,8 @@ function validateAllSocialMediaLinks(projectData) {
   console.log(`🔍 DEBUG: Validating social media links for project: ${projectData.title || 'Unknown'}`);
   
   for (const field of socialMediaFields) {
-    if (projectData[field]) {
+    // Only validate if the field has a non-empty value
+    if (projectData[field] && typeof projectData[field] === 'string' && projectData[field].trim().length > 0) {
       const validation = validateSocialMediaLink(field, projectData[field]);
       
       if (!validation.isValid) {
@@ -161,6 +162,10 @@ function validateAllSocialMediaLinks(projectData) {
         validatedData[field] = validation.url;
         console.log(`✅ DEBUG: ${field} validation passed`);
       }
+    } else {
+      // Field is empty, null, undefined, or just whitespace - set to empty string
+      validatedData[field] = '';
+      console.log(`✅ DEBUG: ${field} is empty - skipping validation`);
     }
   }
   
