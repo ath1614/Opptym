@@ -1329,6 +1329,9 @@ const SubmissionsDashboard = () => {
     document.body.appendChild(loadingModal);
     
     try {
+      // Declare result variable
+      let result = false;
+      
       // Prepare project data
       const projectData = {
         name: (selectedProject as any).name || '',
