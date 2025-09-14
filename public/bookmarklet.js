@@ -3,41 +3,29 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '1.0.0';
+  const BOOKMARKLET_VERSION = '2.0.0';
   
   // Get token and project data from script URL parameters
   let token = null;
   let projectDataParam = null;
   let directoryDataParam = null;
   
-  // Find the script element that loaded this bookmarklet (improved detection)
+  // Find the script element that loaded this bookmarklet
   const scripts = document.getElementsByTagName('script');
-  console.log('Total scripts found:', scripts.length);
+  console.log('🔍 Total scripts found:', scripts.length);
   
   for (let i = 0; i < scripts.length; i++) {
     const script = scripts[i];
     console.log('Checking script:', script.src);
     
     if (script.src && script.src.includes('bookmarklet.js')) {
-      console.log('Found bookmarklet script:', script.src);
+      console.log('✅ Found bookmarklet script:', script.src);
       const urlParams = new URLSearchParams(script.src.split('?')[1] || '');
       token = urlParams.get('token');
       projectDataParam = urlParams.get('project');
       directoryDataParam = urlParams.get('directory');
-      console.log('Extracted params:', { token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
+      console.log('📋 Extracted params:', { token: !!token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
       break;
-    }
-  }
-  
-  // Fallback: if no script found, try to get from the most recent script
-  if (!token && scripts.length > 0) {
-    const lastScript = scripts[scripts.length - 1];
-    if (lastScript.src && lastScript.src.includes('opptym.com')) {
-      console.log('Using fallback script detection:', lastScript.src);
-      const urlParams = new URLSearchParams(lastScript.src.split('?')[1] || '');
-      token = urlParams.get('token');
-      projectDataParam = urlParams.get('project');
-      directoryDataParam = urlParams.get('directory');
     }
   }
   
@@ -45,13 +33,13 @@
   let projectData = null;
   let directoryData = null;
   
-  console.log('Parsing data...');
+  console.log('🔧 Parsing data...');
   console.log('Project param length:', projectDataParam ? projectDataParam.length : 0);
   console.log('Directory param length:', directoryDataParam ? directoryDataParam.length : 0);
   
   try {
     if (projectDataParam) {
-      console.log('Decoding project data...');
+      console.log('📝 Decoding project data...');
       const decodedProject = decodeURIComponent(projectDataParam);
       console.log('Decoded project length:', decodedProject.length);
       
@@ -61,20 +49,20 @@
         
         // If the result is a string, it means we have double-encoded data
         if (typeof projectData === 'string') {
-          console.log('Detected double-encoded data, parsing again...');
+          console.log('🔄 Detected double-encoded data, parsing again...');
           projectData = JSON.parse(projectData);
         }
         
-        console.log('Project data parsed successfully:', !!projectData);
-        console.log('Project data type:', typeof projectData);
-        console.log('Project data keys:', projectData ? Object.keys(projectData) : 'null');
+        console.log('✅ Project data parsed successfully:', !!projectData);
+        console.log('📊 Project data type:', typeof projectData);
+        console.log('🔑 Project data keys:', projectData ? Object.keys(projectData) : 'null');
       } catch (parseError) {
-        console.error('Failed to parse project data:', parseError);
+        console.error('❌ Failed to parse project data:', parseError);
         projectData = null;
       }
     }
     if (directoryDataParam) {
-      console.log('Decoding directory data...');
+      console.log('📝 Decoding directory data...');
       const decodedDirectory = decodeURIComponent(directoryDataParam);
       console.log('Decoded directory length:', decodedDirectory.length);
       
@@ -84,31 +72,22 @@
         
         // If the result is a string, it means we have double-encoded data
         if (typeof directoryData === 'string') {
-          console.log('Detected double-encoded directory data, parsing again...');
+          console.log('🔄 Detected double-encoded directory data, parsing again...');
           directoryData = JSON.parse(directoryData);
         }
         
-        console.log('Directory data parsed successfully:', !!directoryData);
-        console.log('Directory data type:', typeof directoryData);
-        console.log('Directory data keys:', directoryData ? Object.keys(directoryData) : 'null');
+        console.log('✅ Directory data parsed successfully:', !!directoryData);
+        console.log('📊 Directory data type:', typeof directoryData);
+        console.log('🔑 Directory data keys:', directoryData ? Object.keys(directoryData) : 'null');
       } catch (parseError) {
-        console.error('Failed to parse directory data:', parseError);
+        console.error('❌ Failed to parse directory data:', parseError);
         directoryData = null;
       }
     }
   } catch (e) {
-    console.error('Error parsing project/directory data:', e);
+    console.error('❌ Error parsing project/directory data:', e);
     console.error('Project param (first 200 chars):', projectDataParam ? projectDataParam.substring(0, 200) : 'null');
     console.error('Directory param (first 200 chars):', directoryDataParam ? directoryDataParam.substring(0, 200) : 'null');
-  }
-  
-  // Validate token with detailed logging
-  console.log('Validating token:', token);
-  if (!token) {
-    console.error('Token validation failed: No token found');
-    console.error('Available scripts:', Array.from(scripts).map(s => s.src));
-    alert('❌ Invalid bookmarklet token. Please generate a new bookmarklet from Opptym.\n\nDebug info: No token found in script parameters.');
-    return;
   }
   
   // Check if this is a fallback bookmarklet (no project data)
@@ -120,9 +99,9 @@
     // Continue with fallback mode
   } else {
     // Validate project data with detailed logging
-    console.log('Validating project data:', !!projectData);
+    console.log('🔍 Validating project data:', !!projectData);
     if (!projectData) {
-      console.error('Project data validation failed: No project data found');
+      console.error('❌ Project data validation failed: No project data found');
       console.error('Project param exists:', !!projectDataParam);
       console.error('Project param length:', projectDataParam ? projectDataParam.length : 0);
       alert('❌ No project data found. Please generate a new bookmarklet from Opptym.\n\nDebug info: Project data could not be parsed from script parameters.');
@@ -130,351 +109,247 @@
     }
   }
   
-  // Check if this token has already been used
-  const usedTokens = JSON.parse(localStorage.getItem('opptym_used_tokens') || '[]');
-  if (usedTokens.includes(token)) {
-    alert('❌ This bookmarklet has already been used. Please generate a new one from Opptym.');
-    return;
-  }
+  // Start automatic form filling immediately
+  console.log('🚀 Starting OPPTYM Auto-Fill...');
   
-  // Mark token as used immediately
-  usedTokens.push(token);
-  localStorage.setItem('opptym_used_tokens', JSON.stringify(usedTokens));
+  // Show loading indicator
+  showLoadingIndicator();
   
-  // Create the main bookmarklet interface
-  function createBookmarkletInterface() {
-    // Remove existing interface if it exists
-    const existingInterface = document.getElementById('opptym-bookmarklet-interface');
-    if (existingInterface) {
-      existingInterface.remove();
+  // Start form filling after a brief delay
+  setTimeout(() => {
+    if (projectData) {
+      autoFillAllForms(projectData);
+    } else {
+      showFallbackMessage();
     }
-    
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.id = 'opptym-bookmarklet-interface';
-    overlay.style.cssText = `
+  }, 1000);
+  
+  // Show loading indicator
+  function showLoadingIndicator() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'opptym-loading';
+    loadingDiv.style.cssText = `
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 999999;
+      top: 20px;
+      right: 20px;
+      background: #3b82f6;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      gap: 12px;
     `;
     
-    // Create modal
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    loadingDiv.innerHTML = `
+      <div style="
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ffffff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      "></div>
+      <span>🔍 Scanning forms...</span>
     `;
     
-    modal.innerHTML = `
-      <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
-        <div>
-          <h2 style="margin: 0; color: #1f2937; font-size: 24px; font-weight: 600;">
-            🚀 Opptym Bookmarklet
-          </h2>
-          ${projectData ? `
-            <div style="margin-top: 4px; font-size: 14px; color: #3b82f6;">
-              📋 Project: <strong>${projectData.title || 'Unknown'}</strong>
-            </div>
-          ` : ''}
-          ${directoryData ? `
-            <div style="font-size: 12px; color: #6b7280;">
-              🎯 Directory: ${directoryData.name || 'Unknown'}
-            </div>
-          ` : ''}
-        </div>
-        <button id="opptym-close" style="
-          background: none;
-          border: none;
-          font-size: 24px;
-          cursor: pointer;
-          color: #6b7280;
-          margin-left: auto;
-        ">×</button>
-      </div>
-      
-      <div id="opptym-content">
-        <div id="opptym-loading" style="text-align: center; padding: 20px;">
-          <div style="
-            width: 40px;
-            height: 40px;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-          "></div>
-          <p style="color: #6b7280; margin: 0;">Loading Opptym Bookmarklet...</p>
-        </div>
-        
-        <div id="opptym-form" style="display: none;">
-          <p style="color: #6b7280; margin-bottom: 20px;">
-            ${projectData ? 
-              'Your project data is ready! Click "Auto-Fill Form" to fill the directory submission form with your project information.' :
-              'Fill out the form below and we\'ll auto-fill the directory submission form on this page.'
-            }
-          </p>
-          
-          ${projectData ? `
-            <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-              <h4 style="margin: 0 0 8px; color: #0c4a6e; font-size: 14px; font-weight: 600;">📋 Project Information</h4>
-              <div style="font-size: 13px; color: #0c4a6e; line-height: 1.4;">
-                <div><strong>Name:</strong> ${projectData.name || projectData.title || 'Not set'}</div>
-                <div><strong>Company:</strong> ${projectData.companyName || 'Not set'}</div>
-                <div><strong>Email:</strong> ${projectData.email || 'Not set'}</div>
-                <div><strong>Website:</strong> ${projectData.url || 'Not set'}</div>
-                ${projectData.businessPhone ? `<div><strong>Phone:</strong> ${projectData.businessPhone}</div>` : ''}
-              </div>
-            </div>
-          ` : ''}
-          
-          <form id="opptym-business-form">
-            <div style="margin-bottom: 16px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Business Name *
-              </label>
-              <input type="text" id="business-name" required value="${projectData?.companyName || projectData?.name || projectData?.title || ''}" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-              ">
-            </div>
-            
-            <div style="margin-bottom: 16px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Website URL
-              </label>
-              <input type="url" id="business-url" value="${projectData?.url || ''}" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-              ">
-            </div>
-            
-            <div style="margin-bottom: 16px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Email *
-              </label>
-              <input type="email" id="business-email" required value="${projectData?.email || ''}" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-              ">
-            </div>
-            
-            <div style="margin-bottom: 16px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Phone
-              </label>
-              <input type="tel" id="business-phone" value="${projectData?.businessPhone || ''}" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-              ">
-            </div>
-            
-            <div style="margin-bottom: 16px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Description
-              </label>
-              <textarea id="business-description" rows="3" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-                resize: vertical;
-              ">${projectData?.description || ''}</textarea>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-              <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151;">
-                Address
-              </label>
-              <input type="text" id="business-address" value="${projectData?.address1 || ''}" style="
-                width: 100%;
-                padding: 8px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
-                font-size: 14px;
-                box-sizing: border-box;
-              ">
-            </div>
-            
-            <div style="display: flex; gap: 12px;">
-              ${projectData ? `
-                <button type="button" id="opptym-quick-fill" style="
-                  background: #10b981;
-                  color: white;
-                  border: none;
-                  padding: 12px 24px;
-                  border-radius: 6px;
-                  font-size: 14px;
-                  font-weight: 500;
-                  cursor: pointer;
-                  transition: background-color 0.2s;
-                " onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
-                  ⚡ Quick Fill
-                </button>
-              ` : ''}
-              <button type="submit" style="
-                flex: 1;
-                background: #3b82f6;
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background-color 0.2s;
-              " onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
-                🚀 Auto-Fill Form
-              </button>
-              <button type="button" id="opptym-cancel" style="
-                background: #6b7280;
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background-color 0.2s;
-              " onmouseover="this.style.background='#4b5563'" onmouseout="this.style.background='#6b7280'">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-        
-        <div id="opptym-success" style="display: none; text-align: center; padding: 20px;">
-          <div style="
-            width: 60px;
-            height: 60px;
-            background: #10b981;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 24px;
-          ">✅</div>
-          <h3 style="color: #1f2937; margin: 0 0 8px;">Form Filled Successfully!</h3>
-          <p style="color: #6b7280; margin: 0;">The directory submission form has been auto-filled with your business information.</p>
-        </div>
-        
-        <div id="opptym-error" style="display: none; text-align: center; padding: 20px;">
-          <div style="
-            width: 60px;
-            height: 60px;
-            background: #ef4444;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 24px;
-          ">❌</div>
-          <h3 style="color: #1f2937; margin: 0 0 8px;">Error</h3>
-          <p id="opptym-error-message" style="color: #6b7280; margin: 0;"></p>
-        </div>
-      </div>
-      
-      <style>
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>
+    document.body.appendChild(loadingDiv);
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
     `;
-    
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    // Add event listeners
-    document.getElementById('opptym-close').addEventListener('click', closeInterface);
-    document.getElementById('opptym-cancel').addEventListener('click', closeInterface);
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) closeInterface();
-    });
-    
-    document.getElementById('opptym-business-form').addEventListener('submit', handleFormSubmit);
-    
-    // Add quick fill button listener if it exists
-    const quickFillBtn = document.getElementById('opptym-quick-fill');
-    if (quickFillBtn) {
-      quickFillBtn.addEventListener('click', function() {
-        if (projectData) {
-          const formData = {
-            businessName: projectData.companyName || '',
-            businessUrl: projectData.url || '',
-            businessEmail: projectData.email || '',
-            businessPhone: projectData.businessPhone || '',
-            businessDescription: projectData.description || '',
-            businessAddress: projectData.address1 || ''
-          };
-          autoFillForm(formData);
-        }
-      });
-    }
-    
-    // Show the form after a brief loading
-    setTimeout(() => {
-      document.getElementById('opptym-loading').style.display = 'none';
-      document.getElementById('opptym-form').style.display = 'block';
-    }, 1000);
+    document.head.appendChild(style);
   }
   
-  // Close the interface
-  function closeInterface() {
-    const bookmarkletInterface = document.getElementById('opptym-bookmarklet-interface');
-    if (bookmarkletInterface) {
-      bookmarkletInterface.remove();
-    }
-  }
-  
-  // Handle form submission
-  function handleFormSubmit(e) {
-    e.preventDefault();
+  // Automatic form filling function
+  function autoFillAllForms(projectData) {
+    console.log('🚀 Starting automatic form filling with project data:', projectData);
     
+    // Prepare data for form filling
     const formData = {
-      businessName: document.getElementById('business-name').value,
-      businessUrl: document.getElementById('business-url').value,
-      businessEmail: document.getElementById('business-email').value,
-      businessPhone: document.getElementById('business-phone').value,
-      businessDescription: document.getElementById('business-description').value,
-      businessAddress: document.getElementById('business-address').value
+      name: projectData.name || projectData.title || '',
+      company: projectData.companyName || projectData.name || projectData.title || '',
+      email: projectData.email || '',
+      phone: projectData.businessPhone || projectData.phone || '',
+      url: projectData.url || '',
+      website: projectData.url || '',
+      description: projectData.description || projectData.metaDescription || '',
+      address: projectData.address || projectData.address1 || '',
+      city: projectData.city || '',
+      state: projectData.state || '',
+      country: projectData.country || '',
+      zip: projectData.zip || projectData.pincode || '',
+      businessName: projectData.companyName || projectData.name || projectData.title || '',
+      businessUrl: projectData.url || '',
+      businessEmail: projectData.email || '',
+      businessPhone: projectData.businessPhone || projectData.phone || '',
+      businessDescription: projectData.description || projectData.metaDescription || ''
     };
     
-    // Auto-fill the form
-    autoFillForm(formData);
+    console.log('📋 Form data prepared:', formData);
+    
+    // Find and fill all form fields
+    const fieldsFilled = fillFormFields(formData);
+    
+    // Show success message
+    showSuccessMessage(fieldsFilled);
+    
+    // Track the submission
+    trackSubmission(fieldsFilled);
+  }
+  
+  // Smart form field filling
+  function fillFormFields(formData) {
+    const filledFields = [];
+    const fieldMappings = [
+      // Name fields
+      { selectors: ['input[name*="name"]', 'input[id*="name"]', 'input[placeholder*="name" i]'], value: formData.name },
+      { selectors: ['input[name*="business"]', 'input[id*="business"]', 'input[placeholder*="business" i]'], value: formData.businessName },
+      { selectors: ['input[name*="company"]', 'input[id*="company"]', 'input[placeholder*="company" i]'], value: formData.company },
+      
+      // Email fields
+      { selectors: ['input[type="email"]', 'input[name*="email"]', 'input[id*="email"]', 'input[placeholder*="email" i]'], value: formData.email },
+      
+      // Phone fields
+      { selectors: ['input[type="tel"]', 'input[name*="phone"]', 'input[id*="phone"]', 'input[placeholder*="phone" i]'], value: formData.phone },
+      
+      // URL/Website fields
+      { selectors: ['input[type="url"]', 'input[name*="url"]', 'input[id*="url"]', 'input[name*="website"]', 'input[id*="website"]', 'input[placeholder*="website" i]'], value: formData.url },
+      
+      // Description fields
+      { selectors: ['textarea[name*="description"]', 'textarea[id*="description"]', 'textarea[placeholder*="description" i]'], value: formData.description },
+      
+      // Address fields
+      { selectors: ['input[name*="address"]', 'input[id*="address"]', 'textarea[name*="address"]', 'input[placeholder*="address" i]'], value: formData.address },
+      { selectors: ['input[name*="city"]', 'input[id*="city"]', 'input[placeholder*="city" i]'], value: formData.city },
+      { selectors: ['input[name*="state"]', 'input[id*="state"]', 'input[placeholder*="state" i]'], value: formData.state },
+      { selectors: ['input[name*="country"]', 'input[id*="country"]', 'input[placeholder*="country" i]'], value: formData.country },
+      { selectors: ['input[name*="zip"]', 'input[id*="zip"]', 'input[name*="postal"]', 'input[placeholder*="zip" i]'], value: formData.zip }
+    ];
+    
+    fieldMappings.forEach(mapping => {
+      if (!mapping.value) return;
+      
+      mapping.selectors.forEach(selector => {
+        try {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(element => {
+            if (element && !element.value && !element.disabled && !element.readOnly) {
+              element.value = mapping.value;
+              element.dispatchEvent(new Event('input', { bubbles: true }));
+              element.dispatchEvent(new Event('change', { bubbles: true }));
+              filledFields.push({
+                selector: selector,
+                value: mapping.value,
+                element: element
+              });
+              console.log(`✅ Filled field: ${selector} = ${mapping.value}`);
+            }
+          });
+        } catch (error) {
+          console.warn(`⚠️ Error filling field ${selector}:`, error);
+        }
+      });
+    });
+    
+    return filledFields;
+  }
+  
+  // Show success message
+  function showSuccessMessage(filledFields) {
+    // Remove loading indicator
+    const loadingDiv = document.getElementById('opptym-loading');
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    
+    const successDiv = document.createElement('div');
+    successDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 10001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 300px;
+    `;
+    
+    successDiv.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span style="font-size: 20px;">✅</span>
+        <strong>Forms Auto-Filled!</strong>
+      </div>
+      <div style="font-size: 12px; opacity: 0.9;">
+        Filled ${filledFields.length} fields automatically
+      </div>
+    `;
+    
+    document.body.appendChild(successDiv);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+      if (successDiv.parentNode) {
+        successDiv.parentNode.removeChild(successDiv);
+      }
+    }, 5000);
+  }
+  
+  // Show fallback message
+  function showFallbackMessage() {
+    // Remove loading indicator
+    const loadingDiv = document.getElementById('opptym-loading');
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    
+    const fallbackDiv = document.createElement('div');
+    fallbackDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #f59e0b;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 10001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 300px;
+    `;
+    
+    fallbackDiv.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span style="font-size: 20px;">⚠️</span>
+        <strong>No Project Data</strong>
+      </div>
+      <div style="font-size: 12px; opacity: 0.9;">
+        Please generate a bookmarklet with project data from Opptym
+      </div>
+    `;
+    
+    document.body.appendChild(fallbackDiv);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+      if (fallbackDiv.parentNode) {
+        fallbackDiv.parentNode.removeChild(fallbackDiv);
+      }
+    }, 5000);
   }
   
   // Track submission in database
@@ -493,187 +368,37 @@
         directoryName: directoryData?.name || 'Unknown Directory',
         directoryUrl: directoryData?.url || window.location.href,
         classification: directoryData?.classification || 'Directory Submission',
-        projectId: projectData?._id || null,
-        projectName: projectData?.title || projectData?.name || 'Unknown Project',
-        status: 'submitted',
-        fieldsFilled: filledFields,
-        submittedAt: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        source: 'bookmarklet'
+        fieldsFilled: filledFields.length,
+        filledFields: filledFields.map(field => ({
+          selector: field.selector,
+          value: field.value
+        })),
+        timestamp: new Date().toISOString()
       };
 
-      // Send submission to API
-      fetch(API_BASE_URL + '/submissions', {
+      // Send to backend
+      fetch(`${API_BASE_URL}/submissions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(submissionData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Submission tracked successfully:', data);
-        
-        // Notify parent component that submission was created
-        if (window.opptymSubmissionCreated) {
-          window.opptymSubmissionCreated();
+      }).then(response => {
+        if (response.ok) {
+          console.log('✅ Submission tracked successfully');
+        } else {
+          console.warn('⚠️ Failed to track submission:', response.status);
         }
-      })
-      .catch(error => {
-        console.error('Error tracking submission:', error);
+      }).catch(error => {
+        console.error('❌ Error tracking submission:', error);
       });
-    } catch (error) {
-      console.error('Error in trackSubmission:', error);
-    }
-  }
 
-  // Auto-fill form fields on the page
-  function autoFillForm(data) {
-    try {
-      let filledFields = 0;
-      
-      // Enhanced field mappings with more comprehensive selectors
-      const fieldMappings = [
-        // Business name fields
-        { 
-          selectors: [
-            'input[name*="name"]', 'input[name*="business"]', 'input[name*="company"]', 'input[name*="title"]',
-            'input[id*="name"]', 'input[id*="business"]', 'input[id*="company"]', 'input[id*="title"]',
-            'input[placeholder*="name"]', 'input[placeholder*="business"]', 'input[placeholder*="company"]',
-            'input[class*="name"]', 'input[class*="business"]', 'input[class*="company"]'
-          ], 
-          value: data.businessName 
-        },
-        // Email fields
-        { 
-          selectors: [
-            'input[type="email"]', 'input[name*="email"]', 'input[id*="email"]', 
-            'input[placeholder*="email"]', 'input[class*="email"]'
-          ], 
-          value: data.businessEmail 
-        },
-        // Phone fields
-        { 
-          selectors: [
-            'input[type="tel"]', 'input[name*="phone"]', 'input[name*="tel"]', 'input[name*="mobile"]',
-            'input[id*="phone"]', 'input[id*="tel"]', 'input[id*="mobile"]',
-            'input[placeholder*="phone"]', 'input[placeholder*="tel"]', 'input[placeholder*="mobile"]',
-            'input[class*="phone"]', 'input[class*="tel"]', 'input[class*="mobile"]'
-          ], 
-          value: data.businessPhone 
-        },
-        // URL fields
-        { 
-          selectors: [
-            'input[type="url"]', 'input[name*="url"]', 'input[name*="website"]', 'input[name*="web"]',
-            'input[id*="url"]', 'input[id*="website"]', 'input[id*="web"]',
-            'input[placeholder*="url"]', 'input[placeholder*="website"]', 'input[placeholder*="web"]',
-            'input[class*="url"]', 'input[class*="website"]', 'input[class*="web"]'
-          ], 
-          value: data.businessUrl 
-        },
-        // Description fields
-        { 
-          selectors: [
-            'textarea[name*="description"]', 'textarea[name*="about"]', 'textarea[name*="bio"]',
-            'textarea[id*="description"]', 'textarea[id*="about"]', 'textarea[id*="bio"]',
-            'textarea[placeholder*="description"]', 'textarea[placeholder*="about"]',
-            'textarea[class*="description"]', 'textarea[class*="about"]'
-          ], 
-          value: data.businessDescription 
-        },
-        // Address fields
-        { 
-          selectors: [
-            'input[name*="address"]', 'input[name*="street"]', 'input[name*="location"]',
-            'input[id*="address"]', 'input[id*="street"]', 'input[id*="location"]',
-            'input[placeholder*="address"]', 'input[placeholder*="street"]',
-            'input[class*="address"]', 'input[class*="street"]'
-          ], 
-          value: data.businessAddress 
-        }
-      ];
-      
-      // Try to fill fields
-      fieldMappings.forEach(mapping => {
-        if (!mapping.value) return;
-        
-        mapping.selectors.forEach(selector => {
-          try {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-              if (element && !element.disabled && !element.readOnly && !element.value) {
-                element.value = mapping.value;
-                element.dispatchEvent(new Event('input', { bubbles: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true }));
-                element.dispatchEvent(new Event('blur', { bubbles: true }));
-                filledFields++;
-              }
-            });
-          } catch (selectorError) {
-            console.warn('Selector error:', selector, selectorError);
-          }
-        });
-      });
-      
-      // Also try to fill common form patterns
-      const commonPatterns = [
-        { pattern: /business|company|organization/i, value: data.businessName },
-        { pattern: /email|e-mail/i, value: data.businessEmail },
-        { pattern: /phone|telephone|mobile/i, value: data.businessPhone },
-        { pattern: /website|url|web/i, value: data.businessUrl },
-        { pattern: /description|about|bio/i, value: data.businessDescription },
-        { pattern: /address|street|location/i, value: data.businessAddress }
-      ];
-      
-      // Find all input and textarea elements
-      const allFormElements = document.querySelectorAll('input, textarea, select');
-      allFormElements.forEach(element => {
-        if (element.disabled || element.readOnly || element.value) return;
-        
-        const elementText = (element.name || element.id || element.placeholder || element.className || '').toLowerCase();
-        
-        commonPatterns.forEach(pattern => {
-          if (pattern.pattern.test(elementText) && pattern.value) {
-            element.value = pattern.value;
-            element.dispatchEvent(new Event('input', { bubbles: true }));
-            element.dispatchEvent(new Event('change', { bubbles: true }));
-            filledFields++;
-          }
-        });
-      });
-      
-      // Show success message with count
-      document.getElementById('opptym-form').style.display = 'none';
-      document.getElementById('opptym-success').style.display = 'block';
-      
-      // Update success message with filled fields count
-      const successMessage = document.querySelector('#opptym-success p');
-      if (successMessage) {
-        successMessage.textContent = `Successfully filled ${filledFields} form fields with your business information.`;
-      }
-
-      // Track submission in database
-      trackSubmission(filledFields);
-      
-      // Auto-close after 3 seconds
-      setTimeout(closeInterface, 3000);
-      
     } catch (error) {
-      console.error('Opptym Bookmarklet Error:', error);
-      showError('Failed to auto-fill form: ' + error.message);
+      console.error('❌ Error in trackSubmission:', error);
     }
   }
   
-  // Show error message
-  function showError(message) {
-    document.getElementById('opptym-form').style.display = 'none';
-    document.getElementById('opptym-error').style.display = 'block';
-    document.getElementById('opptym-error-message').textContent = message;
-  }
-  
-  // Initialize the bookmarklet
-  createBookmarkletInterface();
+  console.log('🎉 OPPTYM Auto-Fill Bookmarklet v' + BOOKMARKLET_VERSION + ' loaded successfully!');
   
 })();
