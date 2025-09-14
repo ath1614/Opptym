@@ -6,10 +6,8 @@ const Directory = require('../models/directoryModel');
 // Get dashboard analytics for a user
 const getDashboardAnalytics = async (req, res) => {
   try {
-    console.log('🔍 Analytics controller called for user:', req.userId);
     const userId = req.userId;
-    const { period = '30d' } = req.query;
-    console.log('📊 Period:', period); // 7d, 30d, 90d, 1y
+    const { period = '30d' } = req.query; // 7d, 30d, 90d, 1y
 
     // Calculate date range based on period
     const now = new Date();
@@ -33,13 +31,10 @@ const getDashboardAnalytics = async (req, res) => {
     }
 
     // Get user's current usage and limits
-    console.log('👤 Getting user...');
     const user = await User.findById(userId);
     if (!user) {
-      console.log('❌ User not found');
       return res.status(404).json({ error: 'User not found' });
     }
-    console.log('✅ User found:', user.email);
 
     // Get projects count
     const totalProjects = await Project.countDocuments({ userId });

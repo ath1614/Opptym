@@ -380,14 +380,6 @@ try {
   console.error('❌ Error loading user profile routes:', error);
 }
 
-// Load analytics routes
-try {
-  app.use('/api/analytics', require('./routes/analyticsRoutes'));
-  console.log('✅ Analytics routes loaded');
-} catch (error) {
-  console.error('❌ Error loading analytics routes:', error);
-}
-
 // Load health routes
 try {
   app.use('/api/health', require('./routes/healthRoutes'));
