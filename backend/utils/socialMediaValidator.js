@@ -91,22 +91,30 @@ function validateSocialMediaLink(platform, url) {
   
   // Check if URL is provided
   if (!url || typeof url !== 'string' || url.trim().length === 0) {
-    console.log(`❌ DEBUG: Empty URL for platform: ${platform}`);
+    console.log(`✅ DEBUG: Empty URL for platform: ${platform} - allowing empty`);
     return {
-      isValid: false,
-      error: 'invalid social media link',
-      platform: platform
+      isValid: true,
+      error: null,
+      platform: platform,
+      platformName: supportedPlatforms[platform].name,
+      url: ''
     };
   }
   
-  const trimmedUrl = url.trim();
+  let processedUrl = url.trim();
   const platformConfig = supportedPlatforms[platform];
   
+  // Auto-add https:// if missing
+  if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
+    processedUrl = 'https://' + processedUrl;
+    console.log(`🔧 DEBUG: Auto-added https:// to ${platform} URL: ${processedUrl}`);
+  }
+  
   // Check if URL matches any of the platform patterns
-  const isValidUrl = platformConfig.patterns.some(pattern => pattern.test(trimmedUrl));
+  const isValidUrl = platformConfig.patterns.some(pattern => pattern.test(processedUrl));
   
   if (!isValidUrl) {
-    console.log(`❌ DEBUG: Invalid URL format for ${platform}: ${trimmedUrl}`);
+    console.log(`❌ DEBUG: Invalid URL format for ${platform}: ${processedUrl}`);
     return {
       isValid: false,
       error: 'invalid social media link',
@@ -115,13 +123,13 @@ function validateSocialMediaLink(platform, url) {
     };
   }
   
-  console.log(`✅ DEBUG: Valid ${platform} link: ${trimmedUrl}`);
+  console.log(`✅ DEBUG: Valid ${platform} link: ${processedUrl}`);
   return {
     isValid: true,
     error: null,
     platform: platform,
     platformName: platformConfig.name,
-    url: trimmedUrl
+    url: processedUrl
   };
 }
 

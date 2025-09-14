@@ -4,6 +4,20 @@ const Project = require('../models/projectModel');
 const User = require('../models/userModel');
 const { validateAllSocialMediaLinks } = require('../utils/socialMediaValidator');
 
+// Import supported platforms for better error messages
+const supportedPlatforms = {
+  facebook: { name: 'Facebook' },
+  twitter: { name: 'Twitter/X' },
+  instagram: { name: 'Instagram' },
+  linkedin: { name: 'LinkedIn' },
+  youtube: { name: 'YouTube' },
+  tiktok: { name: 'TikTok' },
+  pinterest: { name: 'Pinterest' },
+  reddit: { name: 'Reddit' },
+  snapchat: { name: 'Snapchat' },
+  whatsapp: { name: 'WhatsApp' }
+};
+
 // @desc    Create a new project
 // @route   POST /api/projects
 // @access  Private
@@ -156,9 +170,15 @@ const createProject = async (req, res) => {
     const socialMediaValidation = validateAllSocialMediaLinks(rawData);
     if (!socialMediaValidation.isValid) {
       console.log(`❌ DEBUG: Social media validation failed:`, socialMediaValidation.errors);
+      const errorDetails = socialMediaValidation.errors.map(err => {
+        const platformName = supportedPlatforms[err.platform]?.name || err.platform;
+        return `${platformName}: Please enter a valid ${platformName} URL (e.g., https://www.${err.platform}.com/yourpage)`;
+      }).join('; ');
+      
       return res.status(400).json({
         error: 'Invalid social media links',
-        details: socialMediaValidation.errors.map(err => `${err.field}: ${err.error}`).join(', '),
+        message: `Please fix the following social media links: ${errorDetails}`,
+        details: errorDetails,
         socialMediaErrors: socialMediaValidation.errors
       });
     }
