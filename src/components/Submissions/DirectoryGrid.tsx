@@ -267,13 +267,13 @@ export default function DirectoryGrid({
     console.log('- Encoded project length:', encodedProject.length);
     console.log('- Encoded directory length:', encodedDirectory.length);
     
-    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${projectJson};var directoryData=${directoryJson};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
+    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${projectJson};var directoryData=${directoryJson};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
     
     console.log('Generated bookmarklet URL length:', bookmarkletUrl.length);
     console.log('Bookmarklet URL preview:', bookmarkletUrl.substring(0, 200) + '...');
     
     // Test URL parameter parsing
-    const testUrl = `${window.location.origin}/bookmarklet.js?token=${token}&project=${encodedProject}&directory=${encodedDirectory}`;
+    const testUrl = `https://opptym.com/bookmarklet.js?token=${token}&project=${encodedProject}&directory=${encodedDirectory}`;
     const urlParams = new URLSearchParams(testUrl.split('?')[1]);
     const testToken = urlParams.get('token');
     const testProjectParam = urlParams.get('project');
@@ -746,7 +746,7 @@ export default function DirectoryGrid({
                   
                   <div className="flex items-center space-x-3">
                     <a
-                      href={`javascript:(function(){console.log('Bookmarklet clicked!');var token='${bookmarkletToken}';var projectData=${JSON.stringify(selectedProject)};var directoryData=${JSON.stringify(selectedDirectory)};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src=window.location.origin+'/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`}
+                      href={`javascript:(function(){console.log('Bookmarklet clicked!');var token='${bookmarkletToken}';var projectData=${JSON.stringify(selectedProject)};var directoryData=${JSON.stringify(selectedDirectory)};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`}
                       className={`${theme.primary} text-white px-4 py-2 rounded-lg hover:${theme.primaryHover} transition-colors text-sm font-medium cursor-move select-none`}
                       style={{
                         userSelect: 'none',
