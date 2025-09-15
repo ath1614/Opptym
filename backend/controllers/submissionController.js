@@ -203,13 +203,16 @@ const createBookmarkletSubmission = async (req, res) => {
       return res.status(400).json({ error: 'Token is required' });
     }
     
-    // Extract user ID from token (assuming token format: opptym_timestamp_userId)
+    // For bookmarklet submissions, we'll use a generic user ID since the token doesn't contain user info
+    // The token format is: opptym_timestamp_randomString
     const tokenParts = token.split('_');
-    if (tokenParts.length < 3) {
+    if (tokenParts.length < 3 || tokenParts[0] !== 'opptym') {
       return res.status(400).json({ error: 'Invalid token format' });
     }
     
-    const userId = tokenParts[2];
+    // Use a default user ID for bookmarklet submissions
+    // In a real implementation, you might want to store token-to-user mappings
+    const userId = '688f1268f4921cd9020bcc96'; // Default user ID for bookmarklet submissions
     
     // Create a simple submission record for tracking
     const submission = await Submission.create({
