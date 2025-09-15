@@ -15,4 +15,7 @@ router.get('/projects', protect, analyticsController.getProjectAnalytics);
 // Directory analytics
 router.get('/directories', protect, analyticsController.getDirectoryAnalytics);
 
+// Real-time deltas for dashboard cards
+router.get('/deltas', protect, analyticsController.getRealtimeDeltas);
+
 module.exports = router;

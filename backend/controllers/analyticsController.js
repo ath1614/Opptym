@@ -74,7 +74,25 @@ const getDashboardAnalytics = async (req, res) => {
     // Get directories submitted to
     const directoriesSubmitted = await Submission.distinct('directoryId', { userId });
 
-    // Calculate deltas (compare with previous period)
+    // Calculate deltas with multiple time periods for better accuracy
+    const calculateDelta = (current, previous) => {
+      if (previous === 0) {
+        return { delta: 0, direction: 'stable' };
+      }
+      const deltaPercent = ((current - previous) / previous) * 100;
+      if (Math.abs(deltaPercent) < 1) {
+        return { delta: 0, direction: 'stable' };
+      }
+      return {
+        delta: Math.abs(deltaPercent),
+        direction: deltaPercent > 0 ? 'increase' : 'decrease'
+      };
+    };
+
+    // Calculate deltas for different time periods
+    let projectsDelta, submissionsDelta, successRateDelta, backlinksDelta, directoriesDelta;
+    
+    // 1. Compare with previous period (same duration)
     const previousStartDate = new Date(startDate.getTime() - (now.getTime() - startDate.getTime()));
     
     const previousProjects = await Project.countDocuments({ 
@@ -93,25 +111,48 @@ const getDashboardAnalytics = async (req, res) => {
       status: { $in: ['success', 'completed', 'approved', 'published'] }
     });
 
-    // Calculate percentage changes
-    const calculateDelta = (current, previous) => {
-      if (previous === 0) {
-        return { delta: 0, direction: 'stable' };
-      }
-      const deltaPercent = ((current - previous) / previous) * 100;
-      if (Math.abs(deltaPercent) < 1) {
-        return { delta: 0, direction: 'stable' };
-      }
-      return {
-        delta: Math.abs(deltaPercent),
-        direction: deltaPercent > 0 ? 'increase' : 'decrease'
-      };
-    };
+    const previousBacklinks = previousSuccessfulSubmissions;
+    const previousDirectories = await Submission.distinct('directoryId', { 
+      userId,
+      createdAt: { $gte: previousStartDate, $lt: startDate }
+    });
 
-    const projectsDelta = calculateDelta(recentProjects, previousProjects);
-    const submissionsDelta = calculateDelta(recentSubmissions, previousSubmissions);
-    const previousSuccessRate = previousSubmissions > 0 ? Math.round((previousSuccessfulSubmissions / previousSubmissions) * 100) : 0;
-    const successRateDelta = calculateDelta(successRate, previousSuccessRate);
+    // 2. Compare with last 7 days vs previous 7 days (for more recent trends)
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+    
+    const last7DaysSubmissions = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: sevenDaysAgo }
+    });
+    
+    const previous7DaysSubmissions = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo }
+    });
+
+    const last7DaysSuccessful = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: sevenDaysAgo },
+      status: { $in: ['success', 'completed', 'approved', 'published'] }
+    });
+
+    const previous7DaysSuccessful = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo },
+      status: { $in: ['success', 'completed', 'approved', 'published'] }
+    });
+
+    // 3. Calculate deltas (use the more recent 7-day comparison for better UX)
+    projectsDelta = calculateDelta(recentProjects, previousProjects);
+    submissionsDelta = calculateDelta(last7DaysSubmissions, previous7DaysSubmissions);
+    
+    const previousSuccessRate = previous7DaysSubmissions > 0 ? Math.round((previous7DaysSuccessful / previous7DaysSubmissions) * 100) : 0;
+    const current7DaySuccessRate = last7DaysSubmissions > 0 ? Math.round((last7DaysSuccessful / last7DaysSubmissions) * 100) : 0;
+    successRateDelta = calculateDelta(current7DaySuccessRate, previousSuccessRate);
+    
+    backlinksDelta = calculateDelta(last7DaysSuccessful, previous7DaysSuccessful);
+    directoriesDelta = calculateDelta(directoriesSubmitted.length, previousDirectories.length);
 
     // Get recent activity
     let recentActivity = [];
@@ -159,14 +200,14 @@ const getDashboardAnalytics = async (req, res) => {
         recentProjects,
         recentSubmissions,
         
-        // Deltas
+        // Deltas with real-time calculations
         deltas: {
           totalProjects: { ...projectsDelta, value: recentProjects },
-          totalSubmissions: { ...submissionsDelta, value: recentSubmissions },
-          successRate: { ...successRateDelta, value: successRate },
+          totalSubmissions: { ...submissionsDelta, value: last7DaysSubmissions },
+          successRate: { ...successRateDelta, value: current7DaySuccessRate },
           averageRanking: { delta: 0, direction: 'stable', value: averageRanking },
-          backlinksGained: { delta: 0, direction: 'stable', value: backlinksGained },
-          directoriesSubmitted: { delta: 0, direction: 'stable', value: directoriesSubmitted.length }
+          backlinksGained: { ...backlinksDelta, value: last7DaysSuccessful },
+          directoriesSubmitted: { ...directoriesDelta, value: directoriesSubmitted.length }
         },
         
         // Additional data
@@ -440,9 +481,132 @@ const getDirectoryAnalytics = async (req, res) => {
   }
 };
 
+// Get real-time delta calculations for dashboard cards
+const getRealtimeDeltas = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { period = '7d' } = req.query; // 7d, 30d, 90d
+    
+    console.log('🔍 Getting real-time deltas for user:', userId, 'period:', period);
+    
+    // Calculate time periods
+    const now = new Date();
+    let currentPeriodStart, previousPeriodStart, previousPeriodEnd;
+    
+    switch (period) {
+      case '7d':
+        currentPeriodStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        previousPeriodEnd = currentPeriodStart;
+        previousPeriodStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        currentPeriodStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        previousPeriodEnd = currentPeriodStart;
+        previousPeriodStart = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+        break;
+      case '90d':
+        currentPeriodStart = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        previousPeriodEnd = currentPeriodStart;
+        previousPeriodStart = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        currentPeriodStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        previousPeriodEnd = currentPeriodStart;
+        previousPeriodStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+    }
+    
+    // Get current period data
+    const currentSubmissions = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: currentPeriodStart }
+    });
+    
+    const currentSuccessful = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: currentPeriodStart },
+      status: { $in: ['success', 'completed', 'approved', 'published'] }
+    });
+    
+    const currentProjects = await Project.countDocuments({
+      userId,
+      createdAt: { $gte: currentPeriodStart }
+    });
+    
+    // Get previous period data
+    const previousSubmissions = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: previousPeriodStart, $lt: previousPeriodEnd }
+    });
+    
+    const previousSuccessful = await Submission.countDocuments({
+      userId,
+      createdAt: { $gte: previousPeriodStart, $lt: previousPeriodEnd },
+      status: { $in: ['success', 'completed', 'approved', 'published'] }
+    });
+    
+    const previousProjects = await Project.countDocuments({
+      userId,
+      createdAt: { $gte: previousPeriodStart, $lt: previousPeriodEnd }
+    });
+    
+    // Calculate deltas
+    const calculateDelta = (current, previous) => {
+      if (previous === 0) {
+        return { delta: 0, direction: 'stable' };
+      }
+      const deltaPercent = ((current - previous) / previous) * 100;
+      if (Math.abs(deltaPercent) < 1) {
+        return { delta: 0, direction: 'stable' };
+      }
+      return {
+        delta: Math.abs(deltaPercent),
+        direction: deltaPercent > 0 ? 'increase' : 'decrease'
+      };
+    };
+    
+    const submissionsDelta = calculateDelta(currentSubmissions, previousSubmissions);
+    const backlinksDelta = calculateDelta(currentSuccessful, previousSuccessful);
+    const projectsDelta = calculateDelta(currentProjects, previousProjects);
+    
+    const currentSuccessRate = currentSubmissions > 0 ? Math.round((currentSuccessful / currentSubmissions) * 100) : 0;
+    const previousSuccessRate = previousSubmissions > 0 ? Math.round((previousSuccessful / previousSubmissions) * 100) : 0;
+    const successRateDelta = calculateDelta(currentSuccessRate, previousSuccessRate);
+    
+    res.json({
+      success: true,
+      period,
+      deltas: {
+        totalSubmissions: { ...submissionsDelta, value: currentSubmissions },
+        backlinksGained: { ...backlinksDelta, value: currentSuccessful },
+        totalProjects: { ...projectsDelta, value: currentProjects },
+        successRate: { ...successRateDelta, value: currentSuccessRate }
+      },
+      comparison: {
+        current: {
+          submissions: currentSubmissions,
+          successful: currentSuccessful,
+          projects: currentProjects,
+          successRate: currentSuccessRate
+        },
+        previous: {
+          submissions: previousSubmissions,
+          successful: previousSuccessful,
+          projects: previousProjects,
+          successRate: previousSuccessRate
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Real-time deltas error:', error);
+    res.status(500).json({ error: 'Failed to fetch real-time deltas', details: error.message });
+  }
+};
+
 module.exports = {
   getDashboardAnalytics,
   getSubmissionAnalytics,
   getProjectAnalytics,
-  getDirectoryAnalytics
+  getDirectoryAnalytics,
+  getRealtimeDeltas
 };
