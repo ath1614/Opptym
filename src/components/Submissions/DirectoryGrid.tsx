@@ -267,7 +267,7 @@ export default function DirectoryGrid({
     console.log('- Encoded project length:', encodedProject.length);
     console.log('- Encoded directory length:', encodedDirectory.length);
     
-    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${projectJson};var directoryData=${directoryJson};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet-enhanced.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
+    const bookmarkletUrl = `javascript:(function(){console.log('Bookmarklet clicked!');var token='${token}';var projectData=${projectJson};var directoryData=${directoryJson};console.log('Token:',token,'Project:',projectData,'Directory:',directoryData);var script=document.createElement('script');script.src='https://opptym.com/bookmarklet.js?token='+token+'&project='+encodeURIComponent(JSON.stringify(projectData))+'&directory='+encodeURIComponent(JSON.stringify(directoryData));console.log('Loading script:',script.src);document.head.appendChild(script);})();`;
     
     console.log('Generated bookmarklet URL length:', bookmarkletUrl.length);
     console.log('Bookmarklet URL preview:', bookmarkletUrl.substring(0, 200) + '...');

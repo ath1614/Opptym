@@ -3,221 +3,78 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.1.0';
+  const BOOKMARKLET_VERSION = '2.2.0';
   
-  console.log('🚀 Enhanced Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
+  console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
   // Get token and project data from script URL parameters
   let token = null;
   let projectDataParam = null;
   let directoryDataParam = null;
   
-  // Enhanced script detection - try multiple methods
   console.log('🔍 Searching for bookmarklet script...');
   
-  // Method 1: Check all scripts
+  // Find the bookmarklet script and extract parameters
   const scripts = document.getElementsByTagName('script');
   console.log('📜 Total scripts found:', scripts.length);
   
   for (let i = 0; i < scripts.length; i++) {
     const script = scripts[i];
     if (script.src && script.src.includes('bookmarklet.js')) {
-      console.log('✅ Found bookmarklet script (Method 1):', script.src);
-      const urlParams = new URLSearchParams(script.src.split('?')[1] || '');
-      token = urlParams.get('token');
-      projectDataParam = urlParams.get('project');
-      directoryDataParam = urlParams.get('directory');
-      console.log('📋 Extracted params:', { token: !!token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
+      console.log('✅ Found bookmarklet script:', script.src);
+      
+      // Extract URL parameters
+      const urlParts = script.src.split('?');
+      if (urlParts.length > 1) {
+        const params = new URLSearchParams(urlParts[1]);
+        token = params.get('token');
+        projectDataParam = params.get('project');
+        directoryDataParam = params.get('directory');
+        
+        console.log('📋 Extracted params:', { 
+          token: !!token, 
+          projectDataParam: !!projectDataParam, 
+          directoryDataParam: !!directoryDataParam,
+          projectLength: projectDataParam ? projectDataParam.length : 0,
+          directoryLength: directoryDataParam ? directoryDataParam.length : 0
+        });
+      }
       break;
     }
   }
   
-  // Method 2: If not found, try to get from current script execution context
-  if (!token && !projectDataParam) {
-    console.log('🔍 Trying Method 2: Current script context...');
-    try {
-      // Try to get the current script from the call stack
-      const currentScript = document.currentScript;
-      if (currentScript && currentScript.src && currentScript.src.includes('bookmarklet.js')) {
-        console.log('✅ Found bookmarklet script (Method 2):', currentScript.src);
-        const urlParams = new URLSearchParams(currentScript.src.split('?')[1] || '');
-        token = urlParams.get('token');
-        projectDataParam = urlParams.get('project');
-        directoryDataParam = urlParams.get('directory');
-        console.log('📋 Extracted params:', { token: !!token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
-      }
-    } catch (e) {
-      console.log('⚠️ Method 2 failed:', e.message);
-    }
-  }
-  
-  // Method 3: Try to extract from window.location if this is a direct script load
-  if (!token && !projectDataParam) {
-    console.log('🔍 Trying Method 3: Window location...');
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      token = urlParams.get('token');
-      projectDataParam = urlParams.get('project');
-      directoryDataParam = urlParams.get('directory');
-      if (token || projectDataParam) {
-        console.log('✅ Found params in window location');
-        console.log('📋 Extracted params:', { token: !!token, projectDataParam: !!projectDataParam, directoryDataParam: !!directoryDataParam });
-      }
-    } catch (e) {
-      console.log('⚠️ Method 3 failed:', e.message);
-    }
-  }
-  
-  // Parse project and directory data with enhanced error handling
+  // Parse project and directory data
   let projectData = null;
   let directoryData = null;
   
   console.log('🔧 Parsing data...');
-  console.log('Project param length:', projectDataParam ? projectDataParam.length : 0);
-  console.log('Directory param length:', directoryDataParam ? directoryDataParam.length : 0);
   
-  try {
-    if (projectDataParam) {
+  if (projectDataParam) {
+    try {
       console.log('📝 Decoding project data...');
-      console.log('Project param (first 200 chars):', projectDataParam.substring(0, 200));
-      
-      let decodedProject;
-      try {
-        // Try standard decodeURIComponent first
-        decodedProject = decodeURIComponent(projectDataParam);
-        console.log('✅ Standard decodeURIComponent successful');
-      } catch (decodeError) {
-        console.warn('⚠️ Standard decodeURIComponent failed, trying alternative methods...');
-        console.warn('Decode error:', decodeError.message);
-        
-        try {
-          // Try with unescape as fallback
-          decodedProject = unescape(projectDataParam);
-          console.log('✅ unescape method successful');
-        } catch (unescapeError) {
-          console.warn('⚠️ unescape method failed, trying manual replacement...');
-          
-          // Manual replacement of common URI encoding issues
-          decodedProject = projectDataParam
-            .replace(/%22/g, '"')
-            .replace(/%7B/g, '{')
-            .replace(/%7D/g, '}')
-            .replace(/%5B/g, '[')
-            .replace(/%5D/g, ']')
-            .replace(/%2C/g, ',')
-            .replace(/%3A/g, ':')
-            .replace(/%20/g, ' ')
-            .replace(/%2F/g, '/')
-            .replace(/%2B/g, '+')
-            .replace(/%3F/g, '?')
-            .replace(/%3D/g, '=')
-            .replace(/%26/g, '&')
-            .replace(/%23/g, '#')
-            .replace(/%25/g, '%');
-          
-          console.log('✅ Manual replacement method successful');
-        }
-      }
-      
-      console.log('Decoded project length:', decodedProject.length);
-      console.log('Decoded project preview:', decodedProject.substring(0, 200));
-      
-      // Try parsing once
-      try {
-        projectData = JSON.parse(decodedProject);
-        
-        // If the result is a string, it means we have double-encoded data
-        if (typeof projectData === 'string') {
-          console.log('🔄 Detected double-encoded data, parsing again...');
-          projectData = JSON.parse(projectData);
-        }
-        
-        console.log('✅ Project data parsed successfully');
-        console.log('📊 Project data type:', typeof projectData);
-        console.log('🔑 Project data keys:', projectData ? Object.keys(projectData) : 'null');
-        console.log('📝 Project name:', projectData ? (projectData.name || projectData.title) : 'null');
-        console.log('📧 Project email:', projectData ? projectData.email : 'null');
-        
-      } catch (parseError) {
-        console.error('❌ Failed to parse project data:', parseError);
-        console.error('Parse error details:', parseError.message);
-        console.error('Problematic data:', decodedProject.substring(0, 500));
-        projectData = null;
-      }
+      const decodedProject = decodeURIComponent(projectDataParam);
+      projectData = JSON.parse(decodedProject);
+      console.log('✅ Project data parsed successfully:', projectData);
+    } catch (error) {
+      console.error('❌ Failed to parse project data:', error);
+      projectData = null;
     }
-    
-    if (directoryDataParam) {
+  }
+  
+  if (directoryDataParam) {
+    try {
       console.log('📝 Decoding directory data...');
-      console.log('Directory param (first 200 chars):', directoryDataParam.substring(0, 200));
-      
-      let decodedDirectory;
-      try {
-        // Try standard decodeURIComponent first
-        decodedDirectory = decodeURIComponent(directoryDataParam);
-        console.log('✅ Standard decodeURIComponent successful for directory');
-      } catch (decodeError) {
-        console.warn('⚠️ Standard decodeURIComponent failed for directory, trying alternative methods...');
-        console.warn('Decode error:', decodeError.message);
-        
-        try {
-          // Try with unescape as fallback
-          decodedDirectory = unescape(directoryDataParam);
-          console.log('✅ unescape method successful for directory');
-        } catch (unescapeError) {
-          console.warn('⚠️ unescape method failed for directory, trying manual replacement...');
-          
-          // Manual replacement of common URI encoding issues
-          decodedDirectory = directoryDataParam
-            .replace(/%22/g, '"')
-            .replace(/%7B/g, '{')
-            .replace(/%7D/g, '}')
-            .replace(/%5B/g, '[')
-            .replace(/%5D/g, ']')
-            .replace(/%2C/g, ',')
-            .replace(/%3A/g, ':')
-            .replace(/%20/g, ' ')
-            .replace(/%2F/g, '/')
-            .replace(/%2B/g, '+')
-            .replace(/%3F/g, '?')
-            .replace(/%3D/g, '=')
-            .replace(/%26/g, '&')
-            .replace(/%23/g, '#')
-            .replace(/%25/g, '%');
-          
-          console.log('✅ Manual replacement method successful for directory');
-        }
-      }
-      
-      console.log('Decoded directory length:', decodedDirectory.length);
-      
-      // Try parsing once
-      try {
-        directoryData = JSON.parse(decodedDirectory);
-        
-        // If the result is a string, it means we have double-encoded data
-        if (typeof directoryData === 'string') {
-          console.log('🔄 Detected double-encoded directory data, parsing again...');
-          directoryData = JSON.parse(directoryData);
-        }
-        
-        console.log('✅ Directory data parsed successfully');
-        console.log('📊 Directory data type:', typeof directoryData);
-        console.log('🔑 Directory data keys:', directoryData ? Object.keys(directoryData) : 'null');
-        console.log('📝 Directory name:', directoryData ? directoryData.name : 'null');
-        
-      } catch (parseError) {
-        console.error('❌ Failed to parse directory data:', parseError);
-        console.error('Parse error details:', parseError.message);
-        directoryData = null;
-      }
+      const decodedDirectory = decodeURIComponent(directoryDataParam);
+      directoryData = JSON.parse(decodedDirectory);
+      console.log('✅ Directory data parsed successfully:', directoryData);
+    } catch (error) {
+      console.error('❌ Failed to parse directory data:', error);
+      directoryData = null;
     }
-  } catch (e) {
-    console.error('❌ Error parsing project/directory data:', e);
   }
   
   // Check for fallback mode
-  const urlParams = new URLSearchParams(window.location.search);
-  const isFallback = urlParams.get('fallback') === 'true' || !projectData;
+  const isFallback = !projectData;
   
   console.log('🎯 Bookmarklet mode:', isFallback ? 'FALLBACK' : 'AUTO-FILL');
   console.log('📊 Data status:', {
@@ -323,8 +180,6 @@
   // Fill form fields with comprehensive selectors
   function fillFormFields(formData) {
     const filledFields = [];
-    const foundFields = [];
-    const skippedFields = [];
     
     console.log('🔍 Starting form field detection and filling...');
     console.log('📋 Available form data:', formData);
@@ -332,24 +187,6 @@
     // First, let's scan all form elements on the page
     const allInputs = document.querySelectorAll('input, textarea, select');
     console.log(`🔍 Found ${allInputs.length} total form elements on the page`);
-    
-    // Log details about all form elements
-    allInputs.forEach((element, index) => {
-      const details = {
-        index: index,
-        tag: element.tagName,
-        type: element.type || 'N/A',
-        name: element.name || 'N/A',
-        id: element.id || 'N/A',
-        placeholder: element.placeholder || 'N/A',
-        className: element.className || 'N/A',
-        value: element.value ? element.value.substring(0, 50) + '...' : 'empty',
-        disabled: element.disabled,
-        readOnly: element.readOnly
-      };
-      foundFields.push(details);
-      console.log(`📝 Form element ${index}:`, details);
-    });
     
     // Define field mappings with comprehensive selectors
     const fieldMappings = [
@@ -555,16 +392,6 @@
           console.log(`🔍 Selector "${selector}" found ${elements.length} elements`);
           
           elements.forEach((element, index) => {
-            const elementInfo = {
-              selector: selector,
-              tag: element.tagName,
-              name: element.name || 'N/A',
-              id: element.id || 'N/A',
-              currentValue: element.value || 'empty',
-              disabled: element.disabled,
-              readOnly: element.readOnly
-            };
-            
             if (element && !element.disabled && !element.readOnly) {
               const hadValue = element.value && element.value.trim() !== '';
               
@@ -576,21 +403,14 @@
                 selector: selector,
                 value: mapping.value,
                 element: element,
-                hadExistingValue: hadValue,
-                elementInfo: elementInfo
+                hadExistingValue: hadValue
               });
               
               if (hadValue) {
-                console.log(`🔄 Overwrote existing value in ${mapping.name} field: ${selector} = "${mapping.value}" (was: "${elementInfo.currentValue}")`);
+                console.log(`🔄 Overwrote existing value in ${mapping.name} field: ${selector} = "${mapping.value}"`);
               } else {
                 console.log(`✅ Filled empty ${mapping.name} field: ${selector} = "${mapping.value}"`);
               }
-            } else {
-              skippedFields.push({
-                reason: element.disabled ? 'disabled' : element.readOnly ? 'readonly' : 'unknown',
-                elementInfo: elementInfo
-              });
-              console.log(`⏭️ Skipped ${mapping.name} field: ${selector} (${element.disabled ? 'disabled' : element.readOnly ? 'readonly' : 'unknown'})`);
             }
           });
         } catch (error) {
@@ -600,9 +420,8 @@
     });
     
     console.log(`📊 Form filling summary:`);
-    console.log(`   - Total form elements found: ${foundFields.length}`);
+    console.log(`   - Total form elements found: ${allInputs.length}`);
     console.log(`   - Fields filled: ${filledFields.length}`);
-    console.log(`   - Fields skipped: ${skippedFields.length}`);
     console.log(`   - Filled fields details:`, filledFields);
     
     return filledFields;
@@ -645,45 +464,6 @@
     `;
     document.body.appendChild(successDiv);
     
-    // Add detailed info if fields were filled
-    if (filledFields.length > 0) {
-      const detailsDiv = document.createElement('div');
-      detailsDiv.id = 'opptym-details';
-      detailsDiv.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 12px;
-        z-index: 999999;
-        max-width: 400px;
-        max-height: 200px;
-        overflow-y: auto;
-      `;
-      
-      const detailsList = filledFields.map(field => 
-        `• ${field.elementInfo.name || field.elementInfo.id || 'unnamed'}: "${field.value}"`
-      ).join('<br>');
-      
-      detailsDiv.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 8px;">Filled Fields:</div>
-        ${detailsList}
-      `;
-      document.body.appendChild(detailsDiv);
-      
-      // Remove details after 6 seconds
-      setTimeout(() => {
-        const details = document.getElementById('opptym-details');
-        if (details) {
-          details.remove();
-        }
-      }, 6000);
-    }
-    
     // Remove success message after 4 seconds
     setTimeout(() => {
       const success = document.getElementById('opptym-success');
@@ -716,61 +496,56 @@
     `;
     fallbackDiv.innerHTML = `
       <div style="width: 16px; height: 16px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #F59E0B;">⚠</div>
-      <span>⚠️ No Project Data - Please generate bookmarklet with project data from Opptym</span>
+      <span>⚠️ No Project Data - Please generate a bookmarklet with project data from Opptym</span>
     `;
     document.body.appendChild(fallbackDiv);
     
-    // Remove fallback message after 6 seconds
+    // Remove fallback message after 5 seconds
     setTimeout(() => {
       const fallback = document.getElementById('opptym-fallback');
       if (fallback) {
         fallback.remove();
       }
-    }, 6000);
+    }, 5000);
   }
   
   // Track submission
   function trackSubmission(filledFields) {
-    try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('opptym_bookmarklet_token');
-      if (!token) {
-        console.log('No token available for submission tracking');
-        return;
-      }
-      
-      const submissionData = {
-        directoryName: directoryData?.name || 'Unknown Directory',
-        directoryUrl: directoryData?.url || window.location.href,
-        classification: directoryData?.classification || 'Directory Submission',
-        fieldsFilled: filledFields.length,
-        filledFields: filledFields.map(field => ({
-          selector: field.selector,
-          value: field.value
-        })),
-        timestamp: new Date().toISOString()
-      };
-      
-      fetch(`${API_BASE_URL}/submissions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(submissionData)
-      }).then(response => {
-        if (response.ok) {
-          console.log('✅ Submission tracked successfully');
-        } else {
-          console.warn('⚠️ Failed to track submission:', response.status);
-        }
-      }).catch(error => {
-        console.error('❌ Error tracking submission:', error);
-      });
-      
-    } catch (error) {
-      console.error('❌ Error in trackSubmission:', error);
+    if (!token) {
+      console.log('⚠️ No token available for tracking');
+      return;
     }
+    
+    const submissionData = {
+      token: token,
+      url: window.location.href,
+      fieldsFilled: filledFields.length,
+      filledFields: filledFields.map(field => ({
+        selector: field.selector,
+        value: field.value,
+        hadExistingValue: field.hadExistingValue
+      })),
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log('📊 Tracking submission:', submissionData);
+    
+    // Send tracking data to API
+    fetch(`${API_BASE_URL}/submissions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(submissionData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('✅ Submission tracked successfully:', data);
+    })
+    .catch(error => {
+      console.error('❌ Error tracking submission:', error);
+    });
   }
   
-  console.log('🎉 Enhanced Bookmarklet execution completed');
+  console.log('🎉 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' loaded successfully!');
 })();
