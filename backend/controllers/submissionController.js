@@ -211,10 +211,10 @@ const createBookmarkletSubmission = async (req, res) => {
     }
     
     const userId = tokenParts[2];
-    const timestamp = parseInt(tokenParts[1]);
+    const tokenTimestamp = parseInt(tokenParts[1]);
     
     // Check if token is expired (24 hours)
-    const tokenAge = Date.now() - timestamp;
+    const tokenAge = Date.now() - tokenTimestamp;
     const maxAge = 24 * 60 * 60 * 1000; // 24 hours
     if (tokenAge > maxAge) {
       return res.status(400).json({ error: 'Bookmarklet token has expired' });
@@ -236,7 +236,7 @@ const createBookmarkletSubmission = async (req, res) => {
       userId: userId,
       submissionType: 'bookmarklet',
       'metadata.token': token,
-      submittedAt: { $gte: new Date(timestamp) }
+      submittedAt: { $gte: new Date(tokenTimestamp) }
     });
     
     if (existingSubmissions >= maxUses) {
@@ -260,7 +260,7 @@ const createBookmarkletSubmission = async (req, res) => {
         url: url,
         fieldsFilled: fieldsFilled,
         filledFields: filledFields,
-        timestamp: timestamp,
+        timestamp: tokenTimestamp,
         source: 'bookmarklet',
         userPlan: userPlan,
         usageCount: existingSubmissions + 1
