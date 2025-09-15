@@ -323,10 +323,38 @@
   // Fill form fields with comprehensive selectors
   function fillFormFields(formData) {
     const filledFields = [];
+    const foundFields = [];
+    const skippedFields = [];
+    
+    console.log('🔍 Starting form field detection and filling...');
+    console.log('📋 Available form data:', formData);
+    
+    // First, let's scan all form elements on the page
+    const allInputs = document.querySelectorAll('input, textarea, select');
+    console.log(`🔍 Found ${allInputs.length} total form elements on the page`);
+    
+    // Log details about all form elements
+    allInputs.forEach((element, index) => {
+      const details = {
+        index: index,
+        tag: element.tagName,
+        type: element.type || 'N/A',
+        name: element.name || 'N/A',
+        id: element.id || 'N/A',
+        placeholder: element.placeholder || 'N/A',
+        className: element.className || 'N/A',
+        value: element.value ? element.value.substring(0, 50) + '...' : 'empty',
+        disabled: element.disabled,
+        readOnly: element.readOnly
+      };
+      foundFields.push(details);
+      console.log(`📝 Form element ${index}:`, details);
+    });
     
     // Define field mappings with comprehensive selectors
     const fieldMappings = [
       {
+        name: 'Name',
         selectors: [
           'input[name*="name"]',
           'input[id*="name"]',
@@ -334,42 +362,62 @@
           'input[name*="fullname"]',
           'input[id*="fullname"]',
           'input[name*="full_name"]',
-          'input[id*="full_name"]'
+          'input[id*="full_name"]',
+          'input[name*="firstname"]',
+          'input[id*="firstname"]',
+          'input[name*="lastname"]',
+          'input[id*="lastname"]',
+          'input[name*="contact_name"]',
+          'input[id*="contact_name"]'
         ],
         value: formData.name
       },
       {
+        name: 'Business Name',
         selectors: [
           'input[name*="business"]',
           'input[id*="business"]',
           'input[placeholder*="business" i]',
           'input[name*="business_name"]',
-          'input[id*="business_name"]'
+          'input[id*="business_name"]',
+          'input[name*="organization"]',
+          'input[id*="organization"]',
+          'input[name*="org"]',
+          'input[id*="org"]'
         ],
         value: formData.businessName
       },
       {
+        name: 'Company',
         selectors: [
           'input[name*="company"]',
           'input[id*="company"]',
           'input[placeholder*="company" i]',
           'input[name*="company_name"]',
-          'input[id*="company_name"]'
+          'input[id*="company_name"]',
+          'input[name*="firm"]',
+          'input[id*="firm"]'
         ],
         value: formData.company
       },
       {
+        name: 'Email',
         selectors: [
           'input[type="email"]',
           'input[name*="email"]',
           'input[id*="email"]',
           'input[placeholder*="email" i]',
           'input[name*="e-mail"]',
-          'input[id*="e-mail"]'
+          'input[id*="e-mail"]',
+          'input[name*="mail"]',
+          'input[id*="mail"]',
+          'input[name*="contact_email"]',
+          'input[id*="contact_email"]'
         ],
         value: formData.email
       },
       {
+        name: 'Phone',
         selectors: [
           'input[type="tel"]',
           'input[name*="phone"]',
@@ -378,11 +426,16 @@
           'input[name*="telephone"]',
           'input[id*="telephone"]',
           'input[name*="mobile"]',
-          'input[id*="mobile"]'
+          'input[id*="mobile"]',
+          'input[name*="contact_phone"]',
+          'input[id*="contact_phone"]',
+          'input[name*="tel"]',
+          'input[id*="tel"]'
         ],
         value: formData.phone
       },
       {
+        name: 'Website URL',
         selectors: [
           'input[type="url"]',
           'input[name*="url"]',
@@ -391,11 +444,16 @@
           'input[id*="website"]',
           'input[placeholder*="website" i]',
           'input[name*="web"]',
-          'input[id*="web"]'
+          'input[id*="web"]',
+          'input[name*="site"]',
+          'input[id*="site"]',
+          'input[name*="homepage"]',
+          'input[id*="homepage"]'
         ],
         value: formData.url
       },
       {
+        name: 'Description',
         selectors: [
           'textarea[name*="description"]',
           'textarea[id*="description"]',
@@ -403,40 +461,58 @@
           'textarea[name*="message"]',
           'textarea[id*="message"]',
           'textarea[name*="comments"]',
-          'textarea[id*="comments"]'
+          'textarea[id*="comments"]',
+          'textarea[name*="about"]',
+          'textarea[id*="about"]',
+          'textarea[name*="details"]',
+          'textarea[id*="details"]',
+          'textarea[name*="info"]',
+          'textarea[id*="info"]'
         ],
         value: formData.description
       },
       {
+        name: 'Address',
         selectors: [
           'input[name*="address"]',
           'input[id*="address"]',
           'textarea[name*="address"]',
           'input[placeholder*="address" i]',
           'input[name*="street"]',
-          'input[id*="street"]'
+          'input[id*="street"]',
+          'input[name*="location"]',
+          'input[id*="location"]'
         ],
         value: formData.address
       },
       {
+        name: 'City',
         selectors: [
           'input[name*="city"]',
           'input[id*="city"]',
-          'input[placeholder*="city" i]'
+          'input[placeholder*="city" i]',
+          'input[name*="town"]',
+          'input[id*="town"]'
         ],
         value: formData.city
       },
       {
+        name: 'State',
         selectors: [
           'input[name*="state"]',
           'input[id*="state"]',
           'input[placeholder*="state" i]',
           'select[name*="state"]',
-          'select[id*="state"]'
+          'select[id*="state"]',
+          'input[name*="province"]',
+          'input[id*="province"]',
+          'select[name*="province"]',
+          'select[id*="province"]'
         ],
         value: formData.state
       },
       {
+        name: 'Country',
         selectors: [
           'input[name*="country"]',
           'input[id*="country"]',
@@ -447,13 +523,18 @@
         value: formData.country
       },
       {
+        name: 'ZIP/Postal Code',
         selectors: [
           'input[name*="zip"]',
           'input[id*="zip"]',
           'input[name*="postal"]',
           'input[id*="postal"]',
           'input[placeholder*="zip" i]',
-          'input[placeholder*="postal" i]'
+          'input[placeholder*="postal" i]',
+          'input[name*="postcode"]',
+          'input[id*="postcode"]',
+          'input[name*="pincode"]',
+          'input[id*="pincode"]'
         ],
         value: formData.zip
       }
@@ -461,29 +542,68 @@
     
     // Fill each field type
     fieldMappings.forEach(mapping => {
-      if (!mapping.value || mapping.value.trim() === '') return;
+      if (!mapping.value || mapping.value.trim() === '') {
+        console.log(`⏭️ Skipping ${mapping.name} - no value available`);
+        return;
+      }
+      
+      console.log(`🎯 Looking for ${mapping.name} fields with value: "${mapping.value}"`);
       
       mapping.selectors.forEach(selector => {
         try {
           const elements = document.querySelectorAll(selector);
-          elements.forEach(element => {
-            if (element && !element.value && !element.disabled && !element.readOnly) {
+          console.log(`🔍 Selector "${selector}" found ${elements.length} elements`);
+          
+          elements.forEach((element, index) => {
+            const elementInfo = {
+              selector: selector,
+              tag: element.tagName,
+              name: element.name || 'N/A',
+              id: element.id || 'N/A',
+              currentValue: element.value || 'empty',
+              disabled: element.disabled,
+              readOnly: element.readOnly
+            };
+            
+            if (element && !element.disabled && !element.readOnly) {
+              const hadValue = element.value && element.value.trim() !== '';
+              
               element.value = mapping.value;
               element.dispatchEvent(new Event('input', { bubbles: true }));
               element.dispatchEvent(new Event('change', { bubbles: true }));
+              
               filledFields.push({
                 selector: selector,
                 value: mapping.value,
-                element: element
+                element: element,
+                hadExistingValue: hadValue,
+                elementInfo: elementInfo
               });
-              console.log(`✅ Filled field: ${selector} = ${mapping.value}`);
+              
+              if (hadValue) {
+                console.log(`🔄 Overwrote existing value in ${mapping.name} field: ${selector} = "${mapping.value}" (was: "${elementInfo.currentValue}")`);
+              } else {
+                console.log(`✅ Filled empty ${mapping.name} field: ${selector} = "${mapping.value}"`);
+              }
+            } else {
+              skippedFields.push({
+                reason: element.disabled ? 'disabled' : element.readOnly ? 'readonly' : 'unknown',
+                elementInfo: elementInfo
+              });
+              console.log(`⏭️ Skipped ${mapping.name} field: ${selector} (${element.disabled ? 'disabled' : element.readOnly ? 'readonly' : 'unknown'})`);
             }
           });
         } catch (error) {
-          console.warn(`⚠️ Error filling field ${selector}:`, error);
+          console.warn(`⚠️ Error with selector ${selector}:`, error);
         }
       });
     });
+    
+    console.log(`📊 Form filling summary:`);
+    console.log(`   - Total form elements found: ${foundFields.length}`);
+    console.log(`   - Fields filled: ${filledFields.length}`);
+    console.log(`   - Fields skipped: ${skippedFields.length}`);
+    console.log(`   - Filled fields details:`, filledFields);
     
     return filledFields;
   }
@@ -508,12 +628,61 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      max-width: 400px;
     `;
+    
+    let message = '';
+    if (filledFields.length === 0) {
+      message = '⚠️ No form fields found to fill';
+      successDiv.style.background = '#F59E0B';
+    } else {
+      message = `✅ Auto-filled ${filledFields.length} fields!`;
+    }
+    
     successDiv.innerHTML = `
-      <div style="width: 16px; height: 16px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #10B981;">✓</div>
-      <span>✅ Auto-filled ${filledFields.length} fields!</span>
+      <div style="width: 16px; height: 16px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: ${filledFields.length === 0 ? '#F59E0B' : '#10B981'};">${filledFields.length === 0 ? '⚠' : '✓'}</div>
+      <span>${message}</span>
     `;
     document.body.appendChild(successDiv);
+    
+    // Add detailed info if fields were filled
+    if (filledFields.length > 0) {
+      const detailsDiv = document.createElement('div');
+      detailsDiv.id = 'opptym-details';
+      detailsDiv.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 12px;
+        z-index: 999999;
+        max-width: 400px;
+        max-height: 200px;
+        overflow-y: auto;
+      `;
+      
+      const detailsList = filledFields.map(field => 
+        `• ${field.elementInfo.name || field.elementInfo.id || 'unnamed'}: "${field.value}"`
+      ).join('<br>');
+      
+      detailsDiv.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 8px;">Filled Fields:</div>
+        ${detailsList}
+      `;
+      document.body.appendChild(detailsDiv);
+      
+      // Remove details after 6 seconds
+      setTimeout(() => {
+        const details = document.getElementById('opptym-details');
+        if (details) {
+          details.remove();
+        }
+      }, 6000);
+    }
     
     // Remove success message after 4 seconds
     setTimeout(() => {
