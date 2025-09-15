@@ -2,7 +2,13 @@ const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  projectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
+  projectId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Project', 
+    required: function() {
+      return this.submissionType !== 'bookmarklet';
+    }
+  },
   submissionType: {
     type: String,
     enum: [
@@ -14,6 +20,13 @@ const submissionSchema = new mongoose.Schema({
   siteName: { type: String, required: true },
   status: { type: String, default: 'pending' },
   submittedAt: { type: Date, default: Date.now },
+  metadata: {
+    url: String,
+    fieldsFilled: Number,
+    filledFields: [Object],
+    timestamp: String,
+    source: String
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Submission', submissionSchema);

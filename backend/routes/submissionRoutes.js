@@ -13,6 +13,9 @@ router.get('/:id', protect, submissionController.getSubmissionById);
 // Create a new submission - requires trial check and usage limit check
 router.post('/', protect, checkTrialStatus, checkUsageLimit('submissions'), submissionController.createSubmission);
 
+// Create a submission from bookmarklet - no authentication required
+router.post('/bookmarklet', submissionController.createBookmarkletSubmission);
+
 // Update a submission - requires trial check
 router.put('/:id', protect, checkTrialStatus, submissionController.updateSubmission);
 

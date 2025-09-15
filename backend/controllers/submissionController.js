@@ -190,10 +190,61 @@ const deleteSubmission = async (req, res) => {
   }
 };
 
+// @desc    Create a submission from bookmarklet
+// @route   POST /api/submissions/bookmarklet
+// @access  Public (no authentication required)
+const createBookmarkletSubmission = async (req, res) => {
+  try {
+    console.log('🔍 createBookmarkletSubmission called with:', req.body);
+    
+    const { token, url, fieldsFilled, filledFields, timestamp } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({ error: 'Token is required' });
+    }
+    
+    // Extract user ID from token (assuming token format: opptym_timestamp_userId)
+    const tokenParts = token.split('_');
+    if (tokenParts.length < 3) {
+      return res.status(400).json({ error: 'Invalid token format' });
+    }
+    
+    const userId = tokenParts[2];
+    
+    // Create a simple submission record for tracking
+    const submission = await Submission.create({
+      userId: userId,
+      siteName: new URL(url).hostname,
+      submissionType: 'bookmarklet',
+      status: 'completed',
+      submittedAt: new Date(),
+      metadata: {
+        url: url,
+        fieldsFilled: fieldsFilled,
+        filledFields: filledFields,
+        timestamp: timestamp,
+        source: 'bookmarklet'
+      }
+    });
+    
+    console.log('✅ Bookmarklet submission tracked:', submission._id);
+    
+    res.status(201).json({
+      success: true,
+      submissionId: submission._id,
+      message: 'Submission tracked successfully'
+    });
+  } catch (err) {
+    console.error('❌ createBookmarkletSubmission error:', err);
+    res.status(400).json({ error: 'Failed to track submission', details: err.message });
+  }
+};
+
 module.exports = {
   getSubmissions,
   getSubmissionById,
   createSubmission,
+  createBookmarkletSubmission,
   updateSubmission,
   deleteSubmission
 };

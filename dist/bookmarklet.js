@@ -3,7 +3,7 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.3.0';
+  const BOOKMARKLET_VERSION = '2.4.0';
   
   console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
@@ -596,20 +596,30 @@
     
     console.log('📊 Tracking submission:', submissionData);
     
-    // Send tracking data to API
-    fetch(`${API_BASE_URL}/submissions`, {
+    // Send tracking data to API with improved error handling
+    fetch(`${API_BASE_URL}/submissions/bookmarklet`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': window.location.origin
       },
-      body: JSON.stringify(submissionData)
+      body: JSON.stringify(submissionData),
+      mode: 'cors',
+      credentials: 'omit'
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
     .then(data => {
       console.log('✅ Submission tracked successfully:', data);
     })
     .catch(error => {
-      console.error('❌ Error tracking submission:', error);
+      console.warn('⚠️ Error tracking submission (non-critical):', error.message);
+      // Don't show error to user as this is non-critical functionality
     });
   }
   
