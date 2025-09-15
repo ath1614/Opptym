@@ -280,11 +280,100 @@ const createBookmarkletSubmission = async (req, res) => {
   }
 };
 
+// @desc    Get submission statistics for dashboard
+// @route   GET /api/submissions/stats
+// @access  Private
+const getSubmissionStats = async (req, res) => {
+  try {
+    const userId = req.userId;
+    
+    // Get submission counts by status
+    const stats = await Submission.aggregate([
+      { $match: { userId: userId } },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    // Get total submissions
+    const totalSubmissions = await Submission.countDocuments({ userId: userId });
+    
+    // Get recent submissions (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const recentSubmissions = await Submission.countDocuments({
+      userId: userId,
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+    
+    // Format stats
+    const statusCounts = {
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+      completed: 0
+    };
+    
+    stats.forEach(stat => {
+      statusCounts[stat._id] = stat.count;
+    });
+    
+    res.status(200).json({
+      total: totalSubmissions,
+      recent: recentSubmissions,
+      byStatus: statusCounts,
+      successRate: totalSubmissions > 0 ? Math.round((statusCounts.approved / totalSubmissions) * 100) : 0
+    });
+  } catch (err) {
+    console.error('❌ getSubmissionStats error:', err);
+    res.status(500).json({ error: 'Failed to fetch submission statistics' });
+  }
+};
+
+// @desc    Update submission status (for admin or automated systems)
+// @route   PUT /api/submissions/:id/status
+// @access  Private
+const updateSubmissionStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, notes } = req.body;
+    
+    const submission = await Submission.findOneAndUpdate(
+      { _id: id, userId: req.userId },
+      { 
+        status: status,
+        statusUpdatedAt: new Date(),
+        statusNotes: notes
+      },
+      { new: true, runValidators: true }
+    );
+    
+    if (!submission) {
+      return res.status(404).json({ error: 'Submission not found' });
+    }
+    
+    res.status(200).json({
+      success: true,
+      submission: submission,
+      message: `Submission status updated to ${status}`
+    });
+  } catch (err) {
+    console.error('❌ updateSubmissionStatus error:', err);
+    res.status(400).json({ error: 'Failed to update submission status' });
+  }
+};
+
 module.exports = {
   getSubmissions,
   getSubmissionById,
   createSubmission,
   createBookmarkletSubmission,
   updateSubmission,
-  deleteSubmission
+  deleteSubmission,
+  getSubmissionStats,
+  updateSubmissionStatus
 };

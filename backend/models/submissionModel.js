@@ -18,14 +18,23 @@ const submissionSchema = new mongoose.Schema({
     required: true,
   },
   siteName: { type: String, required: true },
-  status: { type: String, default: 'pending' },
+  status: { 
+    type: String, 
+    enum: ['pending', 'approved', 'rejected', 'completed'],
+    default: 'pending' 
+  },
   submittedAt: { type: Date, default: Date.now },
+  statusUpdatedAt: { type: Date },
+  statusNotes: { type: String },
   metadata: {
     url: String,
     fieldsFilled: Number,
     filledFields: [Object],
     timestamp: String,
-    source: String
+    source: String,
+    token: String,
+    userPlan: String,
+    usageCount: Number
   }
 }, { timestamps: true });
 

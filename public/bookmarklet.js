@@ -3,7 +3,7 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.6.0';
+  const BOOKMARKLET_VERSION = '2.7.0';
   
   console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
@@ -385,6 +385,15 @@
           'input[id*="homepage"]',
           'input[name*="web_site"]',
           'input[id*="web_site"]',
+          // Link and anchor fields (common in directories)
+          'input[name*="link"]',
+          'input[id*="link"]',
+          'input[name*="anchor"]',
+          'input[id*="anchor"]',
+          'input[name*="link_anchor"]',
+          'input[id*="link_anchor"]',
+          'input[placeholder*="link" i]',
+          'input[placeholder*="anchor" i]',
           // General URL fields
           'input[name="url"]',
           'input[id="url"]',

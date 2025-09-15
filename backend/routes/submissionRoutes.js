@@ -16,8 +16,14 @@ router.post('/', protect, checkTrialStatus, checkUsageLimit('submissions'), subm
 // Create a submission from bookmarklet - no authentication required
 router.post('/bookmarklet', submissionController.createBookmarkletSubmission);
 
+// Get submission statistics
+router.get('/stats', protect, submissionController.getSubmissionStats);
+
 // Update a submission - requires trial check
 router.put('/:id', protect, checkTrialStatus, submissionController.updateSubmission);
+
+// Update submission status
+router.put('/:id/status', protect, submissionController.updateSubmissionStatus);
 
 // Delete a submission - requires trial check
 router.delete('/:id', protect, checkTrialStatus, submissionController.deleteSubmission);
