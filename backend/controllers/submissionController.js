@@ -6,9 +6,44 @@ const User = require('../models/userModel');
 // @access  Private
 const getSubmissions = async (req, res) => {
   try {
-    const submissions = await Submission.find({ userId: req.userId })
+    const { classification, submissionType } = req.query;
+    
+    // Build query filter
+    const filter = { userId: req.userId };
+    
+    // Support filtering by classification (legacy) or submissionType
+    if (classification) {
+      // Map classification names to submission types
+      const classificationMap = {
+        'Article Submission': 'article',
+        'Directory Submission': 'directory', 
+        'Press Release': 'article',
+        'BookMarking': 'bookmark',
+        'Business Listing': 'directory',
+        'Classified': 'classified',
+        'Forum': 'forum',
+        'Social Media': 'social',
+        'Local Business': 'local',
+        'Citation': 'citation',
+        'Web 2.0': 'web2',
+        'Q&A': 'qa'
+      };
+      
+      const mappedType = classificationMap[classification];
+      if (mappedType) {
+        filter.submissionType = mappedType;
+      }
+    } else if (submissionType) {
+      filter.submissionType = submissionType;
+    }
+    
+    console.log('🔍 getSubmissions filter:', filter);
+    
+    const submissions = await Submission.find(filter)
       .populate('projectId', 'title url')
       .sort({ createdAt: -1 });
+      
+    console.log(`✅ Found ${submissions.length} submissions for filter:`, filter);
     res.status(200).json(submissions);
   } catch (err) {
     console.error('❌ getSubmissions error:', err);
