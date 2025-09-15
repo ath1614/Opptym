@@ -402,7 +402,7 @@ function fillFormFields() {
   return filledFields;
 }
 
-// Track submission
+// Track submission with security checks
 async function trackSubmission(filledFields) {
   if (!token) {
     console.log('⚠️ No token available for tracking');
@@ -425,17 +425,45 @@ async function trackSubmission(filledFields) {
           value: field.value.substring(0, 100) // Truncate for privacy
         })),
         timestamp: new Date().toISOString(),
-        source: 'bookmarklet'
+        source: 'bookmarklet',
+        userAgent: navigator.userAgent,
+        referrer: document.referrer
       })
     });
     
     if (response.ok) {
+      const result = await response.json();
       console.log('✅ Submission tracked successfully');
+      
+      // Show usage information to user
+      if (result.usage) {
+        const remaining = result.usage.limit - result.usage.used;
+        if (remaining <= 1) {
+          console.log(`⚠️ Warning: Only ${remaining} use(s) remaining for this bookmarklet`);
+        }
+      }
     } else {
-      console.error('❌ Failed to track submission:', response.status);
+      const errorData = await response.json();
+      console.error('❌ Failed to track submission:', response.status, errorData);
+      
+      // Show user-friendly error messages
+      if (response.status === 403) {
+        if (errorData.trialExpired) {
+          alert('❌ Your free trial has expired. Please upgrade to continue using bookmarklets.');
+        } else if (errorData.usage?.type === 'per_bookmarklet') {
+          alert(`❌ This bookmarklet has already been used ${errorData.usage.used} times. Maximum ${errorData.usage.limit} uses per bookmarklet for ${errorData.usage.plan} plan.`);
+        } else if (errorData.usage?.type === 'daily_limit') {
+          alert(`❌ Daily bookmarklet limit exceeded. Maximum ${errorData.usage.limit} bookmarklet submissions per day for ${errorData.usage.plan} plan.`);
+        } else {
+          alert(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`);
+        }
+      } else {
+        alert(`❌ Failed to track submission: ${errorData.error || 'Unknown error'}`);
+      }
     }
   } catch (error) {
     console.error('❌ Error tracking submission:', error);
+    alert('❌ Network error while tracking submission. Please check your connection.');
   }
 }
 

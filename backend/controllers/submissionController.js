@@ -232,22 +232,57 @@ const createBookmarkletSubmission = async (req, res) => {
     
     // Check usage limits based on subscription
     const userPlan = user.subscription || 'free';
-    const maxUses = userPlan === 'free' ? 1 : 5;
+    const maxUsesPerBookmarklet = userPlan === 'free' ? 1 : 5;
+    const maxBookmarkletsPerDay = userPlan === 'free' ? 3 : 20;
     
-    // Count existing bookmarklet submissions for this token
-    const existingSubmissions = await Submission.countDocuments({
+    // Count existing bookmarklet submissions for this specific token (prevent token reuse)
+    const existingSubmissionsForToken = await Submission.countDocuments({
       userId: userObjectId,
       submissionType: 'bookmarklet',
-      'metadata.token': token,
-      submittedAt: { $gte: new Date(tokenTimestamp) }
+      'metadata.token': token
     });
     
-    if (existingSubmissions >= maxUses) {
+    if (existingSubmissionsForToken >= maxUsesPerBookmarklet) {
       return res.status(403).json({ 
-        error: 'Bookmarklet usage limit exceeded',
-        limit: maxUses,
-        used: existingSubmissions,
-        plan: userPlan
+        error: `This bookmarklet has already been used ${existingSubmissionsForToken} times. Maximum ${maxUsesPerBookmarklet} uses per bookmarklet for ${userPlan} plan.`,
+        usage: {
+          used: existingSubmissionsForToken,
+          limit: maxUsesPerBookmarklet,
+          plan: userPlan,
+          type: 'per_bookmarklet'
+        }
+      });
+    }
+    
+    // Count total bookmarklet submissions for this user today (prevent abuse)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const totalBookmarkletsToday = await Submission.countDocuments({
+      userId: userObjectId,
+      submissionType: 'bookmarklet',
+      submittedAt: { $gte: today, $lt: tomorrow }
+    });
+    
+    if (totalBookmarkletsToday >= maxBookmarkletsPerDay) {
+      return res.status(403).json({ 
+        error: `Daily bookmarklet limit exceeded. Maximum ${maxBookmarkletsPerDay} bookmarklet submissions per day for ${userPlan} plan.`,
+        usage: {
+          used: totalBookmarkletsToday,
+          limit: maxBookmarkletsPerDay,
+          plan: userPlan,
+          type: 'daily_limit'
+        }
+      });
+    }
+    
+    // Check if user's subscription is active and not expired
+    if (user.subscription === 'free' && user.trialEndDate && new Date() > new Date(user.trialEndDate)) {
+      return res.status(403).json({ 
+        error: 'Free trial has expired. Please upgrade to continue using bookmarklets.',
+        trialExpired: true
       });
     }
     
