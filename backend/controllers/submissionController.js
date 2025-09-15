@@ -270,6 +270,15 @@ const createBookmarkletSubmission = async (req, res) => {
       }
     });
     
+    // Increment user's submission usage counter
+    try {
+      await user.incrementUsage('submissions');
+      console.log('✅ User submission usage incremented');
+    } catch (usageError) {
+      console.error('❌ Usage increment failed:', usageError);
+      // Continue anyway, don't fail the submission
+    }
+    
     console.log('✅ Bookmarklet submission tracked:', submission._id);
     
     res.status(201).json({
@@ -295,15 +304,23 @@ const getSubmissionStats = async (req, res) => {
     const userObjectId = new mongoose.Types.ObjectId(userId);
     
     // Get overall submission counts by status
-    const overallStats = await Submission.aggregate([
-      { $match: { userId: userObjectId } },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
+    let overallStats = [];
+    try {
+      overallStats = await Submission.aggregate([
+        { $match: { userId: userObjectId } },
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
         }
-      }
-    ]);
+      ]);
+    } catch (aggregationError) {
+      console.error('❌ Overall stats aggregation error:', aggregationError);
+      // Fallback to simple count
+      const totalCount = await Submission.countDocuments({ userId: userObjectId });
+      overallStats = [{ _id: 'completed', count: totalCount }];
+    }
     
     // Get submission counts by classification type and status
     const classificationStats = await Submission.aggregate([
