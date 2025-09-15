@@ -3,7 +3,7 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.2.0';
+  const BOOKMARKLET_VERSION = '2.3.0';
   
   console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
@@ -52,7 +52,40 @@
   if (projectDataParam) {
     try {
       console.log('📝 Decoding project data...');
-      const decodedProject = decodeURIComponent(projectDataParam);
+      let decodedProject;
+      
+      // Try multiple decoding methods to handle URI malformed errors
+      try {
+        decodedProject = decodeURIComponent(projectDataParam);
+      } catch (decodeError) {
+        console.warn('⚠️ Standard decodeURIComponent failed, trying alternative methods...');
+        
+        // Try with unescape as fallback
+        try {
+          decodedProject = unescape(projectDataParam);
+        } catch (unescapeError) {
+          console.warn('⚠️ unescape method failed, trying manual replacement...');
+          
+          // Manual replacement of common URI encoding issues
+          decodedProject = projectDataParam
+            .replace(/%22/g, '"')
+            .replace(/%7B/g, '{')
+            .replace(/%7D/g, '}')
+            .replace(/%5B/g, '[')
+            .replace(/%5D/g, ']')
+            .replace(/%2C/g, ',')
+            .replace(/%3A/g, ':')
+            .replace(/%20/g, ' ')
+            .replace(/%2F/g, '/')
+            .replace(/%2B/g, '+')
+            .replace(/%3F/g, '?')
+            .replace(/%3D/g, '=')
+            .replace(/%26/g, '&')
+            .replace(/%23/g, '#')
+            .replace(/%25/g, '%');
+        }
+      }
+      
       projectData = JSON.parse(decodedProject);
       console.log('✅ Project data parsed successfully:', projectData);
     } catch (error) {
@@ -64,7 +97,40 @@
   if (directoryDataParam) {
     try {
       console.log('📝 Decoding directory data...');
-      const decodedDirectory = decodeURIComponent(directoryDataParam);
+      let decodedDirectory;
+      
+      // Try multiple decoding methods to handle URI malformed errors
+      try {
+        decodedDirectory = decodeURIComponent(directoryDataParam);
+      } catch (decodeError) {
+        console.warn('⚠️ Standard decodeURIComponent failed for directory, trying alternative methods...');
+        
+        // Try with unescape as fallback
+        try {
+          decodedDirectory = unescape(directoryDataParam);
+        } catch (unescapeError) {
+          console.warn('⚠️ unescape method failed for directory, trying manual replacement...');
+          
+          // Manual replacement of common URI encoding issues
+          decodedDirectory = directoryDataParam
+            .replace(/%22/g, '"')
+            .replace(/%7B/g, '{')
+            .replace(/%7D/g, '}')
+            .replace(/%5B/g, '[')
+            .replace(/%5D/g, ']')
+            .replace(/%2C/g, ',')
+            .replace(/%3A/g, ':')
+            .replace(/%20/g, ' ')
+            .replace(/%2F/g, '/')
+            .replace(/%2B/g, '+')
+            .replace(/%3F/g, '?')
+            .replace(/%3D/g, '=')
+            .replace(/%26/g, '&')
+            .replace(/%23/g, '#')
+            .replace(/%25/g, '%');
+        }
+      }
+      
       directoryData = JSON.parse(decodedDirectory);
       console.log('✅ Directory data parsed successfully:', directoryData);
     } catch (error) {
