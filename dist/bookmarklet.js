@@ -3,7 +3,7 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.4.0';
+  const BOOKMARKLET_VERSION = '2.5.0';
   
   console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
@@ -254,6 +254,18 @@
     const allInputs = document.querySelectorAll('input, textarea, select');
     console.log(`🔍 Found ${allInputs.length} total form elements on the page`);
     
+    // Debug: Log details about each form element found
+    if (allInputs.length > 0) {
+      console.log('📋 Form elements found:');
+      allInputs.forEach((element, index) => {
+        console.log(`  ${index + 1}. ${element.tagName} - name: "${element.name || 'none'}", id: "${element.id || 'none'}", type: "${element.type || 'none'}", placeholder: "${element.placeholder || 'none'}"`);
+      });
+    } else {
+      console.log('⚠️ No form elements found on this page');
+      console.log('🔍 Page URL:', window.location.href);
+      console.log('🔍 Page title:', document.title);
+    }
+    
     // Define field mappings with comprehensive selectors
     const fieldMappings = [
       {
@@ -271,7 +283,15 @@
           'input[name*="lastname"]',
           'input[id*="lastname"]',
           'input[name*="contact_name"]',
-          'input[id*="contact_name"]'
+          'input[id*="contact_name"]',
+          'input[name*="contactname"]',
+          'input[id*="contactname"]',
+          'input[name*="contact"]',
+          'input[id*="contact"]',
+          'input[name*="owner"]',
+          'input[id*="owner"]',
+          'input[name*="manager"]',
+          'input[id*="manager"]'
         ],
         value: formData.name
       },
@@ -484,6 +504,45 @@
         }
       });
     });
+    
+    // If no fields were filled with specific selectors, try a fallback approach
+    if (filledFields.length === 0 && allInputs.length > 0) {
+      console.log('🔄 No fields filled with specific selectors, trying fallback approach...');
+      
+      // Try to fill any empty text inputs with available data
+      const textInputs = document.querySelectorAll('input[type="text"], input:not([type]), textarea');
+      const availableData = [
+        { value: formData.name, label: 'Name' },
+        { value: formData.company, label: 'Company' },
+        { value: formData.email, label: 'Email' },
+        { value: formData.phone, label: 'Phone' },
+        { value: formData.url, label: 'Website' },
+        { value: formData.description, label: 'Description' }
+      ].filter(item => item.value && item.value.trim() !== '');
+      
+      console.log(`🔄 Found ${textInputs.length} text inputs and ${availableData.length} available data items`);
+      
+      let dataIndex = 0;
+      textInputs.forEach((input, index) => {
+        if (!input.disabled && !input.readOnly && (!input.value || input.value.trim() === '') && dataIndex < availableData.length) {
+          const data = availableData[dataIndex];
+          input.value = data.value;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+          
+          filledFields.push({
+            selector: `fallback-${index}`,
+            value: data.value,
+            element: input,
+            hadExistingValue: false,
+            label: data.label
+          });
+          
+          console.log(`✅ Fallback filled ${data.label}: "${data.value}"`);
+          dataIndex++;
+        }
+      });
+    }
     
     console.log(`📊 Form filling summary:`);
     console.log(`   - Total form elements found: ${allInputs.length}`);
