@@ -225,7 +225,7 @@ const createBookmarkletSubmission = async (req, res) => {
     const mongoose = require('mongoose');
     const userObjectId = new mongoose.Types.ObjectId(userId);
     
-    const user = await User.findById(userId);
+    const user = await User.findById(userObjectId);
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
     }
