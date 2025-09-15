@@ -345,7 +345,7 @@ const getSubmissionStats = async (req, res) => {
         { $match: { userId: userObjectId } },
         {
           $group: {
-            _id: '$status',
+            _id: { $ifNull: ['$status', 'pending'] }, // Handle null status
             count: { $sum: 1 }
           }
         }
@@ -364,7 +364,7 @@ const getSubmissionStats = async (req, res) => {
         $group: {
           _id: {
             submissionType: '$submissionType',
-            status: '$status'
+            status: { $ifNull: ['$status', 'pending'] } // Handle null status
           },
           count: { $sum: 1 }
         }
@@ -423,7 +423,10 @@ const getSubmissionStats = async (req, res) => {
     });
     
     res.status(200).json({
-      overall: {
+      totalSubmissions: totalSubmissions,
+      recentSubmissions: recentSubmissions,
+      successRate: totalSubmissions > 0 ? Math.round((overallStatusCounts.approved / totalSubmissions) * 100) : 0,
+      overallStats: {
         total: totalSubmissions,
         recent: recentSubmissions,
         byStatus: overallStatusCounts,
@@ -460,7 +463,7 @@ const getSubmissionStatsByType = async (req, res) => {
       { $match: { userId: userObjectId, submissionType: type } },
       {
         $group: {
-          _id: '$status',
+          _id: { $ifNull: ['$status', 'pending'] }, // Handle null status
           count: { $sum: 1 }
         }
       }
@@ -496,10 +499,19 @@ const getSubmissionStatsByType = async (req, res) => {
     
     res.status(200).json({
       type: type,
+      totalSubmissions: totalSubmissions,
+      recentSubmissions: recentSubmissions,
       total: totalSubmissions,
       recent: recentSubmissions,
       byStatus: statusCounts,
-      successRate: totalSubmissions > 0 ? Math.round((statusCounts.approved / totalSubmissions) * 100) : 0
+      successRate: totalSubmissions > 0 ? Math.round((statusCounts.approved / totalSubmissions) * 100) : 0,
+      typeStats: {
+        type: type,
+        total: totalSubmissions,
+        recent: recentSubmissions,
+        byStatus: statusCounts,
+        successRate: totalSubmissions > 0 ? Math.round((statusCounts.approved / totalSubmissions) * 100) : 0
+      }
     });
   } catch (err) {
     console.error('❌ getSubmissionStatsByType error:', err);
