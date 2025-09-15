@@ -19,6 +19,9 @@ router.post('/bookmarklet', submissionController.createBookmarkletSubmission);
 // Get submission statistics
 router.get('/stats', protect, submissionController.getSubmissionStats);
 
+// Get submission statistics for specific type
+router.get('/stats/:type', protect, submissionController.getSubmissionStatsByType);
+
 // Update a submission - requires trial check
 router.put('/:id', protect, checkTrialStatus, submissionController.updateSubmission);
 

@@ -287,12 +287,26 @@ const getSubmissionStats = async (req, res) => {
   try {
     const userId = req.userId;
     
-    // Get submission counts by status
-    const stats = await Submission.aggregate([
+    // Get overall submission counts by status
+    const overallStats = await Submission.aggregate([
       { $match: { userId: userId } },
       {
         $group: {
           _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    // Get submission counts by classification type and status
+    const classificationStats = await Submission.aggregate([
+      { $match: { userId: userId } },
+      {
+        $group: {
+          _id: {
+            submissionType: '$submissionType',
+            status: '$status'
+          },
           count: { $sum: 1 }
         }
       }
@@ -310,6 +324,101 @@ const getSubmissionStats = async (req, res) => {
       createdAt: { $gte: thirtyDaysAgo }
     });
     
+    // Format overall stats
+    const overallStatusCounts = {
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+      completed: 0
+    };
+    
+    overallStats.forEach(stat => {
+      overallStatusCounts[stat._id] = stat.count;
+    });
+    
+    // Format classification stats
+    const classificationBreakdown = {};
+    classificationStats.forEach(stat => {
+      const type = stat._id.submissionType;
+      const status = stat._id.status;
+      
+      if (!classificationBreakdown[type]) {
+        classificationBreakdown[type] = {
+          pending: 0,
+          approved: 0,
+          rejected: 0,
+          completed: 0,
+          total: 0
+        };
+      }
+      
+      classificationBreakdown[type][status] = stat.count;
+      classificationBreakdown[type].total += stat.count;
+    });
+    
+    // Calculate success rates for each classification
+    Object.keys(classificationBreakdown).forEach(type => {
+      const typeStats = classificationBreakdown[type];
+      typeStats.successRate = typeStats.total > 0 ? 
+        Math.round((typeStats.approved / typeStats.total) * 100) : 0;
+    });
+    
+    res.status(200).json({
+      overall: {
+        total: totalSubmissions,
+        recent: recentSubmissions,
+        byStatus: overallStatusCounts,
+        successRate: totalSubmissions > 0 ? Math.round((overallStatusCounts.approved / totalSubmissions) * 100) : 0
+      },
+      byClassification: classificationBreakdown
+    });
+  } catch (err) {
+    console.error('❌ getSubmissionStats error:', err);
+    res.status(500).json({ error: 'Failed to fetch submission statistics' });
+  }
+};
+
+// @desc    Get submission statistics for a specific classification type
+// @route   GET /api/submissions/stats/:type
+// @access  Private
+const getSubmissionStatsByType = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { type } = req.params;
+    
+    // Validate submission type
+    const validTypes = ['directory', 'article', 'bookmark', 'classified', 'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet'];
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({ error: 'Invalid submission type' });
+    }
+    
+    // Get submission counts by status for this type
+    const stats = await Submission.aggregate([
+      { $match: { userId: userId, submissionType: type } },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    // Get total submissions for this type
+    const totalSubmissions = await Submission.countDocuments({ 
+      userId: userId, 
+      submissionType: type 
+    });
+    
+    // Get recent submissions for this type (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const recentSubmissions = await Submission.countDocuments({
+      userId: userId,
+      submissionType: type,
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+    
     // Format stats
     const statusCounts = {
       pending: 0,
@@ -323,14 +432,15 @@ const getSubmissionStats = async (req, res) => {
     });
     
     res.status(200).json({
+      type: type,
       total: totalSubmissions,
       recent: recentSubmissions,
       byStatus: statusCounts,
       successRate: totalSubmissions > 0 ? Math.round((statusCounts.approved / totalSubmissions) * 100) : 0
     });
   } catch (err) {
-    console.error('❌ getSubmissionStats error:', err);
-    res.status(500).json({ error: 'Failed to fetch submission statistics' });
+    console.error('❌ getSubmissionStatsByType error:', err);
+    res.status(500).json({ error: 'Failed to fetch submission statistics for type' });
   }
 };
 
@@ -375,5 +485,6 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   getSubmissionStats,
+  getSubmissionStatsByType,
   updateSubmissionStatus
 };
