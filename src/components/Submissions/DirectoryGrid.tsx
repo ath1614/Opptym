@@ -284,10 +284,75 @@ export default function DirectoryGrid({
     console.log('- Project param exists:', !!testProjectParam);
     console.log('- Directory param exists:', !!testDirectoryParam);
     
-    // Test JSON parsing
+    // Test JSON parsing with robust error handling
     try {
-      const parsedProject = JSON.parse(decodeURIComponent(testProjectParam || ''));
-      const parsedDirectory = JSON.parse(decodeURIComponent(testDirectoryParam || ''));
+      let parsedProject = null;
+      let parsedDirectory = null;
+      
+      if (testProjectParam) {
+        try {
+          parsedProject = JSON.parse(decodeURIComponent(testProjectParam));
+        } catch (decodeError) {
+          console.warn('Project decode failed, trying alternative methods...');
+          try {
+            // Try with unescape as fallback
+            parsedProject = JSON.parse(unescape(testProjectParam));
+          } catch (unescapeError) {
+            console.warn('Project unescape failed, trying manual replacement...');
+            // Manual replacement of common URI encoding issues
+            const manualDecoded = testProjectParam
+              .replace(/%22/g, '"')
+              .replace(/%7B/g, '{')
+              .replace(/%7D/g, '}')
+              .replace(/%5B/g, '[')
+              .replace(/%5D/g, ']')
+              .replace(/%2C/g, ',')
+              .replace(/%3A/g, ':')
+              .replace(/%20/g, ' ')
+              .replace(/%2F/g, '/')
+              .replace(/%2B/g, '+')
+              .replace(/%3F/g, '?')
+              .replace(/%3D/g, '=')
+              .replace(/%26/g, '&')
+              .replace(/%23/g, '#')
+              .replace(/%25/g, '%');
+            parsedProject = JSON.parse(manualDecoded);
+          }
+        }
+      }
+      
+      if (testDirectoryParam) {
+        try {
+          parsedDirectory = JSON.parse(decodeURIComponent(testDirectoryParam));
+        } catch (decodeError) {
+          console.warn('Directory decode failed, trying alternative methods...');
+          try {
+            // Try with unescape as fallback
+            parsedDirectory = JSON.parse(unescape(testDirectoryParam));
+          } catch (unescapeError) {
+            console.warn('Directory unescape failed, trying manual replacement...');
+            // Manual replacement of common URI encoding issues
+            const manualDecoded = testDirectoryParam
+              .replace(/%22/g, '"')
+              .replace(/%7B/g, '{')
+              .replace(/%7D/g, '}')
+              .replace(/%5B/g, '[')
+              .replace(/%5D/g, ']')
+              .replace(/%2C/g, ',')
+              .replace(/%3A/g, ':')
+              .replace(/%20/g, ' ')
+              .replace(/%2F/g, '/')
+              .replace(/%2B/g, '+')
+              .replace(/%3F/g, '?')
+              .replace(/%3D/g, '=')
+              .replace(/%26/g, '&')
+              .replace(/%23/g, '#')
+              .replace(/%25/g, '%');
+            parsedDirectory = JSON.parse(manualDecoded);
+          }
+        }
+      }
+      
       console.log('JSON parsing test:');
       console.log('- Project parsed successfully:', !!parsedProject);
       console.log('- Directory parsed successfully:', !!parsedDirectory);
