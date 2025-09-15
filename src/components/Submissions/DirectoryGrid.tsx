@@ -3,6 +3,7 @@ import { ExternalLink, ChevronLeft, ChevronRight, Search, Grid, List, X } from '
 import { Directory } from '../../config/directoriesConfig';
 import ProjectSelectionModal from '../Modals/ProjectSelectionModal';
 import { showPopup } from '../../utils/popup';
+import { useAuth } from '../../hooks/useAuth';
 
 interface DirectoryGridProps {
   directories: Directory[];
@@ -35,7 +36,7 @@ export default function DirectoryGrid({
   viewMode = 'grid',
   onSubmissionCreated
 }: DirectoryGridProps) {
-
+  const { user } = useAuth();
   const displayDirectories = directories || [];
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -213,9 +214,13 @@ export default function DirectoryGrid({
 
     setIsGeneratingToken(true);
     try {
-      // Generate unique token
-      const token = `opptym_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Generate unique token with user ID and usage limits
+      const userId = user?.id || 'anonymous';
+      const userPlan = user?.subscription || 'free';
+      const maxUses = userPlan === 'free' ? 1 : 5; // Free users get 1 use, paid users get 5
+      const token = `opptym_${Date.now()}_${userId}_${Math.random().toString(36).substr(2, 9)}`;
       console.log('Generated bookmarklet token:', token);
+      console.log('User plan:', userPlan, 'Max uses:', maxUses);
       console.log('Project data:', project);
       console.log('Directory data:', directory);
       sessionStorage.setItem('opptym_bookmarklet_used', 'false');

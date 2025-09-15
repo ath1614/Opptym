@@ -3,7 +3,7 @@
   
   // Configuration
   const API_BASE_URL = 'https://api.opptym.com/api';
-  const BOOKMARKLET_VERSION = '2.5.0';
+  const BOOKMARKLET_VERSION = '2.6.0';
   
   console.log('🚀 Simple Bookmarklet v' + BOOKMARKLET_VERSION + ' started');
   
@@ -266,32 +266,33 @@
       console.log('🔍 Page title:', document.title);
     }
     
-    // Define field mappings with comprehensive selectors
+    // Define field mappings with prioritized and specific selectors
     const fieldMappings = [
       {
         name: 'Name',
         selectors: [
-          'input[name*="name"]',
-          'input[id*="name"]',
-          'input[placeholder*="name" i]',
+          // Most specific first
           'input[name*="fullname"]',
           'input[id*="fullname"]',
           'input[name*="full_name"]',
           'input[id*="full_name"]',
-          'input[name*="firstname"]',
-          'input[id*="firstname"]',
-          'input[name*="lastname"]',
-          'input[id*="lastname"]',
           'input[name*="contact_name"]',
           'input[id*="contact_name"]',
           'input[name*="contactname"]',
           'input[id*="contactname"]',
-          'input[name*="contact"]',
-          'input[id*="contact"]',
+          'input[name*="firstname"]',
+          'input[id*="firstname"]',
+          'input[name*="lastname"]',
+          'input[id*="lastname"]',
           'input[name*="owner"]',
           'input[id*="owner"]',
           'input[name*="manager"]',
-          'input[id*="manager"]'
+          'input[id*="manager"]',
+          // More general but avoid email/phone conflicts
+          'input[name="name"]',
+          'input[id="name"]',
+          'input[placeholder*="name" i]:not([type="email"]):not([type="tel"])',
+          'input[name*="name"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"])'
         ],
         value: formData.name
       },
@@ -326,71 +327,100 @@
       {
         name: 'Email',
         selectors: [
+          // Most specific first - email type inputs
           'input[type="email"]',
-          'input[name*="email"]',
-          'input[id*="email"]',
+          'input[name*="contact_email"]',
+          'input[id*="contact_email"]',
+          'input[name*="business_email"]',
+          'input[id*="business_email"]',
+          'input[name*="company_email"]',
+          'input[id*="company_email"]',
+          // General email fields
+          'input[name="email"]',
+          'input[id="email"]',
+          'input[name*="email"]:not([name*="phone"]):not([name*="name"])',
+          'input[id*="email"]:not([id*="phone"]):not([id*="name"])',
           'input[placeholder*="email" i]',
           'input[name*="e-mail"]',
           'input[id*="e-mail"]',
-          'input[name*="mail"]',
-          'input[id*="mail"]',
-          'input[name*="contact_email"]',
-          'input[id*="contact_email"]'
+          'input[name*="mail"]:not([name*="phone"]):not([name*="name"])',
+          'input[id*="mail"]:not([id*="phone"]):not([id*="name"])'
         ],
         value: formData.email
       },
       {
         name: 'Phone',
         selectors: [
+          // Most specific first - tel type inputs
           'input[type="tel"]',
-          'input[name*="phone"]',
-          'input[id*="phone"]',
+          'input[name*="contact_phone"]',
+          'input[id*="contact_phone"]',
+          'input[name*="business_phone"]',
+          'input[id*="business_phone"]',
+          'input[name*="company_phone"]',
+          'input[id*="company_phone"]',
+          // General phone fields
+          'input[name="phone"]',
+          'input[id="phone"]',
+          'input[name*="phone"]:not([name*="email"]):not([name*="name"])',
+          'input[id*="phone"]:not([id*="email"]):not([id*="name"])',
           'input[placeholder*="phone" i]',
           'input[name*="telephone"]',
           'input[id*="telephone"]',
           'input[name*="mobile"]',
           'input[id*="mobile"]',
-          'input[name*="contact_phone"]',
-          'input[id*="contact_phone"]',
-          'input[name*="tel"]',
-          'input[id*="tel"]'
+          'input[name*="tel"]:not([name*="email"]):not([name*="name"])',
+          'input[id*="tel"]:not([id*="email"]):not([id*="name"])'
         ],
         value: formData.phone
       },
       {
         name: 'Website URL',
         selectors: [
+          // Most specific first - url type inputs
           'input[type="url"]',
-          'input[name*="url"]',
-          'input[id*="url"]',
           'input[name*="website"]',
           'input[id*="website"]',
-          'input[placeholder*="website" i]',
-          'input[name*="web"]',
-          'input[id*="web"]',
-          'input[name*="site"]',
-          'input[id*="site"]',
           'input[name*="homepage"]',
-          'input[id*="homepage"]'
+          'input[id*="homepage"]',
+          'input[name*="web_site"]',
+          'input[id*="web_site"]',
+          // General URL fields
+          'input[name="url"]',
+          'input[id="url"]',
+          'input[name*="url"]:not([name*="email"]):not([name*="phone"])',
+          'input[id*="url"]:not([id*="email"]):not([id*="phone"])',
+          'input[placeholder*="website" i]',
+          'input[placeholder*="url" i]',
+          'input[name*="web"]:not([name*="email"]):not([name*="phone"])',
+          'input[id*="web"]:not([id*="email"]):not([id*="phone"])',
+          'input[name*="site"]:not([name*="email"]):not([name*="phone"])',
+          'input[id*="site"]:not([id*="email"]):not([id*="phone"])'
         ],
         value: formData.url
       },
       {
         name: 'Description',
         selectors: [
+          // Most specific first - description fields
           'textarea[name*="description"]',
           'textarea[id*="description"]',
+          'textarea[name*="business_description"]',
+          'textarea[id*="business_description"]',
+          'textarea[name*="company_description"]',
+          'textarea[id*="company_description"]',
           'textarea[placeholder*="description" i]',
-          'textarea[name*="message"]',
-          'textarea[id*="message"]',
-          'textarea[name*="comments"]',
-          'textarea[id*="comments"]',
+          // General text areas for business info
           'textarea[name*="about"]',
           'textarea[id*="about"]',
           'textarea[name*="details"]',
           'textarea[id*="details"]',
           'textarea[name*="info"]',
-          'textarea[id*="info"]'
+          'textarea[id*="info"]',
+          'textarea[name*="message"]',
+          'textarea[id*="message"]',
+          'textarea[name*="comments"]',
+          'textarea[id*="comments"]'
         ],
         value: formData.description
       },
@@ -463,7 +493,10 @@
       }
     ];
     
-    // Fill each field type
+    // Track filled elements to prevent conflicts
+    const filledElements = new Set();
+    
+    // Fill each field type with conflict prevention
     fieldMappings.forEach(mapping => {
       if (!mapping.value || mapping.value.trim() === '') {
         console.log(`⏭️ Skipping ${mapping.name} - no value available`);
@@ -478,18 +511,44 @@
           console.log(`🔍 Selector "${selector}" found ${elements.length} elements`);
           
           elements.forEach((element, index) => {
-            if (element && !element.disabled && !element.readOnly) {
+            // Skip if element is already filled or not suitable
+            if (element && !element.disabled && !element.readOnly && !filledElements.has(element)) {
+              // Additional validation for field type conflicts
+              const elementType = element.type || 'text';
+              const elementName = element.name || '';
+              const elementId = element.id || '';
+              
+              // Validate field type matches expected data type
+              let isValidField = true;
+              
+              if (mapping.name === 'Email' && elementType !== 'email' && !elementName.includes('email') && !elementId.includes('email')) {
+                isValidField = false;
+              } else if (mapping.name === 'Phone' && elementType !== 'tel' && !elementName.includes('phone') && !elementName.includes('tel') && !elementId.includes('phone') && !elementId.includes('tel')) {
+                isValidField = false;
+              } else if (mapping.name === 'Website URL' && elementType !== 'url' && !elementName.includes('url') && !elementName.includes('website') && !elementId.includes('url') && !elementId.includes('website')) {
+                isValidField = false;
+              }
+              
+              if (!isValidField) {
+                console.log(`⚠️ Skipping ${mapping.name} field - type mismatch: ${elementType} (${elementName || elementId})`);
+                return;
+              }
+              
               const hadValue = element.value && element.value.trim() !== '';
               
               element.value = mapping.value;
               element.dispatchEvent(new Event('input', { bubbles: true }));
               element.dispatchEvent(new Event('change', { bubbles: true }));
               
+              // Mark element as filled to prevent conflicts
+              filledElements.add(element);
+              
               filledFields.push({
                 selector: selector,
                 value: mapping.value,
                 element: element,
-                hadExistingValue: hadValue
+                hadExistingValue: hadValue,
+                fieldType: mapping.name
               });
               
               if (hadValue) {
@@ -524,18 +583,21 @@
       
       let dataIndex = 0;
       textInputs.forEach((input, index) => {
-        if (!input.disabled && !input.readOnly && (!input.value || input.value.trim() === '') && dataIndex < availableData.length) {
+        if (!input.disabled && !input.readOnly && (!input.value || input.value.trim() === '') && !filledElements.has(input) && dataIndex < availableData.length) {
           const data = availableData[dataIndex];
           input.value = data.value;
           input.dispatchEvent(new Event('input', { bubbles: true }));
           input.dispatchEvent(new Event('change', { bubbles: true }));
+          
+          // Mark element as filled to prevent conflicts
+          filledElements.add(input);
           
           filledFields.push({
             selector: `fallback-${index}`,
             value: data.value,
             element: input,
             hadExistingValue: false,
-            label: data.label
+            fieldType: data.label
           });
           
           console.log(`✅ Fallback filled ${data.label}: "${data.value}"`);

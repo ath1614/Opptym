@@ -203,16 +203,50 @@ const createBookmarkletSubmission = async (req, res) => {
       return res.status(400).json({ error: 'Token is required' });
     }
     
-    // For bookmarklet submissions, we'll use a generic user ID since the token doesn't contain user info
-    // The token format is: opptym_timestamp_randomString
+    // Extract user ID and check usage limits from token
+    // The token format is: opptym_timestamp_userId_randomString
     const tokenParts = token.split('_');
-    if (tokenParts.length < 3 || tokenParts[0] !== 'opptym') {
+    if (tokenParts.length < 4 || tokenParts[0] !== 'opptym') {
       return res.status(400).json({ error: 'Invalid token format' });
     }
     
-    // Use a default user ID for bookmarklet submissions
-    // In a real implementation, you might want to store token-to-user mappings
-    const userId = '688f1268f4921cd9020bcc96'; // Default user ID for bookmarklet submissions
+    const userId = tokenParts[2];
+    const timestamp = parseInt(tokenParts[1]);
+    
+    // Check if token is expired (24 hours)
+    const tokenAge = Date.now() - timestamp;
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    if (tokenAge > maxAge) {
+      return res.status(400).json({ error: 'Bookmarklet token has expired' });
+    }
+    
+    // Get user to check subscription and usage limits
+    const User = require('../models/userModel');
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+    
+    // Check usage limits based on subscription
+    const userPlan = user.subscription || 'free';
+    const maxUses = userPlan === 'free' ? 1 : 5;
+    
+    // Count existing bookmarklet submissions for this token
+    const existingSubmissions = await Submission.countDocuments({
+      userId: userId,
+      submissionType: 'bookmarklet',
+      'metadata.token': token,
+      submittedAt: { $gte: new Date(timestamp) }
+    });
+    
+    if (existingSubmissions >= maxUses) {
+      return res.status(403).json({ 
+        error: 'Bookmarklet usage limit exceeded',
+        limit: maxUses,
+        used: existingSubmissions,
+        plan: userPlan
+      });
+    }
     
     // Create a simple submission record for tracking
     const submission = await Submission.create({
@@ -222,11 +256,14 @@ const createBookmarkletSubmission = async (req, res) => {
       status: 'completed',
       submittedAt: new Date(),
       metadata: {
+        token: token,
         url: url,
         fieldsFilled: fieldsFilled,
         filledFields: filledFields,
         timestamp: timestamp,
-        source: 'bookmarklet'
+        source: 'bookmarklet',
+        userPlan: userPlan,
+        usageCount: existingSubmissions + 1
       }
     });
     
