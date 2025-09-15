@@ -222,6 +222,9 @@ const createBookmarkletSubmission = async (req, res) => {
     
     // Get user to check subscription and usage limits
     const User = require('../models/userModel');
+    const mongoose = require('mongoose');
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
@@ -233,7 +236,7 @@ const createBookmarkletSubmission = async (req, res) => {
     
     // Count existing bookmarklet submissions for this token
     const existingSubmissions = await Submission.countDocuments({
-      userId: userId,
+      userId: userObjectId,
       submissionType: 'bookmarklet',
       'metadata.token': token,
       submittedAt: { $gte: new Date(tokenTimestamp) }
@@ -250,7 +253,7 @@ const createBookmarkletSubmission = async (req, res) => {
     
     // Create a simple submission record for tracking
     const submission = await Submission.create({
-      userId: userId,
+      userId: userObjectId,
       siteName: new URL(url).hostname,
       submissionType: 'bookmarklet',
       status: 'completed',
@@ -287,9 +290,13 @@ const getSubmissionStats = async (req, res) => {
   try {
     const userId = req.userId;
     
+    // Convert userId to ObjectId for MongoDB queries
+    const mongoose = require('mongoose');
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
     // Get overall submission counts by status
     const overallStats = await Submission.aggregate([
-      { $match: { userId: userId } },
+      { $match: { userId: userObjectId } },
       {
         $group: {
           _id: '$status',
@@ -300,7 +307,7 @@ const getSubmissionStats = async (req, res) => {
     
     // Get submission counts by classification type and status
     const classificationStats = await Submission.aggregate([
-      { $match: { userId: userId } },
+      { $match: { userId: userObjectId } },
       {
         $group: {
           _id: {
@@ -313,14 +320,14 @@ const getSubmissionStats = async (req, res) => {
     ]);
     
     // Get total submissions
-    const totalSubmissions = await Submission.countDocuments({ userId: userId });
+    const totalSubmissions = await Submission.countDocuments({ userId: userObjectId });
     
     // Get recent submissions (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
     const recentSubmissions = await Submission.countDocuments({
-      userId: userId,
+      userId: userObjectId,
       createdAt: { $gte: thirtyDaysAgo }
     });
     
@@ -386,6 +393,10 @@ const getSubmissionStatsByType = async (req, res) => {
     const userId = req.userId;
     const { type } = req.params;
     
+    // Convert userId to ObjectId for MongoDB queries
+    const mongoose = require('mongoose');
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
     // Validate submission type
     const validTypes = ['directory', 'article', 'bookmark', 'classified', 'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet'];
     if (!validTypes.includes(type)) {
@@ -394,7 +405,7 @@ const getSubmissionStatsByType = async (req, res) => {
     
     // Get submission counts by status for this type
     const stats = await Submission.aggregate([
-      { $match: { userId: userId, submissionType: type } },
+      { $match: { userId: userObjectId, submissionType: type } },
       {
         $group: {
           _id: '$status',
@@ -405,7 +416,7 @@ const getSubmissionStatsByType = async (req, res) => {
     
     // Get total submissions for this type
     const totalSubmissions = await Submission.countDocuments({ 
-      userId: userId, 
+      userId: userObjectId, 
       submissionType: type 
     });
     
@@ -414,7 +425,7 @@ const getSubmissionStatsByType = async (req, res) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
     const recentSubmissions = await Submission.countDocuments({
-      userId: userId,
+      userId: userObjectId,
       submissionType: type,
       createdAt: { $gte: thirtyDaysAgo }
     });
