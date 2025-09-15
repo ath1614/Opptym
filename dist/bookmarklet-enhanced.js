@@ -79,7 +79,46 @@
   try {
     if (projectDataParam) {
       console.log('📝 Decoding project data...');
-      const decodedProject = decodeURIComponent(projectDataParam);
+      console.log('Project param (first 200 chars):', projectDataParam.substring(0, 200));
+      
+      let decodedProject;
+      try {
+        // Try standard decodeURIComponent first
+        decodedProject = decodeURIComponent(projectDataParam);
+        console.log('✅ Standard decodeURIComponent successful');
+      } catch (decodeError) {
+        console.warn('⚠️ Standard decodeURIComponent failed, trying alternative methods...');
+        console.warn('Decode error:', decodeError.message);
+        
+        try {
+          // Try with unescape as fallback
+          decodedProject = unescape(projectDataParam);
+          console.log('✅ unescape method successful');
+        } catch (unescapeError) {
+          console.warn('⚠️ unescape method failed, trying manual replacement...');
+          
+          // Manual replacement of common URI encoding issues
+          decodedProject = projectDataParam
+            .replace(/%22/g, '"')
+            .replace(/%7B/g, '{')
+            .replace(/%7D/g, '}')
+            .replace(/%5B/g, '[')
+            .replace(/%5D/g, ']')
+            .replace(/%2C/g, ',')
+            .replace(/%3A/g, ':')
+            .replace(/%20/g, ' ')
+            .replace(/%2F/g, '/')
+            .replace(/%2B/g, '+')
+            .replace(/%3F/g, '?')
+            .replace(/%3D/g, '=')
+            .replace(/%26/g, '&')
+            .replace(/%23/g, '#')
+            .replace(/%25/g, '%');
+          
+          console.log('✅ Manual replacement method successful');
+        }
+      }
+      
       console.log('Decoded project length:', decodedProject.length);
       console.log('Decoded project preview:', decodedProject.substring(0, 200));
       
@@ -109,7 +148,46 @@
     
     if (directoryDataParam) {
       console.log('📝 Decoding directory data...');
-      const decodedDirectory = decodeURIComponent(directoryDataParam);
+      console.log('Directory param (first 200 chars):', directoryDataParam.substring(0, 200));
+      
+      let decodedDirectory;
+      try {
+        // Try standard decodeURIComponent first
+        decodedDirectory = decodeURIComponent(directoryDataParam);
+        console.log('✅ Standard decodeURIComponent successful for directory');
+      } catch (decodeError) {
+        console.warn('⚠️ Standard decodeURIComponent failed for directory, trying alternative methods...');
+        console.warn('Decode error:', decodeError.message);
+        
+        try {
+          // Try with unescape as fallback
+          decodedDirectory = unescape(directoryDataParam);
+          console.log('✅ unescape method successful for directory');
+        } catch (unescapeError) {
+          console.warn('⚠️ unescape method failed for directory, trying manual replacement...');
+          
+          // Manual replacement of common URI encoding issues
+          decodedDirectory = directoryDataParam
+            .replace(/%22/g, '"')
+            .replace(/%7B/g, '{')
+            .replace(/%7D/g, '}')
+            .replace(/%5B/g, '[')
+            .replace(/%5D/g, ']')
+            .replace(/%2C/g, ',')
+            .replace(/%3A/g, ':')
+            .replace(/%20/g, ' ')
+            .replace(/%2F/g, '/')
+            .replace(/%2B/g, '+')
+            .replace(/%3F/g, '?')
+            .replace(/%3D/g, '=')
+            .replace(/%26/g, '&')
+            .replace(/%23/g, '#')
+            .replace(/%25/g, '%');
+          
+          console.log('✅ Manual replacement method successful for directory');
+        }
+      }
+      
       console.log('Decoded directory length:', decodedDirectory.length);
       
       // Try parsing once
