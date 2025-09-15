@@ -28,6 +28,9 @@ router.put('/:id', protect, checkTrialStatus, submissionController.updateSubmiss
 // Update submission status
 router.put('/:id/status', protect, submissionController.updateSubmissionStatus);
 
+// Fix user usage counter (admin only)
+router.post('/fix-usage-counter', protect, submissionController.fixUserUsageCounter);
+
 // Delete a submission - requires trial check
 router.delete('/:id', protect, checkTrialStatus, submissionController.deleteSubmission);
 

@@ -505,6 +505,57 @@ const updateSubmissionStatus = async (req, res) => {
   }
 };
 
+// @desc    Fix user usage counter to match actual submissions (admin only)
+// @route   POST /api/submissions/fix-usage-counter
+// @access  Private (admin only)
+const fixUserUsageCounter = async (req, res) => {
+  try {
+    const userId = req.userId;
+    
+    // Check if user is admin
+    const User = require('../models/userModel');
+    const user = await User.findById(userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    // Convert userId to ObjectId for MongoDB queries
+    const mongoose = require('mongoose');
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
+    // Count actual submissions for this user
+    const actualSubmissionCount = await Submission.countDocuments({ 
+      userId: userObjectId 
+    });
+    
+    // Update the user's usage counter to match actual submissions
+    if (!user.usage) {
+      user.usage = {
+        submissionsUsed: 0,
+        projectsUsed: 0,
+        seoToolsUsed: 0,
+        apiCallsUsed: 0
+      };
+    }
+    
+    const oldUsage = user.usage.submissionsUsed;
+    user.usage.submissionsUsed = actualSubmissionCount;
+    
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Usage counter fixed successfully',
+      oldUsage: oldUsage,
+      newUsage: user.usage.submissionsUsed,
+      actualSubmissions: actualSubmissionCount
+    });
+  } catch (err) {
+    console.error('❌ fixUserUsageCounter error:', err);
+    res.status(500).json({ error: 'Failed to fix usage counter', details: err.message });
+  }
+};
+
 module.exports = {
   getSubmissions,
   getSubmissionById,
@@ -514,5 +565,6 @@ module.exports = {
   deleteSubmission,
   getSubmissionStats,
   getSubmissionStatsByType,
-  updateSubmissionStatus
+  updateSubmissionStatus,
+  fixUserUsageCounter
 };
