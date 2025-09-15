@@ -69,6 +69,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
   const [form, setForm] = useState<ProjectFormFields>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const [showCustomFieldForm, setShowCustomFieldForm] = useState(false);
   const [newCustomField, setNewCustomField] = useState<Omit<CustomField, 'id'>>({
@@ -82,6 +83,15 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const addCustomField = () => {
@@ -113,37 +123,196 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
     });
   };
 
+  const validateField = (key: string, value: string): string | null => {
+    const trimmedValue = value?.trim() || '';
+    
+    switch (key) {
+      case 'title':
+        if (!trimmedValue) return 'Project title is required';
+        if (trimmedValue.length < 3) return 'Project title must be at least 3 characters long';
+        if (trimmedValue.length > 100) return 'Project title must be less than 100 characters';
+        break;
+        
+      case 'url':
+        if (!trimmedValue) return 'Website URL is required';
+        if (!/^https?:\/\/.+/.test(trimmedValue) && !/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedValue)) {
+          return 'Please enter a valid website URL (e.g., https://example.com or example.com)';
+        }
+        break;
+        
+      case 'email':
+        if (!trimmedValue) return 'Business email is required';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
+          return 'Please enter a valid email address (e.g., contact@example.com)';
+        }
+        break;
+        
+      case 'companyName':
+        if (!trimmedValue) return 'Company name is required';
+        if (trimmedValue.length < 2) return 'Company name must be at least 2 characters long';
+        if (trimmedValue.length > 100) return 'Company name must be less than 100 characters';
+        break;
+        
+      case 'businessPhone':
+        if (!trimmedValue) return 'Business phone number is required';
+        if (!/^[\+]?[1-9][\d]{0,15}$/.test(trimmedValue.replace(/[\s\-\(\)]/g, ''))) {
+          return 'Please enter a valid phone number (e.g., +1234567890 or 123-456-7890)';
+        }
+        break;
+        
+      case 'whatsapp':
+        if (trimmedValue && !/^[\+]?[1-9][\d]{0,15}$/.test(trimmedValue.replace(/[\s\-\(\)]/g, ''))) {
+          return 'Please enter a valid WhatsApp number (e.g., +1234567890)';
+        }
+        break;
+        
+      case 'description':
+        if (!trimmedValue) return 'Business description is required';
+        if (trimmedValue.length < 20) return 'Business description must be at least 20 characters long';
+        if (trimmedValue.length > 1000) return 'Business description must be less than 1000 characters';
+        break;
+        
+      case 'address1':
+        if (!trimmedValue) return 'Street address is required';
+        if (trimmedValue.length < 5) return 'Please enter a complete street address';
+        break;
+        
+      case 'city':
+        if (!trimmedValue) return 'City is required';
+        if (trimmedValue.length < 2) return 'Please enter a valid city name';
+        break;
+        
+      case 'state':
+        if (!trimmedValue) return 'State/Province is required';
+        if (trimmedValue.length < 2) return 'Please enter a valid state or province';
+        break;
+        
+      case 'country':
+        if (!trimmedValue) return 'Country is required';
+        if (trimmedValue.length < 2) return 'Please enter a valid country name';
+        break;
+        
+      case 'pincode':
+        if (!trimmedValue) return 'Postal/ZIP code is required';
+        if (!/^[a-zA-Z0-9\s\-]{3,10}$/.test(trimmedValue)) {
+          return 'Please enter a valid postal/ZIP code (e.g., 12345 or SW1A 1AA)';
+        }
+        break;
+        
+      case 'metaTitle':
+        if (trimmedValue && trimmedValue.length > 60) {
+          return 'Meta title should be less than 60 characters for better SEO';
+        }
+        break;
+        
+      case 'metaDescription':
+        if (trimmedValue && trimmedValue.length > 160) {
+          return 'Meta description should be less than 160 characters for better SEO';
+        }
+        break;
+        
+      case 'facebook':
+        if (trimmedValue && !/^https?:\/\/(www\.)?facebook\.com\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid Facebook URL (e.g., https://facebook.com/yourpage)';
+        }
+        break;
+        
+      case 'twitter':
+        if (trimmedValue && !/^https?:\/\/(www\.)?(twitter\.com|x\.com)\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid Twitter/X URL (e.g., https://twitter.com/yourhandle)';
+        }
+        break;
+        
+      case 'instagram':
+        if (trimmedValue && !/^https?:\/\/(www\.)?instagram\.com\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid Instagram URL (e.g., https://instagram.com/yourprofile)';
+        }
+        break;
+        
+      case 'linkedin':
+        if (trimmedValue && !/^https?:\/\/(www\.)?linkedin\.com\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/company/yourcompany)';
+        }
+        break;
+        
+      case 'youtube':
+        if (trimmedValue && !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid YouTube URL (e.g., https://youtube.com/channel/yourchannel)';
+        }
+        break;
+        
+      case 'logoUrl':
+        if (trimmedValue && !/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(trimmedValue)) {
+          return 'Please enter a valid image URL (jpg, png, gif, or webp format)';
+        }
+        break;
+        
+      case 'sitemapUrl':
+        if (trimmedValue && !/^https?:\/\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid sitemap URL (e.g., https://example.com/sitemap.xml)';
+        }
+        break;
+        
+      case 'robotsTxtUrl':
+        if (trimmedValue && !/^https?:\/\/.+/.test(trimmedValue)) {
+          return 'Please enter a valid robots.txt URL (e.g., https://example.com/robots.txt)';
+        }
+        break;
+    }
+    
+    return null;
+  };
+
   const handleSubmit = async () => {
     setError('');
+    setFieldErrors({});
     
-    // Validate required fields
+    // Validate all fields
+    const errors: { [key: string]: string } = {};
+    let hasErrors = false;
+    
+    // Required fields validation
     const requiredFields = [
-      { key: 'title', label: 'Project title' },
-      { key: 'url', label: 'Website URL' },
-      { key: 'email', label: 'Business email' },
-      { key: 'companyName', label: 'Company name' },
-      { key: 'businessPhone', label: 'Business phone' },
-      { key: 'description', label: 'Business description' },
-      { key: 'address1', label: 'Address' },
-      { key: 'city', label: 'City' },
-      { key: 'state', label: 'State' },
-      { key: 'country', label: 'Country' },
-      { key: 'pincode', label: 'Pincode' }
+      'title', 'url', 'email', 'companyName', 'businessPhone', 
+      'description', 'address1', 'city', 'state', 'country', 'pincode'
     ];
-
+    
     for (const field of requiredFields) {
-      if (!form[field.key]?.trim()) {
-        setError(`${field.label} is required`);
-        return;
+      const error = validateField(field, form[field] || '');
+      if (error) {
+        errors[field] = error;
+        hasErrors = true;
+      }
+    }
+    
+    // Optional fields validation
+    const optionalFields = [
+      'whatsapp', 'metaTitle', 'metaDescription', 'facebook', 'twitter', 
+      'instagram', 'linkedin', 'youtube', 'logoUrl', 'sitemapUrl', 'robotsTxtUrl'
+    ];
+    
+    for (const field of optionalFields) {
+      if (form[field]?.trim()) {
+        const error = validateField(field, form[field]);
+        if (error) {
+          errors[field] = error;
+          hasErrors = true;
+        }
       }
     }
 
     // Validate custom required fields
     for (const customField of customFields) {
       if (customField.required && !form[customField.id]?.trim()) {
-        setError(`${customField.name} is required`);
-        return;
+        errors[customField.id] = `${customField.name} is required`;
+        hasErrors = true;
       }
+    }
+    
+    if (hasErrors) {
+      setFieldErrors(errors);
+      setError('Please fix the errors below before creating the project');
+      return;
     }
     
     // Preprocess URL to ensure it has proper protocol
@@ -233,6 +402,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
             errorMessage = errorData.message || 'Your trial has expired. Please upgrade to continue.';
           } else if (errorData.error === 'Invalid social media links') {
             errorMessage = errorData.message || 'Please check your social media links and try again.';
+          } else if (errorData.error === 'Validation failed' && errorData.validationErrors) {
+            // Handle backend validation errors
+            const backendErrors: { [key: string]: string } = {};
+            errorData.validationErrors.forEach((err: any) => {
+              backendErrors[err.field] = err.message;
+            });
+            setFieldErrors(backendErrors);
+            errorMessage = 'Please fix the validation errors below';
           } else if (errorData.error === 'Project title is required' || errorData.error === 'Project URL is required') {
             errorMessage = 'Please fill in all required fields and try again.';
           } else if (errorData.error === 'Unauthorized: userId is missing') {
@@ -368,6 +545,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.fields.map(({ key, label, type = 'text' }) => {
                 const isRequired = ['title', 'url', 'email', 'companyName', 'businessPhone', 'city', 'state', 'country'].includes(key);
+                const hasError = fieldErrors[key];
                 return type === 'textarea' ? (
                   <div key={key} className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
@@ -378,8 +556,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
                       value={form[key]}
                       onChange={handleChange}
                       placeholder={label}
-                      className={`w-full border rounded px-3 py-2 h-24 resize-none ${isRequired && !form[key].trim() ? 'border-red-300' : 'border-gray-300'}`}
+                      className={`w-full border rounded px-3 py-2 h-24 resize-none ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
                     />
+                    {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
                   </div>
                 ) : (
                   <div key={key} className="space-y-1">
@@ -392,8 +571,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
                       value={form[key]}
                       onChange={handleChange}
                       placeholder={label}
-                      className={`w-full border rounded px-3 py-2 ${isRequired && !form[key].trim() ? 'border-red-300' : 'border-gray-300'}`}
+                      className={`w-full border rounded px-3 py-2 ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
                     />
+                    {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
                   </div>
                 );
               })}
@@ -482,51 +662,55 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
           {/* Display Custom Fields */}
           {customFields.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {customFields.map(field => (
-                <div key={field.id} className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-700">
-                      {field.name} {field.required && <span className="text-red-500">*</span>}
-                    </label>
-                    <button
-                      onClick={() => removeCustomField(field.id)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      ×
-                    </button>
+              {customFields.map(field => {
+                const hasError = fieldErrors[field.id];
+                return (
+                  <div key={field.id} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-gray-700">
+                        {field.name} {field.required && <span className="text-red-500">*</span>}
+                      </label>
+                      <button
+                        onClick={() => removeCustomField(field.id)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    {field.type === 'textarea' ? (
+                      <textarea
+                        name={field.id}
+                        value={form[field.id] || ''}
+                        onChange={handleChange}
+                        placeholder={field.placeholder || field.name}
+                        className={`w-full border rounded px-3 py-2 h-24 resize-none ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
+                      />
+                    ) : field.type === 'select' ? (
+                      <select
+                        name={field.id}
+                        value={form[field.id] || ''}
+                        onChange={handleChange}
+                        className={`w-full border rounded px-3 py-2 ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
+                      >
+                        <option value="">Select {field.name}</option>
+                        {field.options?.map(option => (
+                          <option key={option} value={option}>{option}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type}
+                        name={field.id}
+                        value={form[field.id] || ''}
+                        onChange={handleChange}
+                        placeholder={field.placeholder || field.name}
+                        className={`w-full border rounded px-3 py-2 ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
+                      />
+                    )}
+                    {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
                   </div>
-                  {field.type === 'textarea' ? (
-                    <textarea
-                      name={field.id}
-                      value={form[field.id] || ''}
-                      onChange={handleChange}
-                      placeholder={field.placeholder || field.name}
-                      className={`w-full border rounded px-3 py-2 h-24 resize-none ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
-                    />
-                  ) : field.type === 'select' ? (
-                    <select
-                      name={field.id}
-                      value={form[field.id] || ''}
-                      onChange={handleChange}
-                      className={`w-full border rounded px-3 py-2 ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
-                    >
-                      <option value="">Select {field.name}</option>
-                      {field.options?.map(option => (
-                        <option key={option} value={option}>{option}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type}
-                      name={field.id}
-                      value={form[field.id] || ''}
-                      onChange={handleChange}
-                      placeholder={field.placeholder || field.name}
-                      className={`w-full border rounded px-3 py-2 ${field.required && !form[field.id]?.trim() ? 'border-red-300' : 'border-gray-300'}`}
-                    />
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

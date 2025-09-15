@@ -97,13 +97,125 @@ const createProject = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized: userId is missing' });
     }
 
-    // Input validation
+    // Enhanced input validation with specific error messages
+    const validationErrors = [];
+    
+    // Title validation
     if (!title || typeof title !== 'string' || title.trim().length === 0) {
-      return res.status(400).json({ error: 'Project title is required' });
+      validationErrors.push({ field: 'title', message: 'Project title is required' });
+    } else if (title.trim().length < 3) {
+      validationErrors.push({ field: 'title', message: 'Project title must be at least 3 characters long' });
+    } else if (title.trim().length > 100) {
+      validationErrors.push({ field: 'title', message: 'Project title must be less than 100 characters' });
     }
 
+    // URL validation
     if (!url || typeof url !== 'string' || url.trim().length === 0) {
-      return res.status(400).json({ error: 'Project URL is required' });
+      validationErrors.push({ field: 'url', message: 'Website URL is required' });
+    } else {
+      const urlPattern = /^https?:\/\/.+|^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!urlPattern.test(url.trim())) {
+        validationErrors.push({ field: 'url', message: 'Please enter a valid website URL (e.g., https://example.com or example.com)' });
+      }
+    }
+
+    // Email validation
+    if (!email || typeof email !== 'string' || email.trim().length === 0) {
+      validationErrors.push({ field: 'email', message: 'Business email is required' });
+    } else {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.trim())) {
+        validationErrors.push({ field: 'email', message: 'Please enter a valid email address (e.g., contact@example.com)' });
+      }
+    }
+
+    // Company name validation
+    if (!companyName || typeof companyName !== 'string' || companyName.trim().length === 0) {
+      validationErrors.push({ field: 'companyName', message: 'Company name is required' });
+    } else if (companyName.trim().length < 2) {
+      validationErrors.push({ field: 'companyName', message: 'Company name must be at least 2 characters long' });
+    } else if (companyName.trim().length > 100) {
+      validationErrors.push({ field: 'companyName', message: 'Company name must be less than 100 characters' });
+    }
+
+    // Business phone validation
+    if (!businessPhone || typeof businessPhone !== 'string' || businessPhone.trim().length === 0) {
+      validationErrors.push({ field: 'businessPhone', message: 'Business phone number is required' });
+    } else {
+      const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
+      const cleanPhone = businessPhone.replace(/[\s\-\(\)]/g, '');
+      if (!phonePattern.test(cleanPhone)) {
+        validationErrors.push({ field: 'businessPhone', message: 'Please enter a valid phone number (e.g., +1234567890 or 123-456-7890)' });
+      }
+    }
+
+    // Description validation
+    if (!description || typeof description !== 'string' || description.trim().length === 0) {
+      validationErrors.push({ field: 'description', message: 'Business description is required' });
+    } else if (description.trim().length < 20) {
+      validationErrors.push({ field: 'description', message: 'Business description must be at least 20 characters long' });
+    } else if (description.trim().length > 1000) {
+      validationErrors.push({ field: 'description', message: 'Business description must be less than 1000 characters' });
+    }
+
+    // Address validation
+    if (!address1 || typeof address1 !== 'string' || address1.trim().length === 0) {
+      validationErrors.push({ field: 'address1', message: 'Street address is required' });
+    } else if (address1.trim().length < 5) {
+      validationErrors.push({ field: 'address1', message: 'Please enter a complete street address' });
+    }
+
+    if (!city || typeof city !== 'string' || city.trim().length === 0) {
+      validationErrors.push({ field: 'city', message: 'City is required' });
+    } else if (city.trim().length < 2) {
+      validationErrors.push({ field: 'city', message: 'Please enter a valid city name' });
+    }
+
+    if (!state || typeof state !== 'string' || state.trim().length === 0) {
+      validationErrors.push({ field: 'state', message: 'State/Province is required' });
+    } else if (state.trim().length < 2) {
+      validationErrors.push({ field: 'state', message: 'Please enter a valid state or province' });
+    }
+
+    if (!country || typeof country !== 'string' || country.trim().length === 0) {
+      validationErrors.push({ field: 'country', message: 'Country is required' });
+    } else if (country.trim().length < 2) {
+      validationErrors.push({ field: 'country', message: 'Please enter a valid country name' });
+    }
+
+    if (!pincode || typeof pincode !== 'string' || pincode.trim().length === 0) {
+      validationErrors.push({ field: 'pincode', message: 'Postal/ZIP code is required' });
+    } else {
+      const pincodePattern = /^[a-zA-Z0-9\s\-]{3,10}$/;
+      if (!pincodePattern.test(pincode.trim())) {
+        validationErrors.push({ field: 'pincode', message: 'Please enter a valid postal/ZIP code (e.g., 12345 or SW1A 1AA)' });
+      }
+    }
+
+    // Optional field validations
+    if (whatsapp && whatsapp.trim()) {
+      const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
+      const cleanWhatsapp = whatsapp.replace(/[\s\-\(\)]/g, '');
+      if (!phonePattern.test(cleanWhatsapp)) {
+        validationErrors.push({ field: 'whatsapp', message: 'Please enter a valid WhatsApp number (e.g., +1234567890)' });
+      }
+    }
+
+    if (metaTitle && metaTitle.trim().length > 60) {
+      validationErrors.push({ field: 'metaTitle', message: 'Meta title should be less than 60 characters for better SEO' });
+    }
+
+    if (metaDescription && metaDescription.trim().length > 160) {
+      validationErrors.push({ field: 'metaDescription', message: 'Meta description should be less than 160 characters for better SEO' });
+    }
+
+    // Return validation errors if any
+    if (validationErrors.length > 0) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        message: 'Please fix the following errors:',
+        validationErrors: validationErrors
+      });
     }
 
     // Validate URL format
