@@ -14,12 +14,14 @@
   const BOOKMARKLET_VERSION = '3.1.0';
   const API_BASE_URL = 'https://api.opptym.com/api';
 
-  // Check if bookmarklet already executed on this page
-  if (window.OPPTYM_BOOKMARKLET_EXECUTED) {
-    console.log('⚠️ OPPTYM Bookmarklet already executed on this page');
+  // Allow multiple executions but prevent rapid-fire clicks
+  const now = Date.now();
+  if (window.OPPTYM_LAST_EXECUTION && (now - window.OPPTYM_LAST_EXECUTION) < 2000) {
+    console.log('⚠️ OPPTYM Bookmarklet clicked too quickly, please wait...');
+    alert('⚠️ Please wait a moment before clicking the bookmarklet again.');
     return;
   }
-  window.OPPTYM_BOOKMARKLET_EXECUTED = true;
+  window.OPPTYM_LAST_EXECUTION = now;
 
   console.log(`🚀 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} starting...`);
 
@@ -148,6 +150,7 @@
 
   // Enhanced field mapping with 100% accuracy
   function fillFormFields() {
+    console.log('🔍 Starting form field detection...');
     const filledFields = [];
     const filledElements = new Set();
     
@@ -494,6 +497,9 @@
       });
     });
     
+    console.log(`🔍 Form field detection completed. Found ${filledFields.length} fields to fill.`);
+    console.log('📊 Filled fields:', filledFields);
+    
     return filledFields;
   }
 
@@ -564,6 +570,8 @@
 
   // Main execution
   console.log('🚀 Starting OPPTYM Auto-Fill...');
+  console.log('📊 Form data available:', formData);
+  console.log('📊 Project data available:', projectData);
 
   const filledFields = fillFormFields();
 
