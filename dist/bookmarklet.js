@@ -18,12 +18,66 @@
   const now = Date.now();
   if (window.OPPTYM_LAST_EXECUTION && (now - window.OPPTYM_LAST_EXECUTION) < 2000) {
     console.log('⚠️ OPPTYM Bookmarklet clicked too quickly, please wait...');
-    alert('⚠️ Please wait a moment before clicking the bookmarklet again.');
+    showPopup('⚠️ Please wait a moment before clicking the bookmarklet again.', 'info');
     return;
   }
   window.OPPTYM_LAST_EXECUTION = now;
 
   console.log(`🚀 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} starting...`);
+
+  // Enhanced popup function to replace alerts
+  function showPopup(message, type = 'info') {
+    // Remove any existing popup
+    const existingPopup = document.getElementById('opptym-popup');
+    if (existingPopup) {
+      existingPopup.remove();
+    }
+
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.id = 'opptym-popup';
+    popup.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'error' ? '#ff4444' : type === 'success' ? '#44ff44' : '#4444ff'};
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      max-width: 400px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      border: 2px solid ${type === 'error' ? '#cc0000' : type === 'success' ? '#00cc00' : '#0000cc'};
+    `;
+
+    // Add close button
+    const closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+      float: right;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    `;
+    closeBtn.onclick = () => popup.remove();
+
+    popup.innerHTML = message;
+    popup.appendChild(closeBtn);
+
+    // Add to page
+    document.body.appendChild(popup);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (popup.parentNode) {
+        popup.remove();
+      }
+    }, 5000);
+  }
 
   // Extract URL parameters from the script's own URL
   function getUrlParameter(name) {
@@ -153,12 +207,13 @@
     console.log('⚠️ No project data available, showing fallback message');
     console.log('🔍 Debug - projectDataParam:', projectDataParam);
     console.log('🔍 Debug - parseJsonSafely result:', parseJsonSafely(projectDataParam));
-    alert('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.');
+    showPopup('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.', 'error');
   } else {
 
   // Create form data object with enhanced mapping
   const formData = {
-    name: projectData.name || projectData.title || '',
+    name: projectData.name || '',
+    title: projectData.title || projectData.companyName || projectData.businessName || '',
     businessName: projectData.businessName || projectData.companyName || projectData.title || '',
     company: projectData.companyName || projectData.businessName || projectData.title || '',
     email: projectData.email || '',
@@ -209,6 +264,31 @@
                  !name.includes('email') && !name.includes('phone') && !name.includes('tel') &&
                  !id.includes('email') && !id.includes('phone') && !id.includes('tel') &&
                  !placeholder.toLowerCase().includes('email') && !placeholder.toLowerCase().includes('phone');
+        }
+      },
+      {
+        name: 'Title',
+        selectors: [
+          'input[name="title"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[id="title"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[name*="title"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[id*="title"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="website title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="site title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="max 80 chars" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="no keyword stuffing" i]:not([type="email"]):not([type="tel"]):not([type="url"])'
+        ],
+        value: formData.title,
+        validation: (element) => {
+          const type = element.type || 'text';
+          const name = element.name || '';
+          const id = element.id || '';
+          const placeholder = element.placeholder || '';
+          return type !== 'email' && type !== 'tel' && type !== 'url' && 
+                 (name.includes('title') || id.includes('title') || 
+                  placeholder.toLowerCase().includes('title') ||
+                  placeholder.toLowerCase().includes('max 80 chars'));
         }
       },
       {
@@ -576,21 +656,21 @@
         // Show user-friendly error messages
         if (response.status === 403) {
           if (errorData.trialExpired) {
-            alert('❌ Your free trial has expired. Please upgrade to continue using bookmarklets.');
+            showPopup('❌ Your free trial has expired. Please upgrade to continue using bookmarklets.', 'error');
           } else if (errorData.usage?.type === 'per_bookmarklet') {
-            alert(`❌ This bookmarklet has already been used ${errorData.usage.used} times. Maximum ${errorData.usage.limit} uses per bookmarklet for ${errorData.usage.plan} plan.`);
+            showPopup(`❌ This bookmarklet has already been used ${errorData.usage.used} times. Maximum ${errorData.usage.limit} uses per bookmarklet for ${errorData.usage.plan} plan.`, 'error');
           } else if (errorData.usage?.type === 'daily_limit') {
-            alert(`❌ Daily bookmarklet limit exceeded. Maximum ${errorData.usage.limit} bookmarklet submissions per day for ${errorData.usage.plan} plan.`);
+            showPopup(`❌ Daily bookmarklet limit exceeded. Maximum ${errorData.usage.limit} bookmarklet submissions per day for ${errorData.usage.plan} plan.`, 'error');
           } else {
-            alert(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`);
+            showPopup(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`, 'error');
           }
         } else {
-          alert(`❌ Failed to track submission: ${errorData.error || 'Unknown error'}`);
+          showPopup(`❌ Failed to track submission: ${errorData.error || 'Unknown error'}`, 'error');
         }
       }
     } catch (error) {
       console.error('❌ Error tracking submission:', error);
-      alert('❌ Network error while tracking submission. Please check your connection.');
+      showPopup('❌ Network error while tracking submission. Please check your connection.', 'error');
     }
   }
 
@@ -603,10 +683,10 @@
 
   if (filledFields.length === 0) {
     console.log('⚠️ No form fields found to fill');
-    alert('⚠️ No form fields found to fill on this page.');
+    showPopup('⚠️ No form fields found to fill on this page.', 'error');
   } else {
     console.log(`🎉 Successfully filled ${filledFields.length} form fields!`);
-    alert(`🎉 Successfully filled ${filledFields.length} form fields!`);
+    showPopup(`🎉 Successfully filled ${filledFields.length} form fields!`, 'success');
     
     // Track the submission
     trackSubmission(filledFields);
