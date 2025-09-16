@@ -82,8 +82,8 @@ if (directoryDataParam) {
 if (!projectData) {
   console.log('⚠️ No project data available, showing fallback message');
   alert('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.');
-  return;
-}
+  // Exit early without return statement
+} else {
 
 // Create form data object
 const formData = {
@@ -484,3 +484,5 @@ if (filledFields.length === 0) {
 }
 
 console.log(`🎉 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} completed!`);
+
+} // End of else block for projectData check
