@@ -236,7 +236,7 @@ const DataExport: React.FC = () => {
     }
   };
 
-  const previewData = async () => {
+  const handlePreviewData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
@@ -501,7 +501,7 @@ const DataExport: React.FC = () => {
 
             <div className="flex justify-between items-center mt-6">
               <button
-                onClick={previewData}
+                onClick={handlePreviewData}
                 disabled={loading || selectedFields.length === 0}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
               >
