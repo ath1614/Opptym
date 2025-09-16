@@ -14,6 +14,13 @@
   const BOOKMARKLET_VERSION = '3.1.0';
   const API_BASE_URL = 'https://api.opptym.com/api';
 
+  // Check if bookmarklet already executed on this page
+  if (window.OPPTYM_BOOKMARKLET_EXECUTED) {
+    console.log('⚠️ OPPTYM Bookmarklet already executed on this page');
+    return;
+  }
+  window.OPPTYM_BOOKMARKLET_EXECUTED = true;
+
   console.log(`🚀 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} starting...`);
 
   // Extract URL parameters
@@ -26,21 +33,32 @@
   function parseJsonSafely(jsonString) {
     if (!jsonString) return null;
     
+    console.log('🔍 Parsing JSON string:', jsonString.substring(0, 100) + '...');
+    
     try {
       // Method 1: Direct parse
-      return JSON.parse(jsonString);
+      const result = JSON.parse(jsonString);
+      console.log('✅ Method 1 (Direct parse) succeeded');
+      return result;
     } catch (e1) {
+      console.log('❌ Method 1 failed:', e1.message);
       try {
         // Method 2: Decode URI component first
         const decoded = decodeURIComponent(jsonString);
-        return JSON.parse(decoded);
+        const result = JSON.parse(decoded);
+        console.log('✅ Method 2 (decodeURIComponent) succeeded');
+        return result;
       } catch (e2) {
+        console.log('❌ Method 2 failed:', e2.message);
         try {
           // Method 3: Unescape then decode
           const unescaped = unescape(jsonString);
           const decoded = decodeURIComponent(unescaped);
-          return JSON.parse(decoded);
+          const result = JSON.parse(decoded);
+          console.log('✅ Method 3 (unescape + decodeURIComponent) succeeded');
+          return result;
         } catch (e3) {
+          console.log('❌ Method 3 failed:', e3.message);
           try {
             // Method 4: Manual character replacement
             let fixed = jsonString
@@ -52,11 +70,25 @@
               .replace(/%2C/g, ',')
               .replace(/%3A/g, ':')
               .replace(/%20/g, ' ')
-              .replace(/%5Cn/g, '\n');
-            return JSON.parse(fixed);
+              .replace(/%5Cn/g, '\n')
+              .replace(/%5C/g, '\\')
+              .replace(/%2F/g, '/');
+            const result = JSON.parse(fixed);
+            console.log('✅ Method 4 (Manual replacement) succeeded');
+            return result;
           } catch (e4) {
-            console.error('❌ All JSON parsing methods failed:', e4);
-            return null;
+            console.log('❌ Method 4 failed:', e4.message);
+            try {
+              // Method 5: Try double decoding
+              const doubleDecoded = decodeURIComponent(decodeURIComponent(jsonString));
+              const result = JSON.parse(doubleDecoded);
+              console.log('✅ Method 5 (Double decode) succeeded');
+              return result;
+            } catch (e5) {
+              console.error('❌ All JSON parsing methods failed. Last error:', e5);
+              console.error('❌ Original string:', jsonString.substring(0, 200));
+              return null;
+            }
           }
         }
       }
@@ -91,9 +123,10 @@
   // Check if we have project data
   if (!projectData) {
     console.log('⚠️ No project data available, showing fallback message');
+    console.log('🔍 Debug - projectDataParam:', projectDataParam);
+    console.log('🔍 Debug - parseJsonSafely result:', parseJsonSafely(projectDataParam));
     alert('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.');
-    return;
-  }
+  } else {
 
   // Create form data object with enhanced mapping
   const formData = {
@@ -547,4 +580,5 @@
 
   console.log(`🎉 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} completed!`);
 
+  } // End of else block for projectData check
 })();
