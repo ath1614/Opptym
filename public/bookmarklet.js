@@ -286,8 +286,16 @@
           'input[placeholder*="site title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
           'input[placeholder*="max 80 chars" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
           'input[placeholder*="no keyword stuffing" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
-          'input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"]):not([name*="url"]):not([name*="name"]):not([name*="description"])',
-          'input:not([type="email"]):not([type="tel"]):not([type="url"]):not([type="password"]):not([type="hidden"]):not([type="submit"]):not([type="button"])'
+          'input[placeholder*="business name" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="company name" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="listing title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[placeholder*="entry title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[name*="business_name"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[name*="company_name"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[name*="listing_title"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[id*="business_name"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[id*="company_name"]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[id*="listing_title"]:not([type="email"]):not([type="tel"]):not([type="url"])'
         ],
         value: formData.title,
         validation: (element) => {
@@ -297,8 +305,13 @@
           const placeholder = element.placeholder || '';
           return type !== 'email' && type !== 'tel' && type !== 'url' && 
                  (name.includes('title') || id.includes('title') || 
+                  name.includes('business_name') || id.includes('business_name') ||
+                  name.includes('company_name') || id.includes('company_name') ||
+                  name.includes('listing_title') || id.includes('listing_title') ||
                   placeholder.toLowerCase().includes('title') ||
-                  placeholder.toLowerCase().includes('max 80 chars'));
+                  placeholder.toLowerCase().includes('max 80 chars') ||
+                  placeholder.toLowerCase().includes('business name') ||
+                  placeholder.toLowerCase().includes('company name'));
         }
       },
       {
@@ -568,7 +581,11 @@
       
       console.log(`🎯 Looking for ${mapping.name} fields with value: "${mapping.value}"`);
       
+      let fieldFilled = false;
+      
       mapping.selectors.forEach(selector => {
+        if (fieldFilled) return; // Skip if we already filled this field type
+        
         try {
           const elements = document.querySelectorAll(selector);
           console.log(`🔍 Selector "${selector}" found ${elements.length} elements`);
@@ -600,6 +617,8 @@
                 fieldType: mapping.name
               });
               
+              fieldFilled = true; // Mark this field type as filled
+              
               if (hadValue) {
                 console.log(`🔄 Overwrote existing value in ${mapping.name} field: ${selector} = "${mapping.value}"`);
               } else {
@@ -616,36 +635,124 @@
     console.log(`🔍 Form field detection completed. Found ${filledFields.length} fields to fill.`);
     console.log('📊 Filled fields:', filledFields);
     
-    // Fallback: If no fields were filled, try to fill any available text inputs
-    if (filledFields.length === 0) {
-      console.log('🔄 No specific fields found, trying fallback approach...');
+    // Enhanced fallback: Try to intelligently match fields based on context
+    if (filledFields.length === 0 || filledFields.length < 3) {
+      console.log('🔄 No specific fields found, trying enhanced fallback approach...');
       const fallbackInputs = document.querySelectorAll('input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"]):not([name*="url"]):not([name*="password"]):not([name*="hidden"]):not([name*="submit"]):not([name*="button"]), textarea:not([name*="email"]):not([name*="phone"]):not([name*="tel"])');
       
       console.log(`🔄 Found ${fallbackInputs.length} fallback text inputs`);
       
+      // Enhanced field matching based on position and context
       fallbackInputs.forEach((input, index) => {
         if (!input.disabled && !input.readOnly && !filledElements.has(input)) {
           let value = '';
-          if (index === 0 && formData.title) value = formData.title;
-          else if (index === 1 && formData.url) value = formData.url;
-          else if (index === 2 && formData.description) value = formData.description;
-          else if (index === 3 && formData.name) value = formData.name;
-          else if (index === 4 && formData.email) value = formData.email;
+          let fieldType = '';
+          
+          // Smart field detection based on position, placeholder, and context
+          const placeholder = (input.placeholder || '').toLowerCase();
+          const name = (input.name || '').toLowerCase();
+          const id = (input.id || '').toLowerCase();
+          const isTextarea = input.tagName === 'TEXTAREA';
+          
+          // Title field detection (usually first field, short placeholder, or contains "title")
+          if (index === 0 && !isTextarea && (placeholder.includes('title') || placeholder.includes('name') || placeholder.includes('max 80') || name.includes('title') || id.includes('title'))) {
+            value = formData.title;
+            fieldType = 'Title (Smart Match)';
+          }
+          // URL field detection (contains "url", "website", "link", or is second field)
+          else if ((placeholder.includes('url') || placeholder.includes('website') || placeholder.includes('link') || name.includes('url') || name.includes('website') || id.includes('url') || id.includes('website')) && formData.url) {
+            value = formData.url;
+            fieldType = 'Website URL (Smart Match)';
+          }
+          // Description field detection (textarea, long placeholder, or contains "description")
+          else if (isTextarea || placeholder.includes('description') || placeholder.includes('about') || placeholder.includes('summary') || name.includes('description') || id.includes('description')) {
+            value = formData.description;
+            fieldType = 'Description (Smart Match)';
+          }
+          // Name field detection (contains "name", "contact", or is early position)
+          else if ((placeholder.includes('name') || placeholder.includes('contact') || name.includes('name') || id.includes('name')) && formData.name) {
+            value = formData.name;
+            fieldType = 'Name (Smart Match)';
+          }
+          // Company/Business field detection
+          else if ((placeholder.includes('company') || placeholder.includes('business') || placeholder.includes('organization') || name.includes('company') || name.includes('business') || id.includes('company') || id.includes('business')) && formData.company) {
+            value = formData.company;
+            fieldType = 'Company (Smart Match)';
+          }
+          // Fallback to sequential order if no smart match
+          else {
+            if (index === 0 && formData.title) {
+              value = formData.title;
+              fieldType = 'Title (Position 1)';
+            } else if (index === 1 && formData.url) {
+              value = formData.url;
+              fieldType = 'URL (Position 2)';
+            } else if (index === 2 && formData.description) {
+              value = formData.description;
+              fieldType = 'Description (Position 3)';
+            } else if (index === 3 && formData.name) {
+              value = formData.name;
+              fieldType = 'Name (Position 4)';
+            } else if (index === 4 && formData.email) {
+              value = formData.email;
+              fieldType = 'Email (Position 5)';
+            }
+          }
           
           if (value) {
             input.value = value;
             input.dispatchEvent(new Event('input', { bubbles: true }));
             input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.dispatchEvent(new Event('blur', { bubbles: true }));
             filledElements.add(input);
             filledFields.push({
-              selector: 'fallback',
+              selector: 'enhanced-fallback',
               value: value,
               element: input,
               hadExistingValue: input.value && input.value.trim() !== '',
-              fieldType: `Fallback ${index + 1}`
+              fieldType: fieldType
             });
-            console.log(`✅ Fallback filled field ${index + 1}: "${value}"`);
+            console.log(`✅ ${fieldType}: "${value}"`);
           }
+        }
+      });
+    }
+    
+    // Secondary pass: Try to fill remaining important fields if we haven't filled enough
+    if (filledFields.length < 5) {
+      console.log('🔄 Secondary pass: Trying to fill remaining important fields...');
+      const remainingInputs = document.querySelectorAll('input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"]):not([name*="url"]):not([name*="password"]):not([name*="hidden"]):not([name*="submit"]):not([name*="button"]), textarea:not([name*="email"]):not([name*="phone"]):not([name*="tel"])');
+      
+      const unfilledInputs = Array.from(remainingInputs).filter(input => !filledElements.has(input) && !input.disabled && !input.readOnly);
+      
+      console.log(`🔄 Found ${unfilledInputs.length} remaining unfilled inputs`);
+      
+      // Try to fill remaining fields with available data
+      const availableData = [
+        { value: formData.phone, type: 'Phone' },
+        { value: formData.address, type: 'Address' },
+        { value: formData.city, type: 'City' },
+        { value: formData.state, type: 'State' },
+        { value: formData.country, type: 'Country' },
+        { value: formData.zip, type: 'ZIP Code' }
+      ].filter(item => item.value && item.value.trim() !== '');
+      
+      unfilledInputs.forEach((input, index) => {
+        if (index < availableData.length) {
+          const data = availableData[index];
+          input.value = data.value;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+          input.dispatchEvent(new Event('blur', { bubbles: true }));
+          filledElements.add(input);
+          filledFields.push({
+            selector: 'secondary-pass',
+            value: data.value,
+            element: input,
+            hadExistingValue: input.value && input.value.trim() !== '',
+            fieldType: `${data.type} (Secondary Pass)`
+          });
+          console.log(`✅ ${data.type} (Secondary Pass): "${data.value}"`);
         }
       });
     }
