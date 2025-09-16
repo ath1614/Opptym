@@ -26,27 +26,35 @@ function parseJsonSafely(jsonString) {
       return JSON.parse(decoded);
     } catch (e2) {
       try {
-        // Method 3: Unescape then decode
-        const unescaped = unescape(jsonString);
-        const decoded = decodeURIComponent(unescaped);
-        return JSON.parse(decoded);
+        // Method 3: Double decode (for double-encoded URLs)
+        const decoded1 = decodeURIComponent(jsonString);
+        const decoded2 = decodeURIComponent(decoded1);
+        return JSON.parse(decoded2);
       } catch (e3) {
         try {
-          // Method 4: Manual character replacement
-          let fixed = jsonString
-            .replace(/%22/g, '"')
-            .replace(/%7B/g, '{')
-            .replace(/%7D/g, '}')
-            .replace(/%5B/g, '[')
-            .replace(/%5D/g, ']')
-            .replace(/%2C/g, ',')
-            .replace(/%3A/g, ':')
-            .replace(/%20/g, ' ')
-            .replace(/%5Cn/g, '\n');
-          return JSON.parse(fixed);
+          // Method 4: Unescape then decode
+          const unescaped = unescape(jsonString);
+          const decoded = decodeURIComponent(unescaped);
+          return JSON.parse(decoded);
         } catch (e4) {
-          console.error('❌ All JSON parsing methods failed:', e4);
-          return null;
+          try {
+            // Method 5: Manual character replacement
+            let fixed = jsonString
+              .replace(/%22/g, '"')
+              .replace(/%7B/g, '{')
+              .replace(/%7D/g, '}')
+              .replace(/%5B/g, '[')
+              .replace(/%5D/g, ']')
+              .replace(/%2C/g, ',')
+              .replace(/%3A/g, ':')
+              .replace(/%20/g, ' ')
+              .replace(/%5Cn/g, '\n');
+            return JSON.parse(fixed);
+          } catch (e5) {
+            console.error('❌ All JSON parsing methods failed:', e5);
+            console.error('❌ Original string:', jsonString.substring(0, 200) + '...');
+            return null;
+          }
         }
       }
     }
@@ -69,8 +77,12 @@ let projectData = null;
 let directoryData = null;
 
 if (projectDataParam) {
+  console.log('📊 Raw project parameter:', projectDataParam.substring(0, 100) + '...');
   projectData = parseJsonSafely(projectDataParam);
   console.log('📊 Project data parsed:', projectData ? 'Success' : 'Failed');
+  if (projectData) {
+    console.log('📊 Project data keys:', Object.keys(projectData));
+  }
 }
 
 if (directoryDataParam) {
