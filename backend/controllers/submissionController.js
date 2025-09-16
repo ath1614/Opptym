@@ -19,16 +19,22 @@ const getSubmissions = async (req, res) => {
         'Directory Submission': ['directory', 'bookmarklet'],  // Include both directory and bookmarklet submissions
         'directory': ['directory', 'bookmarklet'],  // Also map 'directory' classification to include bookmarklet submissions
         'Press Release': 'article',
-        'BookMarking': 'bookmark',
+        'BookMarking': ['bookmark', 'bookmarklet'],  // Include bookmarklet submissions in BookMarking
         'Business Listing': ['directory', 'bookmarklet'],  // Include bookmarklet submissions in Business Listing
-        'Classified': 'classified',
+        'Classified': ['classified', 'bookmarklet'],  // Include bookmarklet submissions in Classified
         'Forum': 'forum',
-        'Social Media': 'social',
-        'Local Business': 'local',
+        'Social Media': ['social', 'bookmarklet'],  // Include bookmarklet submissions in Social Media
+        'Local Business': ['local', 'bookmarklet'],  // Include bookmarklet submissions in Local Business
         'Citation': 'citation',
         'Web 2.0': 'web2',
         'Q&A': 'qa',
-        'More SEO': 'bookmarklet'  // Map More SEO to bookmarklet submissions
+        'More SEO': 'bookmarklet',  // Map More SEO to bookmarklet submissions
+        'article': 'article',  // Map lowercase article classification
+        'local': ['local', 'bookmarklet'],  // Map lowercase local classification
+        'social': ['social', 'bookmarklet'],  // Map lowercase social classification
+        'classified': ['classified', 'bookmarklet'],  // Map lowercase classified classification
+        'qa': 'qa',  // Map lowercase qa classification
+        'australia': 'australia'  // Map australia classification
       };
       
       const mappedType = classificationMap[classification];
