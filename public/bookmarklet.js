@@ -26,61 +26,27 @@ function parseJsonSafely(jsonString) {
       return JSON.parse(decoded);
     } catch (e2) {
       try {
-        // Method 3: Double decode (for double-encoded URLs)
-        const decoded1 = decodeURIComponent(jsonString);
-        const decoded2 = decodeURIComponent(decoded1);
-        return JSON.parse(decoded2);
+        // Method 3: Unescape then decode
+        const unescaped = unescape(jsonString);
+        const decoded = decodeURIComponent(unescaped);
+        return JSON.parse(decoded);
       } catch (e3) {
         try {
-          // Method 4: Try multiple decode passes
-          let decoded = jsonString;
-          for (let i = 0; i < 3; i++) {
-            try {
-              decoded = decodeURIComponent(decoded);
-            } catch (e) {
-              break;
-            }
-          }
-          return JSON.parse(decoded);
+          // Method 4: Manual character replacement
+          let fixed = jsonString
+            .replace(/%22/g, '"')
+            .replace(/%7B/g, '{')
+            .replace(/%7D/g, '}')
+            .replace(/%5B/g, '[')
+            .replace(/%5D/g, ']')
+            .replace(/%2C/g, ',')
+            .replace(/%3A/g, ':')
+            .replace(/%20/g, ' ')
+            .replace(/%5Cn/g, '\n');
+          return JSON.parse(fixed);
         } catch (e4) {
-          try {
-            // Method 5: Manual character replacement
-            let fixed = jsonString
-              .replace(/%22/g, '"')
-              .replace(/%7B/g, '{')
-              .replace(/%7D/g, '}')
-              .replace(/%5B/g, '[')
-              .replace(/%5D/g, ']')
-              .replace(/%2C/g, ',')
-              .replace(/%3A/g, ':')
-              .replace(/%20/g, ' ')
-              .replace(/%5Cn/g, '\n');
-            return JSON.parse(fixed);
-          } catch (e5) {
-            try {
-              // Method 6: Try to decode until we get valid JSON
-              let current = jsonString;
-              let attempts = 0;
-              while (attempts < 5) {
-                try {
-                  const parsed = JSON.parse(current);
-                  return parsed;
-                } catch (e) {
-                  try {
-                    current = decodeURIComponent(current);
-                    attempts++;
-                  } catch (decodeError) {
-                    break;
-                  }
-                }
-              }
-              return null;
-            } catch (e6) {
-              console.error('❌ All JSON parsing methods failed:', e6);
-              console.error('❌ Original string:', jsonString.substring(0, 200) + '...');
-              return null;
-            }
-          }
+          console.error('❌ All JSON parsing methods failed:', e4);
+          return null;
         }
       }
     }
@@ -103,12 +69,8 @@ let projectData = null;
 let directoryData = null;
 
 if (projectDataParam) {
-  console.log('📊 Raw project parameter:', projectDataParam.substring(0, 100) + '...');
   projectData = parseJsonSafely(projectDataParam);
   console.log('📊 Project data parsed:', projectData ? 'Success' : 'Failed');
-  if (projectData) {
-    console.log('📊 Project data keys:', Object.keys(projectData));
-  }
 }
 
 if (directoryDataParam) {
@@ -120,7 +82,8 @@ if (directoryDataParam) {
 if (!projectData) {
   console.log('⚠️ No project data available, showing fallback message');
   alert('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.');
-} else {
+  return;
+}
 
 // Create form data object
 const formData = {
@@ -521,4 +484,3 @@ if (filledFields.length === 0) {
 }
 
 console.log(`🎉 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} completed!`);
-}

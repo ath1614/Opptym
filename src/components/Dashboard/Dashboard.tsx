@@ -141,15 +141,6 @@ export default function Dashboard() {
         const submissionsResponse = await axios.get('/api/submissions', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-        console.log('📊 Dashboard submissions response:', {
-          count: submissionsResponse.data.length,
-          submissions: submissionsResponse.data.map(s => ({
-            id: s._id,
-            type: s.submissionType,
-            status: s.status,
-            site: s.siteName
-          }))
-        });
         setStats(prev => ({ ...prev, totalSubmissions: submissionsResponse.data.length }));
         // Map submission statuses correctly
         const successfulSubmissions = submissionsResponse.data.filter((s: any) => 

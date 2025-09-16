@@ -47,15 +47,6 @@ export default function DirectorySubmission() {
       });
       
       if (response.data && Array.isArray(response.data)) {
-        console.log('📊 DirectorySubmission response:', {
-          count: response.data.length,
-          submissions: response.data.map(s => ({
-            id: s._id,
-            type: s.submissionType,
-            status: s.status,
-            site: s.siteName
-          }))
-        });
         setSubmissions(response.data);
         
         // Calculate stats
