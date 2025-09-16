@@ -718,9 +718,45 @@ router.get('/projects', protect, adminOnly, async (req, res) => {
 // Get all submissions (admin only)
 router.get('/submissions', protect, adminOnly, async (req, res) => {
   try {
-    const submissions = await Submission.find({});
-    res.json(submissions);
+    const submissions = await Submission.find({})
+      .populate('userId', 'username email firstName lastName subscription')
+      .populate('projectId', 'title name url email businessPhone companyName description')
+      .sort({ createdAt: -1 });
+    
+    // Transform submissions to include user and project details
+    const transformedSubmissions = submissions.map(submission => ({
+      _id: submission._id,
+      siteName: submission.siteName,
+      submissionType: submission.submissionType,
+      status: submission.status,
+      submittedAt: submission.submittedAt,
+      createdAt: submission.createdAt,
+      metadata: submission.metadata,
+      // Include user details
+      user: submission.userId ? {
+        _id: submission.userId._id,
+        username: submission.userId.username,
+        email: submission.userId.email,
+        firstName: submission.userId.firstName,
+        lastName: submission.userId.lastName,
+        subscription: submission.userId.subscription
+      } : null,
+      // Include project details
+      project: submission.projectId ? {
+        _id: submission.projectId._id,
+        title: submission.projectId.title,
+        name: submission.projectId.name,
+        url: submission.projectId.url,
+        email: submission.projectId.email,
+        businessPhone: submission.projectId.businessPhone,
+        companyName: submission.projectId.companyName,
+        description: submission.projectId.description
+      } : null
+    }));
+    
+    res.json(transformedSubmissions);
   } catch (error) {
+    console.error('Error fetching admin submissions:', error);
     res.status(500).json({ error: 'Failed to fetch submissions' });
   }
 });

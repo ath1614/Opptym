@@ -36,22 +36,47 @@ export default function BusinessListing() {
     highPriority: 0
   });
 
-  // Load directories from config file
-  const loadDirectories = () => {
+  // Load directories from database API
+  const loadDirectories = async () => {
     try {
       setLoading(true);
-      const configDirectories = getDirectoriesByClassification('Business Listing');
-      setDirectories(configDirectories);
+      const response = await axios.get('/api/directories', {
+        params: { classification: 'Business Listing' }
+      });
+      
+      let directoriesToUse = [];
+      if (response.data && Array.isArray(response.data)) {
+        directoriesToUse = response.data;
+      } else {
+        // Fallback to config file if API fails
+        directoriesToUse = getDirectoriesByClassification('Business Listing');
+      }
+      
+      setDirectories(directoriesToUse);
       
       // Calculate country stats
-      const stats = configDirectories.reduce((acc: any, dir: any) => {
+      const stats = directoriesToUse.reduce((acc: any, dir: any) => {
         acc[dir.country || 'Global'] = (acc[dir.country || 'Global'] || 0) + 1;
         return acc;
       }, {});
       setCountryStats(stats);
     } catch (error) {
-      console.error('Error loading directories:', error);
-      setDirectories([]);
+      console.error('Error loading directories from API:', error);
+      // Fallback to config file
+      try {
+        const configDirectories = getDirectoriesByClassification('Business Listing');
+        setDirectories(configDirectories);
+        
+        // Calculate country stats
+        const stats = configDirectories.reduce((acc: any, dir: any) => {
+          acc[dir.country || 'Global'] = (acc[dir.country || 'Global'] || 0) + 1;
+          return acc;
+        }, {});
+        setCountryStats(stats);
+      } catch (configError) {
+        console.error('Error loading directories from config:', configError);
+        setDirectories([]);
+      }
     } finally {
       setLoading(false);
     }

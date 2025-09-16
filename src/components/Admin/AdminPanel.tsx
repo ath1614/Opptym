@@ -916,8 +916,10 @@ export default function AdminPanel() {
                 </thead>
                 <tbody className="bg-white dark:bg-primary-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {Array.isArray(submissions) && submissions.map((sub) => {
-                    const submissionUser = users.find(u => u._id === sub.userId);
-                    const submissionProject = projects.find(p => p._id === sub.projectId);
+                    // Use populated data if available, otherwise fallback to lookup
+                    const submissionUser = sub.user || users.find(u => u._id === sub.userId);
+                    const submissionProject = sub.project || projects.find(p => p._id === sub.projectId);
+                    
                     return (
                       <tr key={sub._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -926,19 +928,28 @@ export default function AdminPanel() {
                               <Users className="w-4 h-4 text-white" />
                             </div>
                             <div className="ml-2">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{submissionUser?.username || 'Unknown User'}</div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {submissionUser ? 
+                                  `${submissionUser.firstName || ''} ${submissionUser.lastName || ''}`.trim() || 
+                                  submissionUser.username || 
+                                  'Unknown User' : 'Unknown User'}
+                              </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">{submissionUser?.email || 'No email'}</div>
+                              <div className="text-xs text-gray-400 dark:text-gray-500">{submissionUser?.subscription || 'No plan'}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">{submissionProject?.title || 'Unknown Project'}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">{submissionProject?.title || submissionProject?.name || 'Unknown Project'}</div>
                           <div className="text-xs text-gray-500 dark:text-gray-400">{submissionProject?.url || 'No URL'}</div>
+                          <div className="text-xs text-gray-400 dark:text-gray-500">{submissionProject?.companyName || 'No company'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             sub.submissionType === 'directory' ? 'bg-blue-100 text-blue-800' :
+                            sub.submissionType === 'bookmarklet' ? 'bg-purple-100 text-purple-800' :
                             sub.submissionType === 'social' ? 'bg-green-100 text-green-800' :
+                            sub.submissionType === 'article' ? 'bg-orange-100 text-orange-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
                             {sub.submissionType || 'Unknown'}
@@ -950,7 +961,7 @@ export default function AdminPanel() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            sub.status === 'success' ? 'bg-green-100 text-green-800' :
+                            sub.status === 'completed' || sub.status === 'success' ? 'bg-green-100 text-green-800' :
                             sub.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                             sub.status === 'failed' ? 'bg-red-100 text-red-800' :
                             'bg-gray-100 text-gray-800'

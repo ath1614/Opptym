@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
+import axios from 'axios';
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -62,16 +63,32 @@ const MoreSEO: React.FC = () => {
     'Blog Commenting': <MessageSquare className="h-5 w-5" />
   };
 
-  // Load directories from config file
+  // Load directories from database API
   useEffect(() => {
-    const loadDirectories = () => {
+    const loadDirectories = async () => {
       try {
         setLoading(true);
-        const configDirectories = getDirectoriesByClassification('More SEO');
-        setDirectories(configDirectories);
+        const response = await axios.get('/api/directories', {
+          params: { classification: 'More SEO' }
+        });
+        
+        if (response.data && Array.isArray(response.data)) {
+          setDirectories(response.data);
+        } else {
+          // Fallback to config file if API fails
+          const configDirectories = getDirectoriesByClassification('More SEO');
+          setDirectories(configDirectories);
+        }
       } catch (error) {
-        console.error('Error loading directories:', error);
-        setDirectories([]);
+        console.error('Error loading directories from API:', error);
+        // Fallback to config file
+        try {
+          const configDirectories = getDirectoriesByClassification('More SEO');
+          setDirectories(configDirectories);
+        } catch (configError) {
+          console.error('Error loading directories from config:', configError);
+          setDirectories([]);
+        }
       } finally {
         setLoading(false);
       }
