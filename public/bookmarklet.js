@@ -32,9 +32,15 @@ function parseJsonSafely(jsonString) {
         return JSON.parse(decoded2);
       } catch (e3) {
         try {
-          // Method 4: Unescape then decode
-          const unescaped = unescape(jsonString);
-          const decoded = decodeURIComponent(unescaped);
+          // Method 4: Try multiple decode passes
+          let decoded = jsonString;
+          for (let i = 0; i < 3; i++) {
+            try {
+              decoded = decodeURIComponent(decoded);
+            } catch (e) {
+              break;
+            }
+          }
           return JSON.parse(decoded);
         } catch (e4) {
           try {
@@ -51,9 +57,29 @@ function parseJsonSafely(jsonString) {
               .replace(/%5Cn/g, '\n');
             return JSON.parse(fixed);
           } catch (e5) {
-            console.error('❌ All JSON parsing methods failed:', e5);
-            console.error('❌ Original string:', jsonString.substring(0, 200) + '...');
-            return null;
+            try {
+              // Method 6: Try to decode until we get valid JSON
+              let current = jsonString;
+              let attempts = 0;
+              while (attempts < 5) {
+                try {
+                  const parsed = JSON.parse(current);
+                  return parsed;
+                } catch (e) {
+                  try {
+                    current = decodeURIComponent(current);
+                    attempts++;
+                  } catch (decodeError) {
+                    break;
+                  }
+                }
+              }
+              return null;
+            } catch (e6) {
+              console.error('❌ All JSON parsing methods failed:', e6);
+              console.error('❌ Original string:', jsonString.substring(0, 200) + '...');
+              return null;
+            }
           }
         }
       }
