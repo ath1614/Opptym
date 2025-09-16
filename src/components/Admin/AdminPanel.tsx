@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Users, 
+  Shield, 
   Database, 
   Settings, 
   BarChart3, 
   Upload, 
   Download,
   Search,
+  Filter,
   MoreVertical,
+  Ban,
   Trash2,
   Eye,
   Edit3,
@@ -21,23 +24,51 @@ import {
   Star,
   TrendingUp,
   DollarSign,
-  CreditCard,
-  Shield
+  CreditCard
 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
+import { Modal, Button, Input, Select } from 'antd';
 import EmployeeManagement from './EmployeeManagement';
 import DirectoryManagement from './DirectoryManagement';
 import CreateDirectoryModal from './CreateDirectoryModal';
 import PricingManagement from './PricingManagement';
-import CustomReports from './CustomReports';
-import DataExport from './DataExport';
-import PlanHistory from './PlanHistory';
-import BulkDirectoryImport from './BulkDirectoryImport';
 // Remove BASE_URL import - use relative paths like other components
 
+interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  subscription: 'free' | 'basic' | 'premium';
+  status: 'active' | 'suspended' | 'banned';
+  joinDate: string;
+  lastActive: string;
+  projectsCount: number;
+  submissionsCount: number;
+}
+
+interface AdminDirectory {
+  id: string;
+  name: string;
+  domain: string;
+  category: string;
+  pageRank: number;
+  status: 'active' | 'inactive';
+  submissionCount: number;
+  successRate: number;
+}
+
+interface SystemStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalProjects: number;
+  totalSubmissions: number;
+  revenue: number;
+  successRate: number;
+}
 
 export default function AdminPanel() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -51,6 +82,7 @@ export default function AdminPanel() {
   const [projects, setProjects] = useState<any[]>([]);
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{ user: any; action: 'activate' | 'suspend' | 'ban' | 'delete' } | null>(null);
   const [showDirectoryModal, setShowDirectoryModal] = useState(false);
   const [newDirectory, setNewDirectory] = useState<any>({ name: '', domain: '', category: '', pageRank: 0, status: 'active' });
   const [showCreateDirectoryModal, setShowCreateDirectoryModal] = useState(false);
@@ -178,7 +210,7 @@ export default function AdminPanel() {
         setDirectories(dirsRes.data);
         
         // Process directory stats
-        const dirStats = Array.isArray(dirsRes.data) ? dirsRes.data.map((name: string) => {
+        const dirStats = Array.isArray(dirsRes.data) ? dirsRes.data.map((name: string, i: number) => {
           const count = submissionsRes.data.filter((s: any) => s.siteName === name).length;
           return { name, count, successRate: Math.random() * 100 };
         }) : [];
@@ -196,6 +228,33 @@ export default function AdminPanel() {
     fetchAll();
   }, []);
 
+  const handleUpdateUser = async (id: string, updates: any) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.put(`/api/admin/users/${id}`, updates, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsers(users => users.map(u => u._id === id ? res.data : u));
+      setPopup({ message: 'User updated successfully', type: 'success' });
+    } catch (error) {
+      console.error('Error updating user:', error);
+      setPopup({ message: 'Failed to update user', type: 'error' });
+    }
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/admin/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsers(users => users.filter(u => u._id !== id));
+      setPopup({ message: 'User deleted successfully', type: 'success' });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setPopup({ message: 'Failed to delete user', type: 'error' });
+    }
+  };
 
   // Remove all mock data and use real data from state for stats, directories, etc.
 
@@ -207,10 +266,6 @@ export default function AdminPanel() {
     { id: 'directories', name: 'Directories', icon: Database },
     { id: 'pricing', name: 'Pricing Plans', icon: CreditCard },
     { id: 'employees', name: 'Employees', icon: Users },
-    { id: 'reports', name: 'Custom Reports', icon: FileText },
-    { id: 'export', name: 'Data Export', icon: Download },
-    { id: 'plan-history', name: 'Plan History', icon: Clock },
-    { id: 'bulk-import', name: 'Bulk Import', icon: Upload },
     { id: 'settings', name: 'Settings', icon: Settings }
   ];
 
@@ -978,26 +1033,6 @@ export default function AdminPanel() {
       {/* Employees Tab */}
       {activeTab === 'employees' && (
         <EmployeeManagement />
-      )}
-
-      {/* Custom Reports Tab */}
-      {activeTab === 'reports' && (
-        <CustomReports />
-      )}
-
-      {/* Data Export Tab */}
-      {activeTab === 'export' && (
-        <DataExport />
-      )}
-
-      {/* Plan History Tab */}
-      {activeTab === 'plan-history' && (
-        <PlanHistory />
-      )}
-
-      {/* Bulk Import Tab */}
-      {activeTab === 'bulk-import' && (
-        <BulkDirectoryImport />
       )}
 
       {/* Settings Tab */}
