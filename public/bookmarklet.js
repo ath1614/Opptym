@@ -232,6 +232,14 @@
   // Enhanced field mapping with 100% accuracy
   function fillFormFields() {
     console.log('🔍 Starting form field detection...');
+    
+    // Debug: Log all available form fields on the page
+    const allInputs = document.querySelectorAll('input, textarea, select');
+    console.log(`🔍 Found ${allInputs.length} total form elements on the page:`);
+    allInputs.forEach((input, index) => {
+      console.log(`  ${index + 1}. ${input.tagName} - name: "${input.name || 'none'}", id: "${input.id || 'none'}", type: "${input.type || 'none'}", placeholder: "${input.placeholder || 'none'}"`);
+    });
+    
     const filledFields = [];
     const filledElements = new Set();
     
@@ -277,7 +285,9 @@
           'input[placeholder*="website title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
           'input[placeholder*="site title" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
           'input[placeholder*="max 80 chars" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
-          'input[placeholder*="no keyword stuffing" i]:not([type="email"]):not([type="tel"]):not([type="url"])'
+          'input[placeholder*="no keyword stuffing" i]:not([type="email"]):not([type="tel"]):not([type="url"])',
+          'input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"]):not([name*="url"]):not([name*="name"]):not([name*="description"])',
+          'input:not([type="email"]):not([type="tel"]):not([type="url"]):not([type="password"]):not([type="hidden"]):not([type="submit"]):not([type="button"])'
         ],
         value: formData.title,
         validation: (element) => {
@@ -605,6 +615,40 @@
     
     console.log(`🔍 Form field detection completed. Found ${filledFields.length} fields to fill.`);
     console.log('📊 Filled fields:', filledFields);
+    
+    // Fallback: If no fields were filled, try to fill any available text inputs
+    if (filledFields.length === 0) {
+      console.log('🔄 No specific fields found, trying fallback approach...');
+      const fallbackInputs = document.querySelectorAll('input[type="text"]:not([name*="email"]):not([name*="phone"]):not([name*="tel"]):not([name*="url"]):not([name*="password"]):not([name*="hidden"]):not([name*="submit"]):not([name*="button"]), textarea:not([name*="email"]):not([name*="phone"]):not([name*="tel"])');
+      
+      console.log(`🔄 Found ${fallbackInputs.length} fallback text inputs`);
+      
+      fallbackInputs.forEach((input, index) => {
+        if (!input.disabled && !input.readOnly && !filledElements.has(input)) {
+          let value = '';
+          if (index === 0 && formData.title) value = formData.title;
+          else if (index === 1 && formData.url) value = formData.url;
+          else if (index === 2 && formData.description) value = formData.description;
+          else if (index === 3 && formData.name) value = formData.name;
+          else if (index === 4 && formData.email) value = formData.email;
+          
+          if (value) {
+            input.value = value;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            filledElements.add(input);
+            filledFields.push({
+              selector: 'fallback',
+              value: value,
+              element: input,
+              hadExistingValue: input.value && input.value.trim() !== '',
+              fieldType: `Fallback ${index + 1}`
+            });
+            console.log(`✅ Fallback filled field ${index + 1}: "${value}"`);
+          }
+        }
+      });
+    }
     
     return filledFields;
   }
