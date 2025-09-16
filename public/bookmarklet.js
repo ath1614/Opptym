@@ -25,10 +25,36 @@
 
   console.log(`🚀 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} starting...`);
 
-  // Extract URL parameters
+  // Extract URL parameters from the script's own URL
   function getUrlParameter(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
+    // Get the current script's URL
+    const scripts = document.getElementsByTagName('script');
+    let scriptUrl = '';
+    
+    // Find the bookmarklet script
+    for (let i = 0; i < scripts.length; i++) {
+      if (scripts[i].src && scripts[i].src.includes('bookmarklet.js')) {
+        scriptUrl = scripts[i].src;
+        break;
+      }
+    }
+    
+    if (!scriptUrl) {
+      console.log('❌ Could not find bookmarklet script URL');
+      return null;
+    }
+    
+    console.log('🔍 Found script URL:', scriptUrl);
+    
+    try {
+      const url = new URL(scriptUrl);
+      const paramValue = url.searchParams.get(name);
+      console.log(`🔍 Parameter '${name}':`, paramValue ? 'Found' : 'Not found');
+      return paramValue;
+    } catch (error) {
+      console.error('❌ Error parsing script URL:', error);
+      return null;
+    }
   }
 
   // Enhanced JSON parsing with multiple fallback methods
