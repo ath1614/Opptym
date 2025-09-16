@@ -16,22 +16,28 @@ const getSubmissions = async (req, res) => {
       // Map classification names to submission types
       const classificationMap = {
         'Article Submission': 'article',
-        'Directory Submission': 'directory', 
+        'Directory Submission': ['directory', 'bookmarklet'],  // Include both directory and bookmarklet submissions
+        'directory': ['directory', 'bookmarklet'],  // Also map 'directory' classification to include bookmarklet submissions
         'Press Release': 'article',
         'BookMarking': 'bookmark',
-        'Business Listing': 'directory',
+        'Business Listing': ['directory', 'bookmarklet'],  // Include bookmarklet submissions in Business Listing
         'Classified': 'classified',
         'Forum': 'forum',
         'Social Media': 'social',
         'Local Business': 'local',
         'Citation': 'citation',
         'Web 2.0': 'web2',
-        'Q&A': 'qa'
+        'Q&A': 'qa',
+        'More SEO': 'bookmarklet'  // Map More SEO to bookmarklet submissions
       };
       
       const mappedType = classificationMap[classification];
       if (mappedType) {
-        filter.submissionType = mappedType;
+        if (Array.isArray(mappedType)) {
+          filter.submissionType = { $in: mappedType };
+        } else {
+          filter.submissionType = mappedType;
+        }
       }
     } else if (submissionType) {
       filter.submissionType = submissionType;
