@@ -90,8 +90,10 @@ const MoreSEO: React.FC = () => {
           params: { classification: 'More SEO' }
         });
         
-        if (response.data) {
+        if (response.data && Array.isArray(response.data)) {
           setSubmissions(response.data);
+        } else if (response.data && response.data.submissions) {
+          setSubmissions(response.data.submissions);
         }
       } catch (error) {
         console.error('Error fetching submissions:', error);

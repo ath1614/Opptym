@@ -66,14 +66,23 @@ export default function BusinessListing() {
         params: { classification: 'Business Listing' }
       });
       
-      if (response.data.success) {
-        setSubmissions(response.data.submissions);
+      let submissions = [];
+      if (response.data && Array.isArray(response.data)) {
+        submissions = response.data;
+      } else if (response.data && response.data.submissions) {
+        submissions = response.data.submissions;
+      } else if (response.data && response.data.success && response.data.submissions) {
+        submissions = response.data.submissions;
+      }
+      
+      if (submissions.length > 0) {
+        setSubmissions(submissions);
         
         // Calculate stats
-        const total = response.data.submissions.length;
-        const submitted = response.data.submissions.filter(s => s.status === 'submitted').length;
-        const approved = response.data.submissions.filter(s => s.status === 'approved' || s.status === 'published').length;
-        const pending = response.data.submissions.filter(s => s.status === 'pending').length;
+        const total = submissions.length;
+        const submitted = submissions.filter(s => s.status === 'submitted').length;
+        const approved = submissions.filter(s => s.status === 'approved' || s.status === 'published').length;
+        const pending = submissions.filter(s => s.status === 'pending').length;
         
         setStats({ total, submitted, approved, pending, highPriority: 465 }); // 465 high priority platforms
       }
