@@ -68,60 +68,11 @@ export default function ProfileSettings() {
     }
   }, [user]);
 
-  // Form validation function
-  const validateProfileForm = () => {
-    const errors: string[] = [];
-    
-    // Email validation
-    if (!profileForm.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email)) {
-      errors.push('Please enter a valid email address');
-    }
-    
-    // Phone validation (if provided)
-    if (profileForm.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(profileForm.phone.replace(/\s/g, ''))) {
-      errors.push('Please enter a valid phone number');
-    }
-    
-    // Website validation (if provided)
-    if (profileForm.website && !/^https?:\/\/.+/.test(profileForm.website)) {
-      errors.push('Please enter a valid website URL (must start with http:// or https://)');
-    }
-    
-    // Username validation
-    if (profileForm.username && (profileForm.username.length < 3 || profileForm.username.length > 20)) {
-      errors.push('Username must be between 3 and 20 characters');
-    }
-    
-    // Name validation
-    if (profileForm.firstName && profileForm.firstName.length > 50) {
-      errors.push('First name must be less than 50 characters');
-    }
-    
-    if (profileForm.lastName && profileForm.lastName.length > 50) {
-      errors.push('Last name must be less than 50 characters');
-    }
-    
-    // Bio validation
-    if (profileForm.bio && profileForm.bio.length > 500) {
-      errors.push('Bio must be less than 500 characters');
-    }
-    
-    return errors;
-  };
-
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
-
-    // Validate form data
-    const validationErrors = validateProfileForm();
-    if (validationErrors.length > 0) {
-      setErrorMessage(validationErrors.join('. '));
-      setLoading(false);
-      return;
-    }
 
     try {
       const token = localStorage.getItem('token');
@@ -192,80 +143,45 @@ export default function ProfileSettings() {
     // Create file input
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/jpeg,image/png,image/gif,image/webp';
+    input.accept = 'image/*';
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         try {
           setLoading(true);
-          setErrorMessage('');
           
-          // Validate file size (max 5MB)
-          if (file.size > 5 * 1024 * 1024) {
-            setErrorMessage('File size must be less than 5MB');
-            setLoading(false);
-            return;
-          }
-          
-          // Validate file type
-          const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-          if (!allowedTypes.includes(file.type)) {
-            setErrorMessage('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
-            setLoading(false);
-            return;
-          }
-          
-          // Validate image dimensions (optional - can be added for specific requirements)
-          const img = new Image();
-          img.onload = async () => {
-            // Check if image is too large (max 2000x2000)
-            if (img.width > 2000 || img.height > 2000) {
-              setErrorMessage('Image dimensions must be less than 2000x2000 pixels');
-              setLoading(false);
-              return;
-            }
+          // For now, we'll use a simple approach - convert to base64
+          // In production, you'd want to upload to a cloud service like AWS S3
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            const photoUrl = event.target?.result as string;
             
-            // For now, we'll use a simple approach - convert to base64
-            // In production, you'd want to upload to a cloud service like AWS S3
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-              const photoUrl = event.target?.result as string;
-              
-              try {
-                const token = localStorage.getItem('token');
-                await axios.put('/api/auth/photo', {
-                  photoUrl
-                }, {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
-                });
-                
-                // Update the user object with the new photo
-                if (refreshUser) {
-                  await refreshUser();
+            try {
+              const token = localStorage.getItem('token');
+              await axios.put('/api/auth/photo', {
+                photoUrl
+              }, {
+                headers: {
+                  Authorization: `Bearer ${token}`
                 }
-                
-                setSuccessMessage('Profile photo updated successfully!');
-                setTimeout(() => setSuccessMessage(''), 3000);
-              } catch (error: any) {
-                setErrorMessage(error.response?.data?.error || 'Failed to update profile photo');
-              } finally {
-                setLoading(false);
+              });
+              
+              // Update the user object with the new photo
+              if (refreshUser) {
+                await refreshUser();
               }
-            };
-            
-            reader.readAsDataURL(file);
+              
+              setSuccessMessage('Profile photo updated successfully!');
+              setTimeout(() => setSuccessMessage(''), 3000);
+            } catch (error: any) {
+              setErrorMessage(error.response?.data?.error || 'Failed to update profile photo');
+            }
           };
           
-          img.onerror = () => {
-            setErrorMessage('Invalid image file');
-            setLoading(false);
-          };
-          
-          img.src = URL.createObjectURL(file);
+          reader.readAsDataURL(file);
         } catch (error: any) {
           setErrorMessage('Failed to process image file');
+        } finally {
           setLoading(false);
         }
       }
@@ -424,42 +340,19 @@ export default function ProfileSettings() {
                       type="text"
                       value={profileForm.username}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, username: e.target.value }))}
-                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 ${
-                        profileForm.username && (profileForm.username.length < 3 || profileForm.username.length > 20)
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
-                      }`}
-                      placeholder="Enter username (3-20 characters)"
-                      aria-label="Username"
-                      aria-describedby="username-help"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400"
+                      placeholder="Enter username"
                     />
-                    {profileForm.username && (profileForm.username.length < 3 || profileForm.username.length > 20) && (
-                      <p id="username-help" className="text-sm text-red-600">
-                        Username must be between 3 and 20 characters
-                      </p>
-                    )}
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                     <input
                       type="email"
                       value={profileForm.email}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, email: e.target.value }))}
-                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 ${
-                        profileForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email)
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
-                      }`}
-                      placeholder="Enter email address"
-                      aria-label="Email"
-                      aria-describedby="email-help"
-                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400"
+                      placeholder="Enter email"
                     />
-                    {profileForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.email) && (
-                      <p id="email-help" className="text-sm text-red-600">
-                        Please enter a valid email address
-                      </p>
-                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
@@ -487,20 +380,9 @@ export default function ProfileSettings() {
                       type="tel"
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 ${
-                        profileForm.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(profileForm.phone.replace(/\s/g, ''))
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
-                      }`}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400"
                       placeholder="Enter phone number"
-                      aria-label="Phone number"
-                      aria-describedby="phone-help"
                     />
-                    {profileForm.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(profileForm.phone.replace(/\s/g, '')) && (
-                      <p id="phone-help" className="text-sm text-red-600">
-                        Please enter a valid phone number
-                      </p>
-                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Company</label>
@@ -518,20 +400,9 @@ export default function ProfileSettings() {
                       type="url"
                       value={profileForm.website}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, website: e.target.value }))}
-                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 ${
-                        profileForm.website && !/^https?:\/\/.+/.test(profileForm.website)
-                          ? 'border-red-300 focus:ring-red-500'
-                          : 'border-gray-300'
-                      }`}
-                      placeholder="https://example.com"
-                      aria-label="Website URL"
-                      aria-describedby="website-help"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400"
+                      placeholder="Enter website URL"
                     />
-                    {profileForm.website && !/^https?:\/\/.+/.test(profileForm.website) && (
-                      <p id="website-help" className="text-sm text-red-600">
-                        Please enter a valid website URL (must start with http:// or https://)
-                      </p>
-                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Timezone</label>
@@ -553,26 +424,10 @@ export default function ProfileSettings() {
                   <textarea
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 resize-none ${
-                      profileForm.bio && profileForm.bio.length > 500
-                        ? 'border-red-300 focus:ring-red-500'
-                        : 'border-gray-300'
-                    }`}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 resize-none"
                     rows={4}
-                    placeholder="Tell us about yourself... (max 500 characters)"
-                    aria-label="Bio"
-                    aria-describedby="bio-help"
+                    placeholder="Tell us about yourself..."
                   />
-                  <div className="flex justify-between items-center">
-                    {profileForm.bio && profileForm.bio.length > 500 && (
-                      <p id="bio-help" className="text-sm text-red-600">
-                        Bio must be less than 500 characters
-                      </p>
-                    )}
-                    <p className="text-sm text-gray-500 ml-auto">
-                      {profileForm.bio?.length || 0}/500 characters
-                    </p>
-                  </div>
                 </div>
 
                 <button

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import html2pdf from 'html2pdf.js';
 import { 
   CheckCircle, 
@@ -26,10 +26,7 @@ import {
   Star,
   Award,
   Shield,
-  Activity,
-  Loader2,
-  RefreshCw,
-  AlertCircle
+  Activity
 } from 'lucide-react';
 
 type Submission = {
@@ -82,145 +79,53 @@ interface ProjectDetailsProps {
   project: Project;
 }
 
-// Error types for better error handling
-type ReportError = {
-  type: 'data_processing' | 'pdf_generation' | 'calculation' | 'rendering' | 'network';
-  message: string;
-  details?: string;
-  timestamp: Date;
-  recoverable: boolean;
-};
-
-// Loading states for better UX
-type LoadingState = {
-  isProcessing: boolean;
-  isGeneratingPDF: boolean;
-  isCalculatingScore: boolean;
-  progress: number;
-  currentOperation: string;
-};
-
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
   const reportRef = useRef<HTMLDivElement>(null);
-  
-  // State for error handling and user feedback
-  const [error, setError] = useState<ReportError | null>(null);
-  const [loadingState, setLoadingState] = useState<LoadingState>({
-    isProcessing: false,
-    isGeneratingPDF: false,
-    isCalculatingScore: false,
-    progress: 0,
-    currentOperation: ''
-  });
-  const [retryCount, setRetryCount] = useState(0);
-  const [lastProcessedAt, setLastProcessedAt] = useState<Date | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Error handling utilities
-  const handleError = (errorType: ReportError['type'], message: string, details?: string, recoverable: boolean = true) => {
-    const newError: ReportError = {
-      type: errorType,
-      message,
-      details,
-      timestamp: new Date(),
-      recoverable
-    };
-    setError(newError);
-    console.error(`Report Error [${errorType}]:`, message, details);
-  };
-
-  const clearError = () => {
-    setError(null);
-    setRetryCount(0);
-  };
-
-  const showSuccess = (message: string) => {
-    setSuccessMessage(message);
-    setTimeout(() => setSuccessMessage(null), 5000);
-  };
-
-  const retryOperation = () => {
-    if (retryCount < 3) {
-      setRetryCount(prev => prev + 1);
-      clearError();
-      // Trigger recalculation
-      setLastProcessedAt(new Date());
-    } else {
-      handleError('data_processing', 'Maximum retry attempts reached. Please refresh the page.', 'Retry limit exceeded', false);
-    }
-  };
-
-  // Calculate SEO Score based on available reports with error handling
+  // Calculate SEO Score based on available reports
   const calculatedSeoScore = useMemo(() => {
-    try {
-      setLoadingState(prev => ({ ...prev, isCalculatingScore: true, currentOperation: 'Calculating SEO score...' }));
-      
-      const scores: Record<string, number> = {};
-      let totalScore = 0;
-      let totalTools = 0;
-      const suggestions: string[] = [];
+    const scores: Record<string, number> = {};
+    let totalScore = 0;
+    let totalTools = 0;
+    const suggestions: string[] = [];
 
-      // Meta Tag Analysis (0-10 points)
-      if (project.metaTagReport) {
-        try {
-          const report = project.metaTagReport as any;
-          if (!report || typeof report !== 'object') {
-            throw new Error('Invalid meta tag report data structure');
-          }
-          
-          let score = 10;
-          if (!report.titleLength || report.titleLength < 30 || report.titleLength > 70) {
-            score -= 3;
-            suggestions.push('Optimize meta title length (30-70 characters)');
-          }
-          if (!report.descriptionLength || report.descriptionLength < 50 || report.descriptionLength > 160) {
-            score -= 3;
-            suggestions.push('Optimize meta description length (50-160 characters)');
-          }
-          if (!report.keywords || report.keywords.length === 0) {
-            score -= 2;
-            suggestions.push('Add relevant keywords to meta tags');
-          }
-          scores['Meta Tags'] = Math.max(0, score);
-          totalScore += score;
-          totalTools++;
-        } catch (err) {
-          handleError('data_processing', 'Failed to process meta tag report', `Meta tag analysis error: ${err instanceof Error ? err.message : 'Unknown error'}`);
-          scores['Meta Tags'] = 0;
-          totalTools++;
+    // Meta Tag Analysis (0-10 points)
+    if (project.metaTagReport) {
+      const report = project.metaTagReport as any;
+      let score = 10;
+      if (!report.titleLength || report.titleLength < 30 || report.titleLength > 70) {
+        score -= 3;
+        suggestions.push('Optimize meta title length (30-70 characters)');
+      }
+      if (!report.descriptionLength || report.descriptionLength < 50 || report.descriptionLength > 160) {
+        score -= 3;
+        suggestions.push('Optimize meta description length (50-160 characters)');
+      }
+      if (!report.keywords || report.keywords.length === 0) {
+        score -= 2;
+        suggestions.push('Add relevant keywords to meta tags');
+      }
+      scores['Meta Tags'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
+
+    // Keyword Density (0-10 points)
+    if (project.keywordDensityReport) {
+      const report = project.keywordDensityReport as any;
+      let score = 10;
+      if (report.keywordStats) {
+        const avgDensity = report.keywordStats.reduce((sum: number, kw: any) => 
+          sum + parseFloat(kw.density.replace('%', '')), 0) / report.keywordStats.length;
+        if (avgDensity < 0.5 || avgDensity > 2.5) {
+          score -= 5;
+          suggestions.push('Optimize keyword density (0.5-2.5%)');
         }
       }
-
-      // Keyword Density (0-10 points)
-      if (project.keywordDensityReport) {
-        try {
-          const report = project.keywordDensityReport as any;
-          if (!report || typeof report !== 'object') {
-            throw new Error('Invalid keyword density report data structure');
-          }
-          
-          let score = 10;
-          if (report.keywordStats && Array.isArray(report.keywordStats)) {
-            const avgDensity = report.keywordStats.reduce((sum: number, kw: any) => {
-              if (!kw || typeof kw.density !== 'string') return sum;
-              const density = parseFloat(kw.density.replace('%', ''));
-              return isNaN(density) ? sum : sum + density;
-            }, 0) / report.keywordStats.length;
-            
-            if (!isNaN(avgDensity) && (avgDensity < 0.5 || avgDensity > 2.5)) {
-              score -= 5;
-              suggestions.push('Optimize keyword density (0.5-2.5%)');
-            }
-          }
-          scores['Keyword Density'] = Math.max(0, score);
-          totalScore += score;
-          totalTools++;
-        } catch (err) {
-          handleError('data_processing', 'Failed to process keyword density report', `Keyword density analysis error: ${err instanceof Error ? err.message : 'Unknown error'}`);
-          scores['Keyword Density'] = 0;
-          totalTools++;
-        }
-      }
+      scores['Keyword Density'] = Math.max(0, score);
+      totalScore += score;
+      totalTools++;
+    }
 
     // Broken Links (0-10 points)
     if (project.brokenLinksReport) {
@@ -350,70 +255,39 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
       totalTools++;
     }
 
-      // Calculate final score and grade
-      const finalScore = totalTools > 0 ? Math.round(totalScore / totalTools) : 0;
-      let grade: 'A' | 'B' | 'C' | 'D' | 'F';
-      let color: string;
+    // Calculate final score and grade
+    const finalScore = totalTools > 0 ? Math.round(totalScore / totalTools) : 0;
+    let grade: 'A' | 'B' | 'C' | 'D' | 'F';
+    let color: string;
 
-      if (finalScore >= 90) {
-        grade = 'A';
-        color = 'from-green-500 to-emerald-600';
-      } else if (finalScore >= 80) {
-        grade = 'B';
-        color = 'from-blue-500 to-cyan-600';
-      } else if (finalScore >= 70) {
-        grade = 'C';
-        color = 'from-yellow-500 to-orange-600';
-      } else if (finalScore >= 60) {
-        grade = 'D';
-        color = 'from-orange-500 to-red-600';
-      } else {
-        grade = 'F';
-        color = 'from-red-500 to-pink-600';
-      }
-
-      const result = {
-        total: finalScore,
-        breakdown: scores,
-        suggestions: suggestions.slice(0, 5), // Limit to top 5 suggestions
-        grade,
-        color
-      };
-
-      // Clear loading state and update last processed time
-      setLoadingState(prev => ({ ...prev, isCalculatingScore: false, currentOperation: '' }));
-      setLastProcessedAt(new Date());
-      
-      return result;
-    } catch (err) {
-      handleError('calculation', 'Failed to calculate SEO score', `Score calculation error: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      setLoadingState(prev => ({ ...prev, isCalculatingScore: false, currentOperation: '' }));
-      
-      // Return fallback score
-      return {
-        total: 0,
-        breakdown: {},
-        suggestions: ['Unable to calculate SEO score. Please try again.'],
-        grade: 'F' as const,
-        color: 'from-red-500 to-pink-600'
-      };
-    }
-  }, [project, lastProcessedAt]);
-
-  const downloadPDF = async () => {
-    if (!reportRef.current) {
-      handleError('pdf_generation', 'Report content not available', 'Cannot generate PDF without report content', false);
-      return;
+    if (finalScore >= 90) {
+      grade = 'A';
+      color = 'from-green-500 to-emerald-600';
+    } else if (finalScore >= 80) {
+      grade = 'B';
+      color = 'from-blue-500 to-cyan-600';
+    } else if (finalScore >= 70) {
+      grade = 'C';
+      color = 'from-yellow-500 to-orange-600';
+    } else if (finalScore >= 60) {
+      grade = 'D';
+      color = 'from-orange-500 to-red-600';
+    } else {
+      grade = 'F';
+      color = 'from-red-500 to-pink-600';
     }
 
-    try {
-      setLoadingState(prev => ({ 
-        ...prev, 
-        isGeneratingPDF: true, 
-        currentOperation: 'Generating PDF report...',
-        progress: 0
-      }));
+    return {
+      total: finalScore,
+      breakdown: scores,
+      suggestions: suggestions.slice(0, 5), // Limit to top 5 suggestions
+      grade,
+      color
+    };
+  }, [project]);
 
+  const downloadPDF = () => {
+    if (reportRef.current) {
       const element = reportRef.current.cloneNode(true) as HTMLElement;
       
       // Enhanced PDF-specific styles for professional layout
@@ -659,49 +533,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
         })
         .from(element)
         .save()
-        .then(() => {
-          setLoadingState(prev => ({ 
-            ...prev, 
-            isGeneratingPDF: false, 
-            currentOperation: '',
-            progress: 100
-          }));
-          clearError();
-          showSuccess('PDF report generated successfully!');
-        })
         .catch((err: Error) => {
           console.error('PDF generation error:', err);
-          setLoadingState(prev => ({ 
-            ...prev, 
-            isGeneratingPDF: false, 
-            currentOperation: ''
-          }));
-          
-          // Provide specific error messages based on error type
-          let errorMessage = 'Failed to generate PDF report';
-          let errorDetails = err.message;
-          
-          if (err.message.includes('canvas')) {
-            errorMessage = 'PDF generation failed due to rendering issues';
-            errorDetails = 'The report content could not be rendered properly. Please try refreshing the page.';
-          } else if (err.message.includes('memory')) {
-            errorMessage = 'PDF generation failed due to memory constraints';
-            errorDetails = 'The report is too large to generate as PDF. Please try with a smaller report.';
-          } else if (err.message.includes('network')) {
-            errorMessage = 'PDF generation failed due to network issues';
-            errorDetails = 'Please check your internet connection and try again.';
-          }
-          
-          handleError('pdf_generation', errorMessage, errorDetails, true);
+          alert('Failed to generate PDF. Please try again.');
         });
-    } catch (err) {
-      setLoadingState(prev => ({ 
-        ...prev, 
-        isGeneratingPDF: false, 
-        currentOperation: ''
-      }));
-      
-      handleError('pdf_generation', 'PDF generation failed', `Unexpected error: ${err instanceof Error ? err.message : 'Unknown error'}`, true);
     }
   };
 
@@ -806,25 +641,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
 
   // Function to render tool-specific data in a structured way
   const renderToolData = (toolKey: string, reportData: any) => {
-    try {
-      const config = toolConfigs[toolKey as keyof typeof toolConfigs];
-      
-      if (!config) {
-        throw new Error(`Unknown tool configuration: ${toolKey}`);
-      }
-
-      if (!reportData || typeof reportData !== 'object') {
-        return (
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-              <span className="text-yellow-800 dark:text-yellow-300">No data available for this tool</span>
-            </div>
-          </div>
-        );
-      }
-      
-      switch (toolKey) {
+    const config = toolConfigs[toolKey as keyof typeof toolConfigs];
+    
+    switch (toolKey) {
       case 'metaTagReport':
         return (
           <div className="space-y-4">
@@ -1434,130 +1253,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
           </div>
         );
     }
-    } catch (err) {
-      handleError('rendering', `Failed to render ${toolKey} data`, `Tool rendering error: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      return (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-            <span className="text-red-800 dark:text-red-300">Error rendering tool data</span>
-          </div>
-        </div>
-      );
-    }
-  };
-
-  // Error display component
-  const ErrorDisplay = () => {
-    if (!error) return null;
-
-    return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
-        <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0">
-            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-red-800 dark:text-red-300 mb-2">
-              {error.type === 'data_processing' && 'Data Processing Error'}
-              {error.type === 'pdf_generation' && 'PDF Generation Error'}
-              {error.type === 'calculation' && 'Calculation Error'}
-              {error.type === 'rendering' && 'Rendering Error'}
-              {error.type === 'network' && 'Network Error'}
-            </h3>
-            <p className="text-red-700 dark:text-red-400 mb-3">{error.message}</p>
-            {error.details && (
-              <p className="text-sm text-red-600 dark:text-red-500 mb-4">{error.details}</p>
-            )}
-            <div className="flex items-center space-x-3">
-              {error.recoverable && retryCount < 3 && (
-                <button
-                  onClick={retryOperation}
-                  className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Try Again ({3 - retryCount} attempts left)
-                </button>
-              )}
-              <button
-                onClick={clearError}
-                className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Dismiss
-              </button>
-            </div>
-            <p className="text-xs text-red-500 dark:text-red-600 mt-2">
-              Error occurred at: {error.timestamp.toLocaleString()}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Loading display component
-  const LoadingDisplay = () => {
-    if (!loadingState.isProcessing && !loadingState.isGeneratingPDF && !loadingState.isCalculatingScore) {
-      return null;
-    }
-
-    return (
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6">
-        <div className="flex items-center space-x-3">
-          <Loader2 className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-1">
-              {loadingState.currentOperation}
-            </h3>
-            {loadingState.progress > 0 && (
-              <div className="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-2">
-                <div 
-                  className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${loadingState.progress}%` }}
-                ></div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Success message component
-  const SuccessDisplay = () => {
-    if (!successMessage) return null;
-
-    return (
-      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
-            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">
-              Success!
-            </h3>
-            <p className="text-green-700 dark:text-green-400">{successMessage}</p>
-          </div>
-          <button
-            onClick={() => setSuccessMessage(null)}
-            className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300"
-          >
-            <XCircle className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Error, Loading, and Success States */}
-        <ErrorDisplay />
-        <LoadingDisplay />
-        <SuccessDisplay />
         
         {/* Header Section */}
         <div className="bg-white/80 dark:bg-primary-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-primary-700/20 p-6">
@@ -1573,24 +1273,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project }) => {
             </div>
             <button
               onClick={downloadPDF}
-              disabled={loadingState.isGeneratingPDF}
-              className={`inline-flex items-center px-4 py-2 rounded-xl transition-all shadow-lg hover:shadow-xl ${
-                loadingState.isGeneratingPDF
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
-              } text-white`}
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
             >
-              {loadingState.isGeneratingPDF ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating PDF...
-                </>
-              ) : (
-                <>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download PDF
-                </>
-              )}
+              <Download className="w-4 h-4 mr-2" />
+              Download PDF
             </button>
           </div>
         </div>
