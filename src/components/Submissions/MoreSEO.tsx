@@ -80,11 +80,23 @@ const MoreSEO: React.FC = () => {
     loadDirectories();
   }, []);
 
-  // Load submissions (placeholder - can be replaced with API later)
+  // Load submissions from API
   useEffect(() => {
-    const loadSubmissions = () => {
-      // TODO: Replace with API call when database is stable
-      setSubmissions([]);
+    const loadSubmissions = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/api/submissions', {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { classification: 'More SEO' }
+        });
+        
+        if (response.data) {
+          setSubmissions(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching submissions:', error);
+        setSubmissions([]);
+      }
     };
 
     loadSubmissions();
