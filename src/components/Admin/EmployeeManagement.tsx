@@ -169,15 +169,28 @@ const EmployeeManagement = () => {
       });
       setTeam(response.data.team);
       setMembers(response.data.team?.members || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching team data:', error);
-      // Set default team data if no team exists
-      setTeam({
-        name: 'My Team',
-        description: 'Create a team to invite members',
-        memberCount: 1
-      });
-      setMembers([]);
+      
+      // Handle 404 error gracefully - team feature might not be available
+      if (error.response?.status === 404) {
+        console.log('Team API not available - using fallback data');
+        setTeam({
+          name: 'My Team',
+          description: 'Team management feature is not available. Please contact support.',
+          memberCount: 1
+        });
+        setMembers([]);
+        setError('Team management feature is not available. Please contact support.');
+      } else {
+        // Set default team data if no team exists
+        setTeam({
+          name: 'My Team',
+          description: 'Create a team to invite members',
+          memberCount: 1
+        });
+        setMembers([]);
+      }
     } finally {
       setLoading(false);
     }

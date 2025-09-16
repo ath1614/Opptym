@@ -37,6 +37,11 @@ export default function ProfileSettings() {
     bio: ''
   });
 
+  // Profile Photo State
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+
   // Password Form State
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -44,11 +49,9 @@ export default function ProfileSettings() {
     confirmPassword: ''
   });
 
-  // Settings State
+  // Settings State - Removed marketing emails and security settings
   const [settings, setSettings] = useState({
-    marketingEmails: false,
-    twoFactorAuth: false,
-    sessionTimeout: 30
+    // Removed marketingEmails, twoFactorAuth, sessionTimeout
   });
 
   // Update form when user data changes
@@ -139,55 +142,7 @@ export default function ProfileSettings() {
     }
   };
 
-  const handlePhotoUpload = async () => {
-    // Create file input
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        try {
-          setLoading(true);
-          
-          // For now, we'll use a simple approach - convert to base64
-          // In production, you'd want to upload to a cloud service like AWS S3
-          const reader = new FileReader();
-          reader.onload = async (event) => {
-            const photoUrl = event.target?.result as string;
-            
-            try {
-              const token = localStorage.getItem('token');
-              await axios.put('/api/auth/photo', {
-                photoUrl
-              }, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              });
-              
-              // Update the user object with the new photo
-              if (refreshUser) {
-                await refreshUser();
-              }
-              
-              setSuccessMessage('Profile photo updated successfully!');
-              setTimeout(() => setSuccessMessage(''), 3000);
-            } catch (error: any) {
-              setErrorMessage(error.response?.data?.error || 'Failed to update profile photo');
-            }
-          };
-          
-          reader.readAsDataURL(file);
-        } catch (error: any) {
-          setErrorMessage('Failed to process image file');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    input.click();
-  };
+  // First handlePhotoUpload function removed - using the updated version below
 
   const handleExportData = async () => {
     setLoading(true);
@@ -242,11 +197,105 @@ export default function ProfileSettings() {
     }
   };
 
-  const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: value
-    }));
+  // handleSettingChange function removed as marketing and security settings were removed
+
+  // Profile Photo Upload Functions
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrorMessage('Please select a valid image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage('Image size must be less than 5MB');
+        return;
+      }
+      
+      setProfilePhoto(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePhotoUpload = async () => {
+    if (!profilePhoto) return;
+    
+    setPhotoUploading(true);
+    setErrorMessage('');
+    
+    try {
+      // Convert file to base64 for upload
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const photoUrl = e.target?.result as string;
+          
+          const token = localStorage.getItem('token');
+          const response = await axios.put('/api/auth/photo', { photoUrl }, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          setSuccessMessage('Profile photo updated successfully!');
+          await refreshUser(); // Refresh user data
+          
+          // Clear photo state
+          setProfilePhoto(null);
+          setPhotoPreview(null);
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (error: any) {
+          setErrorMessage(error.response?.data?.error || 'Failed to upload profile photo');
+        } finally {
+          setPhotoUploading(false);
+        }
+      };
+      reader.readAsDataURL(profilePhoto);
+    } catch (error: any) {
+      setErrorMessage('Failed to process image file');
+      setPhotoUploading(false);
+    }
+  };
+
+  const handlePhotoRemove = async () => {
+    setPhotoUploading(true);
+    setErrorMessage('');
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put('/api/auth/photo', { photoUrl: '' }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      setSuccessMessage('Profile photo removed successfully!');
+      await refreshUser(); // Refresh user data
+      
+      // Clear photo state
+      setProfilePhoto(null);
+      setPhotoPreview(null);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.error || 'Failed to remove profile photo');
+    } finally {
+      setPhotoUploading(false);
+    }
   };
 
   return (
@@ -285,10 +334,10 @@ export default function ProfileSettings() {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
               <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                 <div className="relative">
-                  {getUserProfilePhoto(user as any) ? (
+                  {photoPreview || getUserProfilePhoto(user as any) ? (
                     <div className="w-32 h-32 rounded-2xl shadow-lg overflow-hidden">
                       <img 
-                        src={getUserProfilePhoto(user as any) || undefined} 
+                        src={photoPreview || getUserProfilePhoto(user as any) || undefined} 
                         alt="Profile" 
                         className="w-full h-full object-cover"
                       />
@@ -298,27 +347,58 @@ export default function ProfileSettings() {
                       <span className="text-white text-3xl font-bold">{getUserInitials(user as any)}</span>
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={handlePhotoUpload}
-                    className="absolute bottom-2 right-2 bg-white rounded-full p-3 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                  <label
+                    htmlFor="photo-upload"
+                    className="absolute bottom-2 right-2 bg-white rounded-full p-3 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <Camera className="w-5 h-5 text-gray-600" />
-                  </button>
+                  </label>
+                  <input
+                    id="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
                 </div>
                 <div className="text-center md:text-left space-y-3">
                   <h4 className="text-2xl font-bold text-gray-900">
                     {getUserDisplayName(user as any)}
                   </h4>
                   <p className="text-gray-600 text-lg">{user?.email}</p>
-                  <button
-                    type="button"
-                    onClick={handlePhotoUpload}
-                    className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-                  >
-                    <Camera className="w-4 h-4" />
-                    <span>Change Photo</span>
-                  </button>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {profilePhoto && (
+                      <button
+                        type="button"
+                        onClick={handlePhotoUpload}
+                        disabled={photoUploading}
+                        className="inline-flex items-center space-x-2 px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors font-medium disabled:opacity-50"
+                      >
+                        {photoUploading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                        <span>{photoUploading ? 'Uploading...' : 'Save Photo'}</span>
+                      </button>
+                    )}
+                    {getUserProfilePhoto(user as any) && (
+                      <button
+                        type="button"
+                        onClick={handlePhotoRemove}
+                        disabled={photoUploading}
+                        className="inline-flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium disabled:opacity-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Remove Photo</span>
+                      </button>
+                    )}
+                  </div>
+                  {profilePhoto && (
+                    <p className="text-sm text-gray-500">
+                      Selected: {profilePhoto.name}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -546,69 +626,7 @@ export default function ProfileSettings() {
               </div>
             </div>
 
-            {/* Marketing Settings */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
-                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-purple-600" />
-                </div>
-                <span>Marketing</span>
-              </h3>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Marketing Emails</span>
-                  <button
-                    onClick={() => handleSettingChange('marketingEmails', !settings.marketingEmails)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.marketingEmails ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings.marketingEmails ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Security Settings */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-orange-600" />
-                </div>
-                <span>Security</span>
-              </h3>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Two-Factor Auth</span>
-                  <button
-                    onClick={() => handleSettingChange('twoFactorAuth', !settings.twoFactorAuth)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.twoFactorAuth ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings.twoFactorAuth ? 'translate-x-6' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
-                  <select
-                    value={settings.sessionTimeout}
-                    onChange={(e) => handleSettingChange('sessionTimeout', parseInt(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors bg-white"
-                  >
-                    <option value={15}>15 minutes</option>
-                    <option value={30}>30 minutes</option>
-                    <option value={60}>1 hour</option>
-                    <option value={120}>2 hours</option>
-                    <option value={0}>Never</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            {/* Marketing and Security settings removed as requested */}
           </div>
         </div>
       </div>
