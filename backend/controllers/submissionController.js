@@ -336,7 +336,7 @@ const createBookmarkletSubmission = async (req, res) => {
         timestamp: tokenTimestamp,
         source: 'bookmarklet',
         userPlan: userPlan,
-        usageCount: existingSubmissionsForToken + 1
+        usageCount: existingSubmissions + 1
       }
     });
     

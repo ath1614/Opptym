@@ -261,7 +261,7 @@ const AltTextTool = () => {
 
       {report && (
         <ResultsDisplay
-          title={t('seoTools.results.altText')}
+          title="Alt Text Analysis Results"
           success={report.success}
           data={report}
           suggestions={report.suggestions || []}
