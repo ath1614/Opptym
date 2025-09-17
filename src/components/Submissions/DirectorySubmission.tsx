@@ -27,32 +27,25 @@ export default function DirectorySubmission() {
   const loadDirectories = async () => {
     try {
       setLoading(true);
-      console.log('🔍 Attempting to load directories from API...');
-      
       const response = await axios.get('/api/directories', {
         params: { classification: 'Directory Submission' }
       });
       
-      console.log('📊 API response:', response.data);
-      
-      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-        console.log(`✅ Loaded ${response.data.length} directories from API`);
+      if (response.data && Array.isArray(response.data)) {
         setDirectories(response.data);
       } else {
-        console.log('⚠️ API returned empty data, falling back to config');
-        throw new Error('API returned empty data');
+        // Fallback to config file if API fails
+        const configDirectories = getDirectoriesByClassification('Directory Submission');
+        setDirectories(configDirectories);
       }
     } catch (error) {
-      console.error('❌ Error loading directories from API:', error);
-      console.log('🔄 Falling back to static config...');
-      
+      console.error('Error loading directories from API:', error);
       // Fallback to config file
       try {
         const configDirectories = getDirectoriesByClassification('Directory Submission');
-        console.log(`✅ Loaded ${configDirectories.length} directories from config`);
         setDirectories(configDirectories);
       } catch (configError) {
-        console.error('❌ Error loading directories from config:', configError);
+        console.error('Error loading directories from config:', configError);
         setDirectories([]);
       }
     } finally {
@@ -115,7 +108,7 @@ export default function DirectorySubmission() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">                                                                                                              
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Submissions</p>
@@ -127,7 +120,7 @@ export default function DirectorySubmission() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">                                                                                                              
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Submitted</p>
@@ -139,7 +132,7 @@ export default function DirectorySubmission() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">                                                                                                              
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Approved</p>
@@ -151,7 +144,7 @@ export default function DirectorySubmission() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-slate-700">                                                                                                              
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
@@ -174,13 +167,13 @@ export default function DirectorySubmission() {
         />
 
         {/* Info Section */}
-        <div className="mt-12 bg-white dark:bg-slate-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-slate-700">
+        <div className="mt-12 bg-white dark:bg-slate-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-slate-700">                                                                                                            
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
             🎯 Directory Submission Benefits
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">                                                                                                           
                 <TrendingUp className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">SEO Boost</h3>
@@ -189,7 +182,7 @@ export default function DirectorySubmission() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">                                                                                                         
                 <ExternalLink className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Traffic Increase</h3>
@@ -198,7 +191,7 @@ export default function DirectorySubmission() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">                                                                                                       
                 <Bookmark className="w-8 h-8 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Submission</h3>
