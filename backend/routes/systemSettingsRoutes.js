@@ -1,12 +1,12 @@
 const express = require('express');
 const { getSystemSettings, updateSystemSettings, resetSystemSettings } = require('../controllers/systemSettingsController');
-const { protect, requireAdmin } = require('../middleware/authMiddleware');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // All routes require authentication and admin access
 router.use(protect);
-router.use(requireAdmin);
+router.use(adminOnly);
 
 // GET /api/admin/settings - Get system settings
 router.get('/', getSystemSettings);

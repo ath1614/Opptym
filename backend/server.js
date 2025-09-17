@@ -391,37 +391,7 @@ try {
   console.error('❌ Error loading health routes:', error);
 }
 
-// Load report routes
-try {
-  app.use('/api/admin/reports', require('./routes/reportRoutes'));
-  console.log('✅ Report routes loaded');
-} catch (error) {
-  console.error('❌ Error loading report routes:', error);
-}
-
-// Load export routes
-try {
-  app.use('/api/admin/export', require('./routes/exportRoutes'));
-  console.log('✅ Export routes loaded');
-} catch (error) {
-  console.error('❌ Error loading export routes:', error);
-}
-
-// Load plan history routes
-try {
-  app.use('/api/admin/plans', require('./routes/planHistoryRoutes'));
-  console.log('✅ Plan history routes loaded');
-} catch (error) {
-  console.error('❌ Error loading plan history routes:', error);
-}
-
-// Load bulk import routes
-try {
-  app.use('/api/admin/directories', require('./routes/bulkImportRoutes'));
-  console.log('✅ Bulk import routes loaded');
-} catch (error) {
-  console.error('❌ Error loading bulk import routes:', error);
-}
+// Note: Report, export, plan history, and bulk import routes are not implemented yet
 
 // Load email verification routes after basic setup
 try {
