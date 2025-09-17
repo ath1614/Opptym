@@ -23,15 +23,31 @@ export default function ArticleSubmission() {
   });
   const [submissions, setSubmissions] = useState<any[]>([]);
 
-  // Load directories from config file
-  const loadDirectories = () => {
+  // Load directories from database API
+  const loadDirectories = async () => {
     try {
       setLoading(true);
-      const configDirectories = getDirectoriesByClassification('Article Submission');
-      setDirectories(configDirectories);
+      const response = await axios.get('/api/directories', {
+        params: { classification: 'Article Submission' }
+      });
+      
+      if (response.data && Array.isArray(response.data)) {
+        setDirectories(response.data);
+      } else {
+        // Fallback to config file if API fails
+        const configDirectories = getDirectoriesByClassification('Article Submission');
+        setDirectories(configDirectories);
+      }
     } catch (error) {
-      console.error('Error loading directories:', error);
-      setDirectories([]);
+      console.error('Error loading directories from API:', error);
+      // Fallback to config file
+      try {
+        const configDirectories = getDirectoriesByClassification('Article Submission');
+        setDirectories(configDirectories);
+      } catch (configError) {
+        console.error('Error loading directories from config:', configError);
+        setDirectories([]);
+      }
     } finally {
       setLoading(false);
     }

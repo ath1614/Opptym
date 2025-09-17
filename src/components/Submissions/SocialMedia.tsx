@@ -137,7 +137,7 @@ export default function SocialMedia() {
 
   const fetchDirectories = async () => {
     try {
-      const response = await axios.get('/api/directories?classification=Social');
+      const response = await axios.get('/api/directories?classification=BookMarking');
       setDirectories(response.data);
     } catch (error) {
       console.error('Error fetching social media directories:', error);

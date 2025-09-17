@@ -158,7 +158,7 @@ export default function LocalBusiness() {
 
   const fetchDirectories = async () => {
     try {
-      const response = await axios.get('/api/directories?classification=Local');
+      const response = await axios.get('/api/directories?classification=Business Listing');
       setDirectories(response.data);
     } catch (error) {
       console.error('Error fetching local business directories:', error);

@@ -36,16 +36,32 @@ const Classified: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
 
-  // Load directories from config file
+  // Load directories from database API
   useEffect(() => {
-    const loadDirectories = () => {
+    const loadDirectories = async () => {
       try {
         setLoading(true);
-        const configDirectories = getDirectoriesByClassification('Classified');
-        setDirectories(configDirectories);
+        const response = await axios.get('/api/directories', {
+          params: { classification: 'Classified' }
+        });
+        
+        if (response.data && Array.isArray(response.data)) {
+          setDirectories(response.data);
+        } else {
+          // Fallback to config file if API fails
+          const configDirectories = getDirectoriesByClassification('Classified');
+          setDirectories(configDirectories);
+        }
       } catch (error) {
-        console.error('Error loading directories:', error);
-        setDirectories([]);
+        console.error('Error loading directories from API:', error);
+        // Fallback to config file
+        try {
+          const configDirectories = getDirectoriesByClassification('Classified');
+          setDirectories(configDirectories);
+        } catch (configError) {
+          console.error('Error loading directories from config:', configError);
+          setDirectories([]);
+        }
       } finally {
         setLoading(false);
       }
