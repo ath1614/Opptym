@@ -5,6 +5,9 @@
  * This script helps diagnose startup issues in production
  */
 
+// Load environment variables first
+require('dotenv').config();
+
 const fs = require('fs');
 const path = require('path');
 
