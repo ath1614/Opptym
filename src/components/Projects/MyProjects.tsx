@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Plus, Search, Filter, Globe, MoreVertical, Eye, Edit3, Trash2, Loader2, AlertCircle
+  Plus, Search, Filter, Globe, MoreVertical, Eye, Edit3, Trash2, Loader2, AlertCircle, Crown, X
 } from 'lucide-react';
 import axios from 'axios';
 import { showPopup, showConfirmPopup } from '../../utils/popup';
@@ -287,26 +287,85 @@ const MyProjects = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Projects</h2>
           <p className="text-gray-600 dark:text-gray-300">Manage your SEO projects and track their performance</p>
         </div>
-        <LimitGate
-          isLimited={userUsage.projectsUsed >= userLimits.projects}
-          currentUsage={userUsage.projectsUsed}
-          limit={userLimits.projects}
-          feature="projects"
-          onUpgrade={() => setShowUpgradeModal(true)}
-          showUpgradeModal={showUpgradeModal}
-          onCloseUpgradeModal={() => setShowUpgradeModal(false)}
-          autoShowModal={true}
-          disableButton={true}
-        >
+        {userUsage.projectsUsed >= userLimits.projects ? (
+          <div className="relative">
+            <button
+              disabled={true}
+              className="bg-gray-400 text-gray-200 px-4 py-2 rounded-lg font-medium cursor-not-allowed flex items-center space-x-2 shadow-sm opacity-60"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Project (Limit Reached)</span>
+            </button>
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg opacity-0 hover:opacity-20 transition-opacity cursor-pointer"
+                 onClick={() => setShowUpgradeModal(true)}
+                 title="Click to upgrade">
+            </div>
+          </div>
+        ) : (
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 shadow-sm"
-            disabled={userUsage.projectsUsed >= userLimits.projects}
           >
             <Plus className="w-4 h-4" />
             <span>New Project</span>
           </button>
-        </LimitGate>
+        )}
+        
+        {/* Show upgrade modal when limit is reached */}
+        {userUsage.projectsUsed >= userLimits.projects && showUpgradeModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-lg w-full p-8 text-center relative">
+              <button
+                onClick={() => setShowUpgradeModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white mx-auto mb-6">
+                <Crown className="w-10 h-10" />
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Project Limit Reached
+              </h2>
+              
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                You've reached your project limit ({userUsage.projectsUsed}/{userLimits.projects}). Upgrade your plan to create more projects.
+              </p>
+              
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">
+                    Projects
+                  </span>
+                  <span className="font-bold text-red-600 dark:text-red-400">
+                    {userUsage.projectsUsed}/{userLimits.projects} (LIMIT REACHED)
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    setShowUpgradeModal(false);
+                    window.location.hash = '#pricing';
+                  }}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-600 transition-all duration-200 flex items-center justify-center space-x-2"
+                >
+                  <Crown className="w-4 h-4" />
+                  <span>Upgrade Now</span>
+                </button>
+                <button
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-200"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Filters */}
@@ -358,15 +417,21 @@ const MyProjects = () => {
             }
           </p>
           {projects.length === 0 && (
-            <LimitGate
-              isLimited={userUsage.projectsUsed >= userLimits.projects}
-              currentUsage={userUsage.projectsUsed}
-              limit={userLimits.projects}
-              feature="projects"
-              onUpgrade={() => setShowUpgradeModal(true)}
-              showUpgradeModal={showUpgradeModal}
-              onCloseUpgradeModal={() => setShowUpgradeModal(false)}
-            >
+            userUsage.projectsUsed >= userLimits.projects ? (
+              <div className="relative mx-auto inline-block">
+                <button
+                  disabled={true}
+                  className="bg-gray-400 text-gray-200 px-6 py-3 rounded-lg font-medium cursor-not-allowed flex items-center space-x-2 opacity-60"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create Your First Project (Limit Reached)</span>
+                </button>
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg opacity-0 hover:opacity-20 transition-opacity cursor-pointer"
+                     onClick={() => setShowUpgradeModal(true)}
+                     title="Click to upgrade">
+                </div>
+              </div>
+            ) : (
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:from-sky-500 hover:to-blue-800 transition-all flex items-center space-x-2 mx-auto"
@@ -374,7 +439,7 @@ const MyProjects = () => {
                 <Plus className="w-4 h-4" />
                 <span>Create Your First Project</span>
               </button>
-            </LimitGate>
+            )
           )}
         </div>
       )}
