@@ -27,25 +27,32 @@ export default function DirectorySubmission() {
   const loadDirectories = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Attempting to load directories from API...');
+      
       const response = await axios.get('/api/directories', {
         params: { classification: 'Directory Submission' }
       });
       
-      if (response.data && Array.isArray(response.data)) {
+      console.log('📊 API response:', response.data);
+      
+      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        console.log(`✅ Loaded ${response.data.length} directories from API`);
         setDirectories(response.data);
       } else {
-        // Fallback to config file if API fails
-        const configDirectories = getDirectoriesByClassification('Directory Submission');
-        setDirectories(configDirectories);
+        console.log('⚠️ API returned empty data, falling back to config');
+        throw new Error('API returned empty data');
       }
     } catch (error) {
-      console.error('Error loading directories from API:', error);
+      console.error('❌ Error loading directories from API:', error);
+      console.log('🔄 Falling back to static config...');
+      
       // Fallback to config file
       try {
         const configDirectories = getDirectoriesByClassification('Directory Submission');
+        console.log(`✅ Loaded ${configDirectories.length} directories from config`);
         setDirectories(configDirectories);
       } catch (configError) {
-        console.error('Error loading directories from config:', configError);
+        console.error('❌ Error loading directories from config:', configError);
         setDirectories([]);
       }
     } finally {
