@@ -760,6 +760,57 @@
     return filledFields;
   }
 
+  // Check usage limit before filling forms
+  async function checkUsageLimit() {
+    if (!token) {
+      console.log('⚠️ No token available for usage check');
+      return { allowed: true };
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/submissions/bookmarklet/check`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          url: window.location.href,
+          timestamp: new Date().toISOString()
+        })
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Usage check successful');
+        return { allowed: true, usage: result.usage };
+      } else {
+        const errorData = await response.json();
+        console.error('❌ Usage check failed:', response.status, errorData);
+        
+        // Show user-friendly error messages
+        if (response.status === 403) {
+          if (errorData.trialExpired) {
+            showPopup('❌ Your free trial has expired. Please upgrade to continue using bookmarklets.', 'error');
+          } else if (errorData.usage?.type === 'per_bookmarklet') {
+            showPopup(`❌ This bookmarklet has already been used ${errorData.usage.used} times. Maximum ${errorData.usage.limit} uses per bookmarklet for ${errorData.usage.plan} plan.`, 'error');
+          } else if (errorData.usage?.type === 'daily_limit') {
+            showPopup(`❌ Daily bookmarklet limit exceeded. Maximum ${errorData.usage.limit} bookmarklet submissions per day for ${errorData.usage.plan} plan.`, 'error');
+          } else {
+            showPopup(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`, 'error');
+          }
+        } else {
+          showPopup(`❌ Failed to check usage limit: ${errorData.error || 'Unknown error'}`, 'error');
+        }
+        return { allowed: false, error: errorData };
+      }
+    } catch (error) {
+      console.error('❌ Error checking usage limit:', error);
+      showPopup('❌ Network error while checking usage limit. Please check your connection.', 'error');
+      return { allowed: false, error: error };
+    }
+  }
+
   // Track submission with enhanced error handling
   async function trackSubmission(filledFields) {
     if (!token) {
@@ -803,21 +854,7 @@
       } else {
         const errorData = await response.json();
         console.error('❌ Failed to track submission:', response.status, errorData);
-        
-        // Show user-friendly error messages
-        if (response.status === 403) {
-          if (errorData.trialExpired) {
-            showPopup('❌ Your free trial has expired. Please upgrade to continue using bookmarklets.', 'error');
-          } else if (errorData.usage?.type === 'per_bookmarklet') {
-            showPopup(`❌ This bookmarklet has already been used ${errorData.usage.used} times. Maximum ${errorData.usage.limit} uses per bookmarklet for ${errorData.usage.plan} plan.`, 'error');
-          } else if (errorData.usage?.type === 'daily_limit') {
-            showPopup(`❌ Daily bookmarklet limit exceeded. Maximum ${errorData.usage.limit} bookmarklet submissions per day for ${errorData.usage.plan} plan.`, 'error');
-          } else {
-            showPopup(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`, 'error');
-          }
-        } else {
-          showPopup(`❌ Failed to track submission: ${errorData.error || 'Unknown error'}`, 'error');
-        }
+        showPopup(`❌ Failed to track submission: ${errorData.error || 'Unknown error'}`, 'error');
       }
     } catch (error) {
       console.error('❌ Error tracking submission:', error);
@@ -829,6 +866,14 @@
   console.log('🚀 Starting OPPTYM Auto-Fill...');
   console.log('📊 Form data available:', formData);
   console.log('📊 Project data available:', projectData);
+
+  // Check usage limit before filling forms
+  const usageCheck = await checkUsageLimit();
+  
+  if (!usageCheck.allowed) {
+    console.log('❌ Usage limit exceeded, stopping execution');
+    return;
+  }
 
   const filledFields = fillFormFields();
 

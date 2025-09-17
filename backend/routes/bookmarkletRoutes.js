@@ -9,6 +9,9 @@ router.post('/generate', protect, bookmarkletController.generateBookmarkletToken
 // Validate bookmarklet token (no auth required - used by bookmarklet)
 router.post('/validate', bookmarkletController.validateBookmarkletToken);
 
+// Check usage limit before filling forms (no auth required - used by bookmarklet)
+router.post('/check', bookmarkletController.checkUsageLimit);
+
 // Get user's bookmarklet tokens
 router.get('/tokens', protect, bookmarkletController.getUserBookmarkletTokens);
 

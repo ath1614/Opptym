@@ -388,10 +388,152 @@ const getBookmarkletAnalytics = async (req, res) => {
   }
 };
 
+// Check usage limit before filling forms
+const checkUsageLimit = async (req, res) => {
+  try {
+    console.log('🔍 checkUsageLimit called with:', { 
+      token: req.body.token ? 'provided' : 'missing',
+      url: req.body.url 
+    });
+    
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required'
+      });
+    }
+
+    // Find the bookmarklet token
+    const bookmarkletToken = await BookmarkletToken.findOne({ token });
+    if (!bookmarkletToken) {
+      return res.status(404).json({
+        success: false,
+        message: 'Invalid bookmarklet token'
+      });
+    }
+
+    // Check if token is expired
+    if (!bookmarkletToken.isValid()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bookmarklet token has expired',
+        trialExpired: true
+      });
+    }
+
+    // Get user to check subscription
+    const user = await User.findById(bookmarkletToken.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check subscription status
+    if (user.subscriptionStatus === 'trial' && user.trialExpired) {
+      return res.status(403).json({
+        success: false,
+        message: 'Trial has expired',
+        trialExpired: true
+      });
+    }
+
+    // Check usage limits
+    const plan = user.subscriptionPlan || 'free';
+    const limits = {
+      free: { perBookmarklet: 5, daily: 10 },
+      business: { perBookmarklet: 50, daily: 100 },
+      premium: { perBookmarklet: 200, daily: 500 }
+    };
+
+    const planLimits = limits[plan] || limits.free;
+
+    // Check per-bookmarklet limit
+    if (bookmarkletToken.usageCount >= planLimits.perBookmarklet) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bookmarklet usage limit exceeded',
+        usage: {
+          type: 'per_bookmarklet',
+          used: bookmarkletToken.usageCount,
+          limit: planLimits.perBookmarklet,
+          plan: plan
+        }
+      });
+    }
+
+    // Check daily limit
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const dailyUsage = await BookmarkletToken.aggregate([
+      {
+        $match: {
+          userId: bookmarkletToken.userId,
+          lastUsedAt: { $gte: today, $lt: tomorrow }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalUsage: { $sum: '$usageCount' }
+        }
+      }
+    ]);
+
+    const totalDailyUsage = dailyUsage.length > 0 ? dailyUsage[0].totalUsage : 0;
+    if (totalDailyUsage >= planLimits.daily) {
+      return res.status(403).json({
+        success: false,
+        message: 'Daily bookmarklet limit exceeded',
+        usage: {
+          type: 'daily_limit',
+          used: totalDailyUsage,
+          limit: planLimits.daily,
+          plan: plan
+        }
+      });
+    }
+
+    // Usage is allowed
+    res.status(200).json({
+      success: true,
+      message: 'Usage limit check passed',
+      usage: {
+        perBookmarklet: {
+          used: bookmarkletToken.usageCount,
+          limit: planLimits.perBookmarklet,
+          remaining: planLimits.perBookmarklet - bookmarkletToken.usageCount
+        },
+        daily: {
+          used: totalDailyUsage,
+          limit: planLimits.daily,
+          remaining: planLimits.daily - totalDailyUsage
+        },
+        plan: plan
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Error checking usage limit:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to check usage limit',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   generateBookmarkletToken,
   validateBookmarkletToken,
   getUserBookmarkletTokens,
   deactivateBookmarkletToken,
-  getBookmarkletAnalytics
+  getBookmarkletAnalytics,
+  checkUsageLimit
 };
