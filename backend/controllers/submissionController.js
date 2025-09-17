@@ -14,25 +14,25 @@ const getSubmissions = async (req, res) => {
     // Support filtering by classification (legacy) or submissionType
     if (classification) {
       // Map classification names to submission types
+      // FIXED: Each submission type should only be counted in ONE classification to avoid overlap
       const classificationMap = {
         'Article Submission': 'article',
-        'Directory Submission': ['directory', 'bookmarklet'],  // Include both directory and bookmarklet submissions
-        'directory': ['directory', 'bookmarklet'],  // Also map 'directory' classification to include bookmarklet submissions
+        'Directory Submission': 'directory',  // Only directory submissions
         'Press Release': 'article',
-        'BookMarking': ['bookmark', 'bookmarklet'],  // Include bookmarklet submissions in BookMarking
-        'Business Listing': ['directory', 'bookmarklet'],  // Include bookmarklet submissions in Business Listing
-        'Classified': ['classified', 'bookmarklet'],  // Include bookmarklet submissions in Classified
+        'BookMarking': 'bookmark',  // Only bookmark submissions (not bookmarklet)
+        'Business Listing': 'business',  // Only business-specific submissions
+        'Classified': 'classified',  // Only classified submissions
         'Forum': 'forum',
-        'Social Media': ['social', 'bookmarklet'],  // Include bookmarklet submissions in Social Media
-        'Local Business': ['local', 'bookmarklet'],  // Include bookmarklet submissions in Local Business
+        'Social Media': 'social',  // Only social media submissions
+        'Local Business': 'local',  // Only local business submissions
         'Citation': 'citation',
         'Web 2.0': 'web2',
         'Q&A': 'qa',
-        'More SEO': 'bookmarklet',  // Map More SEO to bookmarklet submissions
+        'More SEO': 'bookmarklet',  // Only bookmarklet submissions go to More SEO
         'article': 'article',  // Map lowercase article classification
-        'local': ['local', 'bookmarklet'],  // Map lowercase local classification
-        'social': ['social', 'bookmarklet'],  // Map lowercase social classification
-        'classified': ['classified', 'bookmarklet'],  // Map lowercase classified classification
+        'local': 'local',  // Map lowercase local classification
+        'social': 'social',  // Map lowercase social classification
+        'classified': 'classified',  // Map lowercase classified classification
         'qa': 'qa',  // Map lowercase qa classification
         'australia': 'australia'  // Map australia classification
       };
