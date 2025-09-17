@@ -5,9 +5,9 @@ const User = require('../models/userModel');
 // Production MongoDB URI
 const MONGODB_URI = 'mongodb+srv://lowlife9366:x6TX9HuAvESb3DJD@opptym.tkcz5nx.mongodb.net/?retryWrites=true&w=majority&appName=opptym';
 
-async function checkSubmissionOverlap() {
+async function testAllClassifications() {
   try {
-    console.log('🔍 Checking Submission Overlap Issues...\n');
+    console.log('🔍 Testing All Classifications After Fix...\n');
     
     // Connect to MongoDB
     await mongoose.connect(MONGODB_URI);
@@ -59,13 +59,28 @@ async function checkSubmissionOverlap() {
       console.log(`   ${type}: ${byType[type].length} submissions`);
     });
     
-    // Test classification filtering
-    console.log('\n🔍 Testing classification filtering...');
+    // Test ALL classifications
+    console.log('\n🔍 Testing ALL classifications...');
+    
+    const allClassifications = [
+      'Article Submission',
+      'Directory Submission', 
+      'Press Release',
+      'BookMarking',
+      'Business Listing',
+      'Classified',
+      'Forum',
+      'Social Media',
+      'Local Business',
+      'Citation',
+      'Web 2.0',
+      'Q&A',
+      'More SEO'
+    ];
     
     const classificationMap = {
       'Article Submission': 'article',
       'Directory Submission': 'directory',
-      'directory': 'directory',
       'Press Release': 'article',
       'BookMarking': 'bookmark',
       'Business Listing': 'business',
@@ -76,49 +91,43 @@ async function checkSubmissionOverlap() {
       'Citation': 'citation',
       'Web 2.0': 'web2',
       'Q&A': 'qa',
-      'More SEO': 'bookmarklet',
-      'article': 'article',
-      'local': 'local',
-      'social': 'social',
-      'classified': 'classified',
-      'qa': 'qa',
-      'australia': 'australia'
+      'More SEO': 'bookmarklet'
     };
     
     const classificationCounts = {};
+    let totalFromClassifications = 0;
     
-    for (const [classification, type] of Object.entries(classificationMap)) {
-      const filter = { userId: testUser._id };
-      filter.submissionType = type;
+    for (const classification of allClassifications) {
+      const type = classificationMap[classification];
+      const filter = { userId: testUser._id, submissionType: type };
       
       const count = await Submission.countDocuments(filter);
       classificationCounts[classification] = count;
+      totalFromClassifications += count;
+      
       console.log(`   ${classification}: ${count} submissions (type: ${type})`);
     }
     
-    // Calculate total if we sum all classifications
-    const totalFromClassifications = Object.values(classificationCounts).reduce((sum, count) => sum + count, 0);
-    console.log(`\n📊 Total from classification sum: ${totalFromClassifications}`);
+    console.log(`\n📊 Total from ALL classifications: ${totalFromClassifications}`);
     console.log(`📊 Actual total submissions: ${allSubmissions.length}`);
     console.log(`📊 Overlap (difference): ${totalFromClassifications - allSubmissions.length}`);
     
-    // Show which submissions are being double-counted
-    console.log('\n🔍 Analyzing overlap...');
+    // Check if fix is working
+    if (totalFromClassifications === allSubmissions.length) {
+      console.log('\n✅ PERFECT! No overlap - fix is working correctly!');
+    } else if (totalFromClassifications < allSubmissions.length) {
+      console.log('\n⚠️ Some submissions are not being counted in any classification');
+    } else {
+      console.log('\n❌ Still have overlap - fix needs more work');
+    }
     
-    // Check bookmarklet submissions
-    const bookmarkletSubmissions = allSubmissions.filter(s => s.submissionType === 'bookmarklet');
-    console.log(`📊 Bookmarklet submissions: ${bookmarkletSubmissions.length}`);
-    console.log('   These are counted in: Directory Submission, BookMarking, Business Listing, Classified, More SEO');
-    
-    // Check directory submissions
-    const directorySubmissions = allSubmissions.filter(s => s.submissionType === 'directory');
-    console.log(`📊 Directory submissions: ${directorySubmissions.length}`);
-    console.log('   These are counted in: Directory Submission, Business Listing');
-    
-    console.log('\n💡 Solution: Each submission should only be counted in ONE classification');
-    console.log('   - Remove bookmarklet from multiple classifications');
-    console.log('   - Remove directory from Business Listing');
-    console.log('   - Or create unique submission types for each classification');
+    // Show which classifications have submissions
+    console.log('\n📊 Classifications with submissions:');
+    Object.entries(classificationCounts).forEach(([classification, count]) => {
+      if (count > 0) {
+        console.log(`   ✅ ${classification}: ${count} submissions`);
+      }
+    });
     
   } catch (error) {
     console.error('❌ Error:', error);
@@ -128,4 +137,4 @@ async function checkSubmissionOverlap() {
   }
 }
 
-checkSubmissionOverlap();
+testAllClassifications();
