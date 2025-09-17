@@ -12,6 +12,7 @@ import Register from './components/Auth/Register';
 import EmailVerification from './components/Auth/EmailVerification';
 import ForgotPassword from './components/Auth/ForgotPassword';
 import ResetPassword from './components/Auth/ResetPassword';
+import AcceptInvitation from './components/Auth/AcceptInvitation';
 import Dashboard from './components/Dashboard/Dashboard';
 import MyProjects from './components/Projects/MyProjects';
 import SEOTools from './components/SEO/SeoToolsDashboard';
@@ -63,16 +64,25 @@ function App() {
 
 
 
-  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register' | 'email-verification' | 'forgot-password' | 'reset-password'>('landing');
+  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register' | 'email-verification' | 'forgot-password' | 'reset-password' | 'accept-invitation'>('landing');
   const [verificationEmail, setVerificationEmail] = useState('');
+  const [invitationToken, setInvitationToken] = useState('');
   
   // Check URL parameters for auth mode
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const pathname = window.location.pathname;
     
+    // Check if we're on accept-invitation page
+    if (pathname === '/accept-invitation' || urlParams.has('token')) {
+      const token = urlParams.get('token');
+      if (token) {
+        setInvitationToken(token);
+        setAuthMode('accept-invitation');
+      }
+    }
     // Check if we're on reset-password page
-    if (pathname === '/reset-password' || urlParams.has('token')) {
+    else if (pathname === '/reset-password') {
       setAuthMode('reset-password');
     }
     // Check if we're on login page with verification parameters
@@ -279,6 +289,7 @@ function App() {
             {authMode === 'email-verification' && <EmailVerification email={verificationEmail} onBackToLogin={() => setAuthMode('login')} />}
             {authMode === 'forgot-password' && <ForgotPassword onBackToLogin={() => setAuthMode('login')} onSwitchToRegister={() => setAuthMode('register')} />}
             {authMode === 'reset-password' && <ResetPassword />}
+            {authMode === 'accept-invitation' && <AcceptInvitation token={invitationToken} onSuccess={() => setAuthMode('register')} onError={(error) => console.error('Invitation error:', error)} />}
           </div>
         </div>
         

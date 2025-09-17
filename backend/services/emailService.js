@@ -156,6 +156,60 @@ class EmailService {
     });
   }
 
+  async sendTeamInvitationEmail(inviteeEmail, inviterName, role, inviteUrl) {
+    const subject = `You're invited to join ${inviterName}'s team on OPPTYM`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">You're Invited!</h1>
+        </div>
+        <div style="padding: 30px; background: #f8f9fa; border-radius: 0 0 10px 10px;">
+          <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+            Hello!
+          </p>
+          <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+            <strong>${inviterName}</strong> has invited you to join their team on OPPTYM, the powerful SEO automation platform.
+          </p>
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
+            <h3 style="margin: 0 0 10px 0; color: #333;">Your Role: ${role || 'Employee'}</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">
+              You'll have access to SEO tools, project management, and directory submissions.
+            </p>
+          </div>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${inviteUrl}" 
+               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: white; 
+                      padding: 15px 30px; 
+                      text-decoration: none; 
+                      border-radius: 8px; 
+                      font-weight: bold; 
+                      display: inline-block;
+                      font-size: 16px;">
+              Accept Invitation
+            </a>
+          </div>
+          <p style="font-size: 14px; color: #666; margin-top: 20px;">
+            This invitation will expire in 7 days. If you don't want to join, you can simply ignore this email.
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          <p style="font-size: 12px; color: #999; text-align: center;">
+            If the button doesn't work, copy and paste this link into your browser:<br>
+            <a href="${inviteUrl}" style="color: #667eea;">${inviteUrl}</a>
+          </p>
+        </div>
+      </div>
+    `;
+    const text = `Hello!\n\n${inviterName} has invited you to join their team on OPPTYM.\n\nYour Role: ${role || 'Employee'}\n\nAccept the invitation by clicking this link: ${inviteUrl}\n\nThis invitation will expire in 7 days.\n\nBest regards,\nThe OPPTYM Team`;
+
+    return await this.sendEmail({
+      to: inviteeEmail,
+      subject,
+      html,
+      text
+    });
+  }
+
   async getEmailTemplate(templateName, variables = {}) {
     try {
       const templatePath = path.join(__dirname, '../templates/email', `${templateName}.html`);
