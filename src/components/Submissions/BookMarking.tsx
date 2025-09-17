@@ -1,16 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
 import axios from 'axios';
 import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
   ExternalLink,
-  Bookmark,
   AlertCircle,
   CheckCircle,
   Clock,
@@ -19,12 +11,17 @@ import {
 } from 'lucide-react';
 import { getDirectoriesByClassification, Directory } from '../../config/directoriesConfig';
 
+interface Submission {
+  _id: string;
+  status: string;
+  submittedAt: string;
+  publishedAt?: string;
+}
+
 export default function BookMarking() {
-  const { user } = useAuth();
-  const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [directories, setDirectories] = useState<Directory[]>([]);
-  const [submissions, setSubmissions] = useState([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]); // Used for stats calculation and future features
   const [stats, setStats] = useState({
     total: 0,
     submitted: 0,
@@ -32,6 +29,17 @@ export default function BookMarking() {
     pending: 0,
     highPriority: 0
   });
+
+  // Calculate stats from submissions
+  const calculateStats = (submissionData: Submission[]) => {
+    const total = submissionData.length;
+    const submitted = submissionData.filter((s: Submission) => s.status === 'submitted').length;
+    const approved = submissionData.filter((s: Submission) => s.status === 'approved' || s.status === 'published').length;
+    const pending = submissionData.filter((s: Submission) => s.status === 'pending').length;
+    const highPriority = directories.filter(d => (d.priority || 0) >= 75).length;
+    
+    return { total, submitted, approved, pending, highPriority };
+  };
 
   // Load directories from database API
   const loadDirectories = async () => {
@@ -72,16 +80,12 @@ export default function BookMarking() {
         params: { classification: 'BookMarking' }
       });
       
-      if (response.data.success) {
+      if (response.data && Array.isArray(response.data)) {
+        setSubmissions(response.data);
+        setStats(calculateStats(response.data));
+      } else if (response.data && response.data.submissions) {
         setSubmissions(response.data.submissions);
-        
-        // Calculate stats
-        const total = response.data.submissions.length;
-        const submitted = response.data.submissions.filter(s => s.status === 'submitted').length;
-        const approved = response.data.submissions.filter(s => s.status === 'approved' || s.status === 'published').length;
-        const pending = response.data.submissions.filter(s => s.status === 'pending').length;
-        
-        setStats({ total, submitted, approved, pending, highPriority: 561 }); // 561 high priority platforms
+        setStats(calculateStats(response.data.submissions));
       }
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -92,6 +96,13 @@ export default function BookMarking() {
     loadDirectories();
     fetchSubmissions();
   }, []);
+
+  // Update stats when submissions change
+  useEffect(() => {
+    if (submissions.length > 0) {
+      setStats(calculateStats(submissions));
+    }
+  }, [submissions, directories]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
