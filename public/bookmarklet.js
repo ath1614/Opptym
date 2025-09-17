@@ -863,32 +863,40 @@
   }
 
   // Main execution
-  console.log('🚀 Starting OPPTYM Auto-Fill...');
-  console.log('📊 Form data available:', formData);
-  console.log('📊 Project data available:', projectData);
+  async function main() {
+    console.log('🚀 Starting OPPTYM Auto-Fill...');
+    console.log('📊 Form data available:', formData);
+    console.log('📊 Project data available:', projectData);
 
-  // Check usage limit before filling forms
-  const usageCheck = await checkUsageLimit();
-  
-  if (!usageCheck.allowed) {
-    console.log('❌ Usage limit exceeded, stopping execution');
-    return;
-  }
-
-  const filledFields = fillFormFields();
-
-  if (filledFields.length === 0) {
-    console.log('⚠️ No form fields found to fill');
-    showPopup('⚠️ No form fields found to fill on this page.', 'error');
-  } else {
-    console.log(`🎉 Successfully filled ${filledFields.length} form fields!`);
-    showPopup(`🎉 Successfully filled ${filledFields.length} form fields!`, 'success');
+    // Check usage limit before filling forms
+    const usageCheck = await checkUsageLimit();
     
-    // Track the submission
-    trackSubmission(filledFields);
+    if (!usageCheck.allowed) {
+      console.log('❌ Usage limit exceeded, stopping execution');
+      return;
+    }
+
+    const filledFields = fillFormFields();
+
+    if (filledFields.length === 0) {
+      console.log('⚠️ No form fields found to fill');
+      showPopup('⚠️ No form fields found to fill on this page.', 'error');
+    } else {
+      console.log(`🎉 Successfully filled ${filledFields.length} form fields!`);
+      showPopup(`🎉 Successfully filled ${filledFields.length} form fields!`, 'success');
+      
+      // Track the submission
+      trackSubmission(filledFields);
+    }
+
+    console.log(`🎉 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} completed!`);
   }
 
-  console.log(`🎉 OPPTYM Auto-Fill Bookmarklet v${BOOKMARKLET_VERSION} completed!`);
+  // Execute main function
+  main().catch(error => {
+    console.error('❌ Bookmarklet execution error:', error);
+    showPopup('❌ An error occurred while running the bookmarklet.', 'error');
+  });
 
   } // End of else block for projectData check
 })();
