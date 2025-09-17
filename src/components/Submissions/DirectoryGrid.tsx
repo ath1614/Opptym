@@ -143,25 +143,53 @@ export default function DirectoryGrid({
 
     setIsGeneratingToken(true);
     try {
-      // Generate a unique token with timestamp and random string
-      const timestamp = Date.now();
-      const randomString = Math.random().toString(36).substring(2, 15);
-      const token = `${timestamp}_${randomString}_${Math.random().toString(36).substring(2, 15)}`;
+      // Get auth token
+      const authToken = localStorage.getItem('token');
+      if (!authToken) {
+        showPopup('❌ Please log in to generate bookmarklet tokens.', 'error');
+        setIsGeneratingToken(false);
+        return;
+      }
+
+      // Generate bookmarklet token from server
+      const response = await fetch('https://api.opptym.com/api/bookmarklet/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          projectId: selectedProject._id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
       
-      // Store token and project data in sessionStorage (single-use, expires on browser close)
-      sessionStorage.setItem('opptym_bookmarklet_token', token);
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to generate bookmarklet token');
+      }
+
+      const { token: bookmarkletToken, expiresAt, maxUsage, usageCount, rateLimitSeconds } = result.data;
       
-      console.log('Generated bookmarklet token:', token);
-      console.log('Project data:', selectedProject);
-      console.log('Directory data:', selectedDirectory);
+      // Store token and project data in sessionStorage
+      sessionStorage.setItem('opptym_bookmarklet_token', bookmarkletToken);
       sessionStorage.setItem('opptym_bookmarklet_used', 'false');
       sessionStorage.setItem('opptym_bookmarklet_project', JSON.stringify(selectedProject));
       sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(selectedDirectory));
       
-      setBookmarkletToken(token);
+      console.log('Generated bookmarklet token:', bookmarkletToken);
+      console.log('Project data:', selectedProject);
+      console.log('Directory data:', selectedDirectory);
+      console.log('Token details:', { expiresAt, maxUsage, usageCount, rateLimitSeconds });
+      
+      setBookmarkletToken(bookmarkletToken);
       
       // Test bookmarklet functionality
-      testBookmarkletFunctionality(token, selectedProject, selectedDirectory);
+      testBookmarkletFunctionality(bookmarkletToken, selectedProject, selectedDirectory);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
       showPopup('❌ Failed to generate bookmarklet token. Please try again.', 'error');
@@ -214,23 +242,53 @@ export default function DirectoryGrid({
 
     setIsGeneratingToken(true);
     try {
-      // Generate unique token with user ID and usage limits
-      const userId = user?.id || 'anonymous';
-      const userPlan = user?.subscription || 'free';
-      const maxUses = userPlan === 'free' ? 1 : 5; // Free users get 1 use, paid users get 5
-      const token = `opptym_${Date.now()}_${userId}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log('Generated bookmarklet token:', token);
-      console.log('User plan:', userPlan, 'Max uses:', maxUses);
-      console.log('Project data:', project);
-      console.log('Directory data:', directory);
+      // Get auth token
+      const authToken = localStorage.getItem('token');
+      if (!authToken) {
+        showPopup('❌ Please log in to generate bookmarklet tokens.', 'error');
+        setIsGeneratingToken(false);
+        return;
+      }
+
+      // Generate bookmarklet token from server
+      const response = await fetch('https://api.opptym.com/api/bookmarklet/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          projectId: project._id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to generate bookmarklet token');
+      }
+
+      const { token: bookmarkletToken, expiresAt, maxUsage, usageCount, rateLimitSeconds } = result.data;
+      
+      // Store token and project data in sessionStorage
+      sessionStorage.setItem('opptym_bookmarklet_token', bookmarkletToken);
       sessionStorage.setItem('opptym_bookmarklet_used', 'false');
       sessionStorage.setItem('opptym_bookmarklet_project', JSON.stringify(project));
       sessionStorage.setItem('opptym_bookmarklet_directory', JSON.stringify(directory));
-
-      setBookmarkletToken(token);
-
+      
+      console.log('Generated bookmarklet token:', bookmarkletToken);
+      console.log('Project data:', project);
+      console.log('Directory data:', directory);
+      console.log('Token details:', { expiresAt, maxUsage, usageCount, rateLimitSeconds });
+      
+      setBookmarkletToken(bookmarkletToken);
+      
       // Test bookmarklet functionality
-      testBookmarkletFunctionality(token, project, directory);
+      testBookmarkletFunctionality(bookmarkletToken, project, directory);
     } catch (error) {
       console.error('Error generating bookmarklet token:', error);
       showPopup('❌ Failed to generate bookmarklet token. Please try again.', 'error');
