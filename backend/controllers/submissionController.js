@@ -250,75 +250,78 @@ const createBookmarkletSubmission = async (req, res) => {
       return res.status(400).json({ error: 'Token is required' });
     }
     
-    // Extract user ID and check usage limits from token
-    // The token format is: opptym_timestamp_userId_randomString
-    const tokenParts = token.split('_');
-    if (tokenParts.length < 4 || tokenParts[0] !== 'opptym') {
-      return res.status(400).json({ error: 'Invalid token format' });
+    // Find the bookmarklet token in database
+    const BookmarkletToken = require('../models/bookmarkletTokenModel');
+    const bookmarkletToken = await BookmarkletToken.findOne({ token });
+    if (!bookmarkletToken) {
+      return res.status(400).json({ error: 'Invalid bookmarklet token' });
     }
     
-    const userId = tokenParts[2];
-    const tokenTimestamp = parseInt(tokenParts[1]);
-    
-    // Check if token is expired (24 hours)
-    const tokenAge = Date.now() - tokenTimestamp;
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-    if (tokenAge > maxAge) {
+    // Check if token is expired
+    if (!bookmarkletToken.isValid()) {
       return res.status(400).json({ error: 'Bookmarklet token has expired' });
     }
     
     // Get user to check subscription and usage limits
     const User = require('../models/userModel');
-    const mongoose = require('mongoose');
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-    
-    const user = await User.findById(userObjectId);
+    const user = await User.findById(bookmarkletToken.userId);
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
     }
     
+    const userObjectId = bookmarkletToken.userId;
+    
     // Check usage limits based on subscription
     const userPlan = user.subscription || 'free';
-    const maxUsesPerBookmarklet = userPlan === 'free' ? 1 : 5;
-    const maxBookmarkletsPerDay = userPlan === 'free' ? 3 : 20;
+    const limits = {
+      free: { perBookmarklet: 5, daily: 10 },
+      business: { perBookmarklet: 50, daily: 100 },
+      premium: { perBookmarklet: 200, daily: 500 }
+    };
     
-    // Count existing bookmarklet submissions for this specific token (prevent token reuse)
-    const existingSubmissionsForToken = await Submission.countDocuments({
-      userId: userObjectId,
-      submissionType: 'bookmarklet',
-      'metadata.token': token
-    });
+    const planLimits = limits[userPlan] || limits.free;
     
-    if (existingSubmissionsForToken >= maxUsesPerBookmarklet) {
+    // Check per-bookmarklet limit using the token's usage count
+    if (bookmarkletToken.usageCount >= planLimits.perBookmarklet) {
       return res.status(403).json({ 
-        error: `This bookmarklet has already been used ${existingSubmissionsForToken} times. Maximum ${maxUsesPerBookmarklet} uses per bookmarklet for ${userPlan} plan.`,
+        error: `This bookmarklet has already been used ${bookmarkletToken.usageCount} times. Maximum ${planLimits.perBookmarklet} uses per bookmarklet for ${userPlan} plan.`,
         usage: {
-          used: existingSubmissionsForToken,
-          limit: maxUsesPerBookmarklet,
+          used: bookmarkletToken.usageCount,
+          limit: planLimits.perBookmarklet,
           plan: userPlan,
           type: 'per_bookmarklet'
         }
       });
     }
     
-    // Count total bookmarklet submissions for this user today (prevent abuse)
+    // Check daily limit
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    const totalBookmarkletsToday = await Submission.countDocuments({
-      userId: userObjectId,
-      submissionType: 'bookmarklet',
-      submittedAt: { $gte: today, $lt: tomorrow }
-    });
+    const dailyUsage = await BookmarkletToken.aggregate([
+      {
+        $match: {
+          userId: userObjectId,
+          lastUsedAt: { $gte: today, $lt: tomorrow }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalUsage: { $sum: '$usageCount' }
+        }
+      }
+    ]);
     
-    if (totalBookmarkletsToday >= maxBookmarkletsPerDay) {
+    const totalDailyUsage = dailyUsage.length > 0 ? dailyUsage[0].totalUsage : 0;
+    if (totalDailyUsage >= planLimits.daily) {
       return res.status(403).json({ 
-        error: `Daily bookmarklet limit exceeded. Maximum ${maxBookmarkletsPerDay} bookmarklet submissions per day for ${userPlan} plan.`,
+        error: `Daily bookmarklet limit exceeded. Maximum ${planLimits.daily} bookmarklet submissions per day for ${userPlan} plan.`,
         usage: {
-          used: totalBookmarkletsToday,
-          limit: maxBookmarkletsPerDay,
+          used: totalDailyUsage,
+          limit: planLimits.daily,
           plan: userPlan,
           type: 'daily_limit'
         }
@@ -345,10 +348,10 @@ const createBookmarkletSubmission = async (req, res) => {
         url: url,
         fieldsFilled: fieldsFilled,
         filledFields: filledFields,
-        timestamp: tokenTimestamp,
+        timestamp: new Date().toISOString(),
         source: 'bookmarklet',
         userPlan: userPlan,
-        usageCount: existingSubmissionsForToken + 1
+        usageCount: bookmarkletToken.usageCount + 1
       }
     });
     
@@ -358,6 +361,15 @@ const createBookmarkletSubmission = async (req, res) => {
       console.log('✅ User submission usage incremented');
     } catch (usageError) {
       console.error('❌ Usage increment failed:', usageError);
+      // Continue anyway, don't fail the submission
+    }
+    
+    // Increment bookmarklet token usage
+    try {
+      await bookmarkletToken.incrementUsage(req.ip || req.connection.remoteAddress, req.headers['user-agent'] || 'Unknown');
+      console.log('✅ Bookmarklet token usage incremented');
+    } catch (tokenError) {
+      console.error('❌ Token usage increment failed:', tokenError);
       // Continue anyway, don't fail the submission
     }
     
