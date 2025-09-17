@@ -786,7 +786,12 @@
         console.log('✅ Usage check successful');
         return { allowed: true, usage: result.usage };
       } else {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          errorData = { error: 'Unknown error' };
+        }
         console.error('❌ Usage check failed:', response.status, errorData);
         
         // Show user-friendly error messages
@@ -800,6 +805,9 @@
           } else {
             showPopup(`❌ Bookmarklet usage limit exceeded: ${errorData.error}`, 'error');
           }
+        } else if (response.status === 404) {
+          // Backend route not deployed yet - show generic limit message
+          showPopup('❌ Bookmarklet usage limit check unavailable. Please try again later or contact support.', 'error');
         } else {
           showPopup(`❌ Failed to check usage limit: ${errorData.error || 'Unknown error'}`, 'error');
         }
