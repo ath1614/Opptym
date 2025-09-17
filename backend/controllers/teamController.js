@@ -324,6 +324,25 @@ const getTeam = async (req, res) => {
       .populate('owner', 'username email firstName lastName');
 
     if (!team) {
+      // Return default team structure for admin users to invite VIP customers
+      const user = await User.findById(req.userId);
+      if (user && user.role === 'admin') {
+        return res.json({
+          success: true,
+          team: {
+            _id: 'default',
+            name: 'Admin Team',
+            description: 'Invite VIP customers and team members',
+            owner: req.userId,
+            members: [],
+            memberCount: 0,
+            subscriptionPlan: 'admin',
+            maxMembers: 100,
+            totalProjects: 0,
+            totalSubmissions: 0
+          }
+        });
+      }
       return res.status(404).json({ error: 'Team not found' });
     }
 
