@@ -68,25 +68,31 @@ const MoreSEO: React.FC = () => {
     const loadDirectories = async () => {
       try {
         setLoading(true);
+        console.log('🔍 MoreSEO: Attempting to load from API...');
         const response = await axios.get('/api/directories', {
           params: { classification: 'More SEO' }
         });
         
+        console.log('📊 MoreSEO: API response:', response.data);
+        
         if (response.data && Array.isArray(response.data)) {
+          console.log(`✅ MoreSEO: Loaded ${response.data.length} directories from API`);
           setDirectories(response.data);
         } else {
-          // Fallback to config file if API fails
+          console.log('⚠️ MoreSEO: API returned invalid data, falling back to config');
           const configDirectories = getDirectoriesByClassification('More SEO');
+          console.log(`📁 MoreSEO: Config fallback loaded ${configDirectories.length} directories`);
           setDirectories(configDirectories);
         }
       } catch (error) {
-        console.error('Error loading directories from API:', error);
+        console.error('❌ MoreSEO: Error loading directories from API:', error);
         // Fallback to config file
         try {
           const configDirectories = getDirectoriesByClassification('More SEO');
+          console.log(`📁 MoreSEO: Config fallback loaded ${configDirectories.length} directories`);
           setDirectories(configDirectories);
         } catch (configError) {
-          console.error('Error loading directories from config:', configError);
+          console.error('❌ MoreSEO: Error loading directories from config:', configError);
           setDirectories([]);
         }
       } finally {
