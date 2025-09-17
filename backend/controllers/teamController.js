@@ -55,60 +55,63 @@ const createInvitation = async (req, res) => {
       }
     });
 
-    // Send invitation email using the exact same method as email verification
+    // Generate invitation URL
     const inviteUrl = invitation.generateInviteUrl(process.env.FRONTEND_URL || 'https://opptym.com');
     let emailSent = false;
     
+    // Try to send email, but don't fail if it doesn't work
     try {
-      // Create email template exactly like email verification
-      const mailOptions = {
-        from: `"Opptym" <${process.env.EMAIL_USER || 'noreply@opptym.com'}>`,
-        to: email,
-        subject: `You're invited to join ${inviter.username || inviter.firstName || 'Admin'}'s team on OPPTYM`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-              <h1 style="margin: 0; font-size: 28px;">You're Invited!</h1>
-              <p style="margin: 10px 0 0 0; opacity: 0.9;">Team Invitation</p>
-            </div>
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
-              <h2 style="color: #333; margin-bottom: 20px;">Welcome to Opptym!</h2>
-              <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">
-                <strong>${inviter.username || inviter.firstName || 'Admin'}</strong> has invited you to join their team on OPPTYM, the powerful SEO automation platform.
-              </p>
-              <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
-                <h3 style="margin: 0 0 10px 0; color: #333;">Your Role: ${role || 'Employee'}</h3>
-                <p style="margin: 0; color: #666; font-size: 14px;">
-                  You'll have access to SEO tools, project management, and directory submissions.
+      // Check if email service is available
+      if (transporter && transporter.sendMail) {
+        const mailOptions = {
+          from: `"Opptym" <${process.env.EMAIL_USER || 'noreply@opptym.com'}>`,
+          to: email,
+          subject: `You're invited to join ${inviter.username || inviter.firstName || 'Admin'}'s team on OPPTYM`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="margin: 0; font-size: 28px;">You're Invited!</h1>
+                <p style="margin: 10px 0 0 0; opacity: 0.9;">Team Invitation</p>
+              </div>
+              <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
+                <h2 style="color: #333; margin-bottom: 20px;">Welcome to Opptym!</h2>
+                <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">
+                  <strong>${inviter.username || inviter.firstName || 'Admin'}</strong> has invited you to join their team on OPPTYM, the powerful SEO automation platform.
+                </p>
+                <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
+                  <h3 style="margin: 0 0 10px 0; color: #333;">Your Role: ${role || 'Employee'}</h3>
+                  <p style="margin: 0; color: #666; font-size: 14px;">
+                    You'll have access to SEO tools, project management, and directory submissions.
+                  </p>
+                </div>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${inviteUrl}" 
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
+                    Accept Invitation
+                  </a>
+                </div>
+                <p style="color: #666; font-size: 14px; margin-top: 25px;">
+                  This invitation will expire in 7 days. If you don't want to join, you can simply ignore this email.
+                </p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+                <p style="font-size: 12px; color: #999; text-align: center;">
+                  If the button doesn't work, copy and paste this link into your browser:<br>
+                  <a href="${inviteUrl}" style="color: #667eea;">${inviteUrl}</a>
                 </p>
               </div>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="${inviteUrl}" 
-                   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
-                  Accept Invitation
-                </a>
-              </div>
-              <p style="color: #666; font-size: 14px; margin-top: 25px;">
-                This invitation will expire in 7 days. If you don't want to join, you can simply ignore this email.
-              </p>
-              <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-              <p style="font-size: 12px; color: #999; text-align: center;">
-                If the button doesn't work, copy and paste this link into your browser:<br>
-                <a href="${inviteUrl}" style="color: #667eea;">${inviteUrl}</a>
-              </p>
             </div>
-          </div>
-        `
-      };
-      
-      // Send email using the exact same method as email verification
-      await transporter.sendMail(mailOptions);
-
-      emailSent = true;
-      console.log('✅ Team invitation email sent to:', email);
+          `
+        };
+        
+        await transporter.sendMail(mailOptions);
+        emailSent = true;
+        console.log('✅ Team invitation email sent to:', email);
+      } else {
+        console.log('📧 Email service not available, invitation created without email');
+      }
     } catch (emailError) {
       console.error('❌ Failed to send invitation email:', emailError);
-      console.log('📧 Email service not configured, invitation created but email not sent');
+      console.log('📧 Email service error, invitation created but email not sent');
       // Don't fail the request if email fails, just log it
     }
 
@@ -127,7 +130,15 @@ const createInvitation = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Create invitation error:', error);
-    res.status(500).json({ error: 'Failed to create invitation' });
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      error: 'Failed to create invitation',
+      details: error.message 
+    });
   }
 };
 
