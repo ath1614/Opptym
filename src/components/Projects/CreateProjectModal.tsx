@@ -323,9 +323,19 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
     
     setLoading(true);
     try {
+      // Convert WhatsApp phone number to URL if provided
+      let whatsappUrl = form.whatsapp;
+      if (whatsappUrl && whatsappUrl.trim()) {
+        // Remove any spaces, dashes, parentheses from the phone number
+        const cleanPhone = whatsappUrl.replace(/[\s\-\(\)]/g, '');
+        // Convert to WhatsApp URL format
+        whatsappUrl = `https://wa.me/${cleanPhone}`;
+      }
+
       const payload = {
         ...form,
         url: processedUrl, // Use the processed URL
+        whatsapp: whatsappUrl, // Use the converted WhatsApp URL
         keywords: form.keywords.split(',').map(k => k.trim()).filter(k => k),
         targetKeywords: form.targetKeywords.split(',').map(k => k.trim()).filter(k => k),
         tags: form.tags.split(',').map(t => t.trim()).filter(t => t),
