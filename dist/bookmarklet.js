@@ -769,7 +769,7 @@
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/submissions/bookmarklet/check`, {
+      const response = await fetch(`${API_BASE_URL}/bookmarklet/check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
