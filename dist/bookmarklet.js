@@ -764,7 +764,8 @@
   async function checkUsageLimit() {
     if (!token) {
       console.log('⚠️ No token available for usage check');
-      return { allowed: true };
+      showPopup('⚠️ No authentication token found. Please generate a new bookmarklet from Opptym.', 'error');
+      return { allowed: false };
     }
     
     try {
@@ -873,9 +874,11 @@
     
     if (!usageCheck.allowed) {
       console.log('❌ Usage limit exceeded, stopping execution');
+      console.log('❌ Form filling blocked due to usage limit');
       return;
     }
 
+    console.log('✅ Usage check passed, proceeding with form filling');
     const filledFields = fillFormFields();
 
     if (filledFields.length === 0) {
