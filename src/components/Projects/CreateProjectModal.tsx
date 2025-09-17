@@ -474,7 +474,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
         { key: 'name', label: 'Contact Person' },
         { key: 'companyName', label: 'Company Name' },
         { key: 'businessPhone', label: 'Phone Number' },
-        { key: 'whatsapp', label: 'WhatsApp' },
+        { key: 'whatsapp', label: 'WhatsApp Number', placeholder: 'e.g., +1234567890' },
         { key: 'description', label: 'Business Description', type: 'textarea' },
       ],
     },
@@ -553,9 +553,10 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
           <div key={group.title} className="mb-6">
             <h3 className="text-lg font-semibold mb-2 text-gray-700">{group.title}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {group.fields.map(({ key, label, type = 'text' }) => {
+              {group.fields.map(({ key, label, type = 'text', placeholder }) => {
                 const isRequired = ['title', 'url', 'email', 'companyName', 'businessPhone', 'city', 'state', 'country'].includes(key);
                 const hasError = fieldErrors[key];
+                const fieldPlaceholder = placeholder || label;
                 return type === 'textarea' ? (
                   <div key={key} className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
@@ -565,7 +566,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
                       name={key}
                       value={form[key]}
                       onChange={handleChange}
-                      placeholder={label}
+                      placeholder={fieldPlaceholder}
                       className={`w-full border rounded px-3 py-2 h-24 resize-none ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
                     />
                     {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
@@ -580,7 +581,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
                       name={key}
                       value={form[key]}
                       onChange={handleChange}
-                      placeholder={label}
+                      placeholder={fieldPlaceholder}
                       className={`w-full border rounded px-3 py-2 ${hasError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}`}
                     />
                     {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
