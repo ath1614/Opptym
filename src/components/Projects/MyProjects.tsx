@@ -455,19 +455,25 @@ const MyProjects = () => {
               aria-labelledby={`project-title-${project._id}`}
             >
               <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
+                <div className="flex items-start justify-between mb-4 gap-3">
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
                     <div className="w-10 h-10 bg-gradient-to-r from-sky-400 via-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow">
                       <Globe className="w-5 h-5 text-white" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h3 
                         id={`project-title-${project._id}`}
-                        className="font-semibold text-gray-900 dark:text-white"
+                        className="font-semibold text-gray-900 dark:text-white truncate"
+                        title={project.title || 'Untitled Project'}
                       >
                         {project.title || 'Untitled Project'}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{project.url || 'No URL'}</p>
+                      <p 
+                        className="text-sm text-gray-500 dark:text-gray-400 truncate" 
+                        title={project.url || 'No URL'}
+                      >
+                        {project.url || 'No URL'}
+                      </p>
                       {project.status && (
                         <span 
                           className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${getStatusColor(project.status)}`}
@@ -480,7 +486,7 @@ const MyProjects = () => {
                   </div>
 
                   {/* Dropdown Menu */}
-                  <div className="relative dropdown-container">
+                  <div className="relative dropdown-container flex-shrink-0">
                     <button 
                       onClick={() => setOpenDropdown(openDropdown === project._id ? null : project._id)}
                       onKeyDown={(e) => {
@@ -557,7 +563,9 @@ const MyProjects = () => {
                   </div>
                 </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-300">Category: {project.category || 'General'}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 truncate" title={`Category: ${project.category || 'General'}`}>
+                  Category: {project.category || 'General'}
+                </p>
               </div>
             </div>
           ))}

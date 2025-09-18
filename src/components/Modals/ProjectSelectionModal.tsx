@@ -318,7 +318,7 @@ const ProjectSelectionModal: React.FC<ProjectSelectionModalProps> = ({
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate" title={project.title}>
                               {project.title}
                             </h3>
                             <div className="flex items-center gap-2">
