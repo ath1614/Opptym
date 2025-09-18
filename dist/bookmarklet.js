@@ -212,8 +212,8 @@
 
   // Create form data object with enhanced mapping
   const formData = {
-    name: projectData.name || '',
-    title: projectData.title || projectData.companyName || projectData.businessName || '',
+    name: projectData.name || projectData.companyName || projectData.businessName || '',
+    title: projectData.title || projectData.metaTitle || projectData.companyName || projectData.businessName || '',
     businessName: projectData.businessName || projectData.companyName || projectData.title || '',
     company: projectData.companyName || projectData.businessName || projectData.title || '',
     email: projectData.email || '',
@@ -654,10 +654,15 @@
           const id = (input.id || '').toLowerCase();
           const isTextarea = input.tagName === 'TEXTAREA';
           
-          // Title field detection (usually first field, short placeholder, or contains "title")
-          if (index === 0 && !isTextarea && (placeholder.includes('title') || placeholder.includes('name') || placeholder.includes('max 80') || name.includes('title') || id.includes('title'))) {
+          // Project Name field detection (usually first field, contains "name" or "project name")
+          if (index === 0 && !isTextarea && (placeholder.includes('name') || placeholder.includes('project name') || name.includes('name') || id.includes('name'))) {
+            value = formData.name;
+            fieldType = 'Project Name (Smart Match)';
+          }
+          // Project Title field detection (second field or contains "title")
+          else if ((index === 1 || placeholder.includes('title') || placeholder.includes('max 80') || name.includes('title') || id.includes('title')) && !isTextarea) {
             value = formData.title;
-            fieldType = 'Title (Smart Match)';
+            fieldType = 'Project Title (Smart Match)';
           }
           // URL field detection (contains "url", "website", "link", or is second field)
           else if ((placeholder.includes('url') || placeholder.includes('website') || placeholder.includes('link') || name.includes('url') || name.includes('website') || id.includes('url') || id.includes('website')) && formData.url) {

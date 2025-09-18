@@ -273,7 +273,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
     
     // Required fields validation
     const requiredFields = [
-      'title', 'url', 'email', 'companyName', 'businessPhone', 
+      'name', 'title', 'url', 'email', 'companyName', 'businessPhone', 
       'description', 'address1', 'city', 'state', 'country', 'pincode'
     ];
     
@@ -467,11 +467,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
     {
       title: '🧠 Basic Info',
       fields: [
+        { key: 'name', label: 'Project Name' },
         { key: 'title', label: 'Project Title' },
         { key: 'url', label: 'Website URL' },
         { key: 'email', label: 'Business Email' },
         { key: 'category', label: 'Category' },
-        { key: 'name', label: 'Contact Person' },
         { key: 'companyName', label: 'Company Name' },
         { key: 'businessPhone', label: 'Phone Number' },
         { key: 'whatsapp', label: 'WhatsApp Number', placeholder: 'e.g., +1234567890' },
@@ -554,7 +554,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onCrea
             <h3 className="text-lg font-semibold mb-2 text-gray-700">{group.title}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.fields.map(({ key, label, type = 'text', placeholder }) => {
-                const isRequired = ['title', 'url', 'email', 'companyName', 'businessPhone', 'city', 'state', 'country'].includes(key);
+                const isRequired = ['name', 'title', 'url', 'email', 'companyName', 'businessPhone', 'city', 'state', 'country'].includes(key);
                 const hasError = fieldErrors[key];
                 const fieldPlaceholder = placeholder || label;
                 return type === 'textarea' ? (
