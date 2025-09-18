@@ -52,9 +52,10 @@ export const useSeoToolLimits = (): UseSeoToolLimitsReturn => {
 
       if (response.data) {
         const data = response.data;
+        console.log('🔍 SEO Tool Limits API Response:', data);
         setLimits({
-          seoToolsUsed: data.usage?.seoToolsUsed || 0,
-          tools: data.planLimits?.tools || 5,
+          seoToolsUsed: data.currentUsage?.seoToolsUsed || 0,
+          tools: data.limits?.tools || 5,
           subscription: data.subscription || 'free',
           isInTrial: data.isInTrial || false,
           trialDaysLeft: data.trialDaysLeft || 0,

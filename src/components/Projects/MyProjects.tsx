@@ -118,8 +118,8 @@ const MyProjects = () => {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
-          setUserLimits(data.planLimits || { projects: 1, submissions: 5 });
-          setUserUsage(data.usage || { projectsUsed: 0, submissionsUsed: 0 });
+          setUserLimits(data.limits || { projects: 1, submissions: 5 });
+          setUserUsage(data.currentUsage || { projectsUsed: 0, submissionsUsed: 0 });
         } else {
           console.error('Expected JSON response but got:', contentType);
           // Fallback to default limits
