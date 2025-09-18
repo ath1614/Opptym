@@ -48,6 +48,16 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
 
   const isToolDisabled = !canUseSeoTools || isLimitReached || disabled || loading;
 
+  // Debug logging
+  console.log('🔍 SeoToolWrapper Debug:', {
+    canUseSeoTools,
+    isLimitReached,
+    disabled,
+    loading,
+    isToolDisabled,
+    limits
+  });
+
   return (
     <div className="space-y-6">
       {/* Usage Warning Banner */}

@@ -92,6 +92,17 @@ export const useSeoToolLimits = (): UseSeoToolLimitsReturn => {
   const remainingUses = limits ? 
     Math.max(0, limits.tools - limits.seoToolsUsed) : 0;
 
+  // Debug logging
+  console.log('🔍 SEO Tool Limits Debug:', {
+    limits,
+    canUseSeoTools,
+    isLimitReached,
+    remainingUses,
+    subscription: limits?.subscription,
+    isInTrial: limits?.isInTrial,
+    trialExpired: limits?.trialExpired
+  });
+
   return {
     limits,
     loading,
