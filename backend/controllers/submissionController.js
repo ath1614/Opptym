@@ -116,8 +116,30 @@ const createSubmission = async (req, res) => {
       });
     }
 
-    const { projectId, siteName, submissionType, status = 'pending' } = req.body;
-    console.log('🔍 Creating submission with:', { projectId, siteName, submissionType, status });
+    const { projectId, siteName, submissionType, classification, status = 'pending' } = req.body;
+    
+    // Map classification to submissionType if submissionType is not provided
+    let finalSubmissionType = submissionType;
+    if (!finalSubmissionType && classification) {
+      const classificationMap = {
+        'directory': 'directory',
+        'article': 'article',
+        'bookmark': 'bookmark',
+        'business': 'business',
+        'classified': 'classified',
+        'forum': 'forum',
+        'social': 'social',
+        'local': 'local',
+        'citation': 'citation',
+        'web2': 'web2',
+        'qa': 'qa',
+        'bookmarklet': 'bookmarklet',
+        'australia': 'australia'
+      };
+      finalSubmissionType = classificationMap[classification] || classification;
+    }
+    
+    console.log('🔍 Creating submission with:', { projectId, siteName, submissionType: finalSubmissionType, classification, status });
 
     // Verify project belongs to user
     const Project = require('../models/projectModel');
@@ -131,7 +153,7 @@ const createSubmission = async (req, res) => {
       userId: req.userId,
       projectId,
       siteName,
-      submissionType,
+      submissionType: finalSubmissionType,
       status,
       submittedAt: new Date()
     });

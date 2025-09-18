@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
-import {
-  Home,
-  FolderOpen,
+import { 
+  Home, 
+  FolderOpen, 
   Search,
   FileText,
-  BarChart3,
+  BarChart3, 
   CreditCard,
-  User,
+  User, 
   ChevronDown,
   ChevronRight,
   CheckSquare,
@@ -146,7 +146,7 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
 
   // Always add Reports section (access restriction handled in click handler)
   sidebarItems.push({
-    id: 'reports',
+      id: 'reports',
     label: t('sidebar.reports'),
     icon: BarChart3
   });
@@ -210,23 +210,49 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
 
     return (
       <div key={item.id}>
-        <button
+              <button
           onClick={() => handleItemClick(item.id, hasChildren || false)}
           className={`
             w-full flex items-center justify-between text-left rounded-xl transition-all duration-200 group
-            ${depth > 0 ? 'ml-4 pl-8' : ''}
+            ${depth > 0 ? 'ml-2 pl-6' : ''}
             ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'}
             ${isActive
               ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transform scale-105'
-              : isDark
-                ? 'text-slate-300 hover:bg-slate-700 hover:text-white hover:shadow-md hover:transform hover:scale-105'
-                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-md hover:transform hover:scale-105'
+              : depth > 0
+                ? isDark
+                  ? 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200 hover:shadow-sm hover:transform hover:scale-102'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800 hover:shadow-sm hover:transform hover:scale-102'
+                : isDark
+                  ? 'text-slate-300 hover:bg-slate-700 hover:text-white hover:shadow-md hover:transform hover:scale-105'
+                  : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-md hover:transform hover:scale-105'
             }
           `}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
-            <Icon className={`h-5 w-5 transition-colors duration-200 ${isActive ? 'text-white' : isDark ? 'text-slate-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-700'}`} />
-            {!isCollapsed && <span className="font-medium truncate">{item.label}</span>}
+            <div className={`p-1.5 rounded-lg transition-all duration-200 ${
+              isActive 
+                ? 'bg-white/20 shadow-sm' 
+                : depth > 0
+                  ? isDark 
+                    ? 'bg-slate-600/20 group-hover:bg-slate-500/30' 
+                    : 'bg-gray-50 group-hover:bg-gray-100'
+                  : isDark 
+                    ? 'bg-slate-600/30 group-hover:bg-slate-500/40' 
+                    : 'bg-gray-100 group-hover:bg-gray-200'
+            }`}>
+              <Icon className={`h-4 w-4 transition-colors duration-200 ${
+                isActive 
+                  ? 'text-white' 
+                  : depth > 0
+                    ? isDark 
+                      ? 'text-slate-400 group-hover:text-slate-200' 
+                      : 'text-gray-500 group-hover:text-gray-700'
+                    : isDark 
+                      ? 'text-slate-300 group-hover:text-white' 
+                      : 'text-gray-600 group-hover:text-gray-800'
+              }`} />
+            </div>
+            {!isCollapsed && <span className="font-medium text-sm leading-tight">{item.label}</span>}
           </div>
           {hasChildren && !isCollapsed && (
             <div className="flex items-center flex-shrink-0">
@@ -241,15 +267,15 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
 
         {/* Render children if expanded */}
         {hasChildren && isExpanded && !isCollapsed && (
-          <div className="mt-1 space-y-1">
+          <div className="mt-2 space-y-1 pl-2">
             {item.children?.map(child => renderSidebarItem(child, depth + 1))}
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
     );
   };
-
-  return (
+            
+            return (
     <aside className={`h-screen fixed left-0 top-0 flex flex-col transition-all duration-300 z-50 overflow-hidden shadow-xl ${
       isCollapsed ? 'w-16' : 'w-64'
     } ${
@@ -274,7 +300,7 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
               <circle cx="14" cy="26" r="3" fill="#3B82F6"/>
               <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-            {!isCollapsed && (
+                {!isCollapsed && (
               <div className="min-w-0">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent truncate">
                   OPPTYM
@@ -284,8 +310,8 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
                 }`}>
                   SEO Automation Platform
                 </p>
-              </div>
-            )}
+                  </div>
+                )}
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
