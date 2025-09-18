@@ -285,12 +285,16 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
     } hidden lg:flex`}>
       {/* Sidebar Header */}
       <div className={`border-b flex-shrink-0 ${
-        isCollapsed ? 'p-4' : 'p-6'
+        isCollapsed ? 'p-3' : 'p-6'
       } ${
         isDark ? 'border-slate-700' : 'border-gray-200'
       }`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className={`flex items-center ${
+          isCollapsed ? 'flex-col space-y-3' : 'justify-between'
+        }`}>
+          <div className={`flex items-center ${
+            isCollapsed ? 'flex-col space-y-2' : 'space-x-3'
+          }`}>
             <svg className={`transition-all duration-300 flex-shrink-0 ${
               isCollapsed ? 'w-8 h-8' : 'w-10 h-10'
             }`} viewBox="0 0 40 40" fill="none">
@@ -300,7 +304,7 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
               <circle cx="14" cy="26" r="3" fill="#3B82F6"/>
               <path d="M 14 26 A 18 18 0 0 1 20 38" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-                {!isCollapsed && (
+            {!isCollapsed && (
               <div className="min-w-0">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent truncate">
                   OPPTYM
@@ -310,28 +314,47 @@ export default function Sidebar({ activeTab, setActiveTab, onCollapseChange }: S
                 }`}>
                   SEO Automation Platform
                 </p>
-                  </div>
-                )}
+              </div>
+            )}
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`p-2 rounded-lg transition-all duration-200 flex-shrink-0 group ${
-              isCollapsed ? 'mx-auto' : ''
+            className={`p-2.5 rounded-xl transition-all duration-200 flex-shrink-0 group relative ${
+              isCollapsed ? 'mx-auto w-full' : ''
             } ${
               isDark 
-                ? 'hover:bg-slate-700 hover:shadow-md' 
-                : 'hover:bg-gray-100 hover:shadow-md'
+                ? 'hover:bg-slate-700 hover:shadow-lg border border-slate-600/50 hover:border-slate-500' 
+                : 'hover:bg-gray-100 hover:shadow-lg border border-gray-200 hover:border-gray-300'
             }`}
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
-            {isCollapsed ? (
-              <Menu className={`h-5 w-5 transition-colors duration-200 ${
-                isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
-              }`} />
-            ) : (
-              <X className={`h-5 w-5 transition-colors duration-200 ${
-                isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
-              }`} />
-            )}
+            <div className={`flex items-center justify-center transition-all duration-200 ${
+              isCollapsed ? 'w-full' : ''
+            }`}>
+              {isCollapsed ? (
+                <div className="flex flex-col items-center space-y-1">
+                  <Menu className={`h-4 w-4 transition-colors duration-200 ${
+                    isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
+                  }`} />
+                  <span className={`text-xs font-medium transition-colors duration-200 ${
+                    isDark ? 'text-slate-400 group-hover:text-slate-200' : 'text-gray-500 group-hover:text-gray-700'
+                  }`}>
+                    Menu
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <X className={`h-4 w-4 transition-colors duration-200 ${
+                    isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
+                  }`} />
+                  <span className={`text-sm font-medium transition-colors duration-200 ${
+                    isDark ? 'text-slate-300 group-hover:text-white' : 'text-gray-600 group-hover:text-gray-800'
+                  }`}>
+                    Collapse
+                  </span>
+                </div>
+              )}
+            </div>
           </button>
         </div>
       </div>
