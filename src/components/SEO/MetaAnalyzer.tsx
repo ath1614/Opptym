@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runMetaTagAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
+import SeoToolWrapper from './SeoToolWrapper';
 import { FileText, CheckCircle, XCircle, AlertTriangle, Edit3, Target, TrendingUp, Download } from 'lucide-react';
 import { SEOToolExporters } from '../../utils/csvExport';
 
@@ -205,78 +206,85 @@ const MetaAnalyzer = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Meta Tag Analyzer</h3>
-        <p className="text-gray-600 mb-6">Analyze your site's meta title, description, and keywords for SEO optimization.</p>
+    <SeoToolWrapper
+      toolName="Meta Tag Analyzer"
+      onRunTool={handleRunAnalyzer}
+      loading={loading}
+      disabled={!selectedProjectId}
+    >
+      <div className="space-y-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-2">Meta Tag Analyzer</h3>
+          <p className="text-gray-600 mb-6">Analyze your site's meta title, description, and keywords for SEO optimization.</p>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
-            <select
-              value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            >
-              <option value="">Choose a project to analyze</option>
-              {projects.map((project) => (
-                <option key={project._id} value={project._id}>
-                  {project.title}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
+              <select
+                value={selectedProjectId}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="">Choose a project to analyze</option>
+                {projects.map((project) => (
+                  <option key={project._id} value={project._id}>
+                    {project.title}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <button
-            onClick={handleRunAnalyzer}
-            disabled={loading || !selectedProjectId}
-            className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
-              loading || !selectedProjectId
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'
-            }`}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Analyzing...</span>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center space-x-2">
-                <FileText className="w-5 h-5" />
-                <span>Run Meta Analysis</span>
-              </div>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {report && (
-        <>
-          <ResultsDisplay
-            title="Meta Tag Analysis Results"
-            success={report.success}
-            data={report}
-            suggestions={report.suggestions || []}
-            icon={<FileText className="w-6 h-6 text-purple-600" />}
-            metrics={getMetrics()}
-            details={getDetails()}
-            improvementGuide={getImprovementGuide()}
-          />
-
-          {/* Export Button */}
-          <div className="mt-6">
             <button
-              onClick={handleExport}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+              onClick={handleRunAnalyzer}
+              disabled={loading || !selectedProjectId}
+              className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                loading || !selectedProjectId
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2'
+              }`}
             >
-              <Download className="w-4 h-4" />
-              Export CSV
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Analyzing...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <FileText className="w-5 h-5" />
+                  <span>Run Meta Analysis</span>
+                </div>
+              )}
             </button>
           </div>
-        </>
-      )}
-    </div>
+        </div>
+
+        {report && (
+          <>
+            <ResultsDisplay
+              title="Meta Tag Analysis Results"
+              success={report.success}
+              data={report}
+              suggestions={report.suggestions || []}
+              icon={<FileText className="w-6 h-6 text-purple-600" />}
+              metrics={getMetrics()}
+              details={getDetails()}
+              improvementGuide={getImprovementGuide()}
+            />
+
+            {/* Export Button */}
+            <div className="mt-6">
+              <button
+                onClick={handleExport}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Export CSV
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </SeoToolWrapper>
   );
 };
 
