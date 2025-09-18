@@ -46,7 +46,9 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
     window.location.hash = '#pricing';
   };
 
-  const isToolDisabled = !canUseSeoTools || isLimitReached || disabled || loading;
+  // Separate UI disabled state from limit-based disabled state
+  const isLimitDisabled = !canUseSeoTools || isLimitReached;
+  const isToolDisabled = isLimitDisabled || disabled || loading;
 
   // Debug logging
   console.log('🔍 SeoToolWrapper Debug:', {
@@ -54,6 +56,7 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
     isLimitReached,
     disabled,
     loading,
+    isLimitDisabled,
     isToolDisabled,
     limits
   });
@@ -61,7 +64,7 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
   return (
     <div className="space-y-6">
       {/* Usage Warning Banner */}
-      {limits && (isLimitReached || !canUseSeoTools) && (
+      {limits && isLimitDisabled && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
@@ -87,7 +90,7 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
       )}
 
       {/* Usage Info */}
-      {limits && canUseSeoTools && !isLimitReached && (
+      {limits && canUseSeoTools && !isLimitReached && !disabled && (
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -116,8 +119,8 @@ const SeoToolWrapper: React.FC<SeoToolWrapperProps> = ({
           disabled: isToolDisabled
         })}
         
-        {/* Disabled Overlay */}
-        {isToolDisabled && (
+        {/* Disabled Overlay - Only show for limit-related issues */}
+        {isLimitDisabled && (
           <div className="absolute inset-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl flex items-center justify-center z-10">
             <div className="text-center p-6">
               <Lock className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
