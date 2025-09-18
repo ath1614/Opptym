@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProjects, runCompetitorAnalyzer } from '../../lib/api';
 import ResultsDisplay from './ResultsDisplay';
+import SeoToolWrapper from './SeoToolWrapper';
 import { Globe, Users, TrendingUp, Target, BarChart3, Lightbulb, Award } from 'lucide-react';
 
 type Project = {
@@ -198,67 +199,74 @@ const CompetitorTool = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Competitor Analyzer</h3>
-        <p className="text-gray-600 mb-6">Scrape competitors from SERP based on your keywords to understand the competitive landscape.</p>
+    <SeoToolWrapper
+      toolName="Competitor Analyzer"
+      onRunTool={handleRunAnalyzer}
+      loading={loading}
+      disabled={!selectedProjectId}
+    >
+      <div className="space-y-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-2">Competitor Analyzer</h3>
+          <p className="text-gray-600 mb-6">Scrape competitors from SERP based on your keywords to understand the competitive landscape.</p>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
-            <select
-              value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Project</label>
+              <select
+                value={selectedProjectId}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              >
+                <option value="">Choose a project to analyze</option>
+                {projects.map((project) => (
+                  <option key={project._id} value={project._id}>
+                    {project.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={handleRunAnalyzer}
+              disabled={loading || !selectedProjectId}
+              className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                loading || !selectedProjectId
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-cyan-600 text-white hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2'
+              }`}
             >
-              <option value="">Choose a project to analyze</option>
-              {projects.map((project) => (
-                <option key={project._id} value={project._id}>
-                  {project.title}
-                </option>
-              ))}
-            </select>
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Analyzing...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <Globe className="w-5 h-5" />
+                  <span>Analyze Competitors</span>
+                </div>
+              )}
+            </button>
           </div>
-
-          <button
-            onClick={handleRunAnalyzer}
-            disabled={loading || !selectedProjectId}
-            className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
-              loading || !selectedProjectId
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-cyan-600 text-white hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2'
-            }`}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Analyzing...</span>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center space-x-2">
-                <Globe className="w-5 h-5" />
-                <span>Analyze Competitors</span>
-              </div>
-            )}
-          </button>
         </div>
-      </div>
 
-      {report && (
-        <ResultsDisplay
-          title="Competitor Analysis Results"
-          success={report.success}
-          data={report}
-          suggestions={report.suggestions || []}
-          icon={<Globe className="w-6 h-6 text-cyan-600" />}
-          metrics={getMetrics()}
-          details={getDetails()}
-          improvementGuide={getImprovementGuide()}
-          exportData={report.competitors || []}
-          exportType="competitorAnalysis"
-        />
-      )}
-    </div>
+        {report && (
+          <ResultsDisplay
+            title="Competitor Analysis Results"
+            success={report.success}
+            data={report}
+            suggestions={report.suggestions || []}
+            icon={<Globe className="w-6 h-6 text-cyan-600" />}
+            metrics={getMetrics()}
+            details={getDetails()}
+            improvementGuide={getImprovementGuide()}
+            exportData={report.competitors || []}
+            exportType="competitorAnalysis"
+          />
+        )}
+      </div>
+    </SeoToolWrapper>
   );
 };
 

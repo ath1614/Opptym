@@ -19,7 +19,7 @@ const { runCanonicalAudit } = require('../services/tools/canonicalChecker');
 const { computeSeoScore } = require('../services/tools/seoScorer');
 const keywordResearcher = require('../services/tools/keywordResearcher');
 
-// Check SEO tool permission
+// Check SEO tool permission and usage limits
 const checkSeoToolPermission = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
@@ -28,8 +28,31 @@ const checkSeoToolPermission = async (req, res) => {
       return null;
     }
 
+    // Check if user has permission to use SEO tools
     if (!user.hasPermission('canUseSeoTools')) {
-      res.status(403).json({ error: 'SEO tools not available in your plan' });
+      res.status(403).json({ 
+        error: 'SEO tools not available in your plan',
+        message: 'You need to upgrade your plan to access SEO tools',
+        requiresUpgrade: true
+      });
+      return null;
+    }
+
+    // Check usage limits
+    if (!user.checkUsageLimit('seoTools')) {
+      const currentUsage = user.usage.seoToolsUsed || 0;
+      const limit = user.planLimits.tools || 0;
+      
+      res.status(429).json({
+        error: 'SEO tool usage limit exceeded',
+        message: `You have reached your SEO tool limit (${currentUsage}/${limit}). Please upgrade your plan for more usage.`,
+        feature: 'seoTools',
+        currentUsage,
+        limit,
+        remaining: 0,
+        subscription: user.subscription,
+        requiresUpgrade: true
+      });
       return null;
     }
 
