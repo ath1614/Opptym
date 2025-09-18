@@ -414,7 +414,7 @@ export default function AdminPanel() {
   const allSelectedAre = (status: string) => selectedStatuses.length > 0 && selectedStatuses.every(s => s === status);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

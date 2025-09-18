@@ -237,12 +237,12 @@ export default function ClassifiedAds() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 space-y-6 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Classified Ads</h1>
-          <p className="text-gray-600 mt-2">Submit and manage your classified advertisements across various platforms</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Classified Ads</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Submit and manage your classified advertisements across various platforms</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
