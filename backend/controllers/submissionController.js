@@ -160,13 +160,18 @@ const createSubmission = async (req, res) => {
 
     console.log('✅ Submission created:', submission._id);
 
-    // Increment usage (temporarily commented out to debug)
-    try {
-      await user.incrementUsage('submissions');
-      console.log('✅ Usage incremented');
-    } catch (usageError) {
-      console.error('❌ Usage increment failed:', usageError);
-      // Continue anyway, don't fail the submission
+    // Only increment submissions usage for SEO tool submissions, not directory submissions
+    // Directory submissions should not count against the general submission limit
+    if (finalSubmissionType && !['directory', 'article', 'bookmark', 'business', 'classified', 'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet', 'australia'].includes(finalSubmissionType)) {
+      try {
+        await user.incrementUsage('submissions');
+        console.log('✅ Usage incremented for SEO tool submission');
+      } catch (usageError) {
+        console.error('❌ Usage increment failed:', usageError);
+        // Continue anyway, don't fail the submission
+      }
+    } else {
+      console.log('✅ Directory submission - not incrementing general submission counter');
     }
 
     res.status(201).json(submission);
@@ -377,14 +382,9 @@ const createBookmarkletSubmission = async (req, res) => {
       }
     });
     
-    // Increment user's submission usage counter
-    try {
-      await user.incrementUsage('submissions');
-      console.log('✅ User submission usage incremented');
-    } catch (usageError) {
-      console.error('❌ Usage increment failed:', usageError);
-      // Continue anyway, don't fail the submission
-    }
+    // Bookmarklet submissions are directory submissions and should not count against general submission limit
+    // Only increment for actual SEO tool submissions
+    console.log('✅ Bookmarklet submission - not incrementing general submission counter');
     
     // Increment bookmarklet token usage
     try {
