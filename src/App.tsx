@@ -171,7 +171,10 @@ function App() {
           
           if (daysLeft <= 0 || (daysLeft === 1 && !hasSeenWarningToday)) {
             console.log('🚨 Showing trial expiration modal');
-            setShowTrialExpirationModal(true);
+            // Add a small delay to prevent jarring experience after login
+            setTimeout(() => {
+              setShowTrialExpirationModal(true);
+            }, 1000);
             // Mark that user has seen the warning today
             localStorage.setItem('trialWarningSeen', new Date().toDateString());
           } else {

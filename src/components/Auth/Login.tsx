@@ -83,10 +83,10 @@ export default function Login({ onSwitchToRegister, onForgotPassword }: LoginPro
             setError('Please verify your email address before logging in');
             break;
           default:
-            setError(err.response.data.message || 'Login failed. Please try again.');
+            setError(err.response.data.message || 'Invalid email or password. Please try again.');
         }
       } else {
-        setError('Login failed. Please try again.');
+        setError('Invalid email or password. Please try again.');
       }
     } finally {
       setIsLoading(false);

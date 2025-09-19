@@ -237,7 +237,7 @@ export const useAuthProvider = (): AuthContextType => {
       console.error('Login error:', error);
       
       // Handle specific error types with user-friendly messages
-      let errorMessage = 'Login failed. Please try again.';
+      let errorMessage = 'Invalid email or password. Please try again.';
       
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
