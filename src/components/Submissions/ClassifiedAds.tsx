@@ -18,6 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 import DirectoryGrid from './DirectoryGrid';
+import UnifiedSubmissionStats from './UnifiedSubmissionStats';
 
 interface ClassifiedSubmission {
   _id: string;
@@ -253,59 +254,8 @@ export default function ClassifiedAds() {
         </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-indigo-100 rounded-lg">
-              <Tag className="w-6 h-6 text-indigo-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Ads</p>
-              <p className="text-2xl font-semibold text-gray-900">{submissions.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Approved</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {submissions.filter(s => s.status === 'approved').length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <Clock className="w-6 h-6 text-yellow-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {submissions.filter(s => s.status === 'submitted').length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Edit className="w-6 h-6 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Draft</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {submissions.filter(s => s.status === 'pending').length}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Unified Submission Stats */}
+      <UnifiedSubmissionStats />
 
       {/* Available Classified Ad Platforms */}
       <DirectoryGrid

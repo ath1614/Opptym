@@ -18,6 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 import DirectoryGrid from './DirectoryGrid';
+import UnifiedSubmissionStats from './UnifiedSubmissionStats';
 
 interface AustraliaSubmission {
   _id: string;
@@ -265,23 +266,8 @@ export default function Australia() {
         </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <MapPin className="w-6 h-6 text-red-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Listings</p>
-              <p className="text-2xl font-semibold text-gray-900">{submissions.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+                {/* Unified Submission Stats */}
+          <UnifiedSubmissionStats />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Approved</p>
