@@ -1,0 +1,3 @@
+Frontend build trigger - $(date)
+Global submission stats with fallback implementation
+Backend deployment needed for /api/submissions/global-stats endpoint
