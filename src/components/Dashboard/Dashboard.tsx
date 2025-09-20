@@ -18,6 +18,7 @@ import {
   Plus,
   RefreshCw
 } from 'lucide-react';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 // Removed old TrialExpirationModal import - now handled in App.tsx
 
 interface DashboardStats {
@@ -391,94 +392,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Total Projects',
-              value: stats.totalProjects,
-              icon: <Target className="w-6 h-6" />,
-              color: 'from-blue-500 to-blue-600',
-              change: deltas.totalProjects.direction === 'stable' ? '0%' : `${deltas.totalProjects.direction === 'increase' ? '+' : '-'}${deltas.totalProjects.delta.toFixed(1)}%`,
-              changeType: deltas.totalProjects.direction
-            },
-            {
-              title: 'Submissions',
-              value: stats.totalSubmissions,
-              icon: <Globe className="w-6 h-6" />,
-              color: 'from-green-500 to-green-600',
-              change: deltas.totalSubmissions.direction === 'stable' ? '0%' : `${deltas.totalSubmissions.direction === 'increase' ? '+' : '-'}${deltas.totalSubmissions.delta.toFixed(1)}%`,
-              changeType: deltas.totalSubmissions.direction
-            },
-            {
-              title: 'Success Rate',
-              value: `${stats.successRate}%`,
-              icon: <CheckCircle className="w-6 h-6" />,
-              color: 'from-success-500 to-success-600',
-              change: deltas.successRate.direction === 'stable' ? '0%' : `${deltas.successRate.direction === 'increase' ? '+' : '-'}${deltas.successRate.delta.toFixed(1)}%`,
-              changeType: deltas.successRate.direction
-            },
-            {
-              title: 'Backlinks Gained',
-              value: stats.backlinksGained,
-              icon: <TrendingUp className="w-6 h-6" />,
-              color: 'from-purple-500 to-purple-600',
-              change: deltas.backlinksGained.direction === 'stable' ? '0%' : `${deltas.backlinksGained.direction === 'increase' ? '+' : '-'}${deltas.backlinksGained.delta.toFixed(1)}%`,
-              changeType: deltas.backlinksGained.direction
-            },
-            {
-              title: 'Directories Submitted',
-              value: stats.directoriesSubmitted,
-              icon: <FileText className="w-6 h-6" />,
-              color: 'from-orange-500 to-orange-600',
-              change: deltas.directoriesSubmitted.direction === 'stable' ? '0%' : `${deltas.directoriesSubmitted.direction === 'increase' ? '+' : '-'}${deltas.directoriesSubmitted.delta.toFixed(1)}%`,
-              changeType: deltas.directoriesSubmitted.direction
-            },
-            {
-              title: 'Average Ranking',
-              value: `#${stats.averageRanking}`,
-              icon: <BarChart3 className="w-6 h-6" />,
-              color: 'from-red-500 to-red-600',
-              change: deltas.averageRanking.direction === 'stable' ? '0%' : `${deltas.averageRanking.direction === 'increase' ? '+' : '-'}${deltas.averageRanking.delta.toFixed(1)}%`,
-              changeType: deltas.averageRanking.direction
-            }
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="group p-6 bg-white/80 dark:bg-primary-800/80 backdrop-blur-lg rounded-3xl shadow-glass border border-white/20 dark:border-primary-700/20 hover:shadow-glass-lg transition-all duration-300 transform hover:-translate-y-1 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-glow group-hover:shadow-glow-lg transition-all duration-300`}>
-                  {stat.icon}
-                </div>
-                <div className={`flex items-center space-x-1 text-sm font-medium ${
-                  stat.changeType === 'increase' ? 'text-success-600 dark:text-success-400' : 
-                  stat.changeType === 'decrease' ? 'text-error-600 dark:text-error-400' : 
-                  'text-gray-500 dark:text-gray-400'
-                }`}>
-                  {stat.changeType === 'increase' ? (
-                    <ArrowUpRight className="w-4 h-4" />
-                  ) : stat.changeType === 'decrease' ? (
-                    <ArrowDownRight className="w-4 h-4" />
-                  ) : (
-                    <Minus className="w-4 h-4" />
-                  )}
-                  <span>{stat.change}</span>
-                </div>
-              </div>
-              
-              <div className="mb-2">
-                <div className="text-2xl font-bold text-primary-800 dark:text-primary-200">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-primary-600 dark:text-primary-400">
-                  {stat.title}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Global Submission Stats */}
+        <GlobalSubmissionStats showDetailed={true} className="mb-8" />
 
         {/* Subscription Status */}
         {subscription && (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../contexts/ThemeContext';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 import axios from 'axios';
 import { 
   Plus, 
@@ -116,8 +116,8 @@ export default function PressRelease() {
             </div>
           </div>
 
-          {/* Unified Submission Stats */}
-          <UnifiedSubmissionStats />
+          {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
         </div>
 
 

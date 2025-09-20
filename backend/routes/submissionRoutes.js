@@ -19,6 +19,9 @@ router.post('/bookmarklet', submissionController.createBookmarkletSubmission);
 // Get submission statistics
 router.get('/stats', protect, submissionController.getSubmissionStats);
 
+// Get global submission statistics
+router.get('/global-stats', protect, submissionController.getGlobalSubmissionStats);
+
 // Get submission statistics for specific type
 router.get('/stats/:type', protect, submissionController.getSubmissionStatsByType);
 

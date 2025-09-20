@@ -18,7 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 
 interface AustraliaSubmission {
   _id: string;
@@ -266,8 +266,8 @@ export default function Australia() {
         </button>
       </div>
 
-                {/* Unified Submission Stats */}
-          <UnifiedSubmissionStats />
+                {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Approved</p>

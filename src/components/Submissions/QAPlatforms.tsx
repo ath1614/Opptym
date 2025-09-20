@@ -18,7 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 
 interface QASubmission {
   _id: string;
@@ -244,8 +244,8 @@ export default function QAPlatforms() {
         </button>
       </div>
 
-      {/* Unified Submission Stats */}
-      <UnifiedSubmissionStats />
+          {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
 
       {/* Available Q&A Platforms */}
       <DirectoryGrid

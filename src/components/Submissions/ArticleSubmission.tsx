@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 import axios from 'axios';
 import { 
   ExternalLink,
@@ -107,8 +107,8 @@ export default function ArticleSubmission() {
             </div>
           </div>
 
-          {/* Unified Submission Stats */}
-          <UnifiedSubmissionStats />
+          {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
         </div>
 
 

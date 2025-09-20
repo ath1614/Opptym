@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 import axios from 'axios';
 
 import { 
@@ -107,8 +107,8 @@ export default function DirectorySubmission() {
             </div>
           </div>
 
-          {/* Unified Submission Stats */}
-          <UnifiedSubmissionStats />
+          {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
         </div>
 
         {/* Directory Grid */}

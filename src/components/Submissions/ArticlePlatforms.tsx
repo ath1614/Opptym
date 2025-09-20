@@ -18,7 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
 import { showPopup } from '../../utils/popup';
 import DirectoryGrid from './DirectoryGrid';
-import UnifiedSubmissionStats from './UnifiedSubmissionStats';
+import GlobalSubmissionStats from '../Common/GlobalSubmissionStats';
 
 interface ArticleSubmission {
   _id: string;
@@ -271,8 +271,8 @@ export default function ArticlePlatforms() {
         emptyMessage="No article platforms available"
       />
 
-                {/* Unified Submission Stats */}
-          <UnifiedSubmissionStats />
+                {/* Global Submission Stats */}
+          <GlobalSubmissionStats />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Published</p>

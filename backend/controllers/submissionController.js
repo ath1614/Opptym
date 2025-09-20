@@ -162,7 +162,11 @@ const createSubmission = async (req, res) => {
 
     // Only increment submissions usage for SEO tool submissions, not directory submissions
     // Directory submissions should not count against the general submission limit
-    if (finalSubmissionType && !['directory', 'article', 'bookmark', 'business', 'classified', 'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet', 'australia'].includes(finalSubmissionType)) {
+    const directorySubmissionTypes = ['directory', 'article', 'bookmark', 'business', 'classified', 'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet', 'australia'];
+    
+    if (finalSubmissionType && directorySubmissionTypes.includes(finalSubmissionType)) {
+      console.log('✅ Directory submission - not incrementing general submission counter');
+    } else {
       try {
         await user.incrementUsage('submissions');
         console.log('✅ Usage incremented for SEO tool submission');
@@ -170,8 +174,6 @@ const createSubmission = async (req, res) => {
         console.error('❌ Usage increment failed:', usageError);
         // Continue anyway, don't fail the submission
       }
-    } else {
-      console.log('✅ Directory submission - not incrementing general submission counter');
     }
 
     res.status(201).json(submission);
@@ -684,6 +686,97 @@ const fixUserUsageCounter = async (req, res) => {
   }
 };
 
+// @desc    Get global submission stats for user
+// @route   GET /api/submissions/global-stats
+// @access  Private
+const getGlobalSubmissionStats = async (req, res) => {
+  try {
+    console.log('🔍 Getting global submission stats for user:', req.userId);
+    
+    // Get all submissions for the user
+    const allSubmissions = await Submission.find({ userId: req.userId });
+    console.log('📊 Total submissions found:', allSubmissions.length);
+    
+    // Define directory submission types (these should NOT count against general submission limit)
+    const directorySubmissionTypes = [
+      'directory', 'article', 'bookmark', 'business', 'classified', 
+      'forum', 'social', 'local', 'citation', 'web2', 'qa', 'bookmarklet', 'australia'
+    ];
+    
+    // Calculate overall stats
+    const totalSubmissions = allSubmissions.length;
+    const approved = allSubmissions.filter(s => s.status === 'approved').length;
+    const pending = allSubmissions.filter(s => s.status === 'pending').length;
+    const rejected = allSubmissions.filter(s => s.status === 'rejected').length;
+    
+    // Separate directory vs SEO tool submissions
+    const directorySubmissions = allSubmissions.filter(s => directorySubmissionTypes.includes(s.submissionType));
+    const seoToolSubmissions = allSubmissions.filter(s => !directorySubmissionTypes.includes(s.submissionType));
+    
+    console.log('📁 Directory submissions:', directorySubmissions.length);
+    console.log('🔧 SEO tool submissions:', seoToolSubmissions.length);
+    
+    // Calculate stats by classification
+    const byClassification = {};
+    
+    // Map submission types to classification names
+    const typeToClassification = {
+      'directory': 'Directory Submission',
+      'article': 'Article Submission',
+      'bookmark': 'BookMarking',
+      'business': 'Business Listing',
+      'classified': 'Classified',
+      'forum': 'Forum',
+      'social': 'Social Media',
+      'local': 'Local Business',
+      'citation': 'Citation',
+      'web2': 'Web 2.0',
+      'qa': 'Q&A',
+      'bookmarklet': 'More SEO',
+      'australia': 'Australia'
+    };
+    
+    // Group by classification
+    allSubmissions.forEach(submission => {
+      const classification = typeToClassification[submission.submissionType] || 'Other';
+      
+      if (!byClassification[classification]) {
+        byClassification[classification] = {
+          total: 0,
+          approved: 0,
+          pending: 0,
+          rejected: 0
+        };
+      }
+      
+      byClassification[classification].total++;
+      byClassification[classification][submission.status]++;
+    });
+    
+    const stats = {
+      totalSubmissions,
+      overallStatusCounts: {
+        approved,
+        pending,
+        rejected
+      },
+      directorySubmissions: directorySubmissions.length,
+      seoToolSubmissions: seoToolSubmissions.length,
+      byClassification
+    };
+    
+    console.log('📊 Global stats calculated:', stats);
+    
+    res.json(stats);
+  } catch (error) {
+    console.error('❌ Error getting global submission stats:', error);
+    res.status(500).json({ 
+      error: 'Failed to get global submission stats',
+      details: error.message 
+    });
+  }
+};
+
 module.exports = {
   getSubmissions,
   getSubmissionById,
@@ -692,6 +785,7 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   getSubmissionStats,
+  getGlobalSubmissionStats,
   getSubmissionStatsByType,
   updateSubmissionStatus,
   fixUserUsageCounter
