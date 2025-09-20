@@ -53,22 +53,51 @@ export default function GlobalSubmissionStats({
     
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/submissions/global-stats', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
       
-      const data = response.data;
-      setStats({
-        total: data.totalSubmissions || 0,
-        approved: data.overallStatusCounts?.approved || 0,
-        pending: data.overallStatusCounts?.pending || 0,
-        rejected: data.overallStatusCounts?.rejected || 0,
-        directorySubmissions: data.directorySubmissions || 0,
-        seoToolSubmissions: data.seoToolSubmissions || 0,
-        byClassification: data.byClassification || {}
-      });
+      // Try the new global-stats endpoint first
+      try {
+        const response = await axios.get('/api/submissions/global-stats', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        const data = response.data;
+        setStats({
+          total: data.totalSubmissions || 0,
+          approved: data.overallStatusCounts?.approved || 0,
+          pending: data.overallStatusCounts?.pending || 0,
+          rejected: data.overallStatusCounts?.rejected || 0,
+          directorySubmissions: data.directorySubmissions || 0,
+          seoToolSubmissions: data.seoToolSubmissions || 0,
+          byClassification: data.byClassification || {}
+        });
+        return; // Success, exit early
+      } catch (globalStatsError: any) {
+        // If global-stats endpoint is not available (404), fallback to regular stats
+        if (globalStatsError.response?.status === 404) {
+          console.log('Global stats endpoint not available, falling back to regular stats');
+          
+          const fallbackResponse = await axios.get('/api/submissions/stats', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          
+          const fallbackData = fallbackResponse.data;
+          setStats({
+            total: fallbackData.totalSubmissions || 0,
+            approved: fallbackData.overallStatusCounts?.approved || 0,
+            pending: fallbackData.overallStatusCounts?.pending || 0,
+            rejected: fallbackData.overallStatusCounts?.rejected || 0,
+            directorySubmissions: 0, // Fallback doesn't have this breakdown
+            seoToolSubmissions: 0, // Fallback doesn't have this breakdown
+            byClassification: {} // Fallback doesn't have this breakdown
+          });
+          return; // Success with fallback
+        } else {
+          // Re-throw other errors (401, 500, etc.)
+          throw globalStatsError;
+        }
+      }
     } catch (err: any) {
-      console.error('Error fetching global submission stats:', err);
+      console.error('Error fetching submission stats:', err);
       setError(err.response?.data?.error || 'Failed to fetch submission stats');
     } finally {
       setLoading(false);

@@ -1,0 +1,2 @@
+Global submission stats deployment - $(date)
+Backend needs to be redeployed with new /api/submissions/global-stats endpoint
