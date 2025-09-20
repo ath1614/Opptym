@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarklet Test Page</title>
+</head>
+<body>
+    <h1>Bookmarklet Test Page</h1>
+    
+    <form>
+        <div>
+            <label for="name">Project Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter project name">
+        </div>
+        
+        <div>
+            <label for="title">Project Title:</label>
+            <input type="text" id="title" name="title" placeholder="Enter project title">
+        </div>
+        
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter email">
+        </div>
+        
+        <div>
+            <label for="url">Website URL:</label>
+            <input type="url" id="url" name="url" placeholder="Enter website URL">
+        </div>
+        
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" placeholder="Enter description"></textarea>
+        </div>
+        
+        <button type="submit">Submit</button>
+    </form>
+    
+    <script>
+        // Test bookmarklet with sample project data
+        const testProjectData = {
+            name: "Test Project",
+            title: "Test Project Title",
+            email: "test@example.com",
+            url: "https://example.com",
+            description: "This is a test project description"
+        };
+        
+        // Simulate bookmarklet execution
+        function testBookmarklet() {
+            console.log('Testing bookmarklet with project data:', testProjectData);
+            
+            // Fill form fields
+            document.getElementById('name').value = testProjectData.name;
+            document.getElementById('title').value = testProjectData.title;
+            document.getElementById('email').value = testProjectData.email;
+            document.getElementById('url').value = testProjectData.url;
+            document.getElementById('description').value = testProjectData.description;
+            
+            console.log('Form fields filled successfully!');
+        }
+        
+        // Auto-test after page load
+        window.addEventListener('load', () => {
+            console.log('Page loaded, testing bookmarklet...');
+            testBookmarklet();
+        });
+    </script>
+</body>
+</html>

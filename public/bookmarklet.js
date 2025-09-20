@@ -208,7 +208,8 @@
     console.log('🔍 Debug - projectDataParam:', projectDataParam);
     console.log('🔍 Debug - parseJsonSafely result:', parseJsonSafely(projectDataParam));
     showPopup('⚠️ No project data available. Please generate a bookmarklet with project data from Opptym.', 'error');
-  } else {
+    return;
+  }
 
   // Create form data object with enhanced mapping
   const formData = {
@@ -914,5 +915,4 @@
     showPopup('❌ An error occurred while running the bookmarklet.', 'error');
   });
 
-  } // End of else block for projectData check
 })();
