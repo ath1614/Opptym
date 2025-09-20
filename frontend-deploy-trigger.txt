@@ -1,0 +1,3 @@
+Frontend deployment trigger - $(date)
+Improved error handling for API unavailability
+Dashboard will now show mock data instead of crashing when API is down
